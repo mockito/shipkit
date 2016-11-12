@@ -1,7 +1,21 @@
+// First, apply the publishing plugin
+buildscript {
+    repositories {
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath "com.gradle.publish:plugin-publish-plugin:0.9.6"
+    }
+}
+
 apply plugin: 'idea'
 apply plugin: 'groovy'
+apply plugin: "com.gradle.plugin-publish"
 
 repositories { jcenter() }
+
+version = '0.0.1'
+group = "org.mockito"
 
 dependencies {
     compile gradleApi()
@@ -17,3 +31,22 @@ dependencies {
     testCompile "cglib:cglib-nodep:2.2.2"
     testCompile gradleTestKit()
 }
+
+pluginBundle {
+    website = 'http://mockito.org/'
+    vcsUrl = 'https://github.com/mockito/mockito-release-tools'
+    description = 'Release tools and Gradle plugins that automate Mockito continuous delivery.'
+    tags = ['mockito', 'continuous delivery', 'release']
+
+    plugins {
+        releaseNotesPlugin {
+            id = 'org.mockito.release-notes'
+            displayName = 'Mockito automated release notes generation plugin'
+        }
+        releaseWorkflowPlugin {
+            id = 'org.mockito.release-workflow'
+            displayName = 'Mockito release workflow plugin'
+        }
+    }
+}
+
