@@ -12,9 +12,12 @@ apply plugin: 'idea'
 apply plugin: 'groovy'
 apply plugin: "com.gradle.plugin-publish"
 
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
 repositories { jcenter() }
 
-version = '0.0.1'
+version = '0.0.2'
 group = "org.mockito"
 
 dependencies {
