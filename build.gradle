@@ -26,8 +26,6 @@ dependencies {
     //compile "com.jcabi:jcabi-github:0.17"
     compile "com.googlecode.json-simple:json-simple:1.1.1@jar"
 
-    //TODO why do we need tools.jar here???
-    compile files("${System.properties['java.home']}/../lib/tools.jar")
     testCompile("org.spockframework:spock-core:0.7-groovy-2.0") {
         exclude module: "groovy-all"
     }
