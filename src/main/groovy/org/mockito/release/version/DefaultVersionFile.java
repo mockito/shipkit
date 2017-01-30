@@ -41,6 +41,11 @@ class DefaultVersionFile implements VersionFile {
         VersionBumper bumper = new VersionBumper();
         version = bumper.incrementVersion(this.version);
         String content = IOUtil.readFully(versionFile);
+        if (!content.endsWith("\n")) {
+            //This makes the regex simpler. Add arbitrary end of line at the end of file should not bother anyone.
+            //See also unit tests for this class
+            content += "\n";
+        }
         String updated = content.replaceAll("(?m)^version=(.*?)\n", "version=" + version + "\n");
         IOUtil.writeFile(versionFile, updated);
         return version;

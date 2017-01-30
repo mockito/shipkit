@@ -3,7 +3,6 @@ package org.mockito.release.version
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
-import spock.lang.Subject
 
 class DefaultVersionFileTest extends Specification {
 
@@ -46,5 +45,15 @@ version=2.0.1
 x
 """
         v.version == "2.0.1"
+    }
+
+    def "increments correctly even if no line break after version"() {
+        def f = dir.newFile() << "foo=bar\nversion=2.0.0"
+
+        when:
+        new DefaultVersionFile(f).incrementVersion()
+
+        then:
+        f.text == "foo=bar\nversion=2.0.1\n"
     }
 }
