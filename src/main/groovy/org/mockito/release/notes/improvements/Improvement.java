@@ -7,7 +7,7 @@ import java.util.Collection;
  */
 public class Improvement {
 
-    private final long id; //TODO SF String
+    private final long id;
     private final String title;
     private final String url;
     private final Collection<String> labels;
