@@ -1,10 +1,10 @@
 package org.mockito.release.notes.improvements;
 
+import org.mockito.release.notes.format.DefaultFormatter;
 import org.mockito.release.util.MultiMap;
 
 import java.util.*;
 
-//TODO SF split the formatting from the data structure
 class DefaultImprovements implements ImprovementSet {
 
     final List<Improvement> improvements = new LinkedList<Improvement>();
@@ -26,7 +26,7 @@ class DefaultImprovements implements ImprovementSet {
         //Iterate label first because the input labels determine the order
         for (String label : labels.keySet()) {
             for (Improvement i : improvements) {
-                if (i.labels.contains(label) && remainingImprovements.contains(i)) {
+                if (i.getLabels().contains(label) && remainingImprovements.contains(i)) {
                     remainingImprovements.remove(i);
                     byLabel.put(label, i);
                 }
@@ -39,7 +39,7 @@ class DefaultImprovements implements ImprovementSet {
             Collection<Improvement> labelImprovements = byLabel.get(label);
             sb.append("\n  * ").append(labelCaption).append(": ").append(labelImprovements.size());
             for (Improvement i : labelImprovements) {
-                sb.append("\n    * ").append(i.toText());
+                sb.append("\n    * ").append(DefaultFormatter.format(i));
             }
         }
 
@@ -55,7 +55,7 @@ class DefaultImprovements implements ImprovementSet {
             }
 
             for (Improvement i : remainingImprovements) {
-                sb.append("\n").append(indent).append("  * ").append(i.toText());
+                sb.append("\n").append(indent).append("  * ").append(DefaultFormatter.format(i));
             }
         }
         return sb.toString();
