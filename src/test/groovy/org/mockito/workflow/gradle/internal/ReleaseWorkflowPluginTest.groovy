@@ -16,7 +16,7 @@ class ReleaseWorkflowPluginTest extends GradleSpecification {
             task rollbackThree << {}
             task rollbackFour << {}
 
-            apply plugin: 'release-workflow'
+            apply plugin: 'org.mockito.release-workflow'
 
             ext.releaseNeeded = true
 

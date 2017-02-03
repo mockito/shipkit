@@ -1,9 +1,8 @@
 package org.mockito.release.notes;
 
 import org.mockito.release.exec.Exec;
-import org.mockito.release.notes.improvements.ImprovementSet;
-import org.mockito.release.notes.improvements.Improvements;
-import org.mockito.release.notes.improvements.ImprovementsProvider;
+import org.mockito.release.notes.format.DefaultFormatter;
+import org.mockito.release.notes.improvements.*;
 import org.mockito.release.notes.vcs.ContributionSet;
 import org.mockito.release.notes.vcs.ContributionsProvider;
 import org.mockito.release.notes.vcs.Vcs;
@@ -11,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
@@ -37,8 +37,8 @@ class GitNotesBuilder implements NotesBuilder {
         ContributionSet contributions = contributionsProvider.getContributionsBetween(fromRevision, toRevision);
 
         ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(authTokenEnvVar);
-        ImprovementSet improvements = improvementsProvider.getImprovements(contributions, labels);
+        Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, labels);
 
-        return new NotesPrinter().printNotes(version, new Date(), contributions, improvements);
+        return new NotesPrinter().printNotes(version, new Date(), contributions, DefaultFormatter.format(labels, improvements));
     }
 }
