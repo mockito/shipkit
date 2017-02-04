@@ -1,6 +1,7 @@
 package org.mockito.release.notes.format;
 
 import org.mockito.release.notes.improvements.Improvement;
+import org.mockito.release.notes.vcs.Contribution;
 import org.mockito.release.util.MultiMap;
 
 import java.util.Collection;
@@ -62,5 +63,9 @@ public class DefaultFormatter {
             }
         }
         return sb.toString();
+    }
+
+    public static String format(Contribution contribution) {
+        return contribution.getCommits().size() + ": " + contribution.getAuthorName();
     }
 }

@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-class Contribution implements Comparable<Contribution> {
+public class Contribution implements Comparable<Contribution> {
 
     //email identifies the contributor, author alias not necessarily
     final String authorEmail;
@@ -22,10 +22,6 @@ class Contribution implements Comparable<Contribution> {
         return this;
     }
 
-    public String toText() {
-        return commits.size() + ": " + authorName;
-    }
-
     public int compareTo(Contribution other) {
         int byCommitCount = Integer.valueOf(other.getCommits().size()).compareTo(commits.size());
         if (byCommitCount != 0) {
@@ -36,5 +32,9 @@ class Contribution implements Comparable<Contribution> {
 
     public Collection<Commit> getCommits() {
         return commits;
+    }
+
+    public String getAuthorName() {
+        return authorName;
     }
 }

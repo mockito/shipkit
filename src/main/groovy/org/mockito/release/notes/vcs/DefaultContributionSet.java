@@ -1,5 +1,6 @@
 package org.mockito.release.notes.vcs;
 
+import org.mockito.release.notes.format.DefaultFormatter;
 import org.mockito.release.notes.util.Predicate;
 
 import java.util.*;
@@ -61,7 +62,7 @@ class DefaultContributionSet implements ContributionSet {
 
         Collections.sort(contributions);
         for (Contribution c : contributions) {
-            sb.append("\n  * ").append(c.toText());
+            sb.append("\n  * ").append(DefaultFormatter.format(c));
         }
 
         return sb.toString();

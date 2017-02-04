@@ -1,6 +1,5 @@
 package org.mockito.release.notes;
 
-import org.mockito.release.notes.format.DefaultFormatter;
 import org.mockito.release.notes.util.HumanReadable;
 
 import java.text.SimpleDateFormat;
