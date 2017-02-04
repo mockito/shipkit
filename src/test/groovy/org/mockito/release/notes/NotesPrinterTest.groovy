@@ -10,7 +10,7 @@ class NotesPrinterTest extends Specification {
 
     def "prints notes"() {
         def date = new Date(1483570800000)
-        when: def notes = printer.printNotes("2.0.1", date, {"the contributions"} as HumanReadable, {"the improvements"} as HumanReadable)
+        when: def notes = printer.printNotes("2.0.1", date, {"the contributions"} as HumanReadable, "the improvements")
         then: notes == """### 2.0.1 (2017-01-04 23:00 UTC)
 
 the contributions

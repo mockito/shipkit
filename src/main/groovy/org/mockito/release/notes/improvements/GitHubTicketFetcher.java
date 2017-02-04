@@ -17,9 +17,10 @@ class GitHubTicketFetcher {
 
     private static final Logger LOG = LoggerFactory.getLogger(GitHubTicketFetcher.class);
 
-    void fetchTickets(String authToken, Collection<String> ticketIds, DefaultImprovements improvements) {
+    Collection<Improvement> fetchTickets(String authToken, Collection<String> ticketIds) {
+        List<Improvement> out = new LinkedList<Improvement>();
         if (ticketIds.isEmpty()) {
-            return;
+            return out;
         }
         LOG.info("Querying GitHub API for {} tickets", ticketIds.size());
 
@@ -35,13 +36,14 @@ class GitHubTicketFetcher {
             while (!tickets.isEmpty() && issues.hasNextPage()) {
                 List<JSONObject> page = issues.nextPage();
 
-                improvements.addAll(wantedImprovements(
+                out.addAll(wantedImprovements(
                         dropTicketsAboveMaxInPage(tickets, page),
                         page));
             }
         } catch (Exception e) {
             throw new RuntimeException("Problems fetching " + ticketIds.size() + " from GitHub", e);
         }
+        return out;
     }
 
     private Queue<Long> dropTicketsAboveMaxInPage(Queue<Long> tickets, List<JSONObject> page) {

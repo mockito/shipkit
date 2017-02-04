@@ -1,20 +1,23 @@
-package org.mockito.release.notes.improvements;
+package org.mockito.release.notes.format;
 
+import org.mockito.release.notes.improvements.Improvement;
 import org.mockito.release.util.MultiMap;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
-//TODO SF split the formatting from the data structure
-class DefaultImprovements implements ImprovementSet {
+/**
+ * Original formatter
+ */
+public class DefaultFormatter {
 
-    final List<Improvement> improvements = new LinkedList<Improvement>();
-    private final Map<String, String> labels;
-
-    public DefaultImprovements(Map<String, String> labels) {
-        this.labels = labels;
+    public static String format(Improvement improvement) {
+        return improvement.getTitle() + " [(#" + improvement.getId() + ")](" + improvement.getUrl() + ")";
     }
 
-    public String toText() {
+    public static String format(Map<String, String> labels, Collection<Improvement> improvements) {
         if (improvements.isEmpty()) {
             return "* No notable improvements. See the commits for detailed changes.";
         }
@@ -26,7 +29,7 @@ class DefaultImprovements implements ImprovementSet {
         //Iterate label first because the input labels determine the order
         for (String label : labels.keySet()) {
             for (Improvement i : improvements) {
-                if (i.labels.contains(label) && remainingImprovements.contains(i)) {
+                if (i.getLabels().contains(label) && remainingImprovements.contains(i)) {
                     remainingImprovements.remove(i);
                     byLabel.put(label, i);
                 }
@@ -39,7 +42,7 @@ class DefaultImprovements implements ImprovementSet {
             Collection<Improvement> labelImprovements = byLabel.get(label);
             sb.append("\n  * ").append(labelCaption).append(": ").append(labelImprovements.size());
             for (Improvement i : labelImprovements) {
-                sb.append("\n    * ").append(i.toText());
+                sb.append("\n    * ").append(DefaultFormatter.format(i));
             }
         }
 
@@ -55,19 +58,9 @@ class DefaultImprovements implements ImprovementSet {
             }
 
             for (Improvement i : remainingImprovements) {
-                sb.append("\n").append(indent).append("  * ").append(i.toText());
+                sb.append("\n").append(indent).append("  * ").append(DefaultFormatter.format(i));
             }
         }
         return sb.toString();
-    }
-
-    public DefaultImprovements add(Improvement improvement) {
-        improvements.add(improvement);
-        return this;
-    }
-
-    public DefaultImprovements addAll(List<Improvement> improvements) {
-        this.improvements.addAll(improvements);
-        return this;
     }
 }

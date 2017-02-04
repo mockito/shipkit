@@ -2,12 +2,15 @@ package org.mockito.release.notes.improvements;
 
 import java.util.Collection;
 
-class Improvement {
+/**
+ * Simple POJO that contains all the information of an improvement
+ */
+public class Improvement {
 
-    private final long id; //TODO SF String
+    private final long id;
     private final String title;
     private final String url;
-    final Collection<String> labels;
+    private final Collection<String> labels;
 
     public Improvement(long id, String title, String url, Collection<String> labels) {
         this.id = id;
@@ -16,7 +19,19 @@ class Improvement {
         this.labels = labels;
     }
 
-    public String toText() {
-        return title + " [(#" + id + ")](" + url + ")";
+    public long getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public Collection<String> getLabels() {
+        return labels;
     }
 }
