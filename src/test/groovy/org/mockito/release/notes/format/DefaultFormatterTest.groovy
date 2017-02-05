@@ -68,6 +68,59 @@ class DefaultFormatterTest extends Specification {
         improvements == reordered
     }
 
+    def "many contributions"() {
+        ContributionSet contributions = new DefaultContributionSet({false} as Predicate)
+
+        contributions.add(new GitCommit("a@x", "A", "1"))
+        contributions.add(new GitCommit("b@x", "B", "2"))
+        contributions.add(new GitCommit("b@x", "B", "3"))
+
+        expect:
+        DefaultFormatter.format(contributions) == """* Authors: 2
+* Commits: 3
+  * 2: B
+  * 1: A"""
+    }
+
+    def "empty contributions"() {
+        ContributionSet contributions = new DefaultContributionSet({false} as Predicate)
+        expect:
+        DefaultFormatter.format(contributions) == "* Authors: 0\n* Commits: 0"
+    }
+
+    def "contributions by same author with different email"() {
+        ContributionSet contributions = new DefaultContributionSet({false} as Predicate)
+
+        contributions.add(new GitCommit("john@x", "john", ""))
+        contributions.add(new GitCommit("john@x", "john", ""))
+        contributions.add(new GitCommit("john@y", "john", "")) //same person, different email
+        contributions.add(new GitCommit("x@y", "x", "")) //different person
+
+        expect:
+        DefaultFormatter.format(contributions) == """* Authors: 2
+* Commits: 4
+  * 3: john
+  * 1: x"""
+    }
+
+    def "contributions sorted by name if number of commits the same"() {
+        ContributionSet contributions = new DefaultContributionSet({false} as Predicate)
+
+        contributions.add(new GitCommit("d@d", "d", ""))
+        contributions.add(new GitCommit("d@d", "d", ""))
+        contributions.add(new GitCommit("c@c", "c", ""))
+        contributions.add(new GitCommit("B@B", "B", ""))
+        contributions.add(new GitCommit("a@a", "a", ""))
+
+        expect:
+        DefaultFormatter.format(contributions) == """* Authors: 4
+* Commits: 5
+  * 2: d
+  * 1: a
+  * 1: B
+  * 1: c"""
+    }
+
     def "formats notes"() {
         def date = new Date(1483570800000)
         def is = [new Improvement(100, "Fix bug x", "http://issues/100", ["bug"])]

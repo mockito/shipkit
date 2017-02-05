@@ -1,6 +1,5 @@
 package org.mockito.release.notes.vcs
 
-import org.mockito.release.notes.format.DefaultFormatter
 import spock.lang.Specification
 
 class ContributionTest extends Specification {
