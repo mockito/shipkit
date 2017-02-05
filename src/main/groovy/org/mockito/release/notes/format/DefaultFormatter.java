@@ -19,7 +19,7 @@ public class DefaultFormatter implements ReleaseNotesFormatter {
         return improvement.getTitle() + " [(#" + improvement.getId() + ")](" + improvement.getUrl() + ")";
     }
 
-    String format(Map<String, String> labels, Collection<Improvement> improvements) {
+    public String format(Map<String, String> labels, Collection<Improvement> improvements) {
         if (improvements.isEmpty()) {
             return "* No notable improvements. See the commits for detailed changes.";
         }

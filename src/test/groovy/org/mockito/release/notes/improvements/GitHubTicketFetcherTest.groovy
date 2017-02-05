@@ -18,7 +18,7 @@ class GitHubTicketFetcherTest extends Specification {
 
         then:
         improvements[0].labels == ["enhancement"] as Set
-        DefaultFormatter.format([:], improvements) == """* Improvements: 3
+        new DefaultFormatter().format([:], improvements) == """* Improvements: 3
   * Allow instances of other classes in AdditionalAnswers.delegatesTo [(#112)](https://github.com/mockito/mockito/issues/112)
   * Improve automated release notes look [(#109)](https://github.com/mockito/mockito/issues/109)
   * Clarify Spy vs Mock CALLS_REAL_METHODS [(#108)](https://github.com/mockito/mockito/issues/108)"""
