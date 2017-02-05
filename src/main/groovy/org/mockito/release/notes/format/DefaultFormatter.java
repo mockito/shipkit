@@ -5,6 +5,7 @@ import org.mockito.release.notes.vcs.Contribution;
 import org.mockito.release.notes.vcs.ContributionSet;
 import org.mockito.release.util.MultiMap;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -76,5 +77,17 @@ public class DefaultFormatter {
         }
 
         return sb.toString();
+    }
+
+    public static String formatNotes(String version, Date date, ContributionSet contributions,
+                                     Map<String, String> labels, Collection<Improvement> improvements) {
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm z");
+        format.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String now = format.format(date);
+
+        return "### " + version + " (" + now + ")" + "\n\n"
+                + format(contributions) + "\n"
+                + format(labels, improvements) + "\n\n";
     }
 }

@@ -3,7 +3,7 @@ package org.mockito.release.notes.vcs;
 import java.util.Collection;
 import java.util.Set;
 
-class GitCommit implements Commit {
+public class GitCommit implements Commit {
 
     private final String email;
     private final String author;

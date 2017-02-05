@@ -4,7 +4,7 @@ import org.mockito.release.notes.util.Predicate;
 
 import java.util.*;
 
-class DefaultContributionSet implements ContributionSet {
+public class DefaultContributionSet implements ContributionSet {
 
     private final List<Contribution> contributions = new LinkedList<Contribution>();
 
@@ -16,9 +16,9 @@ class DefaultContributionSet implements ContributionSet {
         this.ignoreCommit = ignoredCommit;
     }
 
-    void add(Commit commit) {
+    public DefaultContributionSet add(Commit commit) {
         if (ignoreCommit.isTrue(commit)) {
-            return;
+            return this;
         }
         commits.add(commit);
         tickets.addAll(commit.getTickets());
@@ -29,6 +29,7 @@ class DefaultContributionSet implements ContributionSet {
         } else {
             contributions.add(new Contribution(commit));
         }
+        return this;
     }
 
     private static Contribution findContribution(Commit commit, Iterable<Contribution> contributions) {

@@ -1,6 +1,10 @@
 package org.mockito.release.notes.format
 
 import org.mockito.release.notes.improvements.Improvement
+import org.mockito.release.notes.util.Predicate
+import org.mockito.release.notes.vcs.ContributionSet
+import org.mockito.release.notes.vcs.DefaultContributionSet
+import org.mockito.release.notes.vcs.GitCommit
 import spock.lang.Specification
 
 class DefaultFormatterTest extends Specification {
@@ -62,5 +66,21 @@ class DefaultFormatterTest extends Specification {
 
         then: "The order of labels is determined"
         improvements == reordered
+    }
+
+    def "formats notes"() {
+        def date = new Date(1483570800000)
+        def is = [new Improvement(100, "Fix bug x", "http://issues/100", ["bug"])]
+        def contributions = new DefaultContributionSet({false} as Predicate).add(new GitCommit("a", "a", "m"))
+        when: def notes = DefaultFormatter.formatNotes("2.0.1", date, contributions, [:], is)
+        then: notes == """### 2.0.1 (2017-01-04 23:00 UTC)
+
+* Authors: 1
+* Commits: 1
+  * 1: a
+* Improvements: 1
+  * Fix bug x [(#100)](http://issues/100)
+
+"""
     }
 }
