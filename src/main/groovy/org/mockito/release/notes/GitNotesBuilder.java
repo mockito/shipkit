@@ -41,7 +41,7 @@ class GitNotesBuilder implements NotesBuilder {
         ContributionSet contributions = contributionsProvider.getContributionsBetween(fromRevision, toRevision);
 
         ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(authTokenEnvVar);
-        Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, labels);
+        Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions);
 
         DefaultReleaseNotesData data = new DefaultReleaseNotesData(version, new Date(), contributions, improvements);
         ReleaseNotesFormat format = new ReleaseNotesFormat() {
