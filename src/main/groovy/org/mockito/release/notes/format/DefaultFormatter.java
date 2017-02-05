@@ -11,13 +11,13 @@ import java.util.*;
 /**
  * Original formatter
  */
-public class DefaultFormatter {
+public class DefaultFormatter implements ReleaseNotesFormatter {
 
-    public static String format(Improvement improvement) {
+    private String format(Improvement improvement) {
         return improvement.getTitle() + " [(#" + improvement.getId() + ")](" + improvement.getUrl() + ")";
     }
 
-    public static String format(Map<String, String> labels, Collection<Improvement> improvements) {
+    String format(Map<String, String> labels, Collection<Improvement> improvements) {
         if (improvements.isEmpty()) {
             return "* No notable improvements. See the commits for detailed changes.";
         }
@@ -42,7 +42,7 @@ public class DefaultFormatter {
             Collection<Improvement> labelImprovements = byLabel.get(label);
             sb.append("\n  * ").append(labelCaption).append(": ").append(labelImprovements.size());
             for (Improvement i : labelImprovements) {
-                sb.append("\n    * ").append(DefaultFormatter.format(i));
+                sb.append("\n    * ").append(format(i));
             }
         }
 
@@ -58,29 +58,30 @@ public class DefaultFormatter {
             }
 
             for (Improvement i : remainingImprovements) {
-                sb.append("\n").append(indent).append("  * ").append(DefaultFormatter.format(i));
+                sb.append("\n").append(indent).append("  * ").append(format(i));
             }
         }
         return sb.toString();
     }
 
-    public static String format(Contribution contribution) {
+    private String format(Contribution contribution) {
         return contribution.getCommits().size() + ": " + contribution.getAuthorName();
     }
 
-    public static String format(ContributionSet contributions) {
+    private String format(ContributionSet contributions) {
         StringBuilder sb = new StringBuilder("* Authors: ").append(contributions.getContributions().size())
                 .append("\n* Commits: ").append(contributions.getAllCommits().size());
 
         for (Contribution c : contributions.getContributions()) {
-            sb.append("\n  * ").append(DefaultFormatter.format(c));
+            sb.append("\n  * ").append(format(c));
         }
 
         return sb.toString();
     }
 
-    public static String formatNotes(String version, Date date, ContributionSet contributions,
-                                     Map<String, String> labels, Collection<Improvement> improvements) {
+    @Override
+    public String formatNotes(String version, Date date, ContributionSet contributions,
+                              Map<String, String> labels, Collection<Improvement> improvements) {
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm z");
         format.setTimeZone(TimeZone.getTimeZone("UTC"));

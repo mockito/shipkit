@@ -1,5 +1,6 @@
 package org.mockito.release.notes;
 
+import org.mockito.release.notes.format.DefaultFormatter;
 import org.mockito.release.notes.versions.PreviousVersion;
 import org.mockito.release.notes.versions.Versions;
 
@@ -17,7 +18,7 @@ public class Notes {
      * @param authTokenEnvVar env variable name that holds the GitHub auth token
      */
     public static NotesBuilder gitHubNotesBuilder(File workDir, String authTokenEnvVar) {
-        return new GitNotesBuilder(workDir, authTokenEnvVar);
+        return new GitNotesBuilder(workDir, authTokenEnvVar, new DefaultFormatter());
     }
 
     /**

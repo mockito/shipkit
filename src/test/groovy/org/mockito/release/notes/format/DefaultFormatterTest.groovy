@@ -9,9 +9,11 @@ import spock.lang.Specification
 
 class DefaultFormatterTest extends Specification {
 
+    DefaultFormatter f = new DefaultFormatter()
+
     def "empty improvements"() {
         expect:
-        DefaultFormatter.format([:], []) == "* No notable improvements. See the commits for detailed changes."
+        f.format([:], []) == "* No notable improvements. See the commits for detailed changes."
     }
 
     def "set of improvements in order"() {
@@ -23,7 +25,7 @@ class DefaultFormatterTest extends Specification {
             new Improvement(130, "Refactoring", "http://issues/130", ["java-8", "refactoring"])]
 
         expect:
-        DefaultFormatter.format(labels, is) == """* Improvements: 5
+        f.format(labels, is) == """* Improvements: 5
   * Bugfixes: 2
     * Fix bug x [(#100)](http://issues/100)
     * Some enh [(#125)](http://issues/125)
@@ -36,7 +38,7 @@ class DefaultFormatterTest extends Specification {
 
     def "no matching labels"() {
         expect: "the formatting is simplified"
-        DefaultFormatter.format([bug: "Bugfixes"], [new Improvement(10, "Issue 10", "10", [])]) == """* Improvements: 1
+        f.format([bug: "Bugfixes"], [new Improvement(10, "Issue 10", "10", [])]) == """* Improvements: 1
   * Issue 10 [(#10)](10)"""
     }
 
@@ -47,7 +49,7 @@ class DefaultFormatterTest extends Specification {
             new Improvement(11, "Issue 11", "11", ["refactoring", "bug"])]
 
         expect: "no duplication even though labels are overused"
-        DefaultFormatter.format(labels, is) == """* Improvements: 2
+        f.format(labels, is) == """* Improvements: 2
   * Bugfixes: 2
     * Issue 10 [(#10)](10)
     * Issue 11 [(#11)](11)"""
@@ -61,8 +63,8 @@ class DefaultFormatterTest extends Specification {
         def imp2 = new Improvement(11, "Issue 11", "11", ["p1"])
 
         when:
-        def improvements = DefaultFormatter.format(labels, [imp1, imp2])
-        def reordered = DefaultFormatter.format(labels, [imp2, imp1])
+        def improvements = f.format(labels, [imp1, imp2])
+        def reordered = f.format(labels, [imp2, imp1])
 
         then: "The order of labels is determined"
         improvements == reordered
@@ -76,7 +78,7 @@ class DefaultFormatterTest extends Specification {
         contributions.add(new GitCommit("b@x", "B", "3"))
 
         expect:
-        DefaultFormatter.format(contributions) == """* Authors: 2
+        f.format(contributions) == """* Authors: 2
 * Commits: 3
   * 2: B
   * 1: A"""
@@ -85,7 +87,7 @@ class DefaultFormatterTest extends Specification {
     def "empty contributions"() {
         ContributionSet contributions = new DefaultContributionSet({false} as Predicate)
         expect:
-        DefaultFormatter.format(contributions) == "* Authors: 0\n* Commits: 0"
+        f.format(contributions) == "* Authors: 0\n* Commits: 0"
     }
 
     def "contributions by same author with different email"() {
@@ -97,7 +99,7 @@ class DefaultFormatterTest extends Specification {
         contributions.add(new GitCommit("x@y", "x", "")) //different person
 
         expect:
-        DefaultFormatter.format(contributions) == """* Authors: 2
+        f.format(contributions) == """* Authors: 2
 * Commits: 4
   * 3: john
   * 1: x"""
@@ -113,7 +115,7 @@ class DefaultFormatterTest extends Specification {
         contributions.add(new GitCommit("a@a", "a", ""))
 
         expect:
-        DefaultFormatter.format(contributions) == """* Authors: 4
+        f.format(contributions) == """* Authors: 4
 * Commits: 5
   * 2: d
   * 1: a
@@ -125,7 +127,7 @@ class DefaultFormatterTest extends Specification {
         def date = new Date(1483570800000)
         def is = [new Improvement(100, "Fix bug x", "http://issues/100", ["bug"])]
         def contributions = new DefaultContributionSet({false} as Predicate).add(new GitCommit("a", "a", "m"))
-        when: def notes = DefaultFormatter.formatNotes("2.0.1", date, contributions, [:], is)
+        when: def notes = f.formatNotes("2.0.1", date, contributions, [:], is)
         then: notes == """### 2.0.1 (2017-01-04 23:00 UTC)
 
 * Authors: 1
