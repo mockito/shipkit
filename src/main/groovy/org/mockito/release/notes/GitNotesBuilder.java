@@ -4,6 +4,8 @@ import org.mockito.release.exec.Exec;
 import org.mockito.release.notes.format.ReleaseNotesFormatter;
 import org.mockito.release.notes.improvements.*;
 import org.mockito.release.notes.model.ContributionSet;
+import org.mockito.release.notes.model.Improvement;
+import org.mockito.release.notes.model.ReleaseNotesFormat;
 import org.mockito.release.notes.vcs.ContributionsProvider;
 import org.mockito.release.notes.vcs.Vcs;
 import org.slf4j.Logger;
@@ -32,16 +34,21 @@ class GitNotesBuilder implements NotesBuilder {
         this.formatter = formatter;
     }
 
-    public String buildNotes(String version, String fromRevision, String toRevision, Map<String, String> labels) {
+    public String buildNotes(String version, String fromRevision, String toRevision, final Map<String, String> labels) {
         LOG.info("Getting release notes between {} and {}", fromRevision, toRevision);
 
         ContributionsProvider contributionsProvider = Vcs.getGitProvider(Exec.getProcessRunner(workDir));
         ContributionSet contributions = contributionsProvider.getContributionsBetween(fromRevision, toRevision);
 
         ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(authTokenEnvVar);
-        Collection<DefaultImprovement> improvements = improvementsProvider.getImprovements(contributions, labels);
+        Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, labels);
 
-        DefaultReleaseNotesData data = new DefaultReleaseNotesData(version, new Date(), contributions, labels, improvements);
-        return formatter.formatNotes(data);
+        DefaultReleaseNotesData data = new DefaultReleaseNotesData(version, new Date(), contributions, improvements);
+        ReleaseNotesFormat format = new ReleaseNotesFormat() {
+            public Map<String, String> getLabelMapping() {
+                return labels;
+            }
+        };
+        return formatter.formatNotes(data, format);
     }
 }

@@ -3,6 +3,7 @@ package org.mockito.release.notes.improvements;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.mockito.release.notes.model.Improvement;
 import org.mockito.release.notes.util.IOUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +18,8 @@ class GitHubTicketFetcher {
 
     private static final Logger LOG = LoggerFactory.getLogger(GitHubTicketFetcher.class);
 
-    Collection<DefaultImprovement> fetchTickets(String authToken, Collection<String> ticketIds) {
-        List<DefaultImprovement> out = new LinkedList<DefaultImprovement>();
+    Collection<Improvement> fetchTickets(String authToken, Collection<String> ticketIds) {
+        List<Improvement> out = new LinkedList<Improvement>();
         if (ticketIds.isEmpty()) {
             return out;
         }
@@ -69,12 +70,12 @@ class GitHubTicketFetcher {
     }
 
     //TODO SF we should be able to unit test the code that parsers JSONObjects
-    private List<DefaultImprovement> wantedImprovements(Collection<Long> tickets, List<JSONObject> issues) {
+    private List<Improvement> wantedImprovements(Collection<Long> tickets, List<JSONObject> issues) {
         if(tickets.isEmpty()) {
             return Collections.emptyList();
         }
 
-        ArrayList<DefaultImprovement> pagedImprovements = new ArrayList<DefaultImprovement>();
+        ArrayList<Improvement> pagedImprovements = new ArrayList<Improvement>();
         for (JSONObject issue : issues) {
             long id = (Long) issue.get("number");
             if (tickets.remove(id)) {

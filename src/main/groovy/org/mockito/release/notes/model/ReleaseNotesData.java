@@ -1,17 +1,30 @@
 package org.mockito.release.notes.model;
 
-import org.mockito.release.notes.improvements.DefaultImprovement;
-
 import java.util.Collection;
 import java.util.Date;
-import java.util.Map;
 
+/**
+ * Contains all the information that is needed for release notes
+ */
 public interface ReleaseNotesData {
 
+    /**
+     * Version of the released software component
+     */
     String getVersion();
-    Date getDate();
-    ContributionSet getContributions();
-    Collection<DefaultImprovement> getImprovements();
-    Map<String, String> getLabels();
 
+    /**
+     * Date of the release
+     */
+    Date getDate();
+
+    /**
+     * Contributions (authors and commits from VCS)
+     */
+    ContributionSet getContributions();
+
+    /**
+     * Improvements (issues, pull requests from issue tracker)
+     */
+    Collection<Improvement> getImprovements();
 }
