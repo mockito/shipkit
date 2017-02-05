@@ -1,5 +1,6 @@
 package org.mockito.release.notes.vcs
 
+import org.mockito.release.notes.format.DefaultFormatter
 import org.mockito.release.notes.util.Predicate
 import spock.lang.Specification
 import spock.lang.Subject
@@ -12,7 +13,7 @@ class DefaultContributionSetTest extends Specification {
         expect:
         contributions.allCommits.isEmpty()
         contributions.allTickets.isEmpty()
-        contributions.toText() == "* Authors: 0\n* Commits: 0"
+        DefaultFormatter.format(contributions) == "* Authors: 0\n* Commits: 0"
     }
 
     def "contains referenced tickets"() {
@@ -31,8 +32,10 @@ class DefaultContributionSetTest extends Specification {
         contributions.add(new GitCommit("b@x", "B", "2"))
         contributions.add(new GitCommit("b@x", "B", "3"))
 
+        println contributions.contributions
+
         expect:
-        contributions.toText() == """* Authors: 2
+        DefaultFormatter.format(contributions) == """* Authors: 2
 * Commits: 3
   * 2: B
   * 1: A"""
@@ -59,7 +62,7 @@ class DefaultContributionSetTest extends Specification {
         contributions.add(new GitCommit("x@y", "x", "")) //different person
 
         expect:
-        contributions.toText() == """* Authors: 2
+        DefaultFormatter.format(contributions) == """* Authors: 2
 * Commits: 4
   * 3: john
   * 1: x"""
@@ -73,7 +76,7 @@ class DefaultContributionSetTest extends Specification {
         contributions.add(new GitCommit("a@a", "a", ""))
 
         expect:
-        contributions.toText() == """* Authors: 4
+        DefaultFormatter.format(contributions) == """* Authors: 4
 * Commits: 5
   * 2: d
   * 1: a

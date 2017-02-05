@@ -1,5 +1,6 @@
 package org.mockito.release.notes.vcs
 
+import org.mockito.release.notes.format.DefaultFormatter
 import spock.lang.Specification
 
 class ContributionTest extends Specification {
@@ -30,6 +31,25 @@ class ContributionTest extends Specification {
         c3.commits.size() == 3
 
         set as List == [c3, c2, c1]
+    }
+
+    def "t2"() {
+        def com1 = new GitCommit("a@x", "A", "1")
+        def com2 = new GitCommit("b@x", "B", "2")
+        def com3 = new GitCommit("b@x", "B", "3")
+
+        def c1 = new Contribution(com1)
+        def c2 = new Contribution(com2).add(com3)
+
+        def set = new TreeSet()
+        set.add(c1)
+        set.add(c2)
+
+        expect:
+        for (Object c : set) {
+            println c
+        }
+        set as List == [c2, c1]
     }
 
     def "sorted by commits and uppercase name"() {

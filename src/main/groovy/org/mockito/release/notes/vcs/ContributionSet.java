@@ -1,13 +1,11 @@
 package org.mockito.release.notes.vcs;
 
-import org.mockito.release.notes.util.HumanReadable;
-
 import java.util.Collection;
 
 /**
  * A set of contributions
  */
-public interface ContributionSet extends HumanReadable {
+public interface ContributionSet {
 
     /**
      * all commits in given contribution set, spanning all authors
@@ -20,7 +18,7 @@ public interface ContributionSet extends HumanReadable {
     Collection<String> getAllTickets();
 
     /**
-     * human readable text representation
+     * all contributions in the set
      */
-    String toText();
+    Collection<Contribution> getContributions();
 }

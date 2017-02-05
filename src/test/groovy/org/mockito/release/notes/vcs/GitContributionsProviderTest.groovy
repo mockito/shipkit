@@ -1,5 +1,6 @@
 package org.mockito.release.notes.vcs
 
+import org.mockito.release.notes.format.DefaultFormatter
 import spock.lang.Specification
 import spock.lang.Subject
 
@@ -23,7 +24,7 @@ john@doe@@info@@John R. Doe@@info@@dummy commit
         def c = provider.getContributionsBetween("v1.10.10", "HEAD")
 
         then:
-        c.toText() == """* Authors: 2
+        DefaultFormatter.format(c) == """* Authors: 2
 * Commits: 3
   * 2: Szczepan Faber
   * 1: John R. Doe"""

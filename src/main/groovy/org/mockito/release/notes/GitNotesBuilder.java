@@ -39,6 +39,7 @@ class GitNotesBuilder implements NotesBuilder {
         ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(authTokenEnvVar);
         Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, labels);
 
-        return new NotesPrinter().printNotes(version, new Date(), contributions, DefaultFormatter.format(labels, improvements));
+        return new NotesPrinter().printNotes(version, new Date(),
+                DefaultFormatter.format(contributions), DefaultFormatter.format(labels, improvements));
     }
 }

@@ -1,6 +1,5 @@
 package org.mockito.release.notes.vcs;
 
-import org.mockito.release.notes.format.DefaultFormatter;
 import org.mockito.release.notes.util.Predicate;
 
 import java.util.*;
@@ -56,15 +55,10 @@ class DefaultContributionSet implements ContributionSet {
         return tickets;
     }
 
-    public String toText() {
-        StringBuilder sb = new StringBuilder("* Authors: ").append(contributions.size())
-                .append("\n* Commits: ").append(commits.size());
-
-        Collections.sort(contributions);
-        for (Contribution c : contributions) {
-            sb.append("\n  * ").append(DefaultFormatter.format(c));
-        }
-
-        return sb.toString();
+    public Collection<Contribution> getContributions() {
+        //sort the contributions by commits count
+        //we need to do it at the end instead of keeping tree set field
+        // because Contribution object is mutable and the tree will not reindex when an already-added element changes
+        return new TreeSet<Contribution>(contributions);
     }
 }

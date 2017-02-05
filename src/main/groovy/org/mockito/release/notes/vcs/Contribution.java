@@ -37,4 +37,8 @@ public class Contribution implements Comparable<Contribution> {
     public String getAuthorName() {
         return authorName;
     }
+
+    public String toString() {
+        return authorName + "/" + authorEmail + "(" + commits.size() + ")";
+    }
 }

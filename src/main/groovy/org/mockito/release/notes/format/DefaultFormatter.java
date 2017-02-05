@@ -2,12 +2,10 @@ package org.mockito.release.notes.format;
 
 import org.mockito.release.notes.improvements.Improvement;
 import org.mockito.release.notes.vcs.Contribution;
+import org.mockito.release.notes.vcs.ContributionSet;
 import org.mockito.release.util.MultiMap;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Original formatter
@@ -67,5 +65,16 @@ public class DefaultFormatter {
 
     public static String format(Contribution contribution) {
         return contribution.getCommits().size() + ": " + contribution.getAuthorName();
+    }
+
+    public static String format(ContributionSet contributions) {
+        StringBuilder sb = new StringBuilder("* Authors: ").append(contributions.getContributions().size())
+                .append("\n* Commits: ").append(contributions.getAllCommits().size());
+
+        for (Contribution c : contributions.getContributions()) {
+            sb.append("\n  * ").append(DefaultFormatter.format(c));
+        }
+
+        return sb.toString();
     }
 }
