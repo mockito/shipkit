@@ -17,8 +17,8 @@ class GitHubTicketFetcher {
 
     private static final Logger LOG = LoggerFactory.getLogger(GitHubTicketFetcher.class);
 
-    Collection<Improvement> fetchTickets(String authToken, Collection<String> ticketIds) {
-        List<Improvement> out = new LinkedList<Improvement>();
+    Collection<DefaultImprovement> fetchTickets(String authToken, Collection<String> ticketIds) {
+        List<DefaultImprovement> out = new LinkedList<DefaultImprovement>();
         if (ticketIds.isEmpty()) {
             return out;
         }
@@ -69,19 +69,19 @@ class GitHubTicketFetcher {
     }
 
     //TODO SF we should be able to unit test the code that parsers JSONObjects
-    private List<Improvement> wantedImprovements(Collection<Long> tickets, List<JSONObject> issues) {
+    private List<DefaultImprovement> wantedImprovements(Collection<Long> tickets, List<JSONObject> issues) {
         if(tickets.isEmpty()) {
             return Collections.emptyList();
         }
 
-        ArrayList<Improvement> pagedImprovements = new ArrayList<Improvement>();
+        ArrayList<DefaultImprovement> pagedImprovements = new ArrayList<DefaultImprovement>();
         for (JSONObject issue : issues) {
             long id = (Long) issue.get("number");
             if (tickets.remove(id)) {
                 String issueUrl = (String) issue.get("html_url");
                 String title = (String) issue.get("title");
                 Collection<String> labels = extractLabels(issue);
-                pagedImprovements.add(new Improvement(id, title, issueUrl, labels));
+                pagedImprovements.add(new DefaultImprovement(id, title, issueUrl, labels));
 
                 if (tickets.isEmpty()) {
                     return pagedImprovements;

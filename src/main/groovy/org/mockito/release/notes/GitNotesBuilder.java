@@ -4,7 +4,6 @@ import org.mockito.release.exec.Exec;
 import org.mockito.release.notes.format.ReleaseNotesFormatter;
 import org.mockito.release.notes.improvements.*;
 import org.mockito.release.notes.model.ContributionSet;
-import org.mockito.release.notes.model.DefaultReleaseNotesData;
 import org.mockito.release.notes.vcs.ContributionsProvider;
 import org.mockito.release.notes.vcs.Vcs;
 import org.slf4j.Logger;
@@ -40,7 +39,7 @@ class GitNotesBuilder implements NotesBuilder {
         ContributionSet contributions = contributionsProvider.getContributionsBetween(fromRevision, toRevision);
 
         ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(authTokenEnvVar);
-        Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, labels);
+        Collection<DefaultImprovement> improvements = improvementsProvider.getImprovements(contributions, labels);
 
         DefaultReleaseNotesData data = new DefaultReleaseNotesData(version, new Date(), contributions, labels, improvements);
         return formatter.formatNotes(data);

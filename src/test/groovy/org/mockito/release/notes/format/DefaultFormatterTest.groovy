@@ -1,6 +1,6 @@
 package org.mockito.release.notes.format
 
-import org.mockito.release.notes.improvements.Improvement
+import org.mockito.release.notes.improvements.DefaultImprovement
 import org.mockito.release.notes.util.Predicate
 import org.mockito.release.notes.model.ContributionSet
 import org.mockito.release.notes.vcs.DefaultContributionSet
@@ -18,11 +18,11 @@ class DefaultFormatterTest extends Specification {
 
     def "set of improvements in order"() {
         def labels = [bug: "Bugfixes", enhancement: "Enhancements"]
-        def is = [new Improvement(100, "Fix bug x", "http://issues/100", ["bug"]),
-            new Improvement(122, "Javadoc update", "http://url/122", []),
-            new Improvement(125, "Some enh", "http://issues/125", ["java-8", "enhancement", "bug"]),
-            new Improvement(126, "Some other enh", "http://issues/126", ["enhancement"]),
-            new Improvement(130, "Refactoring", "http://issues/130", ["java-8", "refactoring"])]
+        def is = [new DefaultImprovement(100, "Fix bug x", "http://issues/100", ["bug"]),
+                  new DefaultImprovement(122, "Javadoc update", "http://url/122", []),
+                  new DefaultImprovement(125, "Some enh", "http://issues/125", ["java-8", "enhancement", "bug"]),
+                  new DefaultImprovement(126, "Some other enh", "http://issues/126", ["enhancement"]),
+                  new DefaultImprovement(130, "Refactoring", "http://issues/130", ["java-8", "refactoring"])]
 
         expect:
         f.format(labels, is) == """* Improvements: 5
@@ -38,15 +38,15 @@ class DefaultFormatterTest extends Specification {
 
     def "no matching labels"() {
         expect: "the formatting is simplified"
-        f.format([bug: "Bugfixes"], [new Improvement(10, "Issue 10", "10", [])]) == """* Improvements: 1
+        f.format([bug: "Bugfixes"], [new DefaultImprovement(10, "Issue 10", "10", [])]) == """* Improvements: 1
   * Issue 10 [(#10)](10)"""
     }
 
     def "no duplicated improvements"() {
         given:
         def labels = [bug: "Bugfixes", refactoring: "Refactorings"]
-        def is = [new Improvement(10, "Issue 10", "10", ["bug", "refactoring"]),
-            new Improvement(11, "Issue 11", "11", ["refactoring", "bug"])]
+        def is = [new DefaultImprovement(10, "Issue 10", "10", ["bug", "refactoring"]),
+                  new DefaultImprovement(11, "Issue 11", "11", ["refactoring", "bug"])]
 
         expect: "no duplication even though labels are overused"
         f.format(labels, is) == """* Improvements: 2
@@ -59,8 +59,8 @@ class DefaultFormatterTest extends Specification {
         given:
         //input label captions determine the order of labels:
         def labels = [p0: "Priority 0", p1: "Priority 1"]
-        def imp1 = new Improvement(10, "Issue 10", "10", ["p0"])
-        def imp2 = new Improvement(11, "Issue 11", "11", ["p1"])
+        def imp1 = new DefaultImprovement(10, "Issue 10", "10", ["p0"])
+        def imp2 = new DefaultImprovement(11, "Issue 11", "11", ["p1"])
 
         when:
         def improvements = f.format(labels, [imp1, imp2])
@@ -125,7 +125,7 @@ class DefaultFormatterTest extends Specification {
 
     def "formats notes"() {
         def date = new Date(1483570800000)
-        def is = [new Improvement(100, "Fix bug x", "http://issues/100", ["bug"])]
+        def is = [new DefaultImprovement(100, "Fix bug x", "http://issues/100", ["bug"])]
         def contributions = new DefaultContributionSet({false} as Predicate).add(new GitCommit("a", "a", "m"))
         when: def notes = f.formatNotes("2.0.1", date, contributions, [:], is)
         then: notes == """### 2.0.1 (2017-01-04 23:00 UTC)

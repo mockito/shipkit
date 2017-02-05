@@ -1,6 +1,6 @@
 package org.mockito.release.notes.model;
 
-import org.mockito.release.notes.improvements.Improvement;
+import org.mockito.release.notes.improvements.DefaultImprovement;
 
 import java.util.Collection;
 import java.util.Date;
@@ -11,7 +11,7 @@ public interface ReleaseNotesData {
     String getVersion();
     Date getDate();
     ContributionSet getContributions();
-    Collection<Improvement> getImprovements();
+    Collection<DefaultImprovement> getImprovements();
     Map<String, String> getLabels();
 
 }

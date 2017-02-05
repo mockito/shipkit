@@ -1,6 +1,6 @@
 package org.mockito.release.notes.format;
 
-import org.mockito.release.notes.improvements.Improvement;
+import org.mockito.release.notes.improvements.DefaultImprovement;
 import org.mockito.release.notes.model.ReleaseNotesData;
 import org.mockito.release.notes.vcs.DefaultContribution;
 import org.mockito.release.notes.model.ContributionSet;
@@ -14,22 +14,22 @@ import java.util.*;
  */
 public class DefaultFormatter implements ReleaseNotesFormatter {
 
-    private String format(Improvement improvement) {
+    private String format(DefaultImprovement improvement) {
         return improvement.getTitle() + " [(#" + improvement.getId() + ")](" + improvement.getUrl() + ")";
     }
 
-    String format(Map<String, String> labels, Collection<Improvement> improvements) {
+    String format(Map<String, String> labels, Collection<DefaultImprovement> improvements) {
         if (improvements.isEmpty()) {
             return "* No notable improvements. See the commits for detailed changes.";
         }
         StringBuilder sb = new StringBuilder("* Improvements: ").append(improvements.size());
-        MultiMap<String, Improvement> byLabel = new MultiMap<String, Improvement>();
-        Set<Improvement> remainingImprovements = new LinkedHashSet<Improvement>(improvements);
+        MultiMap<String, DefaultImprovement> byLabel = new MultiMap<String, DefaultImprovement>();
+        Set<DefaultImprovement> remainingImprovements = new LinkedHashSet<DefaultImprovement>(improvements);
 
         //Step 1, find improvements that match input labels
         //Iterate label first because the input labels determine the order
         for (String label : labels.keySet()) {
-            for (Improvement i : improvements) {
+            for (DefaultImprovement i : improvements) {
                 if (i.getLabels().contains(label) && remainingImprovements.contains(i)) {
                     remainingImprovements.remove(i);
                     byLabel.put(label, i);
@@ -40,9 +40,9 @@ public class DefaultFormatter implements ReleaseNotesFormatter {
         //Step 2, print out the improvements that match input labels
         for (String label : byLabel.keySet()) {
             String labelCaption = labels.get(label);
-            Collection<Improvement> labelImprovements = byLabel.get(label);
+            Collection<DefaultImprovement> labelImprovements = byLabel.get(label);
             sb.append("\n  * ").append(labelCaption).append(": ").append(labelImprovements.size());
-            for (Improvement i : labelImprovements) {
+            for (DefaultImprovement i : labelImprovements) {
                 sb.append("\n    * ").append(format(i));
             }
         }
@@ -58,7 +58,7 @@ public class DefaultFormatter implements ReleaseNotesFormatter {
                 indent = "";
             }
 
-            for (Improvement i : remainingImprovements) {
+            for (DefaultImprovement i : remainingImprovements) {
                 sb.append("\n").append(indent).append("  * ").append(format(i));
             }
         }

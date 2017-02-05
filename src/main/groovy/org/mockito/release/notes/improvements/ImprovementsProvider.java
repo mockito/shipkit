@@ -7,5 +7,5 @@ import java.util.Map;
 
 public interface ImprovementsProvider {
 
-    Collection<Improvement> getImprovements(ContributionSet contributions, Map<String, String> labels);
+    Collection<DefaultImprovement> getImprovements(ContributionSet contributions, Map<String, String> labels);
 }

@@ -1,6 +1,8 @@
-package org.mockito.release.notes.model;
+package org.mockito.release.notes;
 
-import org.mockito.release.notes.improvements.Improvement;
+import org.mockito.release.notes.improvements.DefaultImprovement;
+import org.mockito.release.notes.model.ContributionSet;
+import org.mockito.release.notes.model.ReleaseNotesData;
 
 import java.util.Collection;
 import java.util.Date;
@@ -12,10 +14,10 @@ public class DefaultReleaseNotesData implements ReleaseNotesData {
     private final Date date;
     private final ContributionSet contributions;
     private final Map<String, String> labels;
-    private final Collection<Improvement> improvements;
+    private final Collection<DefaultImprovement> improvements;
 
     public DefaultReleaseNotesData(String version, Date date, ContributionSet contributions,
-                                   Map<String, String> labels, Collection<Improvement> improvements) {
+                                   Map<String, String> labels, Collection<DefaultImprovement> improvements) {
 
         this.version = version;
         this.date = date;
@@ -45,7 +47,7 @@ public class DefaultReleaseNotesData implements ReleaseNotesData {
     }
 
     @Override
-    public Collection<Improvement> getImprovements() {
+    public Collection<DefaultImprovement> getImprovements() {
         return improvements;
     }
 }
