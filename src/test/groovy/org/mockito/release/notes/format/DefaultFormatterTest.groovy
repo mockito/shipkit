@@ -129,7 +129,7 @@ class DefaultFormatterTest extends Specification {
         def date = new Date(1483570800000)
         def is = [new DefaultImprovement(100, "Fix bug x", "http://issues/100", ["bug"])]
         def contributions = new DefaultContributionSet({false} as Predicate).add(new GitCommit("a", "a", "m"))
-        when: def notes = f.formatNotes(new DefaultReleaseNotesData("2.0.1", date, contributions, is), Stub(ReleaseNotesFormat))
+        when: def notes = f.formatNotes(new DefaultReleaseNotesData("2.0.1", date, contributions, is), new DefaultReleaseNotesFormat([:]))
         then: notes == """### 2.0.1 (2017-01-04 23:00 UTC)
 
 * Authors: 1

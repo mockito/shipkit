@@ -1,10 +1,12 @@
 package org.mockito.release.notes;
 
 import org.mockito.release.exec.Exec;
+import org.mockito.release.notes.format.DefaultReleaseNotesFormat;
 import org.mockito.release.notes.format.ReleaseNotesFormatter;
 import org.mockito.release.notes.improvements.*;
 import org.mockito.release.notes.model.ContributionSet;
 import org.mockito.release.notes.model.Improvement;
+import org.mockito.release.notes.model.ReleaseNotesData;
 import org.mockito.release.notes.model.ReleaseNotesFormat;
 import org.mockito.release.notes.vcs.ContributionsProvider;
 import org.mockito.release.notes.vcs.Vcs;
@@ -43,12 +45,8 @@ class GitNotesBuilder implements NotesBuilder {
         ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(authTokenEnvVar);
         Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions);
 
-        DefaultReleaseNotesData data = new DefaultReleaseNotesData(version, new Date(), contributions, improvements);
-        ReleaseNotesFormat format = new ReleaseNotesFormat() {
-            public Map<String, String> getLabelMapping() {
-                return labels;
-            }
-        };
+        ReleaseNotesData data = new DefaultReleaseNotesData(version, new Date(), contributions, improvements);
+        ReleaseNotesFormat format = new DefaultReleaseNotesFormat(labels);
         return formatter.formatNotes(data, format);
     }
 }
