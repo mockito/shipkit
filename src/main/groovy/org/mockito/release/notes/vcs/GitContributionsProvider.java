@@ -1,5 +1,7 @@
 package org.mockito.release.notes.vcs;
 
+import org.mockito.release.notes.model.Commit;
+import org.mockito.release.notes.model.ContributionSet;
 import org.mockito.release.notes.util.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

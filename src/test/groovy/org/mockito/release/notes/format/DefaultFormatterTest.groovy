@@ -2,7 +2,7 @@ package org.mockito.release.notes.format
 
 import org.mockito.release.notes.improvements.Improvement
 import org.mockito.release.notes.util.Predicate
-import org.mockito.release.notes.vcs.ContributionSet
+import org.mockito.release.notes.model.ContributionSet
 import org.mockito.release.notes.vcs.DefaultContributionSet
 import org.mockito.release.notes.vcs.GitCommit
 import spock.lang.Specification

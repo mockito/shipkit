@@ -5,7 +5,7 @@ import spock.lang.Specification
 class ContributionTest extends Specification {
 
     def "accumulates commits"() {
-        def c = new Contribution(new GitCommit("a@b", "lad", "m1"))
+        def c = new DefaultContribution(new GitCommit("a@b", "lad", "m1"))
 
         expect:
         c.authorName == "lad"
@@ -18,9 +18,9 @@ class ContributionTest extends Specification {
 
     def "can be sorted by number of commits"() {
         def c = new GitCommit("a", "a", "1")
-        def c1 = new Contribution(c)
-        def c2 = new Contribution(c).add(c)
-        def c3 = new Contribution(c).add(c).add(c)
+        def c1 = new DefaultContribution(c)
+        def c2 = new DefaultContribution(c).add(c)
+        def c3 = new DefaultContribution(c).add(c).add(c)
 
         def set = new TreeSet([c1, c3, c2])
 
@@ -37,8 +37,8 @@ class ContributionTest extends Specification {
         def com2 = new GitCommit("b@x", "B", "2")
         def com3 = new GitCommit("b@x", "B", "3")
 
-        def c1 = new Contribution(com1)
-        def c2 = new Contribution(com2).add(com3)
+        def c1 = new DefaultContribution(com1)
+        def c2 = new DefaultContribution(com2).add(com3)
 
         def set = new TreeSet()
         set.add(c1)
@@ -52,10 +52,10 @@ class ContributionTest extends Specification {
     }
 
     def "sorted by commits and uppercase name"() {
-        def d = new Contribution(new GitCommit("d", "d", "")).add(new GitCommit("d", "d", ""))
-        def c = new Contribution(new GitCommit("c", "c", ""))
-        def b = new Contribution(new GitCommit("B", "B", ""))
-        def a = new Contribution(new GitCommit("a", "a", ""))
+        def d = new DefaultContribution(new GitCommit("d", "d", "")).add(new GitCommit("d", "d", ""))
+        def c = new DefaultContribution(new GitCommit("c", "c", ""))
+        def b = new DefaultContribution(new GitCommit("B", "B", ""))
+        def a = new DefaultContribution(new GitCommit("a", "a", ""))
 
         expect:
         new TreeSet([d, c, b, a]) as List == [d, a, b, c]

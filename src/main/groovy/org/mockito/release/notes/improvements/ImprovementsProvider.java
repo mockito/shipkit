@@ -1,6 +1,6 @@
 package org.mockito.release.notes.improvements;
 
-import org.mockito.release.notes.vcs.ContributionSet;
+import org.mockito.release.notes.model.ContributionSet;
 
 import java.util.Collection;
 import java.util.Map;

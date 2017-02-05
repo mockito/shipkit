@@ -1,5 +1,7 @@
 package org.mockito.release.notes.vcs;
 
+import org.mockito.release.notes.model.Commit;
+
 import java.util.Collection;
 import java.util.Set;
 

@@ -1,4 +1,6 @@
-package org.mockito.release.notes.vcs;
+package org.mockito.release.notes.model;
+
+import org.mockito.release.notes.vcs.DefaultContribution;
 
 import java.util.Collection;
 
@@ -20,5 +22,5 @@ public interface ContributionSet {
     /**
      * all contributions in the set
      */
-    Collection<Contribution> getContributions();
+    Collection<DefaultContribution> getContributions();
 }

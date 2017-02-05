@@ -1,8 +1,9 @@
 package org.mockito.release.notes.format;
 
 import org.mockito.release.notes.improvements.Improvement;
-import org.mockito.release.notes.vcs.Contribution;
-import org.mockito.release.notes.vcs.ContributionSet;
+import org.mockito.release.notes.model.ReleaseNotesData;
+import org.mockito.release.notes.vcs.DefaultContribution;
+import org.mockito.release.notes.model.ContributionSet;
 import org.mockito.release.util.MultiMap;
 
 import java.text.SimpleDateFormat;
@@ -64,7 +65,7 @@ public class DefaultFormatter implements ReleaseNotesFormatter {
         return sb.toString();
     }
 
-    private String format(Contribution contribution) {
+    private String format(DefaultContribution contribution) {
         return contribution.getCommits().size() + ": " + contribution.getAuthorName();
     }
 
@@ -72,7 +73,7 @@ public class DefaultFormatter implements ReleaseNotesFormatter {
         StringBuilder sb = new StringBuilder("* Authors: ").append(contributions.getContributions().size())
                 .append("\n* Commits: ").append(contributions.getAllCommits().size());
 
-        for (Contribution c : contributions.getContributions()) {
+        for (DefaultContribution c : contributions.getContributions()) {
             sb.append("\n  * ").append(format(c));
         }
 
@@ -80,15 +81,13 @@ public class DefaultFormatter implements ReleaseNotesFormatter {
     }
 
     @Override
-    public String formatNotes(String version, Date date, ContributionSet contributions,
-                              Map<String, String> labels, Collection<Improvement> improvements) {
-
+    public String formatNotes(ReleaseNotesData data) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm z");
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String now = format.format(date);
+        String now = format.format(data.getDate());
 
-        return "### " + version + " (" + now + ")" + "\n\n"
-                + format(contributions) + "\n"
-                + format(labels, improvements) + "\n\n";
+        return "### " + data.getVersion() + " (" + now + ")" + "\n\n"
+                + format(data.getContributions()) + "\n"
+                + format(data.getLabels(), data.getImprovements()) + "\n\n";
     }
 }

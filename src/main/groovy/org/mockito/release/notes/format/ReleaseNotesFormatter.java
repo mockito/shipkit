@@ -1,11 +1,6 @@
 package org.mockito.release.notes.format;
 
-import org.mockito.release.notes.improvements.Improvement;
-import org.mockito.release.notes.vcs.ContributionSet;
-
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
+import org.mockito.release.notes.model.ReleaseNotesData;
 
 /**
  * Formats release notes
@@ -13,8 +8,7 @@ import java.util.Map;
 public interface ReleaseNotesFormatter {
 
     /**
-     * Formats the release notes metadata
+     * Formats the release notes data
      */
-    String formatNotes(String version, Date date, ContributionSet contributions,
-                       Map<String, String> labels, Collection<Improvement> improvements);
+    String formatNotes(ReleaseNotesData data);
 }
