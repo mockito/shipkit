@@ -3,6 +3,7 @@ package org.mockito.release.notes.improvements;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.mockito.release.notes.model.Improvement;
 import org.mockito.release.notes.util.IOUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,7 +82,7 @@ class GitHubTicketFetcher {
                 String issueUrl = (String) issue.get("html_url");
                 String title = (String) issue.get("title");
                 Collection<String> labels = extractLabels(issue);
-                pagedImprovements.add(new Improvement(id, title, issueUrl, labels));
+                pagedImprovements.add(new DefaultImprovement(id, title, issueUrl, labels));
 
                 if (tickets.isEmpty()) {
                     return pagedImprovements;

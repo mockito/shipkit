@@ -1,7 +1,10 @@
-package org.mockito.release.notes.vcs;
+package org.mockito.release.notes.model;
 
 import java.util.Collection;
 
+/**
+ * VCS change, a commit
+ */
 public interface Commit {
 
     /**

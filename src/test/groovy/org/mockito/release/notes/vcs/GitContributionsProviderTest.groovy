@@ -23,12 +23,6 @@ john@doe@@info@@John R. Doe@@info@@dummy commit
         def c = provider.getContributionsBetween("v1.10.10", "HEAD")
 
         then:
-        c.toText() == """* Authors: 2
-* Commits: 3
-  * 2: Szczepan Faber
-  * 1: John R. Doe"""
-
-        and:
         def commits = c.allCommits as List
         commits[0].authorName == "Szczepan Faber"
         commits[0].authorEmail == "szczepiq@gmail.com"

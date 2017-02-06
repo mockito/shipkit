@@ -1,11 +1,11 @@
 package org.mockito.release.notes.improvements;
 
-import org.mockito.release.notes.vcs.ContributionSet;
+import org.mockito.release.notes.model.ContributionSet;
+import org.mockito.release.notes.model.Improvement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
-import java.util.Map;
 
 class GitHubImprovementsProvider implements ImprovementsProvider {
 
@@ -16,8 +16,8 @@ class GitHubImprovementsProvider implements ImprovementsProvider {
         this.authToken = authToken;
     }
 
-    public Collection<Improvement> getImprovements(ContributionSet contributions, Map<String, String> labels) {
+    public Collection<Improvement> getImprovements(ContributionSet contributions) {
         LOGGER.info("Parsing {} commits with {} tickets", contributions.getAllCommits().size(), contributions.getAllTickets().size());
-        return new GitHubTicketFetcher().fetchTickets(authToken, contributions.getAllTickets());
+        return (Collection) new GitHubTicketFetcher().fetchTickets(authToken, contributions.getAllTickets());
     }
 }

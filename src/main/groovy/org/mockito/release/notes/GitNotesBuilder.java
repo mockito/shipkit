@@ -1,9 +1,13 @@
 package org.mockito.release.notes;
 
 import org.mockito.release.exec.Exec;
-import org.mockito.release.notes.format.DefaultFormatter;
+import org.mockito.release.notes.format.DefaultReleaseNotesFormat;
+import org.mockito.release.notes.format.ReleaseNotesFormatter;
 import org.mockito.release.notes.improvements.*;
-import org.mockito.release.notes.vcs.ContributionSet;
+import org.mockito.release.notes.model.ContributionSet;
+import org.mockito.release.notes.model.Improvement;
+import org.mockito.release.notes.model.ReleaseNotesData;
+import org.mockito.release.notes.model.ReleaseNotesFormat;
 import org.mockito.release.notes.vcs.ContributionsProvider;
 import org.mockito.release.notes.vcs.Vcs;
 import org.slf4j.Logger;
@@ -20,25 +24,29 @@ class GitNotesBuilder implements NotesBuilder {
 
     private final File workDir;
     private final String authTokenEnvVar;
+    private final ReleaseNotesFormatter formatter;
 
     /**
      * @param workDir the working directory for external processes execution (for example: git log)
      * @param authTokenEnvVar the env var that holds the GitHub auth token
      */
-    GitNotesBuilder(File workDir, String authTokenEnvVar) {
+    GitNotesBuilder(File workDir, String authTokenEnvVar, ReleaseNotesFormatter formatter) {
         this.workDir = workDir;
         this.authTokenEnvVar = authTokenEnvVar;
+        this.formatter = formatter;
     }
 
-    public String buildNotes(String version, String fromRevision, String toRevision, Map<String, String> labels) {
+    public String buildNotes(String version, String fromRevision, String toRevision, final Map<String, String> labels) {
         LOG.info("Getting release notes between {} and {}", fromRevision, toRevision);
 
         ContributionsProvider contributionsProvider = Vcs.getGitProvider(Exec.getProcessRunner(workDir));
         ContributionSet contributions = contributionsProvider.getContributionsBetween(fromRevision, toRevision);
 
         ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(authTokenEnvVar);
-        Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, labels);
+        Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions);
 
-        return new NotesPrinter().printNotes(version, new Date(), contributions, DefaultFormatter.format(labels, improvements));
+        ReleaseNotesData data = new DefaultReleaseNotesData(version, new Date(), contributions, improvements);
+        ReleaseNotesFormat format = new DefaultReleaseNotesFormat(labels);
+        return formatter.formatNotes(data, format);
     }
 }
