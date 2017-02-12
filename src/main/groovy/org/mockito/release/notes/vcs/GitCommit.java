@@ -5,14 +5,14 @@ import org.mockito.release.notes.model.Commit;
 import java.util.Collection;
 import java.util.Set;
 
-public class GitCommit implements Commit {
+class GitCommit implements Commit {
 
     private final String email;
     private final String author;
     private final String message;
     private final Set<String> tickets;
 
-    public GitCommit(String email, String author, String message) {
+    GitCommit(String email, String author, String message) {
         this.email = email;
         this.author = author;
         this.message = message;

@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DefaultContribution implements Contribution, Comparable<DefaultContribution> {
+class DefaultContribution implements Contribution, Comparable<DefaultContribution> {
 
     //email identifies the contributor, author alias not necessarily
     final String authorEmail;
