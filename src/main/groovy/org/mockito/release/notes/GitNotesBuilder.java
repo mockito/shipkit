@@ -15,8 +15,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
+
+import static java.util.Arrays.asList;
 
 class GitNotesBuilder implements NotesBuilder {
 
@@ -43,7 +46,7 @@ class GitNotesBuilder implements NotesBuilder {
         ContributionSet contributions = contributionsProvider.getContributionsBetween(fromRevision, toRevision);
 
         ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(authTokenEnvVar);
-        Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions);
+        Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, Collections.<String>emptyList());
 
         VersionNotesData data = new DefaultVersionNotesData(version, new Date(), contributions, improvements);
         ReleaseNotesFormat format = new DefaultReleaseNotesFormat(labels);

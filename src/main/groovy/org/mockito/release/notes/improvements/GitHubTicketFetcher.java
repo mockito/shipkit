@@ -18,7 +18,7 @@ class GitHubTicketFetcher {
 
     private static final Logger LOG = LoggerFactory.getLogger(GitHubTicketFetcher.class);
 
-    Collection<Improvement> fetchTickets(String authToken, Collection<String> ticketIds) {
+    Collection<Improvement> fetchTickets(String authToken, Collection<String> ticketIds, Collection<String> labels) {
         List<Improvement> out = new LinkedList<Improvement>();
         if (ticketIds.isEmpty()) {
             return out;
@@ -30,7 +30,7 @@ class GitHubTicketFetcher {
         try {
             GitHubIssues issues = GitHubIssues.authenticatingWith(authToken)
                     .state("closed")
-                    //TODO SF create label filter here
+                    .labels(CommaSeparated.commaSeparated(labels))
                     .filter("all")
                     .direction("desc")
                     .browse();
@@ -107,12 +107,13 @@ class GitHubTicketFetcher {
         public static final String RELATIVE_LINK_NOT_FOUND = "none";
         private String nextPageUrl;
 
-        private GitHubIssues(String authToken, String state, String filter, String direction) {
+        private GitHubIssues(String authToken, String state, String filter, String labels, String direction) {
             // see API doc : https://developer.github.com/v3/issues/
             nextPageUrl = String.format("%s%s%s%s%s",
                     "https://api.github.com/repos/mockito/mockito/issues?access_token=" + authToken,
                     state == null ? "" : "&state=" + state,
                     filter == null ? "" : "&filter=" + filter,
+                    "&labels=" + labels,
                     direction == null ? "" : "&direction=" + direction,
                     "&page=1"
             );
@@ -195,6 +196,7 @@ class GitHubTicketFetcher {
             private String state;
             private String filter;
             private String direction;
+            private String labels;
 
             public GitHubIssuesBuilder(String authToken) {
                 this.authToken = authToken;
@@ -215,8 +217,17 @@ class GitHubTicketFetcher {
                 return this;
             }
 
+            /**
+             * Only list issues with given labels, comma separated list.
+             * Empty string is ok and means that we are interested in all issues, regardless of the label.
+             */
+            public GitHubIssuesBuilder labels(String labels) {
+                this.labels = labels;
+                return this;
+            }
+
             public GitHubIssues browse() {
-                return new GitHubIssues(authToken, state, filter, direction);
+                return new GitHubIssues(authToken, state, filter, labels, direction);
             }
         }
     }

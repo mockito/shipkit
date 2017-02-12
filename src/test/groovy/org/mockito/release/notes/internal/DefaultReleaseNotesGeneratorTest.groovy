@@ -22,15 +22,15 @@ class DefaultReleaseNotesGeneratorTest extends Specification {
 
         when:
         def notes = gen.generateReleaseNotes(new DefaultReleaseNotesParameters(
-                "1.0.0", ["1.1.0", "1.2.0"], "v", ["bugfix", "notable"]))
+                "1.0.0", ["1.1.0", "1.2.0"], "v", ["bugfix"]))
 
         then:
         1 * contributionsProvider.getContributionsBetween("v1.0.0", "v1.1.0") >> c1
         1 * contributionsProvider.getContributionsBetween("v1.1.0", "v1.2.0") >> c2
         0 * contributionsProvider._
 
-        1 * improvementsProvider.getImprovements(c1) >> i1
-        1 * improvementsProvider.getImprovements(c2) >> i2
+        1 * improvementsProvider.getImprovements(c1, ["bugfix"] ) >> i1
+        1 * improvementsProvider.getImprovements(c2, ["bugfix"]) >> i2
         0 * improvementsProvider._
 
         notes.size() == 2

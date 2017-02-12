@@ -28,16 +28,8 @@ public class DefaultReleaseNotesGenerator implements ReleaseNotesGenerator {
         for (String v : parameters.getTargetVersions()) {
             String endRev = parameters.getTagPrefix() + v;
             ContributionSet contributions = contributionsProvider.getContributionsBetween(startRev, endRev);
-            Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions);
-            List<Improvement> targetImprovements = new LinkedList<Improvement>();
-            for (Improvement i : improvements) {
-                if (!Collections.disjoint(i.getLabels(), parameters.getLabels())) {
-                    //there are common elements, it means the improvement should be included in the release notes
-                    targetImprovements.add(i);
-                }
-            }
-
-            out.add(new DefaultVersionNotesData(v, new Date(), contributions, targetImprovements));
+            Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, parameters.getLabels());
+            out.add(new DefaultVersionNotesData(v, new Date(), contributions, improvements));
 
             //next round
             startRev = endRev;

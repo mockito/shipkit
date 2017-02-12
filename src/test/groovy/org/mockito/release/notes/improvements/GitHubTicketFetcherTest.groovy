@@ -14,7 +14,7 @@ class GitHubTicketFetcherTest extends Specification {
     def "fetches improvements from GitHub"() {
         def readOnlyToken = "a0a4c0f41c200f7c653323014d6a72a127764e17"
         when:
-        def improvements = fetcher.fetchTickets(readOnlyToken, ['109', '108', '99999', '112']) as List
+        def improvements = fetcher.fetchTickets(readOnlyToken, ['109', '108', '99999', '112'], []) as List
 
         then:
         improvements[0].labels == ["enhancement"] as Set
