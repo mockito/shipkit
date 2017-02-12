@@ -22,21 +22,27 @@ class DefaultReleaseNotesGenerator implements ReleaseNotesGenerator {
         this.improvementsProvider = improvementsProvider;
     }
 
-    public Collection<ReleaseNotesData> generateReleaseNotes(String startVersion, Collection<String> targetVersions, String tagPrefix, Collection<String> gitHubLabels) {
+    public Collection<ReleaseNotesData> generateReleaseNotes(Collection<String> targetVersions, String tagPrefix, Collection<String> gitHubLabels) {
         List<ReleaseNotesData> out = new LinkedList<ReleaseNotesData>();
 
         //TODO SF use this to get the tag date: 2.6.7
         //git log --tags --simplify-by-decoration --pretty="format:%ai %d"
 
-        String startRev = tagPrefix + startVersion;
+        String to = null;
         for (String v : targetVersions) {
-            String endRev = tagPrefix + v;
-            ContributionSet contributions = contributionsProvider.getContributionsBetween(startRev, endRev);
+            if (to == null) {
+                to = v;
+                continue;
+            }
+            String fromRev = tagPrefix + v;
+            String toRev = tagPrefix + to;
+
+            ContributionSet contributions = contributionsProvider.getContributionsBetween(fromRev, toRev);
             Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, gitHubLabels);
-            out.add(new DefaultReleaseNotesData(v, new Date(), contributions, improvements));
+            out.add(new DefaultReleaseNotesData(to, new Date(), contributions, improvements));
 
             //next round
-            startRev = endRev;
+            to = v;
         }
 
         return out;

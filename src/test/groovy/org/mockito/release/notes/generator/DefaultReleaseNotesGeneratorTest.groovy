@@ -19,11 +19,11 @@ class DefaultReleaseNotesGeneratorTest extends Specification {
         def i1 = [Stub(Improvement)], i2 = [Stub(Improvement)]
 
         when:
-        def notes = gen.generateReleaseNotes("1.0.0", ["1.1.0", "1.2.0"], "v", ["bugfix"])
+        def notes = gen.generateReleaseNotes(["1.2.0", "1.1.0", "1.0.0"], "v", ["bugfix"])
 
         then:
-        1 * contributionsProvider.getContributionsBetween("v1.0.0", "v1.1.0") >> c1
-        1 * contributionsProvider.getContributionsBetween("v1.1.0", "v1.2.0") >> c2
+        1 * contributionsProvider.getContributionsBetween("v1.1.0", "v1.2.0") >> c1
+        1 * contributionsProvider.getContributionsBetween("v1.0.0", "v1.1.0") >> c2
         0 * contributionsProvider._
 
         1 * improvementsProvider.getImprovements(c1, ["bugfix"] ) >> i1
@@ -31,6 +31,8 @@ class DefaultReleaseNotesGeneratorTest extends Specification {
         0 * improvementsProvider._
 
         notes.size() == 2
+        notes[0].version == "1.2.0"
+        notes[1].version == "1.1.0"
     }
 
     def "generates single release notes with no tag prefix"() {
@@ -38,7 +40,7 @@ class DefaultReleaseNotesGeneratorTest extends Specification {
         def i1 = [Stub(Improvement)]
 
         when:
-        def notes = gen.generateReleaseNotes("1.0.0", ["1.1.0"], "", ["notable"])
+        def notes = gen.generateReleaseNotes(["1.1.0", "1.0.0"], "", ["notable"])
 
         then:
         1 * contributionsProvider.getContributionsBetween("1.0.0", "1.1.0") >> c1
@@ -47,12 +49,12 @@ class DefaultReleaseNotesGeneratorTest extends Specification {
         notes.size() == 1
     }
 
-    @Ignore //delete when work is done
+    @Ignore
     def "lifecycle test"() {
         def workDir = new File("/Users/sfaber/mockito/src");
         def authToken = "a0a4c0f41c200f7c653323014d6a72a127764e17"
         def gen = ReleaseNotesGenerators.releaseNotesGenerator(workDir, authToken)
-        def notes = gen.generateReleaseNotes("2.4.0", ["2.5.0", "2.6.1", "2.7.0"], "v", ["noteworthy"])
+        def notes = gen.generateReleaseNotes(["2.7.0", "2.6.1", "2.5.0", "2.4.0"], "v", ["noteworthy"])
 
         expect:
         println ReleaseNotesFormatters.conciseFormatter().formatReleaseNotes(notes)
