@@ -2,7 +2,7 @@ package org.mockito.release.notes;
 
 import org.mockito.release.exec.Exec;
 import org.mockito.release.notes.format.DefaultReleaseNotesFormat;
-import org.mockito.release.notes.format.ReleaseNotesFormatter;
+import org.mockito.release.notes.format.VersionNotesFormatter;
 import org.mockito.release.notes.improvements.*;
 import org.mockito.release.notes.model.ContributionSet;
 import org.mockito.release.notes.model.Improvement;
@@ -19,21 +19,19 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 
-import static java.util.Arrays.asList;
-
 class GitNotesBuilder implements NotesBuilder {
 
     private static final Logger LOG = LoggerFactory.getLogger(GitNotesBuilder.class);
 
     private final File workDir;
     private final String authTokenEnvVar;
-    private final ReleaseNotesFormatter formatter;
+    private final VersionNotesFormatter formatter;
 
     /**
      * @param workDir the working directory for external processes execution (for example: git log)
      * @param authTokenEnvVar the env var that holds the GitHub auth token
      */
-    GitNotesBuilder(File workDir, String authTokenEnvVar, ReleaseNotesFormatter formatter) {
+    GitNotesBuilder(File workDir, String authTokenEnvVar, VersionNotesFormatter formatter) {
         this.workDir = workDir;
         this.authTokenEnvVar = authTokenEnvVar;
         this.formatter = formatter;

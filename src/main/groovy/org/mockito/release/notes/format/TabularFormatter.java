@@ -11,7 +11,7 @@ import java.util.TimeZone;
  *
  * IN PROGRESS
  */
-public class TabularFormatter implements ReleaseNotesFormatter {
+public class TabularFormatter implements VersionNotesFormatter {
 
     @Override
     public String formatNotes(VersionNotesData data, ReleaseNotesFormat format) {

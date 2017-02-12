@@ -13,7 +13,7 @@ import java.util.*;
 /**
  * Original formatter
  */
-public class DefaultFormatter implements ReleaseNotesFormatter {
+public class DefaultFormatter implements VersionNotesFormatter {
 
     private String format(Improvement improvement) {
         return improvement.getTitle() + " [(#" + improvement.getId() + ")](" + improvement.getUrl() + ")";

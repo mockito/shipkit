@@ -4,12 +4,12 @@ import org.mockito.release.notes.model.VersionNotesData;
 import org.mockito.release.notes.model.ReleaseNotesFormat;
 
 /**
- * Formats release notes
+ * Formats version notes
  */
-public interface ReleaseNotesFormatter {
+public interface VersionNotesFormatter {
 
     /**
-     * Formats the release notes data
+     * Formats the version notes data
      */
     String formatNotes(VersionNotesData data, ReleaseNotesFormat format);
 }
