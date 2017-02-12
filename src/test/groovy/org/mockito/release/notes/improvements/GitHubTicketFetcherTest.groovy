@@ -17,6 +17,8 @@ class GitHubTicketFetcherTest extends Specification {
         def improvements = fetcher.fetchTickets(readOnlyToken, ['109', '108', '99999', '112'], []) as List
 
         then:
+        //TODO SF we can leave this test but we should create a sample project for it instead of using Mockito repo
+        //This way it will be faster, mockito repo has many issues and pagination takes a lot of time
         improvements[0].labels == ["enhancement"] as Set
         new DefaultFormatter().format([:], improvements) == """* Improvements: 3
   * Allow instances of other classes in AdditionalAnswers.delegatesTo [(#112)](https://github.com/mockito/mockito/issues/112)
