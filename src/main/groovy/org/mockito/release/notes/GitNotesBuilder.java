@@ -4,6 +4,7 @@ import org.mockito.release.exec.Exec;
 import org.mockito.release.notes.format.ReleaseNotesFormatters;
 import org.mockito.release.notes.format.SingleReleaseNotesFormatter;
 import org.mockito.release.notes.improvements.*;
+import org.mockito.release.notes.internal.DefaultReleaseNotesData;
 import org.mockito.release.notes.model.ContributionSet;
 import org.mockito.release.notes.model.Improvement;
 import org.mockito.release.notes.model.ReleaseNotesData;

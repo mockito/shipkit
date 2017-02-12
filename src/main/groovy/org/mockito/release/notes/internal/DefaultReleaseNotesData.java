@@ -1,4 +1,4 @@
-package org.mockito.release.notes;
+package org.mockito.release.notes.internal;
 
 import org.mockito.release.notes.model.ContributionSet;
 import org.mockito.release.notes.model.Improvement;
@@ -7,7 +7,6 @@ import org.mockito.release.notes.model.ReleaseNotesData;
 import java.util.Collection;
 import java.util.Date;
 
-//TODO SF move to internal package
 public class DefaultReleaseNotesData implements ReleaseNotesData {
     private final String version;
     private final Date date;

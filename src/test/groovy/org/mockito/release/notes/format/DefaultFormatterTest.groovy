@@ -1,6 +1,6 @@
 package org.mockito.release.notes.format
 
-import org.mockito.release.notes.DefaultReleaseNotesData
+import org.mockito.release.notes.internal.DefaultReleaseNotesData
 import org.mockito.release.notes.improvements.DefaultImprovement
 import org.mockito.release.notes.util.Predicate
 import org.mockito.release.notes.model.ContributionSet

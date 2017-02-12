@@ -1,6 +1,5 @@
 package org.mockito.release.notes.internal;
 
-import org.mockito.release.notes.DefaultReleaseNotesData;
 import org.mockito.release.notes.generator.ReleaseNotesGenerator;
 import org.mockito.release.notes.improvements.ImprovementsProvider;
 import org.mockito.release.notes.model.ContributionSet;
