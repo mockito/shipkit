@@ -3,6 +3,7 @@ package org.mockito.release.notes.improvements;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.mockito.release.notes.internal.DefaultImprovement;
 import org.mockito.release.notes.model.Improvement;
 import org.mockito.release.notes.util.IOUtil;
 import org.slf4j.Logger;

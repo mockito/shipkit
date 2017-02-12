@@ -1,4 +1,4 @@
-package org.mockito.release.notes.improvements;
+package org.mockito.release.notes.internal;
 
 import org.mockito.release.notes.model.Improvement;
 
