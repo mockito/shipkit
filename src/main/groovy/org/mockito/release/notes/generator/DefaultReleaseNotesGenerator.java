@@ -1,20 +1,23 @@
-package org.mockito.release.notes.internal;
+package org.mockito.release.notes.generator;
 
-import org.mockito.release.notes.generator.ReleaseNotesGenerator;
 import org.mockito.release.notes.improvements.ImprovementsProvider;
+import org.mockito.release.notes.internal.DefaultReleaseNotesData;
 import org.mockito.release.notes.model.ContributionSet;
 import org.mockito.release.notes.model.Improvement;
 import org.mockito.release.notes.model.ReleaseNotesData;
 import org.mockito.release.notes.vcs.ContributionsProvider;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
-public class DefaultReleaseNotesGenerator implements ReleaseNotesGenerator {
+class DefaultReleaseNotesGenerator implements ReleaseNotesGenerator {
 
     private final ContributionsProvider contributionsProvider;
     private final ImprovementsProvider improvementsProvider;
 
-    public DefaultReleaseNotesGenerator(ContributionsProvider contributionsProvider, ImprovementsProvider improvementsProvider) {
+    DefaultReleaseNotesGenerator(ContributionsProvider contributionsProvider, ImprovementsProvider improvementsProvider) {
         this.contributionsProvider = contributionsProvider;
         this.improvementsProvider = improvementsProvider;
     }

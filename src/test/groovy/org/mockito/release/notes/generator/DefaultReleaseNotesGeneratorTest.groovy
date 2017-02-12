@@ -1,7 +1,6 @@
-package org.mockito.release.notes.internal
+package org.mockito.release.notes.generator
 
 import org.mockito.release.notes.format.ReleaseNotesFormatters
-import org.mockito.release.notes.generator.ReleaseNotesGenerators
 import org.mockito.release.notes.improvements.ImprovementsProvider
 import org.mockito.release.notes.model.ContributionSet
 import org.mockito.release.notes.model.Improvement
