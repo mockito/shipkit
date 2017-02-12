@@ -9,8 +9,14 @@ import java.util.TimeZone;
 
 class ConciseFormatter implements MultiReleaseNotesFormatter {
 
+    private final String introductionText;
+
+    public ConciseFormatter(String introductionText) {
+        this.introductionText = introductionText;
+    }
+
     public String formatReleaseNotes(Iterable<ReleaseNotesData> data) {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(introductionText);
         for (ReleaseNotesData d : data) {
             sb.append("### ").append(d.getVersion()).append(" - ").append(formatDate(d.getDate()))
                     .append("\n\n");
