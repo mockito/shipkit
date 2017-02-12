@@ -9,10 +9,10 @@ class ConciseFormatterTest extends Specification {
 
     def "formats notes"() {
         def c = Stub(ContributionSet)
-        def i1 = [new DefaultImprovement(100, "Fixed issue", "http://issues/100", ["bugfix"]),
-                 new DefaultImprovement(103, "New feature", "http://issues/103", ["noteworthy"])]
+        def i1 = [new DefaultImprovement(100, "Fixed issue", "http://issues/100", ["bugfix"], true),
+                  new DefaultImprovement(103, "New feature", "http://issues/103", ["noteworthy"], true)]
 
-        def i2 = [new DefaultImprovement(105, "Big change", "http://issues/105", [])]
+        def i2 = [new DefaultImprovement(105, "Big change", "http://issues/105", [], true)]
 
         def data = [new DefaultReleaseNotesData("1.1.0", new Date(1486700000000), c, i2),
                     new DefaultReleaseNotesData("1.0.0", new Date(1486200000000), c, i1)]

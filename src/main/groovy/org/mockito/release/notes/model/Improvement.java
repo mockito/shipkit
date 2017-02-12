@@ -28,4 +28,9 @@ public interface Improvement {
      * Labels of this improvement. In case of GitHub, those are labels attached to the issue/pull request.
      */
     Collection<String> getLabels();
+
+    /**
+     * Informs if given issue is a pull request
+     */
+    boolean isPullRequest();
 }

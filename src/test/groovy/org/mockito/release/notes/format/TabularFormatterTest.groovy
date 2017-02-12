@@ -14,8 +14,8 @@ class TabularFormatterTest extends Specification {
     def "formats notes"() {
         def date = new Date(1483570800000)
         def is = [
-            new DefaultImprovement(100, "Fix bug x", "http://issues/100",   ["bug"]),
-            new DefaultImprovement(101, "New feature", "http://issues/101", [])
+                new DefaultImprovement(100, "Fix bug x", "http://issues/100", ["bug"], true),
+                new DefaultImprovement(101, "New feature", "http://issues/101", [], true)
         ]
         def contributions = new DefaultContributionSet({false} as Predicate)
             .add(new GitCommit("a@a", "A", "fixed bug #100"))

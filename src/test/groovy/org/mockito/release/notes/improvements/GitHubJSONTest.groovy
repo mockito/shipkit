@@ -21,10 +21,11 @@ class GitHubJSONTest extends Specification {
         i.title == "Some bugfix"
         i.url == "http://issues/100"
         i.labels.toString() == "[bugfix, notable]"
+        !i.pullRequest
     }
 
-    def "parses issue without labels"() {
-        def issue = new JSONObject([number: 100L, html_url: "http://issues/100", title: "Some bugfix"])
+    def "parses pull request without labels"() {
+        def issue = new JSONObject([number: 100L, html_url: "http://issues/100", title: "Some bugfix", pull_request: [:]])
         issue.put("labels", new JSONArray())
 
         when:
@@ -33,5 +34,6 @@ class GitHubJSONTest extends Specification {
         then:
         i.id == 100L
         i.labels.isEmpty()
+        i.pullRequest
     }
 }
