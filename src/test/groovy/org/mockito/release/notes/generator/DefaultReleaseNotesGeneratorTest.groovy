@@ -19,15 +19,15 @@ class DefaultReleaseNotesGeneratorTest extends Specification {
         def i1 = [Stub(Improvement)], i2 = [Stub(Improvement)]
 
         when:
-        def notes = gen.generateReleaseNotes(["1.2.0", "1.1.0", "1.0.0"], "v", ["bugfix"])
+        def notes = gen.generateReleaseNotes(["1.2.0", "1.1.0", "1.0.0"], "v", ["bugfix"], true)
 
         then:
         1 * contributionsProvider.getContributionsBetween("v1.1.0", "v1.2.0") >> c1
         1 * contributionsProvider.getContributionsBetween("v1.0.0", "v1.1.0") >> c2
         0 * contributionsProvider._
 
-        1 * improvementsProvider.getImprovements(c1, ["bugfix"] ) >> i1
-        1 * improvementsProvider.getImprovements(c2, ["bugfix"]) >> i2
+        1 * improvementsProvider.getImprovements(c1, ["bugfix"], true) >> i1
+        1 * improvementsProvider.getImprovements(c2, ["bugfix"], true) >> i2
         0 * improvementsProvider._
 
         notes.size() == 2
@@ -40,11 +40,11 @@ class DefaultReleaseNotesGeneratorTest extends Specification {
         def i1 = [Stub(Improvement)]
 
         when:
-        def notes = gen.generateReleaseNotes(["1.1.0", "1.0.0"], "", ["notable"])
+        def notes = gen.generateReleaseNotes(["1.1.0", "1.0.0"], "", ["notable"], false)
 
         then:
         1 * contributionsProvider.getContributionsBetween("1.0.0", "1.1.0") >> c1
-        1 * improvementsProvider.getImprovements(c1, ["notable"] ) >> i1
+        1 * improvementsProvider.getImprovements(c1, ["notable"], false) >> i1
 
         notes.size() == 1
     }
@@ -54,7 +54,7 @@ class DefaultReleaseNotesGeneratorTest extends Specification {
         def workDir = new File("/Users/sfaber/mockito/src");
         def authToken = "a0a4c0f41c200f7c653323014d6a72a127764e17"
         def gen = ReleaseNotesGenerators.releaseNotesGenerator(workDir, authToken)
-        def notes = gen.generateReleaseNotes(["2.7.0", "2.6.1", "2.5.0", "2.4.0"], "v", ["noteworthy"])
+        def notes = gen.generateReleaseNotes(["2.7.0", "2.6.1", "2.5.0", "2.4.0"], "v", ["noteworthy"], true)
 
         expect:
         println ReleaseNotesFormatters.conciseFormatter().formatReleaseNotes(notes)

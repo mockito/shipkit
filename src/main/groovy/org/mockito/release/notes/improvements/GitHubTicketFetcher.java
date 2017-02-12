@@ -17,7 +17,8 @@ class GitHubTicketFetcher {
 
     private static final Logger LOG = LoggerFactory.getLogger(GitHubTicketFetcher.class);
 
-    Collection<Improvement> fetchTickets(String authToken, Collection<String> ticketIds, Collection<String> labels) {
+    Collection<Improvement> fetchTickets(String authToken, Collection<String> ticketIds, Collection<String> labels,
+                                         boolean onlyPullRequests) {
         List<Improvement> out = new LinkedList<Improvement>();
         if (ticketIds.isEmpty()) {
             return out;
@@ -39,7 +40,7 @@ class GitHubTicketFetcher {
 
                 out.addAll(extractImprovements(
                         dropTicketsAboveMaxInPage(tickets, page),
-                        page));
+                        page, onlyPullRequests));
             }
         } catch (Exception e) {
             throw new RuntimeException("Problems fetching " + ticketIds.size() + " from GitHub", e);
@@ -69,7 +70,8 @@ class GitHubTicketFetcher {
         return longs;
     }
 
-    private static List<Improvement> extractImprovements(Collection<Long> tickets, List<JSONObject> issues) {
+    private static List<Improvement> extractImprovements(Collection<Long> tickets, List<JSONObject> issues,
+                                                         boolean onlyPullRequests) {
         if(tickets.isEmpty()) {
             return Collections.emptyList();
         }
@@ -78,7 +80,9 @@ class GitHubTicketFetcher {
         for (JSONObject issue : issues) {
             Improvement i = GitHubJSON.toImprovement(issue);
             if (tickets.remove(i.getId())) {
-                pagedImprovements.add(i);
+                if (!onlyPullRequests || i.isPullRequest()) {
+                    pagedImprovements.add(i);
+                }
 
                 if (tickets.isEmpty()) {
                     return pagedImprovements;
