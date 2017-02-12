@@ -1,7 +1,6 @@
 package org.mockito.release.notes.internal
 
 import org.mockito.release.notes.format.DefaultFormatter
-import org.mockito.release.notes.format.DefaultReleaseNotesFormat
 import org.mockito.release.notes.generator.Generator
 import org.mockito.release.notes.improvements.ImprovementsProvider
 import org.mockito.release.notes.model.ContributionSet
@@ -43,11 +42,10 @@ class DefaultReleaseNotesGeneratorTest extends Specification {
         def gen = Generator.releaseNotesGenerator(workDir, authToken)
         def notes = gen.generateReleaseNotes(new DefaultReleaseNotesParameters(
                 "2.4.0", ["2.5.0", "2.6.1", "2.7.0"], "v", ["noteworthy"]))
-        def format = new DefaultReleaseNotesFormat([:])
 
         expect:
         for (VersionNotesData n : notes) {
-            println new DefaultFormatter().formatNotes(n, format)
+            println new DefaultFormatter([:]).formatNotes(n)
         }
     }
 }

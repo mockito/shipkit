@@ -1,13 +1,12 @@
 package org.mockito.release.notes;
 
 import org.mockito.release.exec.Exec;
-import org.mockito.release.notes.format.DefaultReleaseNotesFormat;
+import org.mockito.release.notes.format.ReleaseNotesFormatters;
 import org.mockito.release.notes.format.VersionNotesFormatter;
 import org.mockito.release.notes.improvements.*;
 import org.mockito.release.notes.model.ContributionSet;
 import org.mockito.release.notes.model.Improvement;
 import org.mockito.release.notes.model.VersionNotesData;
-import org.mockito.release.notes.model.ReleaseNotesFormat;
 import org.mockito.release.notes.vcs.ContributionsProvider;
 import org.mockito.release.notes.vcs.Vcs;
 import org.slf4j.Logger;
@@ -25,16 +24,14 @@ class GitNotesBuilder implements NotesBuilder {
 
     private final File workDir;
     private final String authTokenEnvVar;
-    private final VersionNotesFormatter formatter;
 
     /**
      * @param workDir the working directory for external processes execution (for example: git log)
      * @param authTokenEnvVar the env var that holds the GitHub auth token
      */
-    GitNotesBuilder(File workDir, String authTokenEnvVar, VersionNotesFormatter formatter) {
+    GitNotesBuilder(File workDir, String authTokenEnvVar) {
         this.workDir = workDir;
         this.authTokenEnvVar = authTokenEnvVar;
-        this.formatter = formatter;
     }
 
     public String buildNotes(String version, String fromRevision, String toRevision, final Map<String, String> labels) {
@@ -47,7 +44,8 @@ class GitNotesBuilder implements NotesBuilder {
         Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, Collections.<String>emptyList());
 
         VersionNotesData data = new DefaultVersionNotesData(version, new Date(), contributions, improvements);
-        ReleaseNotesFormat format = new DefaultReleaseNotesFormat(labels);
-        return formatter.formatNotes(data, format);
+        VersionNotesFormatter formatter = ReleaseNotesFormatters.defaultFormatter(labels);
+
+        return formatter.formatNotes(data);
     }
 }

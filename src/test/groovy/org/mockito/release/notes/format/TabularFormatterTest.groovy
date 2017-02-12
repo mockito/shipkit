@@ -23,9 +23,8 @@ class TabularFormatterTest extends Specification {
             .add(new GitCommit("b@b", "B", "added new feature #101"))
 
         def data = new DefaultVersionNotesData("2.0.1", date, contributions, is)
-        def format = new DefaultReleaseNotesFormat([bug: "Bugfixes"])
 
-        when: def notes = f.formatNotes(data, format)
+        when: def notes = f.formatNotes(data)
         then: notes == """### 2.0.1 (2017-01-04 23:00 UTC)"""
     }
 }

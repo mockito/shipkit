@@ -10,7 +10,7 @@ import spock.lang.Specification
 
 class DefaultFormatterTest extends Specification {
 
-    DefaultFormatter f = new DefaultFormatter()
+    DefaultFormatter f = new DefaultFormatter([:])
 
     def "empty improvements"() {
         expect:
@@ -128,7 +128,7 @@ class DefaultFormatterTest extends Specification {
         def date = new Date(1483570800000)
         def is = [new DefaultImprovement(100, "Fix bug x", "http://issues/100", ["bug"])]
         def contributions = new DefaultContributionSet({false} as Predicate).add(new GitCommit("a", "a", "m"))
-        when: def notes = f.formatNotes(new DefaultVersionNotesData("2.0.1", date, contributions, is), new DefaultReleaseNotesFormat([:]))
+        when: def notes = f.formatNotes(new DefaultVersionNotesData("2.0.1", date, contributions, is))
         then: notes == """### 2.0.1 (2017-01-04 23:00 UTC)
 
 * Authors: 1

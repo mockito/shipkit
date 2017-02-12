@@ -3,7 +3,6 @@ package org.mockito.release.notes.format;
 import org.mockito.release.notes.model.ContributionSet;
 import org.mockito.release.notes.model.Improvement;
 import org.mockito.release.notes.model.VersionNotesData;
-import org.mockito.release.notes.model.ReleaseNotesFormat;
 import org.mockito.release.notes.vcs.DefaultContribution;
 import org.mockito.release.util.MultiMap;
 
@@ -13,13 +12,19 @@ import java.util.*;
 /**
  * Original formatter
  */
-public class DefaultFormatter implements VersionNotesFormatter {
+class DefaultFormatter implements VersionNotesFormatter {
+
+    private final Map<String, String> labelMapping;
+
+    DefaultFormatter(Map<String, String> labelMapping) {
+        this.labelMapping = labelMapping;
+    }
 
     private String format(Improvement improvement) {
         return improvement.getTitle() + " [(#" + improvement.getId() + ")](" + improvement.getUrl() + ")";
     }
 
-    public String format(Map<String, String> labels, Collection<Improvement> improvements) {
+    String format(Map<String, String> labels, Collection<Improvement> improvements) {
         if (improvements.isEmpty()) {
             return "* No notable improvements. See the commits for detailed changes.";
         }
@@ -81,14 +86,13 @@ public class DefaultFormatter implements VersionNotesFormatter {
         return sb.toString();
     }
 
-    @Override
-    public String formatNotes(VersionNotesData data, ReleaseNotesFormat format) {
+    public String formatNotes(VersionNotesData data) {
         SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm z");
         f.setTimeZone(TimeZone.getTimeZone("UTC"));
         String now = f.format(data.getDate());
 
         return "### " + data.getVersion() + " (" + now + ")" + "\n\n"
                 + format(data.getContributions()) + "\n"
-                + format(format.getLabelMapping(), data.getImprovements()) + "\n\n";
+                + format(labelMapping, data.getImprovements()) + "\n\n";
     }
 }
