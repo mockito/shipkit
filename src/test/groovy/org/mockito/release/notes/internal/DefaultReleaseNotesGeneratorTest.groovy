@@ -11,10 +11,11 @@ import spock.lang.Specification
 
 class DefaultReleaseNotesGeneratorTest extends Specification {
 
+    def contributionsProvider = Mock(ContributionsProvider)
+    def improvementsProvider = Mock(ImprovementsProvider)
+    def gen = new DefaultReleaseNotesGenerator(contributionsProvider, improvementsProvider)
+
     def "generates release notes"() {
-        def contributionsProvider = Mock(ContributionsProvider)
-        def improvementsProvider = Mock(ImprovementsProvider)
-        def gen = new DefaultReleaseNotesGenerator(contributionsProvider, improvementsProvider)
         def c1 = Stub(ContributionSet), c2 = Stub(ContributionSet)
         def i1 = [Stub(Improvement)], i2 = [Stub(Improvement)]
 
@@ -31,6 +32,20 @@ class DefaultReleaseNotesGeneratorTest extends Specification {
         0 * improvementsProvider._
 
         notes.size() == 2
+    }
+
+    def "generates single release notes with no tag prefix"() {
+        def c1 = Stub(ContributionSet)
+        def i1 = [Stub(Improvement)]
+
+        when:
+        def notes = gen.generateReleaseNotes("1.0.0", ["1.1.0"], "", ["notable"])
+
+        then:
+        1 * contributionsProvider.getContributionsBetween("1.0.0", "1.1.0") >> c1
+        1 * improvementsProvider.getImprovements(c1, ["notable"] ) >> i1
+
+        notes.size() == 1
     }
 
     @Ignore //delete when work is done

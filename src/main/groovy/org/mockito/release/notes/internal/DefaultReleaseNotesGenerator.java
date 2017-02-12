@@ -28,7 +28,7 @@ public class DefaultReleaseNotesGenerator implements ReleaseNotesGenerator {
 
         String startRev = tagPrefix + startVersion;
         for (String v : targetVersions) {
-            String endRev = tagPrefix + v; //TODO SF extract this logic out
+            String endRev = tagPrefix + v;
             ContributionSet contributions = contributionsProvider.getContributionsBetween(startRev, endRev);
             Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, gitHubLabels);
             out.add(new DefaultReleaseNotesData(v, new Date(), contributions, improvements));
