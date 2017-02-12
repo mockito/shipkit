@@ -5,7 +5,7 @@ import org.gradle.api.tasks.TaskAction;
 import org.mockito.release.notes.format.ReleaseNotesFormatters;
 import org.mockito.release.notes.generator.ReleaseNotesGenerator;
 import org.mockito.release.notes.generator.ReleaseNotesGenerators;
-import org.mockito.release.notes.model.VersionNotesData;
+import org.mockito.release.notes.model.ReleaseNotesData;
 import org.mockito.release.notes.util.IOUtil;
 
 import java.io.File;
@@ -26,7 +26,7 @@ public class ConciseReleaseNotesGeneratorTask extends DefaultTask {
         //TODO SF this task is not functioning, I'm using it only to model the public API of interfaces I need.
 
         ReleaseNotesGenerator generator = ReleaseNotesGenerators.releaseNotesGenerator(gitWorkingDir, gitHubAuthToken);
-        Collection<VersionNotesData> releaseNotes = generator.generateReleaseNotes(startVersion, targetVersions, tagPrefix, gitHubLabels);
+        Collection<ReleaseNotesData> releaseNotes = generator.generateReleaseNotes(startVersion, targetVersions, tagPrefix, gitHubLabels);
         String notes = ReleaseNotesFormatters.conciseFormatter().formatReleaseNotes(releaseNotes);
         IOUtil.writeFile(outputFile, notes);
     }

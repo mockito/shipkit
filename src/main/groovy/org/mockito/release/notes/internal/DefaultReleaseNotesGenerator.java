@@ -1,11 +1,11 @@
 package org.mockito.release.notes.internal;
 
-import org.mockito.release.notes.DefaultVersionNotesData;
+import org.mockito.release.notes.DefaultReleaseNotesData;
 import org.mockito.release.notes.generator.ReleaseNotesGenerator;
 import org.mockito.release.notes.improvements.ImprovementsProvider;
 import org.mockito.release.notes.model.ContributionSet;
 import org.mockito.release.notes.model.Improvement;
-import org.mockito.release.notes.model.VersionNotesData;
+import org.mockito.release.notes.model.ReleaseNotesData;
 import org.mockito.release.notes.vcs.ContributionsProvider;
 
 import java.util.*;
@@ -20,8 +20,8 @@ public class DefaultReleaseNotesGenerator implements ReleaseNotesGenerator {
         this.improvementsProvider = improvementsProvider;
     }
 
-    public Collection<VersionNotesData> generateReleaseNotes(String startVersion, Collection<String> targetVersions, String tagPrefix, Collection<String> gitHubLabels) {
-        List<VersionNotesData> out = new LinkedList<VersionNotesData>();
+    public Collection<ReleaseNotesData> generateReleaseNotes(String startVersion, Collection<String> targetVersions, String tagPrefix, Collection<String> gitHubLabels) {
+        List<ReleaseNotesData> out = new LinkedList<ReleaseNotesData>();
 
         //TODO SF use this to get the tag date: 2.6.7
         //git log --tags --simplify-by-decoration --pretty="format:%ai %d"
@@ -31,7 +31,7 @@ public class DefaultReleaseNotesGenerator implements ReleaseNotesGenerator {
             String endRev = tagPrefix + v; //TODO SF extract this logic out
             ContributionSet contributions = contributionsProvider.getContributionsBetween(startRev, endRev);
             Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, gitHubLabels);
-            out.add(new DefaultVersionNotesData(v, new Date(), contributions, improvements));
+            out.add(new DefaultReleaseNotesData(v, new Date(), contributions, improvements));
 
             //next round
             startRev = endRev;

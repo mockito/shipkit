@@ -4,9 +4,9 @@ import java.util.Collection;
 import java.util.Date;
 
 /**
- * Contains all the information that is needed for release notes for single specific version.
+ * Contains all the information that is needed for release notes for single specific release (version).
  */
-public interface VersionNotesData {
+public interface ReleaseNotesData {
 
     /**
      * Version of the released software component

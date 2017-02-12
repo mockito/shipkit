@@ -1,7 +1,7 @@
 package org.mockito.release.notes.format;
 
 import org.mockito.release.notes.model.Improvement;
-import org.mockito.release.notes.model.VersionNotesData;
+import org.mockito.release.notes.model.ReleaseNotesData;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -9,9 +9,9 @@ import java.util.TimeZone;
 
 class ConciseFormatter implements MultiReleaseNotesFormatter {
 
-    public String formatReleaseNotes(Iterable<VersionNotesData> data) {
+    public String formatReleaseNotes(Iterable<ReleaseNotesData> data) {
         StringBuilder sb = new StringBuilder();
-        for (VersionNotesData d : data) {
+        for (ReleaseNotesData d : data) {
             sb.append("### ").append(d.getVersion()).append(" - ").append(formatDate(d.getDate()))
                     .append("\n\n");
 

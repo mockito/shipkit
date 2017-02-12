@@ -5,7 +5,6 @@ import org.mockito.release.notes.generator.ReleaseNotesGenerators
 import org.mockito.release.notes.improvements.ImprovementsProvider
 import org.mockito.release.notes.model.ContributionSet
 import org.mockito.release.notes.model.Improvement
-import org.mockito.release.notes.model.VersionNotesData
 import org.mockito.release.notes.vcs.ContributionsProvider
 import spock.lang.Ignore
 import spock.lang.Specification

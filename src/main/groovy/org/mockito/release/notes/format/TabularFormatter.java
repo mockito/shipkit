@@ -1,6 +1,6 @@
 package org.mockito.release.notes.format;
 
-import org.mockito.release.notes.model.VersionNotesData;
+import org.mockito.release.notes.model.ReleaseNotesData;
 
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
@@ -13,7 +13,7 @@ import java.util.TimeZone;
 public class TabularFormatter implements SingleReleaseNotesFormatter {
 
     @Override
-    public String formatVersion(VersionNotesData data) {
+    public String formatVersion(ReleaseNotesData data) {
         SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm z");
         f.setTimeZone(TimeZone.getTimeZone("UTC"));
         String now = f.format(data.getDate());
