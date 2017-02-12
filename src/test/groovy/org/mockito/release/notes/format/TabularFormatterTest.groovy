@@ -24,7 +24,7 @@ class TabularFormatterTest extends Specification {
 
         def data = new DefaultVersionNotesData("2.0.1", date, contributions, is)
 
-        when: def notes = f.formatNotes(data)
+        when: def notes = f.formatVersion(data)
         then: notes == """### 2.0.1 (2017-01-04 23:00 UTC)"""
     }
 }

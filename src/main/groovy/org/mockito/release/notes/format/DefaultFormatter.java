@@ -12,16 +12,12 @@ import java.util.*;
 /**
  * Original formatter
  */
-class DefaultFormatter implements VersionNotesFormatter {
+class DefaultFormatter implements SingleReleaseNotesFormatter {
 
     private final Map<String, String> labelMapping;
 
     DefaultFormatter(Map<String, String> labelMapping) {
         this.labelMapping = labelMapping;
-    }
-
-    private String format(Improvement improvement) {
-        return improvement.getTitle() + " [(#" + improvement.getId() + ")](" + improvement.getUrl() + ")";
     }
 
     String format(Map<String, String> labels, Collection<Improvement> improvements) {
@@ -49,7 +45,7 @@ class DefaultFormatter implements VersionNotesFormatter {
             Collection<Improvement> labelImprovements = byLabel.get(label);
             sb.append("\n  * ").append(labelCaption).append(": ").append(labelImprovements.size());
             for (Improvement i : labelImprovements) {
-                sb.append("\n    * ").append(format(i));
+                sb.append("\n    * ").append(CommonFormatting.format(i));
             }
         }
 
@@ -65,7 +61,7 @@ class DefaultFormatter implements VersionNotesFormatter {
             }
 
             for (Improvement i : remainingImprovements) {
-                sb.append("\n").append(indent).append("  * ").append(format(i));
+                sb.append("\n").append(indent).append("  * ").append(CommonFormatting.format(i));
             }
         }
         return sb.toString();
@@ -86,7 +82,7 @@ class DefaultFormatter implements VersionNotesFormatter {
         return sb.toString();
     }
 
-    public String formatNotes(VersionNotesData data) {
+    public String formatVersion(VersionNotesData data) {
         SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm z");
         f.setTimeZone(TimeZone.getTimeZone("UTC"));
         String now = f.format(data.getDate());

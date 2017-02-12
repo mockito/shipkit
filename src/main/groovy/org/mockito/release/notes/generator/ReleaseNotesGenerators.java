@@ -9,7 +9,7 @@ import org.mockito.release.notes.vcs.Vcs;
 
 import java.io.File;
 
-public class Generator {
+public class ReleaseNotesGenerators {
 
     public static ReleaseNotesGenerator releaseNotesGenerator(File workDir, String authToken) {
         ContributionsProvider contributionsProvider = Vcs.getGitProvider(Exec.getProcessRunner(workDir));

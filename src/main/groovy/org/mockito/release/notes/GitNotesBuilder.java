@@ -2,7 +2,7 @@ package org.mockito.release.notes;
 
 import org.mockito.release.exec.Exec;
 import org.mockito.release.notes.format.ReleaseNotesFormatters;
-import org.mockito.release.notes.format.VersionNotesFormatter;
+import org.mockito.release.notes.format.SingleReleaseNotesFormatter;
 import org.mockito.release.notes.improvements.*;
 import org.mockito.release.notes.model.ContributionSet;
 import org.mockito.release.notes.model.Improvement;
@@ -44,8 +44,8 @@ class GitNotesBuilder implements NotesBuilder {
         Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, Collections.<String>emptyList());
 
         VersionNotesData data = new DefaultVersionNotesData(version, new Date(), contributions, improvements);
-        VersionNotesFormatter formatter = ReleaseNotesFormatters.defaultFormatter(labels);
+        SingleReleaseNotesFormatter formatter = ReleaseNotesFormatters.defaultFormatter(labels);
 
-        return formatter.formatNotes(data);
+        return formatter.formatVersion(data);
     }
 }

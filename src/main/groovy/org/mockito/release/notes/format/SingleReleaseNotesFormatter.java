@@ -5,10 +5,10 @@ import org.mockito.release.notes.model.VersionNotesData;
 /**
  * Formats version notes
  */
-public interface VersionNotesFormatter {
+public interface SingleReleaseNotesFormatter {
 
     /**
      * Formats the version notes data
      */
-    String formatNotes(VersionNotesData data);
+    String formatVersion(VersionNotesData data);
 }

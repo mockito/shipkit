@@ -18,7 +18,14 @@ public class ReleaseNotesFormatters {
      * Mappings also allow controlling priority in presenting improvements -
      *  the formatter can use the order of label mappings. For example, 'noteworthy' labelled improvements on top.
      */
-    public static VersionNotesFormatter defaultFormatter(Map<String, String> labelMapping) {
+    public static SingleReleaseNotesFormatter defaultFormatter(Map<String, String> labelMapping) {
         return new DefaultFormatter(labelMapping);
+    }
+
+    /**
+     * Returns the concise formatter intended to use for notable releases
+     */
+    public static MultiReleaseNotesFormatter conciseFormatter() {
+        return new ConciseFormatter();
     }
 }

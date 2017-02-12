@@ -1,7 +1,7 @@
 package org.mockito.release.notes.internal
 
-import org.mockito.release.notes.format.DefaultFormatter
-import org.mockito.release.notes.generator.Generator
+import org.mockito.release.notes.format.ReleaseNotesFormatters
+import org.mockito.release.notes.generator.ReleaseNotesGenerators
 import org.mockito.release.notes.improvements.ImprovementsProvider
 import org.mockito.release.notes.model.ContributionSet
 import org.mockito.release.notes.model.Improvement
@@ -20,8 +20,7 @@ class DefaultReleaseNotesGeneratorTest extends Specification {
         def i1 = [Stub(Improvement)], i2 = [Stub(Improvement)]
 
         when:
-        def notes = gen.generateReleaseNotes(new DefaultReleaseNotesParameters(
-                "1.0.0", ["1.1.0", "1.2.0"], "v", ["bugfix"]))
+        def notes = gen.generateReleaseNotes("1.0.0", ["1.1.0", "1.2.0"], "v", ["bugfix"])
 
         then:
         1 * contributionsProvider.getContributionsBetween("v1.0.0", "v1.1.0") >> c1
@@ -39,13 +38,10 @@ class DefaultReleaseNotesGeneratorTest extends Specification {
     def "lifecycle test"() {
         def workDir = new File("/Users/sfaber/mockito/src");
         def authToken = "a0a4c0f41c200f7c653323014d6a72a127764e17"
-        def gen = Generator.releaseNotesGenerator(workDir, authToken)
-        def notes = gen.generateReleaseNotes(new DefaultReleaseNotesParameters(
-                "2.4.0", ["2.5.0", "2.6.1", "2.7.0"], "v", ["noteworthy"]))
+        def gen = ReleaseNotesGenerators.releaseNotesGenerator(workDir, authToken)
+        def notes = gen.generateReleaseNotes("2.4.0", ["2.5.0", "2.6.1", "2.7.0"], "v", ["noteworthy"])
 
         expect:
-        for (VersionNotesData n : notes) {
-            println new DefaultFormatter([:]).formatNotes(n)
-        }
+        println ReleaseNotesFormatters.conciseFormatter().formatReleaseNotes(notes)
     }
 }

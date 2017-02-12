@@ -1,6 +1,5 @@
 package org.mockito.release.notes;
 
-import org.mockito.release.notes.format.DefaultFormatter;
 import org.mockito.release.notes.versions.PreviousVersion;
 import org.mockito.release.notes.versions.Versions;
 
