@@ -171,7 +171,7 @@ class GitHubTicketFetcher {
 
         private String extractRelativeLink(String linkHeader, final String relativeType) {
             if (linkHeader == null) {
-                return null;
+                return RELATIVE_LINK_NOT_FOUND;
             }
 
             // See GitHub API doc : https://developer.github.com/guides/traversing-with-pagination/
