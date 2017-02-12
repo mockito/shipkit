@@ -11,7 +11,7 @@ public interface Improvement {
     /**
      * Identifier of the improvement. In case of GitHub it is a number.
      */
-    long getId();
+    Long getId();
 
     /**
      * Title of the improvement. In case of GitHub it is the "title"

@@ -1,9 +1,7 @@
 package org.mockito.release.notes.improvements;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
-import org.mockito.release.notes.internal.DefaultImprovement;
 import org.mockito.release.notes.model.Improvement;
 import org.mockito.release.notes.util.IOUtil;
 import org.slf4j.Logger;
@@ -39,7 +37,7 @@ class GitHubTicketFetcher {
             while (!tickets.isEmpty() && issues.hasNextPage()) {
                 List<JSONObject> page = issues.nextPage();
 
-                out.addAll(wantedImprovements(
+                out.addAll(extractImprovements(
                         dropTicketsAboveMaxInPage(tickets, page),
                         page));
             }
@@ -71,20 +69,16 @@ class GitHubTicketFetcher {
         return longs;
     }
 
-    //TODO SF we should be able to unit test the code that parsers JSONObjects
-    private List<Improvement> wantedImprovements(Collection<Long> tickets, List<JSONObject> issues) {
+    private static List<Improvement> extractImprovements(Collection<Long> tickets, List<JSONObject> issues) {
         if(tickets.isEmpty()) {
             return Collections.emptyList();
         }
 
         ArrayList<Improvement> pagedImprovements = new ArrayList<Improvement>();
         for (JSONObject issue : issues) {
-            long id = (Long) issue.get("number");
-            if (tickets.remove(id)) {
-                String issueUrl = (String) issue.get("html_url");
-                String title = (String) issue.get("title");
-                Collection<String> labels = extractLabels(issue);
-                pagedImprovements.add(new DefaultImprovement(id, title, issueUrl, labels));
+            Improvement i = GitHubJSON.toImprovement(issue);
+            if (tickets.remove(i.getId())) {
+                pagedImprovements.add(i);
 
                 if (tickets.isEmpty()) {
                     return pagedImprovements;
@@ -92,16 +86,6 @@ class GitHubTicketFetcher {
             }
         }
         return pagedImprovements;
-    }
-
-    private static Collection<String> extractLabels(JSONObject issue) {
-        Set<String> out = new HashSet<String>();
-        JSONArray labels = (JSONArray) issue.get("labels");
-        for (Object o : labels.toArray()) {
-            JSONObject label = (JSONObject) o;
-            out.add((String) label.get("name"));
-        }
-        return out;
     }
 
     private static class GitHubIssues {
