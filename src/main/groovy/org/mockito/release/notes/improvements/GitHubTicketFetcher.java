@@ -30,6 +30,7 @@ class GitHubTicketFetcher {
         try {
             GitHubIssues issues = GitHubIssues.authenticatingWith(authToken)
                     .state("closed")
+                    //TODO SF create label filter here
                     .filter("all")
                     .direction("desc")
                     .browse();
