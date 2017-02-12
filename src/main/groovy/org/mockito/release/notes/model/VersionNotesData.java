@@ -5,10 +5,8 @@ import java.util.Date;
 
 /**
  * Contains all the information that is needed for release notes
- *
- * TODO SF: rename to VersionNotes
  */
-public interface ReleaseNotesData {
+public interface VersionNotesData {
 
     /**
      * Version of the released software component

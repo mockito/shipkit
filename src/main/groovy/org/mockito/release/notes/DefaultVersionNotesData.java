@@ -1,22 +1,20 @@
 package org.mockito.release.notes;
 
-import org.mockito.release.notes.improvements.DefaultImprovement;
 import org.mockito.release.notes.model.ContributionSet;
 import org.mockito.release.notes.model.Improvement;
-import org.mockito.release.notes.model.ReleaseNotesData;
+import org.mockito.release.notes.model.VersionNotesData;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.Map;
 
 //TODO SF move to internal package
-public class DefaultReleaseNotesData implements ReleaseNotesData {
+public class DefaultVersionNotesData implements VersionNotesData {
     private final String version;
     private final Date date;
     private final ContributionSet contributions;
     private final Collection<Improvement> improvements;
 
-    public DefaultReleaseNotesData(String version, Date date, ContributionSet contributions,
+    public DefaultVersionNotesData(String version, Date date, ContributionSet contributions,
                                    Collection<Improvement> improvements) {
 
         this.version = version;

@@ -6,7 +6,7 @@ import org.mockito.release.notes.generator.Generator
 import org.mockito.release.notes.improvements.ImprovementsProvider
 import org.mockito.release.notes.model.ContributionSet
 import org.mockito.release.notes.model.Improvement
-import org.mockito.release.notes.model.ReleaseNotesData
+import org.mockito.release.notes.model.VersionNotesData
 import org.mockito.release.notes.vcs.ContributionsProvider
 import spock.lang.Ignore
 import spock.lang.Specification
@@ -46,7 +46,7 @@ class DefaultReleaseNotesGeneratorTest extends Specification {
         def format = new DefaultReleaseNotesFormat([:])
 
         expect:
-        for (ReleaseNotesData n : notes) {
+        for (VersionNotesData n : notes) {
             println new DefaultFormatter().formatNotes(n, format)
         }
     }

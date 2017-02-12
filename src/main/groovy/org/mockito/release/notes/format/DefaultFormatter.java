@@ -2,7 +2,7 @@ package org.mockito.release.notes.format;
 
 import org.mockito.release.notes.model.ContributionSet;
 import org.mockito.release.notes.model.Improvement;
-import org.mockito.release.notes.model.ReleaseNotesData;
+import org.mockito.release.notes.model.VersionNotesData;
 import org.mockito.release.notes.model.ReleaseNotesFormat;
 import org.mockito.release.notes.vcs.DefaultContribution;
 import org.mockito.release.util.MultiMap;
@@ -82,7 +82,7 @@ public class DefaultFormatter implements ReleaseNotesFormatter {
     }
 
     @Override
-    public String formatNotes(ReleaseNotesData data, ReleaseNotesFormat format) {
+    public String formatNotes(VersionNotesData data, ReleaseNotesFormat format) {
         SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm z");
         f.setTimeZone(TimeZone.getTimeZone("UTC"));
         String now = f.format(data.getDate());

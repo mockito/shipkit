@@ -1,6 +1,6 @@
 package org.mockito.release.notes.format
 
-import org.mockito.release.notes.DefaultReleaseNotesData
+import org.mockito.release.notes.DefaultVersionNotesData
 import org.mockito.release.notes.improvements.DefaultImprovement
 import org.mockito.release.notes.util.Predicate
 import org.mockito.release.notes.vcs.DefaultContributionSet
@@ -22,7 +22,7 @@ class TabularFormatterTest extends Specification {
             .add(new GitCommit("a@a", "A", "refactoring"))
             .add(new GitCommit("b@b", "B", "added new feature #101"))
 
-        def data = new DefaultReleaseNotesData("2.0.1", date, contributions, is)
+        def data = new DefaultVersionNotesData("2.0.1", date, contributions, is)
         def format = new DefaultReleaseNotesFormat([bug: "Bugfixes"])
 
         when: def notes = f.formatNotes(data, format)
