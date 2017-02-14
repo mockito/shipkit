@@ -6,28 +6,27 @@ import org.mockito.release.notes.model.ContributionSet;
 import org.mockito.release.notes.model.Improvement;
 import org.mockito.release.notes.model.ReleaseNotesData;
 import org.mockito.release.notes.vcs.ContributionsProvider;
+import org.mockito.release.notes.vcs.ReleaseDateProvider;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 class DefaultReleaseNotesGenerator implements ReleaseNotesGenerator {
 
     private final ContributionsProvider contributionsProvider;
     private final ImprovementsProvider improvementsProvider;
+    private final ReleaseDateProvider releaseDateProvider;
 
-    DefaultReleaseNotesGenerator(ContributionsProvider contributionsProvider, ImprovementsProvider improvementsProvider) {
+    DefaultReleaseNotesGenerator(ContributionsProvider contributionsProvider, ImprovementsProvider improvementsProvider, ReleaseDateProvider releaseDateProvider) {
         this.contributionsProvider = contributionsProvider;
         this.improvementsProvider = improvementsProvider;
+        this.releaseDateProvider = releaseDateProvider;
     }
 
     public Collection<ReleaseNotesData> generateReleaseNotes(Collection<String> targetVersions, String tagPrefix,
                                                              Collection<String> gitHubLabels, boolean onlyPullRequests) {
         List<ReleaseNotesData> out = new LinkedList<ReleaseNotesData>();
 
-        //TODO SF use this to get the tag date: 2.6.7
-        //git log --tags --simplify-by-decoration --pretty="format:%ai %d"
+        Map<String, Date> releaseDates = releaseDateProvider.getReleaseDates(targetVersions, tagPrefix);
 
         String to = null;
         for (String v : targetVersions) {
@@ -40,7 +39,7 @@ class DefaultReleaseNotesGenerator implements ReleaseNotesGenerator {
 
             ContributionSet contributions = contributionsProvider.getContributionsBetween(fromRev, toRev);
             Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, gitHubLabels, onlyPullRequests);
-            out.add(new DefaultReleaseNotesData(to, new Date(), contributions, improvements));
+            out.add(new DefaultReleaseNotesData(to, releaseDates.get(to), contributions, improvements));
 
             //next round
             to = v;
