@@ -1,12 +1,13 @@
 package org.mockito.release.notes.vcs;
 
 import org.mockito.release.notes.model.Commit;
+import org.mockito.release.notes.model.Contribution;
 import org.mockito.release.notes.model.ContributionSet;
 import org.mockito.release.notes.util.Predicate;
 
 import java.util.*;
 
-public class DefaultContributionSet implements ContributionSet {
+class DefaultContributionSet implements ContributionSet {
 
     private final List<DefaultContribution> contributions = new LinkedList<DefaultContribution>();
 
@@ -14,7 +15,7 @@ public class DefaultContributionSet implements ContributionSet {
     private final Predicate<Commit> ignoreCommit;
     private final Set<String> tickets = new LinkedHashSet<String>();
 
-    public DefaultContributionSet(Predicate<Commit> ignoredCommit) {
+    DefaultContributionSet(Predicate<Commit> ignoredCommit) {
         this.ignoreCommit = ignoredCommit;
     }
 
@@ -58,10 +59,10 @@ public class DefaultContributionSet implements ContributionSet {
         return tickets;
     }
 
-    public Collection<DefaultContribution> getContributions() {
+    public Collection<Contribution> getContributions() {
         //sort the contributions by commits count
         //we need to do it at the end instead of keeping tree set field
         // because Contribution object is mutable and the tree will not reindex when an already-added element changes
-        return new TreeSet<DefaultContribution>(contributions);
+        return new TreeSet<Contribution>(contributions);
     }
 }

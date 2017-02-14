@@ -1,10 +1,9 @@
 package org.mockito.release.notes.format;
 
+import org.mockito.release.notes.model.Contribution;
 import org.mockito.release.notes.model.ContributionSet;
 import org.mockito.release.notes.model.Improvement;
 import org.mockito.release.notes.model.ReleaseNotesData;
-import org.mockito.release.notes.model.ReleaseNotesFormat;
-import org.mockito.release.notes.vcs.DefaultContribution;
 import org.mockito.release.util.MultiMap;
 
 import java.text.SimpleDateFormat;
@@ -13,13 +12,15 @@ import java.util.*;
 /**
  * Original formatter
  */
-public class DefaultFormatter implements ReleaseNotesFormatter {
+class DefaultFormatter implements SingleReleaseNotesFormatter {
 
-    private String format(Improvement improvement) {
-        return improvement.getTitle() + " [(#" + improvement.getId() + ")](" + improvement.getUrl() + ")";
+    private final Map<String, String> labelMapping;
+
+    DefaultFormatter(Map<String, String> labelMapping) {
+        this.labelMapping = labelMapping;
     }
 
-    public String format(Map<String, String> labels, Collection<Improvement> improvements) {
+    String format(Map<String, String> labels, Collection<Improvement> improvements) {
         if (improvements.isEmpty()) {
             return "* No notable improvements. See the commits for detailed changes.";
         }
@@ -44,7 +45,7 @@ public class DefaultFormatter implements ReleaseNotesFormatter {
             Collection<Improvement> labelImprovements = byLabel.get(label);
             sb.append("\n  * ").append(labelCaption).append(": ").append(labelImprovements.size());
             for (Improvement i : labelImprovements) {
-                sb.append("\n    * ").append(format(i));
+                sb.append("\n    * ").append(CommonFormatting.format(i));
             }
         }
 
@@ -60,13 +61,13 @@ public class DefaultFormatter implements ReleaseNotesFormatter {
             }
 
             for (Improvement i : remainingImprovements) {
-                sb.append("\n").append(indent).append("  * ").append(format(i));
+                sb.append("\n").append(indent).append("  * ").append(CommonFormatting.format(i));
             }
         }
         return sb.toString();
     }
 
-    private String format(DefaultContribution contribution) {
+    private String format(Contribution contribution) {
         return contribution.getCommits().size() + ": " + contribution.getAuthorName();
     }
 
@@ -74,21 +75,20 @@ public class DefaultFormatter implements ReleaseNotesFormatter {
         StringBuilder sb = new StringBuilder("* Authors: ").append(contributions.getContributions().size())
                 .append("\n* Commits: ").append(contributions.getAllCommits().size());
 
-        for (DefaultContribution c : contributions.getContributions()) {
+        for (Contribution c : contributions.getContributions()) {
             sb.append("\n  * ").append(format(c));
         }
 
         return sb.toString();
     }
 
-    @Override
-    public String formatNotes(ReleaseNotesData data, ReleaseNotesFormat format) {
+    public String formatVersion(ReleaseNotesData data) {
         SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm z");
         f.setTimeZone(TimeZone.getTimeZone("UTC"));
         String now = f.format(data.getDate());
 
         return "### " + data.getVersion() + " (" + now + ")" + "\n\n"
                 + format(data.getContributions()) + "\n"
-                + format(format.getLabelMapping(), data.getImprovements()) + "\n\n";
+                + format(labelMapping, data.getImprovements()) + "\n\n";
     }
 }

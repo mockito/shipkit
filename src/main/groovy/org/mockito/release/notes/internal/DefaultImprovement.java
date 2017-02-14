@@ -1,4 +1,4 @@
-package org.mockito.release.notes.improvements;
+package org.mockito.release.notes.internal;
 
 import org.mockito.release.notes.model.Improvement;
 
@@ -9,20 +9,22 @@ import java.util.Collection;
  */
 public class DefaultImprovement implements Improvement {
 
-    private final long id;
+    private final Long id;
     private final String title;
     private final String url;
     private final Collection<String> labels;
+    private final boolean isPullRequest;
 
-    public DefaultImprovement(long id, String title, String url, Collection<String> labels) {
+    public DefaultImprovement(Long id, String title, String url, Collection<String> labels, boolean isPullRequest) {
         this.id = id;
         this.title = title;
         this.url = url;
         this.labels = labels;
+        this.isPullRequest = isPullRequest;
     }
 
     @Override
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -39,5 +41,10 @@ public class DefaultImprovement implements Improvement {
     @Override
     public Collection<String> getLabels() {
         return labels;
+    }
+
+    @Override
+    public boolean isPullRequest() {
+        return isPullRequest;
     }
 }

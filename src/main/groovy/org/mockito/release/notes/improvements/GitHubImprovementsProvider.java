@@ -16,8 +16,8 @@ class GitHubImprovementsProvider implements ImprovementsProvider {
         this.authToken = authToken;
     }
 
-    public Collection<Improvement> getImprovements(ContributionSet contributions) {
+    public Collection<Improvement> getImprovements(ContributionSet contributions, Collection<String> labels, boolean onlyPullRequests) {
         LOGGER.info("Parsing {} commits with {} tickets", contributions.getAllCommits().size(), contributions.getAllTickets().size());
-        return (Collection) new GitHubTicketFetcher().fetchTickets(authToken, contributions.getAllTickets());
+        return new GitHubTicketFetcher().fetchTickets(authToken, contributions.getAllTickets(), labels, onlyPullRequests);
     }
 }

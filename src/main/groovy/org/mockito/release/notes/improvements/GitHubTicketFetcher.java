@@ -1,6 +1,5 @@
 package org.mockito.release.notes.improvements;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.mockito.release.notes.model.Improvement;
@@ -18,7 +17,8 @@ class GitHubTicketFetcher {
 
     private static final Logger LOG = LoggerFactory.getLogger(GitHubTicketFetcher.class);
 
-    Collection<Improvement> fetchTickets(String authToken, Collection<String> ticketIds) {
+    Collection<Improvement> fetchTickets(String authToken, Collection<String> ticketIds, Collection<String> labels,
+                                         boolean onlyPullRequests) {
         List<Improvement> out = new LinkedList<Improvement>();
         if (ticketIds.isEmpty()) {
             return out;
@@ -30,6 +30,7 @@ class GitHubTicketFetcher {
         try {
             GitHubIssues issues = GitHubIssues.authenticatingWith(authToken)
                     .state("closed")
+                    .labels(CommaSeparated.commaSeparated(labels))
                     .filter("all")
                     .direction("desc")
                     .browse();
@@ -37,9 +38,9 @@ class GitHubTicketFetcher {
             while (!tickets.isEmpty() && issues.hasNextPage()) {
                 List<JSONObject> page = issues.nextPage();
 
-                out.addAll(wantedImprovements(
+                out.addAll(extractImprovements(
                         dropTicketsAboveMaxInPage(tickets, page),
-                        page));
+                        page, onlyPullRequests));
             }
         } catch (Exception e) {
             throw new RuntimeException("Problems fetching " + ticketIds.size() + " from GitHub", e);
@@ -69,20 +70,19 @@ class GitHubTicketFetcher {
         return longs;
     }
 
-    //TODO SF we should be able to unit test the code that parsers JSONObjects
-    private List<Improvement> wantedImprovements(Collection<Long> tickets, List<JSONObject> issues) {
+    private static List<Improvement> extractImprovements(Collection<Long> tickets, List<JSONObject> issues,
+                                                         boolean onlyPullRequests) {
         if(tickets.isEmpty()) {
             return Collections.emptyList();
         }
 
         ArrayList<Improvement> pagedImprovements = new ArrayList<Improvement>();
         for (JSONObject issue : issues) {
-            long id = (Long) issue.get("number");
-            if (tickets.remove(id)) {
-                String issueUrl = (String) issue.get("html_url");
-                String title = (String) issue.get("title");
-                Collection<String> labels = extractLabels(issue);
-                pagedImprovements.add(new DefaultImprovement(id, title, issueUrl, labels));
+            Improvement i = GitHubJSON.toImprovement(issue);
+            if (tickets.remove(i.getId())) {
+                if (!onlyPullRequests || i.isPullRequest()) {
+                    pagedImprovements.add(i);
+                }
 
                 if (tickets.isEmpty()) {
                     return pagedImprovements;
@@ -92,26 +92,17 @@ class GitHubTicketFetcher {
         return pagedImprovements;
     }
 
-    private static Collection<String> extractLabels(JSONObject issue) {
-        Set<String> out = new HashSet<String>();
-        JSONArray labels = (JSONArray) issue.get("labels");
-        for (Object o : labels.toArray()) {
-            JSONObject label = (JSONObject) o;
-            out.add((String) label.get("name"));
-        }
-        return out;
-    }
-
     private static class GitHubIssues {
         public static final String RELATIVE_LINK_NOT_FOUND = "none";
         private String nextPageUrl;
 
-        private GitHubIssues(String authToken, String state, String filter, String direction) {
+        private GitHubIssues(String authToken, String state, String filter, String labels, String direction) {
             // see API doc : https://developer.github.com/v3/issues/
             nextPageUrl = String.format("%s%s%s%s%s",
                     "https://api.github.com/repos/mockito/mockito/issues?access_token=" + authToken,
                     state == null ? "" : "&state=" + state,
                     filter == null ? "" : "&filter=" + filter,
+                    "&labels=" + labels,
                     direction == null ? "" : "&direction=" + direction,
                     "&page=1"
             );
@@ -169,7 +160,7 @@ class GitHubTicketFetcher {
 
         private String extractRelativeLink(String linkHeader, final String relativeType) {
             if (linkHeader == null) {
-                return null;
+                return RELATIVE_LINK_NOT_FOUND;
             }
 
             // See GitHub API doc : https://developer.github.com/guides/traversing-with-pagination/
@@ -194,6 +185,7 @@ class GitHubTicketFetcher {
             private String state;
             private String filter;
             private String direction;
+            private String labels;
 
             public GitHubIssuesBuilder(String authToken) {
                 this.authToken = authToken;
@@ -214,8 +206,17 @@ class GitHubTicketFetcher {
                 return this;
             }
 
+            /**
+             * Only list issues with given labels, comma separated list.
+             * Empty string is ok and means that we are interested in all issues, regardless of the label.
+             */
+            public GitHubIssuesBuilder labels(String labels) {
+                this.labels = labels;
+                return this;
+            }
+
             public GitHubIssues browse() {
-                return new GitHubIssues(authToken, state, filter, direction);
+                return new GitHubIssues(authToken, state, filter, labels, direction);
             }
         }
     }
