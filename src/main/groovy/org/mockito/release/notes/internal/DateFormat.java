@@ -19,7 +19,7 @@ public class DateFormat {
         try {
             return format.parse(date.trim());
         } catch (ParseException e) {
-            throw new RuntimeException("Problems parsing date: '" + date + "'. Required format is: '" + pattern + "'.", e);
+            throw new RuntimeException("Problems parsing date: [" + date + "]. Required format is: [" + pattern + "].", e);
         }
     }
 

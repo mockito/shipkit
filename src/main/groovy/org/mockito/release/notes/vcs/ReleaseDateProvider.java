@@ -1,5 +1,6 @@
 package org.mockito.release.notes.vcs;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
@@ -9,12 +10,11 @@ import java.util.Map;
 public interface ReleaseDateProvider {
 
     /**
-     * Provides release dates for given versions. Versions should be ordered newer first.
-     * Last version is not included in the result. It is only used to calculate version range when getting data from Git.
+     * Provides release dates for given versions.
      *
-     * @param versions for example: 1.2.0, 1.1.0, 1.0.0. Last version is not included in result.
+     * @param versions for example: 1.2.0, 1.1.0, 1.0.0
      * @param tagPrefix optional tag prefix, adding it to the version String should create vcs addressable revision, tag.
      *                  Typically it is "v" or empty String if no tag prefix is used.
      */
-    Map<String, Date> getReleaseDates(Iterable<String> versions, String tagPrefix);
+    Map<String, Date> getReleaseDates(Collection<String> versions, String tagPrefix);
 }

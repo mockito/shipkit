@@ -41,7 +41,7 @@ class DefaultReleaseNotesGenerator implements ReleaseNotesGenerator {
             Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, gitHubLabels, onlyPullRequests);
             out.add(new DefaultReleaseNotesData(to, releaseDates.get(to), contributions, improvements));
 
-            //next round
+            //next version
             to = v;
         }
 
