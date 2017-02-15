@@ -1,12 +1,12 @@
 package org.mockito.release.notes.format;
 
+import org.mockito.release.notes.internal.DateFormat;
 import org.mockito.release.notes.model.Contribution;
 import org.mockito.release.notes.model.ContributionSet;
 import org.mockito.release.notes.model.Improvement;
 import org.mockito.release.notes.model.ReleaseNotesData;
 import org.mockito.release.util.MultiMap;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -83,9 +83,7 @@ class DefaultFormatter implements SingleReleaseNotesFormatter {
     }
 
     public String formatVersion(ReleaseNotesData data) {
-        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm z");
-        f.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String now = f.format(data.getDate());
+        String now = DateFormat.formatDate(data.getDate());
 
         return "### " + data.getVersion() + " (" + now + ")" + "\n\n"
                 + format(data.getContributions()) + "\n"
