@@ -23,20 +23,20 @@ class ConciseFormatterTest extends Specification {
                     new DefaultReleaseNotesData("1.0.0", new Date(1486200000000), c, i1)]
 
         when:
-        def text = new ConciseFormatter("Mockito release notes:\n\n").formatReleaseNotes(data)
+        def text = new ConciseFormatter("Mockito release notes:\n\n", "http://release-notes").formatReleaseNotes(data)
 
         then:
         text == """Mockito release notes:
 
 ### 1.1.0 - 2017-02-10 04:13
 
-Authors: 2, commits: 2, improvements: 1.
+Authors: [2](http://release-notes), commits: 2, improvements: [1](http://release-notes).
 
  * Big change [(#105)](http://issues/105)
 
 ### 1.0.0 - 2017-02-04 09:20
 
-Authors: 2, commits: 2, improvements: 2.
+Authors: [2](http://release-notes), commits: 2, improvements: [2](http://release-notes).
 
  * Fixed issue [(#100)](http://issues/100)
  * New feature [(#103)](http://issues/103)

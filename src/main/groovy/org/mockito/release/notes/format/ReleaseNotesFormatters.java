@@ -26,8 +26,9 @@ public class ReleaseNotesFormatters {
      * Returns the concise formatter intended to use for notable releases
      *
      * @param introductionText text to be placed on the top of the release notes content
+     * @param detailedReleaseNotesLink link to detailed release notes used in the report
      */
-    public static MultiReleaseNotesFormatter conciseFormatter(String introductionText) {
-        return new ConciseFormatter(introductionText);
+    public static MultiReleaseNotesFormatter conciseFormatter(String introductionText, String detailedReleaseNotesLink) {
+        return new ConciseFormatter(introductionText, detailedReleaseNotesLink);
     }
 }

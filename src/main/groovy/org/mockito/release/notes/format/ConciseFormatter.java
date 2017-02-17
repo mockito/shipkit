@@ -8,9 +8,11 @@ import org.mockito.release.notes.model.ReleaseNotesData;
 class ConciseFormatter implements MultiReleaseNotesFormatter {
 
     private final String introductionText;
+    private final String detailedReleaseNotesLink;
 
-    public ConciseFormatter(String introductionText) {
+    public ConciseFormatter(String introductionText, String detailedReleaseNotesLink) {
         this.introductionText = introductionText;
+        this.detailedReleaseNotesLink = detailedReleaseNotesLink;
     }
 
     public String formatReleaseNotes(Iterable<ReleaseNotesData> data) {
@@ -19,7 +21,7 @@ class ConciseFormatter implements MultiReleaseNotesFormatter {
             sb.append("### ").append(d.getVersion()).append(" - ").append(DateFormat.formatDate(d.getDate()))
                     .append("\n\n");
 
-            String contributions = formatContributions(d.getContributions(), d.getImprovements().size());
+            String contributions = formatContributions(d.getContributions(), d.getImprovements().size(), detailedReleaseNotesLink);
             sb.append(contributions).append("\n\n");
 
             for (Improvement i : d.getImprovements()) {
@@ -32,9 +34,9 @@ class ConciseFormatter implements MultiReleaseNotesFormatter {
         return sb.toString();
     }
 
-    private static String formatContributions(ContributionSet contributions, int improvementCount) {
-        return "Authors: " + contributions.getAuthorCount()
+    private static String formatContributions(ContributionSet contributions, int improvementCount, String detailedReleaseNotesLink) {
+        return "Authors: [" + contributions.getAuthorCount() + "](" + detailedReleaseNotesLink + ")"
                 + ", commits: " + contributions.getAllCommits().size()
-                + ", improvements: " + improvementCount + ".";
+                + ", improvements: [" + improvementCount + "](" + detailedReleaseNotesLink + ").";
     }
 }
