@@ -65,4 +65,8 @@ class DefaultContributionSet implements ContributionSet {
         // because Contribution object is mutable and the tree will not reindex when an already-added element changes
         return new TreeSet<Contribution>(contributions);
     }
+
+    public int getAuthorCount() {
+        return contributions.size();
+    }
 }

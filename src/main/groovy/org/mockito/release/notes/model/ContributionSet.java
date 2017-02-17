@@ -8,17 +8,23 @@ import java.util.Collection;
 public interface ContributionSet {
 
     /**
-     * all commits in given contribution set, spanning all authors
+     * All commits in given contribution set, spanning all authors
      */
     Collection<Commit> getAllCommits();
 
     /**
-     * all tickets referenced in commit messages
+     * All tickets referenced in commit messages
      */
     Collection<String> getAllTickets();
 
     /**
-     * all contributions in the set
+     * All contributions in the set.
      */
     Collection<Contribution> getContributions();
+
+    /**
+     * All unique authors of this set of contributions.
+     * Basically, it's the size of {@link #getContributions()}.
+     */
+    int getAuthorCount();
 }
