@@ -2,16 +2,18 @@ package org.mockito.release.notes.format
 
 import org.mockito.release.notes.internal.DefaultImprovement
 import org.mockito.release.notes.internal.DefaultReleaseNotesData
+import org.mockito.release.notes.model.Commit
 import org.mockito.release.notes.model.ContributionSet
 import spock.lang.Specification
 
 class ConciseFormatterTest extends Specification {
 
-    /*
-    TODO SF add more useful information to the concise report (like number of contributions)
-    */
     def "formats notes"() {
-        def c = Stub(ContributionSet)
+        def c = Stub(ContributionSet) {
+            getAllCommits() >> [Stub(Commit), Stub(Commit)]
+            getAuthorCount() >> 2
+        }
+
         def i1 = [new DefaultImprovement(100, "Fixed issue", "http://issues/100", ["bugfix"], true),
                   new DefaultImprovement(103, "New feature", "http://issues/103", ["noteworthy"], true)]
 
@@ -28,9 +30,13 @@ class ConciseFormatterTest extends Specification {
 
 ### 1.1.0 - 2017-02-10 04:13
 
+Authors: 2, commits: 2, improvements: 1.
+
  * Big change [(#105)](http://issues/105)
 
 ### 1.0.0 - 2017-02-04 09:20
+
+Authors: 2, commits: 2, improvements: 2.
 
  * Fixed issue [(#100)](http://issues/100)
  * New feature [(#103)](http://issues/103)
