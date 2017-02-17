@@ -22,8 +22,8 @@ class DefaultReleaseNotesGenerator implements ReleaseNotesGenerator {
         this.releaseDateProvider = releaseDateProvider;
     }
 
-    public Collection<ReleaseNotesData> generateReleaseNotes(Collection<String> targetVersions, String tagPrefix,
-                                                             Collection<String> gitHubLabels, boolean onlyPullRequests) {
+    public Collection<ReleaseNotesData> generateReleaseNotesData(Collection<String> targetVersions, String tagPrefix,
+                                                                 Collection<String> gitHubLabels, boolean onlyPullRequests) {
         List<ReleaseNotesData> out = new LinkedList<ReleaseNotesData>();
 
         Map<String, Date> releaseDates = releaseDateProvider.getReleaseDates(targetVersions, tagPrefix);

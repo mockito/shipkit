@@ -28,7 +28,7 @@ public class ConciseReleaseNotesGeneratorTask extends DefaultTask {
         //TODO SF this task is not functioning, I'm using it only to model the public API of interfaces I need.
 
         ReleaseNotesGenerator generator = ReleaseNotesGenerators.releaseNotesGenerator(gitWorkingDir, gitHubAuthToken);
-        Collection<ReleaseNotesData> releaseNotes = generator.generateReleaseNotes(targetVersions, tagPrefix, gitHubLabels, onlyPullRequests);
+        Collection<ReleaseNotesData> releaseNotes = generator.generateReleaseNotesData(targetVersions, tagPrefix, gitHubLabels, onlyPullRequests);
         String notes = ReleaseNotesFormatters.conciseFormatter(introductionText, detailedReleaseNotesLink).formatReleaseNotes(releaseNotes);
         IOUtil.writeFile(outputFile, notes);
     }
