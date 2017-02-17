@@ -23,7 +23,6 @@ class ConciseFormatter implements MultiReleaseNotesFormatter {
             sb.append(contributions).append("\n\n");
 
             for (Improvement i : d.getImprovements()) {
-                //TODO SF let's add an author to every improvement here, at the end
                 sb.append(" * ").append(CommonFormatting.format(i)).append("\n");
             }
 
