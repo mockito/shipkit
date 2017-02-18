@@ -21,7 +21,11 @@ class ConciseFormatter implements MultiReleaseNotesFormatter {
             sb.append("### ").append(d.getVersion()).append(" - ").append(DateFormat.formatDate(d.getDate()))
                     .append("\n\n");
 
-            String contributions = formatContributions(d.getContributions(), d.getImprovements().size(), detailedReleaseNotesLink);
+            //TODO SF make the link configurable
+            String vcsCommitsLink = "https://github.com/mockito/mockito/compare/"
+                    + d.getPreviousVersionVcsTag() + "..." + d.getVcsTag();
+
+            String contributions = formatContributions(d.getContributions(), d.getImprovements().size(), detailedReleaseNotesLink, vcsCommitsLink);
             sb.append(contributions).append("\n\n");
 
             for (Improvement i : d.getImprovements()) {
@@ -34,9 +38,10 @@ class ConciseFormatter implements MultiReleaseNotesFormatter {
         return sb.toString();
     }
 
-    private static String formatContributions(ContributionSet contributions, int improvementCount, String detailedReleaseNotesLink) {
+    private static String formatContributions(ContributionSet contributions, int improvementCount,
+                                              String detailedReleaseNotesLink, String vcsCommitsLink) {
         return "Authors: [" + contributions.getAuthorCount() + "](" + detailedReleaseNotesLink + ")"
-                + ", commits: " + contributions.getAllCommits().size()
+                + ", commits: [" + contributions.getAllCommits().size() + "](" + vcsCommitsLink + ")"
                 + ", improvements: [" + improvementCount + "](" + detailedReleaseNotesLink + ").";
     }
 }

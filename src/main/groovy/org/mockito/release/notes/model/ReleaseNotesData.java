@@ -27,4 +27,14 @@ public interface ReleaseNotesData {
      * Improvements (issues, pull requests from issue tracker)
      */
     Collection<Improvement> getImprovements();
+
+    /**
+     * The vcs addressable tag of this version
+     */
+    String getVcsTag();
+
+    /**
+     * The vcs addressable tag of previous version
+     */
+    String getPreviousVersionVcsTag();
 }

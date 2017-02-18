@@ -12,14 +12,18 @@ public class DefaultReleaseNotesData implements ReleaseNotesData {
     private final Date date;
     private final ContributionSet contributions;
     private final Collection<Improvement> improvements;
+    private final String previousVersionTag;
+    private final String thisVersionTag;
 
     public DefaultReleaseNotesData(String version, Date date, ContributionSet contributions,
-                                   Collection<Improvement> improvements) {
+                                   Collection<Improvement> improvements, String previousVersionTag, String thisVersionTag) {
 
         this.version = version;
         this.date = date;
         this.contributions = contributions;
         this.improvements = improvements;
+        this.previousVersionTag = previousVersionTag;
+        this.thisVersionTag = thisVersionTag;
     }
 
     @Override
@@ -40,5 +44,15 @@ public class DefaultReleaseNotesData implements ReleaseNotesData {
     @Override
     public Collection<Improvement> getImprovements() {
         return improvements;
+    }
+
+    @Override
+    public String getVcsTag() {
+        return thisVersionTag;
+    }
+
+    @Override
+    public String getPreviousVersionVcsTag() {
+        return previousVersionTag;
     }
 }

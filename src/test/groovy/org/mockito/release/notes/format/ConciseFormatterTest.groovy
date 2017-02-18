@@ -19,8 +19,8 @@ class ConciseFormatterTest extends Specification {
 
         def i2 = [new DefaultImprovement(105, "Big change", "http://issues/105", [], true)]
 
-        def data = [new DefaultReleaseNotesData("1.1.0", new Date(1486700000000), c, i2),
-                    new DefaultReleaseNotesData("1.0.0", new Date(1486200000000), c, i1)]
+        def data = [new DefaultReleaseNotesData("1.1.0", new Date(1486700000000), c, i2, "v1.0.0", "v1.1.0"),
+                    new DefaultReleaseNotesData("1.0.0", new Date(1486200000000), c, i1, "v0.0.9", "v1.0.0")]
 
         when:
         def text = new ConciseFormatter("Mockito release notes:\n\n", "http://release-notes").formatReleaseNotes(data)
@@ -30,13 +30,13 @@ class ConciseFormatterTest extends Specification {
 
 ### 1.1.0 - 2017-02-10 04:13
 
-Authors: [2](http://release-notes), commits: 2, improvements: [1](http://release-notes).
+Authors: [2](http://release-notes), commits: [2](https://github.com/mockito/mockito/compare/v1.0.0...v1.1.0), improvements: [1](http://release-notes).
 
  * Big change [(#105)](http://issues/105)
 
 ### 1.0.0 - 2017-02-04 09:20
 
-Authors: [2](http://release-notes), commits: 2, improvements: [2](http://release-notes).
+Authors: [2](http://release-notes), commits: [2](https://github.com/mockito/mockito/compare/v0.0.9...v1.0.0), improvements: [2](http://release-notes).
 
  * Fixed issue [(#100)](http://issues/100)
  * New feature [(#103)](http://issues/103)

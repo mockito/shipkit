@@ -39,7 +39,7 @@ class DefaultReleaseNotesGenerator implements ReleaseNotesGenerator {
 
             ContributionSet contributions = contributionsProvider.getContributionsBetween(fromRev, toRev);
             Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, gitHubLabels, onlyPullRequests);
-            out.add(new DefaultReleaseNotesData(to, releaseDates.get(to), contributions, improvements));
+            out.add(new DefaultReleaseNotesData(to, releaseDates.get(to), contributions, improvements, fromRev, toRev));
 
             //next version
             to = v;
