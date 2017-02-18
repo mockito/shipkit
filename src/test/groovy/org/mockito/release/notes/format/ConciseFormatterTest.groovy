@@ -7,6 +7,9 @@ import spock.lang.Specification
 
 class ConciseFormatterTest extends Specification {
 
+    /*
+    TODO SF add more useful information to the concise report (like number of contributions)
+    */
     def "formats notes"() {
         def c = Stub(ContributionSet)
         def i1 = [new DefaultImprovement(100, "Fixed issue", "http://issues/100", ["bugfix"], true),
