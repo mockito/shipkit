@@ -24,11 +24,14 @@ public class ReleaseNotesFormatters {
 
     /**
      * Returns the concise formatter intended to use for notable releases
-     *
-     * @param introductionText text to be placed on the top of the release notes content
+     *  @param introductionText text to be placed on the top of the release notes content
      * @param detailedReleaseNotesLink link to detailed release notes used in the report
+     * @param vcsCommitsLinkTemplate template to generate link to vcs view of the commits.
+     *                               For example: https://github.com/mockito/mockito/compare/{0}...{1}".
+     *                               When template is formatted, 1st arg will be "fromRevision", 2nd will be "toRevision".
+     *
      */
-    public static MultiReleaseNotesFormatter conciseFormatter(String introductionText, String detailedReleaseNotesLink) {
-        return new ConciseFormatter(introductionText, detailedReleaseNotesLink);
+    public static MultiReleaseNotesFormatter conciseFormatter(String introductionText, String detailedReleaseNotesLink, String vcsCommitsLinkTemplate) {
+        return new ConciseFormatter(introductionText, detailedReleaseNotesLink, vcsCommitsLinkTemplate);
     }
 }

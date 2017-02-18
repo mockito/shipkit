@@ -5,14 +5,18 @@ import org.mockito.release.notes.model.ContributionSet;
 import org.mockito.release.notes.model.Improvement;
 import org.mockito.release.notes.model.ReleaseNotesData;
 
+import java.text.MessageFormat;
+
 class ConciseFormatter implements MultiReleaseNotesFormatter {
 
     private final String introductionText;
     private final String detailedReleaseNotesLink;
+    private final String vcsCommitsLinkTemplate;
 
-    public ConciseFormatter(String introductionText, String detailedReleaseNotesLink) {
+    public ConciseFormatter(String introductionText, String detailedReleaseNotesLink, String vcsCommitsLinkTemplate) {
         this.introductionText = introductionText;
         this.detailedReleaseNotesLink = detailedReleaseNotesLink;
+        this.vcsCommitsLinkTemplate = vcsCommitsLinkTemplate;
     }
 
     public String formatReleaseNotes(Iterable<ReleaseNotesData> data) {
@@ -21,9 +25,7 @@ class ConciseFormatter implements MultiReleaseNotesFormatter {
             sb.append("### ").append(d.getVersion()).append(" - ").append(DateFormat.formatDate(d.getDate()))
                     .append("\n\n");
 
-            //TODO SF make the link configurable
-            String vcsCommitsLink = "https://github.com/mockito/mockito/compare/"
-                    + d.getPreviousVersionVcsTag() + "..." + d.getVcsTag();
+            String vcsCommitsLink = MessageFormat.format(vcsCommitsLinkTemplate, d.getPreviousVersionVcsTag(), d.getVcsTag());
 
             String contributions = formatContributions(d.getContributions(), d.getImprovements().size(), detailedReleaseNotesLink, vcsCommitsLink);
             sb.append(contributions).append("\n\n");

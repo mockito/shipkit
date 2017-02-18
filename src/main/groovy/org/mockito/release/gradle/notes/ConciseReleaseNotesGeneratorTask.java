@@ -22,6 +22,7 @@ public class ConciseReleaseNotesGeneratorTask extends DefaultTask {
     private boolean onlyPullRequests;
     private String introductionText;
     private String detailedReleaseNotesLink;
+    private String vcsCommitsLinkTemplate;
 
     @TaskAction public void generateReleaseNotes() {
 
@@ -29,7 +30,7 @@ public class ConciseReleaseNotesGeneratorTask extends DefaultTask {
 
         ReleaseNotesGenerator generator = ReleaseNotesGenerators.releaseNotesGenerator(gitWorkingDir, gitHubAuthToken);
         Collection<ReleaseNotesData> releaseNotes = generator.generateReleaseNotesData(targetVersions, tagPrefix, gitHubLabels, onlyPullRequests);
-        String notes = ReleaseNotesFormatters.conciseFormatter(introductionText, detailedReleaseNotesLink).formatReleaseNotes(releaseNotes);
+        String notes = ReleaseNotesFormatters.conciseFormatter(introductionText, detailedReleaseNotesLink, vcsCommitsLinkTemplate).formatReleaseNotes(releaseNotes);
         IOUtil.writeFile(outputFile, notes);
     }
 }

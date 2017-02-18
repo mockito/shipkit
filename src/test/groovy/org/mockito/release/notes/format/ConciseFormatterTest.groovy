@@ -23,7 +23,8 @@ class ConciseFormatterTest extends Specification {
                     new DefaultReleaseNotesData("1.0.0", new Date(1486200000000), c, i1, "v0.0.9", "v1.0.0")]
 
         when:
-        def text = new ConciseFormatter("Mockito release notes:\n\n", "http://release-notes").formatReleaseNotes(data)
+        def text = new ConciseFormatter("Mockito release notes:\n\n",
+                "http://release-notes", "https://github.com/mockito/mockito/compare/{0}...{1}").formatReleaseNotes(data)
 
         then:
         text == """Mockito release notes:
