@@ -32,11 +32,11 @@ class ReleaseNotesExtension {
     //TODO SF coverage
     private void assertConfigured() {
         if (notesFile == null || !notesFile.isFile()) {
-            throw new GradleException("'notesFile' must be configured and the file must be present.\n" +
+            throw new GradleException("'notesFile' must be configured and the file must be present.\n"
                     + "Example: ${EXT_NAME}.notesFile = project.file('docs/release-notes.md')")
         }
         if (!authToken) {
-            throw new GradleException("'authToken' must be configured.\n" +
+            throw new GradleException("'authToken' must be configured.\n"
                     + "Example: ${EXT_NAME}.authToken = 'secret'")
         }
     }
@@ -72,7 +72,8 @@ class ReleaseNotesExtension {
         def generator = ReleaseNotesGenerators.releaseNotesGenerator(workDir, authToken);
         def releaseNotes = generator.generateReleaseNotesData(
                 ["2.7.5", "2.7.4", "2.7.3"], "v", [], true);
-        def formatter = ReleaseNotesFormatters.detailedFormatter("Detailed release notes:\n\n", "http://link", "https://github.com/mockito/mockito/compare/{0}...{1}")
+        def formatter = ReleaseNotesFormatters.detailedFormatter(
+                "Detailed release notes:\n\n", labels, "https://github.com/mockito/mockito/compare/{0}...{1}")
         return formatter.formatReleaseNotes(releaseNotes);
     }
 }
