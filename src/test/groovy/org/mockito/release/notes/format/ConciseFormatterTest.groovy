@@ -44,4 +44,18 @@ Authors: [2](http://release-notes), commits: [2](https://github.com/mockito/mock
 
 """
     }
+
+    def "empty release notes"() {
+        def data = [new DefaultReleaseNotesData("1.1.0", new Date(1486700000000), Stub(ContributionSet), [], "v1.0.0", "v1.1.0")]
+
+        when:
+        def text = new ConciseFormatter(null, "http://detailed", "http://commits").formatReleaseNotes(data)
+
+        then:
+        text == """### 1.1.0 - 2017-02-10
+
+No code changes. No commits found.
+
+"""
+    }
 }

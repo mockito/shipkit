@@ -40,22 +40,23 @@ Authors: 5 (link to details rn), commits: 40 (link to commits), improvements: 12
 * LiamClark: New verification listeners [(#719)](https://github.com/mockito/mockito/pull/719)
 * Brice Dutheil: Enable annotation engine as plugin [(#811)](https://github.com/mockito/mockito/pull/811)
 
+### 2.4.0 - 2016-12-21
+
+* Szczepan Faber: JUnit runner reports argument stubbing mismatches [(#808)](https://github.com/mockito/mockito/pull/808)
+* jakobjo: Verification listeners [(#719)](https://github.com/mockito/mockito/pull/719)
+* Brice Dutheil: Introduce validable answers [(#826)](https://github.com/mockito/mockito/pull/826)
+* Rafael Winterhalter: StackOverflow occurs when mocking a HashMap with inline mockmaker [(#823)](https://github.com/mockito/mockito/pull/823)
+* Brice Dutheil: Verification using After and ArgumentCaptor with Times or AtLeast methods returns unexpected size of captured values list [(#379)](https://github.com/mockito/mockito/issues/379)
+* LiamClark: New verification listeners [(#719)](https://github.com/mockito/mockito/pull/719)
+* Brice Dutheil: Enable annotation engine as plugin [(#811)](https://github.com/mockito/mockito/pull/811)
+
 ### 2.3.0 - 2016-12-10
 
-* Szczepan Faber: New opt-in stubbing strictness implemented in JUnit rules [(#807)](https://github.com/mockito/mockito/pull/807)
-* Brice Dutheil: Mockito 2 fails when running on IBM J9 (SR1 FP10) VM [(#801)](https://github.com/mockito/mockito/issues/801)
-* Brice Dutheil: Deep stubs no longer cause unnecessary stubbing exception with JUnit runner [(#795)](https://github.com/mockito/mockito/pull/795)
-* Brice Dutheil: Add default answers for java.util.Optional{Double,Int,Long} and java.util.stream.{Double,Int,Long}Stream [(#781)](https://github.com/mockito/mockito/issues/781)
-* Rafael Winterhalter: Fixes Mockito 2.2.17 regression: `mock-maker-inline` drops `-parameters` [(#764)](https://github.com/mockito/mockito/issues/764)
-* Brice Dutheil: Regroup Junit classes in junit packages [(#748)](https://github.com/mockito/mockito/pull/748)
-* Rafael Winterhalter: "mock-maker-inline" prevents collection of code coverage for spys [(#757)](https://github.com/mockito/mockito/issues/757)
-* Szczepan Faber: Exposed existing verification API so that it no longer leaks internal API [(#735)](https://github.com/mockito/mockito/pull/735)
-* Brice Dutheil: New nullable(Class<T>) matcher for convenient matching of nullable arguments [(#734)](https://github.com/mockito/mockito/pull/734)
-* Brice Dutheil: Improve usability of arity Answers with regards to checked exceptions [(#707)](https://github.com/mockito/mockito/issues/707)
-* Szczepan Faber: New MockingDetails.printInvocations() API for debugging tests and edge cases [(#543)](https://github.com/mockito/mockito/issues/543)
-* Rafael Winterhalter: Fails to create mock of inner class hierarchy with type variable from outer class [(#699)](https://github.com/mockito/mockito/issues/699)
-* Szczepan Faber: new API MockingDetails.getStubbings() for advanced users and integrations [(#542)](https://github.com/mockito/mockito/issues/542)
-* Rafael Winterhalter: Enabled mocking interface clone method [(#688)](https://github.com/mockito/mockito/issues/688)
+No code changes. No commits found.
+
+### 2.2.5 - 2016-12-05
+
+No notable improvements. No pull requests were referenced from [commits]().
 
 ### 2.2.0 - 2016-10-09
 

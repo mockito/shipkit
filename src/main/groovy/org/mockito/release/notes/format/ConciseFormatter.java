@@ -20,18 +20,23 @@ class ConciseFormatter implements MultiReleaseNotesFormatter {
     }
 
     public String formatReleaseNotes(Iterable<ReleaseNotesData> data) {
-        StringBuilder sb = new StringBuilder(introductionText);
+        StringBuilder sb = new StringBuilder(introductionText == null? "":introductionText);
         for (ReleaseNotesData d : data) {
             sb.append("### ").append(d.getVersion()).append(" - ").append(DateFormat.formatDate(d.getDate()))
                     .append("\n\n");
 
-            String vcsCommitsLink = MessageFormat.format(vcsCommitsLinkTemplate, d.getPreviousVersionVcsTag(), d.getVcsTag());
+            if (d.getContributions().getAllCommits().isEmpty()) {
+                sb.append("No code changes. No commits found.\n");
+            } else {
 
-            String contributions = formatContributions(d.getContributions(), d.getImprovements().size(), detailedReleaseNotesLink, vcsCommitsLink);
-            sb.append(contributions).append("\n\n");
+                String vcsCommitsLink = MessageFormat.format(vcsCommitsLinkTemplate, d.getPreviousVersionVcsTag(), d.getVcsTag());
 
-            for (Improvement i : d.getImprovements()) {
-                sb.append(" * ").append(CommonFormatting.format(i)).append("\n");
+                String contributions = formatContributions(d.getContributions(), d.getImprovements().size(), detailedReleaseNotesLink, vcsCommitsLink);
+                sb.append(contributions).append("\n\n");
+
+                for (Improvement i : d.getImprovements()) {
+                    sb.append(" * ").append(CommonFormatting.format(i)).append("\n");
+                }
             }
 
             sb.append("\n");
