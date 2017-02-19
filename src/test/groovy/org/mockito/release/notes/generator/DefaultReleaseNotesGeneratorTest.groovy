@@ -22,7 +22,7 @@ class DefaultReleaseNotesGeneratorTest extends Specification {
         def date1 = new Date(1487000000000), date2 = new Date(1488000000000)
 
         when:
-        def notes = gen.generateReleaseNotes(["1.2.0", "1.1.0", "1.0.0"], "v", ["bugfix"], true)
+        def notes = gen.generateReleaseNotesData(["1.2.0", "1.1.0", "1.0.0"], "v", ["bugfix"], true)
 
         then:
         releaseDateProvider.getReleaseDates(["1.2.0", "1.1.0", "1.0.0"], "v") >> ["1.2.0": date1, "1.1.0": date2]
@@ -47,7 +47,7 @@ class DefaultReleaseNotesGeneratorTest extends Specification {
         def i1 = [Stub(Improvement)]
 
         when:
-        def notes = gen.generateReleaseNotes(["1.1.0", "1.0.0"], "", ["notable"], false)
+        def notes = gen.generateReleaseNotesData(["1.1.0", "1.0.0"], "", ["notable"], false)
 
         then:
         1 * contributionsProvider.getContributionsBetween("1.0.0", "1.1.0") >> c1
@@ -61,7 +61,7 @@ class DefaultReleaseNotesGeneratorTest extends Specification {
         def workDir = new File("/Users/sfaber/mockito/src");
         def authToken = "a0a4c0f41c200f7c653323014d6a72a127764e17"
         def gen = ReleaseNotesGenerators.releaseNotesGenerator(workDir, authToken)
-        def notes = gen.generateReleaseNotes(["2.7.0", "2.6.1", "2.5.0", "2.4.0"], "v", ["noteworthy"], true)
+        def notes = gen.generateReleaseNotesData(["2.7.0", "2.6.1", "2.5.0", "2.4.0"], "v", ["noteworthy"], true)
 
         expect:
         println ReleaseNotesFormatters.conciseFormatter("Release notes:\n\n").formatReleaseNotes(notes)

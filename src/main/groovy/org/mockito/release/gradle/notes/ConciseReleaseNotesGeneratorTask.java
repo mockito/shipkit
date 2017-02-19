@@ -21,14 +21,16 @@ public class ConciseReleaseNotesGeneratorTask extends DefaultTask {
     private File outputFile;
     private boolean onlyPullRequests;
     private String introductionText;
+    private String detailedReleaseNotesLink;
+    private String vcsCommitsLinkTemplate;
 
     @TaskAction public void generateReleaseNotes() {
 
         //TODO SF this task is not functioning, I'm using it only to model the public API of interfaces I need.
 
         ReleaseNotesGenerator generator = ReleaseNotesGenerators.releaseNotesGenerator(gitWorkingDir, gitHubAuthToken);
-        Collection<ReleaseNotesData> releaseNotes = generator.generateReleaseNotes(targetVersions, tagPrefix, gitHubLabels, onlyPullRequests);
-        String notes = ReleaseNotesFormatters.conciseFormatter(introductionText).formatReleaseNotes(releaseNotes);
+        Collection<ReleaseNotesData> releaseNotes = generator.generateReleaseNotesData(targetVersions, tagPrefix, gitHubLabels, onlyPullRequests);
+        String notes = ReleaseNotesFormatters.conciseFormatter(introductionText, detailedReleaseNotesLink, vcsCommitsLinkTemplate).formatReleaseNotes(releaseNotes);
         IOUtil.writeFile(outputFile, notes);
     }
 }

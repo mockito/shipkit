@@ -22,7 +22,7 @@ public interface ReleaseNotesGenerator {
      *                     The report should be concise so please include small set of labels.
      * @param onlyPullRequests only include pull requests in the data
      */
-    Collection<ReleaseNotesData> generateReleaseNotes(Collection<String> targetVersions,
-                                                      String tagPrefix, Collection<String> gitHubLabels,
-                                                      boolean onlyPullRequests);
+    Collection<ReleaseNotesData> generateReleaseNotesData(Collection<String> targetVersions,
+                                                          String tagPrefix, Collection<String> gitHubLabels,
+                                                          boolean onlyPullRequests);
 }

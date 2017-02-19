@@ -4,12 +4,12 @@ Mockito Continuous Delivery Pipeline automatically generates detailed release no
 
 Authors: 5 (link to details rn), commits: 40 (link to commits), improvements: 12 (link to details rn), notable:
 
-* New strict mocking API - MockitoSession [(#857)](https://github.com/mockito/mockito/issues/857), Szczepan Faber.
-* Fix TypeCache dead lock [(#902)](https://github.com/mockito/mockito/pull/902), Brice Dutheil.
-* Mockito 2.6.4 hangs on JDK 1.8.0_31 [(#892)](https://github.com/mockito/mockito/issues/892), Rafael Winterhalter.
-* Overridden abstract methods using generics are not longer called for partial mock (working with Mockito 1.10.19) [(#874)](https://github.com/mockito/mockito/issues/874), Brice Dutheil.
-* Update to Byte Buddy 1.6.4: Fixes bridge method resolution for generic types [(#891)](https://github.com/mockito/mockito/pull/891), Brice Dutheil.
-* Java 9 support, upgrading to Objenesis 2.5 [(#882)](https://github.com/mockito/mockito/issues/882), Allon Murienik.
+* New strict mocking API - MockitoSession [(#857)](https://github.com/mockito/mockito/issues/857)
+* Fix TypeCache dead lock [(#902)](https://github.com/mockito/mockito/pull/902)
+* Mockito 2.6.4 hangs on JDK 1.8.0_31 [(#892)](https://github.com/mockito/mockito/issues/892)
+* Overridden abstract methods using generics are not longer called for partial mock (working with Mockito 1.10.19) [(#874)](https://github.com/mockito/mockito/issues/874)
+* Update to Byte Buddy 1.6.4: Fixes bridge method resolution for generic types [(#891)](https://github.com/mockito/mockito/pull/891)
+* Java 9 support, upgrading to Objenesis 2.5 [(#882)](https://github.com/mockito/mockito/issues/882)
 
 ### 2.6.1 - 2017-01-12
 

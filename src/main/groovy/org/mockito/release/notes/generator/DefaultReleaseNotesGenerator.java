@@ -22,8 +22,8 @@ class DefaultReleaseNotesGenerator implements ReleaseNotesGenerator {
         this.releaseDateProvider = releaseDateProvider;
     }
 
-    public Collection<ReleaseNotesData> generateReleaseNotes(Collection<String> targetVersions, String tagPrefix,
-                                                             Collection<String> gitHubLabels, boolean onlyPullRequests) {
+    public Collection<ReleaseNotesData> generateReleaseNotesData(Collection<String> targetVersions, String tagPrefix,
+                                                                 Collection<String> gitHubLabels, boolean onlyPullRequests) {
         List<ReleaseNotesData> out = new LinkedList<ReleaseNotesData>();
 
         Map<String, Date> releaseDates = releaseDateProvider.getReleaseDates(targetVersions, tagPrefix);
@@ -39,7 +39,7 @@ class DefaultReleaseNotesGenerator implements ReleaseNotesGenerator {
 
             ContributionSet contributions = contributionsProvider.getContributionsBetween(fromRev, toRev);
             Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, gitHubLabels, onlyPullRequests);
-            out.add(new DefaultReleaseNotesData(to, releaseDates.get(to), contributions, improvements));
+            out.add(new DefaultReleaseNotesData(to, releaseDates.get(to), contributions, improvements, fromRev, toRev));
 
             //next version
             to = v;
