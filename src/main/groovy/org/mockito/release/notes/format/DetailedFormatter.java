@@ -3,6 +3,7 @@ package org.mockito.release.notes.format;
 import org.mockito.release.notes.internal.DateFormat;
 import org.mockito.release.notes.model.Contribution;
 import org.mockito.release.notes.model.ContributionSet;
+import org.mockito.release.notes.model.Improvement;
 import org.mockito.release.notes.model.ReleaseNotesData;
 
 import java.util.Collection;
@@ -35,7 +36,7 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
 
             if (!d.getContributions().getContributions().isEmpty()) {
                 //no point printing any improvements information if there are no code changes
-                sb.append(formatImprovements(d));
+                sb.append(formatImprovements(d.getImprovements()));
             }
 
             sb.append("\n");
@@ -44,11 +45,17 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         return sb.toString().trim();
     }
 
-    private String formatImprovements(ReleaseNotesData d) {
-        if (d.getImprovements().isEmpty()) {
+    static String formatImprovements(Collection<Improvement> improvements) {
+        if (improvements.isEmpty()) {
             return ":cocktail: No pull requests referenced in commit messages.";
         }
-        return "";
+        StringBuilder sb = new StringBuilder();
+        for (Improvement i : improvements) {
+            sb.append(":cocktail: ").append(i.getTitle())
+                    .append(" [(#").append(i.getId()).append(")](")
+                    .append(i.getUrl()).append(")").append("\n");
+        }
+        return sb.toString().trim();
     }
 
     private static String releaseHeadline(ContributionSet contributions) {
