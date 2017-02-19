@@ -1,6 +1,9 @@
 package org.mockito.release.notes.format
 
+import org.mockito.release.notes.internal.DefaultImprovement
 import org.mockito.release.notes.internal.DefaultReleaseNotesData
+import org.mockito.release.notes.model.Commit
+import org.mockito.release.notes.model.Contribution
 import org.mockito.release.notes.model.ContributionSet
 import spock.lang.Specification
 
@@ -28,6 +31,18 @@ No release information."""
     }
 
     def "no improvements"() {
+        def c = Stub(ContributionSet) {
+            getAllCommits() >> [Stub(Commit)]
+            getAuthorCount() >> 1
+            getContributions() >> [Stub(Contribution) { getAuthorName() >> "Szczepan Faber"}]
+        }
 
+        def d = new DefaultReleaseNotesData("2.0.0", new Date(1483500000000), c, [], "v1.9.0", "v2.0.0")
+
+        expect:
+        f.formatReleaseNotes([d]) == """Release notes:
+
+**2.0.0** - 1 commit by Szczepan Faber - *2017-01-04*
+:cocktail: No pull requests referenced in commit messages."""
     }
 }

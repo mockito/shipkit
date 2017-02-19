@@ -1,6 +1,8 @@
 package org.mockito.release.notes.format;
 
 import org.mockito.release.notes.internal.DateFormat;
+import org.mockito.release.notes.model.Contribution;
+import org.mockito.release.notes.model.ContributionSet;
 import org.mockito.release.notes.model.ReleaseNotesData;
 
 import java.util.Collection;
@@ -28,12 +30,47 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
 
         for (ReleaseNotesData d : data) {
             sb.append("**").append(d.getVersion()).append("** - ");
-            if (d.getContributions().getContributions().isEmpty()) {
-                sb.append("no code changes (no commits) - ");
+            sb.append(releaseHeadline(d.getContributions()));
+            sb.append(" - *").append(DateFormat.formatDate(d.getDate())).append("*\n");
+
+            if (!d.getContributions().getContributions().isEmpty()) {
+                //no point printing any improvements information if there are no code changes
+                sb.append(formatImprovements(d));
             }
-            sb.append("*").append(DateFormat.formatDate(d.getDate())).append("*\n\n");
+
+            sb.append("\n");
         }
 
         return sb.toString().trim();
+    }
+
+    private String formatImprovements(ReleaseNotesData d) {
+        if (d.getImprovements().isEmpty()) {
+            return ":cocktail: No pull requests referenced in commit messages.";
+        }
+        return "";
+    }
+
+    private static String releaseHeadline(ContributionSet contributions) {
+        if (contributions.getContributions().isEmpty()) {
+            return "no code changes (no commits)";
+        }
+        StringBuilder sb = new StringBuilder();
+        String commits = pluralize(contributions.getAllCommits().size(), "commit");
+        sb.append(commits).append(" by ").append(allAuthors(contributions));
+        return sb.toString();
+    }
+
+    private static String allAuthors(ContributionSet contributions) {
+        StringBuilder sb = new StringBuilder();
+        for (Contribution c : contributions.getContributions()) {
+            sb.append(c.getAuthorName()).append(", ");
+        }
+
+        return sb.substring(0, sb.length() - 2); //lose trailing ", "
+    }
+
+    private static String pluralize(int size, String singularNoun) {
+        return "" + size + " " + ((size == 1)? singularNoun : singularNoun + "s");
     }
 }
