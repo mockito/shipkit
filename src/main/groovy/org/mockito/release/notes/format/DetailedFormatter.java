@@ -1,7 +1,9 @@
 package org.mockito.release.notes.format;
 
+import org.mockito.release.notes.internal.DateFormat;
 import org.mockito.release.notes.model.ReleaseNotesData;
 
+import java.util.Collection;
 import java.util.Map;
 
 class DetailedFormatter implements MultiReleaseNotesFormatter {
@@ -17,7 +19,21 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
     }
 
     @Override
-    public String formatReleaseNotes(Iterable<ReleaseNotesData> data) {
-        return null;
+    public String formatReleaseNotes(Collection<ReleaseNotesData> data) {
+        StringBuilder sb = new StringBuilder(introductionText == null? "": introductionText);
+        if (data.isEmpty()) {
+            sb.append("No release information.");
+            return sb.toString();
+        }
+
+        for (ReleaseNotesData d : data) {
+            sb.append("**").append(d.getVersion()).append("** - ");
+            if (d.getContributions().getContributions().isEmpty()) {
+                sb.append("no code changes (no commits) - ");
+            }
+            sb.append("*").append(DateFormat.formatDate(d.getDate())).append("*\n\n");
+        }
+
+        return sb.toString().trim();
     }
 }

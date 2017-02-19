@@ -6,6 +6,7 @@ import org.mockito.release.notes.model.Improvement;
 import org.mockito.release.notes.model.ReleaseNotesData;
 
 import java.text.MessageFormat;
+import java.util.Collection;
 
 class NotableFormatter implements MultiReleaseNotesFormatter {
 
@@ -19,7 +20,7 @@ class NotableFormatter implements MultiReleaseNotesFormatter {
         this.vcsCommitsLinkTemplate = vcsCommitsLinkTemplate;
     }
 
-    public String formatReleaseNotes(Iterable<ReleaseNotesData> data) {
+    public String formatReleaseNotes(Collection<ReleaseNotesData> data) {
         StringBuilder sb = new StringBuilder(introductionText == null? "":introductionText);
         for (ReleaseNotesData d : data) {
             sb.append("### ").append(d.getVersion()).append(" - ").append(DateFormat.formatDate(d.getDate()))
