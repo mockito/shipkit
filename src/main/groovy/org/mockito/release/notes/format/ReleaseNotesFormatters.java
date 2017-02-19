@@ -19,7 +19,7 @@ public class ReleaseNotesFormatters {
      *  the formatter can use the order of label mappings. For example, 'noteworthy' labelled improvements on top.
      */
     public static SingleReleaseNotesFormatter defaultFormatter(Map<String, String> labelMapping) {
-        return new DefaultFormatter(labelMapping);
+        return new DefaultFormatter(labelMapping, null);
     }
 
     /**
@@ -33,5 +33,21 @@ public class ReleaseNotesFormatters {
      */
     public static MultiReleaseNotesFormatter notableFormatter(String introductionText, String detailedReleaseNotesLink, String vcsCommitsLinkTemplate) {
         return new NotableFormatter(introductionText, detailedReleaseNotesLink, vcsCommitsLinkTemplate);
+    }
+
+    /**
+     * Returns the detailed formatter intended to use for all releases
+     *
+     * @param introductionText text to be placed on the top of the release notes content
+     * @param notableReleaseNotesLink link to notable release notes used in the report
+     * @param vcsCommitsLinkTemplate template to generate link to vcs view of the commits.
+     *                               For example: https://github.com/mockito/mockito/compare/{0}...{1}".
+     *                               When template is formatted, 1st arg will be "fromRevision", 2nd will be "toRevision".
+     *
+     */
+    public static MultiReleaseNotesFormatter detailedFormatter(String introductionText,
+                                                               String notableReleaseNotesLink,
+                                                               String vcsCommitsLinkTemplate) {
+        return new DetailedFormatter(introductionText, notableReleaseNotesLink, vcsCommitsLinkTemplate);
     }
 }
