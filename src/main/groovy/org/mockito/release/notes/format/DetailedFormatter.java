@@ -58,7 +58,7 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         return sb.toString().trim();
     }
 
-    private static String releaseHeadline(ContributionSet contributions) {
+    static String releaseHeadline(ContributionSet contributions) {
         if (contributions.getContributions().isEmpty()) {
             return "no code changes (no commits)";
         }

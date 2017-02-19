@@ -59,4 +59,33 @@ No release information."""
         DetailedFormatter.formatImprovements(i) == """:cocktail: Fixed issue [(#100)](http://issues/100)
 :cocktail: New feature [(#103)](http://issues/103)"""
     }
+
+    def "release headline with no commits"() {
+        expect:
+        DetailedFormatter.releaseHeadline(Stub(ContributionSet)) == "no code changes (no commits)"
+    }
+
+    def "release headline with 1 commit"() {
+        def c = Stub(ContributionSet) {
+            getAllCommits() >> [Stub(Commit)]
+            getAuthorCount() >> 1
+            getContributions() >> [Stub(Contribution) { getAuthorName() >> "Szczepan Faber"}]
+        }
+
+        expect:
+        DetailedFormatter.releaseHeadline(c) == "1 commit by Szczepan Faber"
+    }
+
+    def "release headline with multiple authors"() {
+        def c = Stub(ContributionSet) {
+            getAllCommits() >> [Stub(Commit), Stub(Commit), Stub(Commit), Stub(Commit)]
+            getAuthorCount() >> 2
+            getContributions() >> [
+                    Stub(Contribution) { getAuthorName() >> "Szczepan Faber"},
+                    Stub(Contribution) { getAuthorName() >> "Brice Dutheil"}]
+        }
+
+        expect:
+        DetailedFormatter.releaseHeadline(c) == "4 commits by Szczepan Faber, Brice Dutheil"
+    }
 }
