@@ -11,7 +11,7 @@ import org.mockito.release.notes.util.IOUtil;
 import java.io.File;
 import java.util.Collection;
 
-public class ConciseReleaseNotesGeneratorTask extends DefaultTask {
+public class NotableReleaseNotesGeneratorTask extends DefaultTask {
 
     private File gitWorkingDir;
     private String gitHubAuthToken;
@@ -30,7 +30,7 @@ public class ConciseReleaseNotesGeneratorTask extends DefaultTask {
 
         ReleaseNotesGenerator generator = ReleaseNotesGenerators.releaseNotesGenerator(gitWorkingDir, gitHubAuthToken);
         Collection<ReleaseNotesData> releaseNotes = generator.generateReleaseNotesData(targetVersions, tagPrefix, gitHubLabels, onlyPullRequests);
-        String notes = ReleaseNotesFormatters.conciseFormatter(introductionText, detailedReleaseNotesLink, vcsCommitsLinkTemplate).formatReleaseNotes(releaseNotes);
+        String notes = ReleaseNotesFormatters.notableFormatter(introductionText, detailedReleaseNotesLink, vcsCommitsLinkTemplate).formatReleaseNotes(releaseNotes);
         IOUtil.writeFile(outputFile, notes);
     }
 }

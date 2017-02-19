@@ -31,7 +31,7 @@ public class ReleaseNotesFormatters {
      *                               When template is formatted, 1st arg will be "fromRevision", 2nd will be "toRevision".
      *
      */
-    public static MultiReleaseNotesFormatter conciseFormatter(String introductionText, String detailedReleaseNotesLink, String vcsCommitsLinkTemplate) {
-        return new ConciseFormatter(introductionText, detailedReleaseNotesLink, vcsCommitsLinkTemplate);
+    public static MultiReleaseNotesFormatter notableFormatter(String introductionText, String detailedReleaseNotesLink, String vcsCommitsLinkTemplate) {
+        return new NotableFormatter(introductionText, detailedReleaseNotesLink, vcsCommitsLinkTemplate);
     }
 }

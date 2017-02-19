@@ -7,13 +7,13 @@ import org.mockito.release.notes.model.ReleaseNotesData;
 
 import java.text.MessageFormat;
 
-class ConciseFormatter implements MultiReleaseNotesFormatter {
+class NotableFormatter implements MultiReleaseNotesFormatter {
 
     private final String introductionText;
     private final String detailedReleaseNotesLink;
     private final String vcsCommitsLinkTemplate;
 
-    public ConciseFormatter(String introductionText, String detailedReleaseNotesLink, String vcsCommitsLinkTemplate) {
+    public NotableFormatter(String introductionText, String detailedReleaseNotesLink, String vcsCommitsLinkTemplate) {
         this.introductionText = introductionText;
         this.detailedReleaseNotesLink = detailedReleaseNotesLink;
         this.vcsCommitsLinkTemplate = vcsCommitsLinkTemplate;
