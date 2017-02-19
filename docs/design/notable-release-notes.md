@@ -56,7 +56,9 @@ No code changes. No commits found.
 
 ### 2.2.5 - 2016-12-05
 
-No notable improvements. No pull requests were referenced from [commits]().
+Authors: 1, commits: 5, improvements: 0
+
+No notable improvements. No pull requests were referenced from [commits](link).
 
 ### 2.2.0 - 2016-10-09
 

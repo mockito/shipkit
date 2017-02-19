@@ -58,4 +58,25 @@ No code changes. No commits found.
 
 """
     }
+
+    def "no improvements"() {
+        def c = Stub(ContributionSet) {
+            getAllCommits() >> [Stub(Commit), Stub(Commit)]
+            getAuthorCount() >> 2
+        }
+
+        def data = [new DefaultReleaseNotesData("1.1.0", new Date(1486700000000), c, [], "v1.0.0", "v1.1.0")]
+
+        when:
+        def text = new ConciseFormatter(null, "http://detailed", "http://commits/{0}..{1}").formatReleaseNotes(data)
+
+        then:
+        text == """### 1.1.0 - 2017-02-10
+
+Authors: [2](http://detailed), commits: [2](http://commits/v1.0.0..v1.1.0), improvements: [0](http://detailed).
+
+No notable improvements. No pull requests were referenced from [commits](http://commits/v1.0.0..v1.1.0).
+
+"""
+    }
 }

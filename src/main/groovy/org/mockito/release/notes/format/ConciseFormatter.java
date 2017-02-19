@@ -34,8 +34,14 @@ class ConciseFormatter implements MultiReleaseNotesFormatter {
                 String contributions = formatContributions(d.getContributions(), d.getImprovements().size(), detailedReleaseNotesLink, vcsCommitsLink);
                 sb.append(contributions).append("\n\n");
 
-                for (Improvement i : d.getImprovements()) {
-                    sb.append(" * ").append(CommonFormatting.format(i)).append("\n");
+                if (d.getImprovements().isEmpty()) {
+                    sb.append("No notable improvements. No pull requests were referenced from [commits](")
+                            .append(vcsCommitsLink)
+                            .append(").\n");
+                } else {
+                    for (Improvement i : d.getImprovements()) {
+                        sb.append(" * ").append(CommonFormatting.format(i)).append("\n");
+                    }
                 }
             }
 
