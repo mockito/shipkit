@@ -24,10 +24,10 @@ public class DateFormat {
     }
 
     /**
-     * Parses date in iso format, e.g. "yyyy-MM-dd HH:mm:ss Z"
+     * Formats date to most reasonable format to show on the release notes
      */
     public static String formatDate(Date date) {
-        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
         f.setTimeZone(TimeZone.getTimeZone("UTC"));
         return f.format(date);
     }
