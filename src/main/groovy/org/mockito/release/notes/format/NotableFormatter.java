@@ -28,7 +28,8 @@ class NotableFormatter implements MultiReleaseNotesFormatter {
             if (d.getContributions().getAllCommits().isEmpty()) {
                 sb.append("No code changes. No commits found.\n");
             } else {
-
+                //TODO SF formatter should not create link. Rather, the link should be a part of release notes data.
+                //This is not only cleaner but also avoid duplication of link formatting across formatters.
                 String vcsCommitsLink = MessageFormat.format(vcsCommitsLinkTemplate, d.getPreviousVersionVcsTag(), d.getVcsTag());
 
                 String contributions = formatContributions(d.getContributions(), d.getImprovements().size(), detailedReleaseNotesLink, vcsCommitsLink);
