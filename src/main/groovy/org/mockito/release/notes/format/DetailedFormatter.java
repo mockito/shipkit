@@ -7,9 +7,7 @@ import org.mockito.release.notes.model.Improvement;
 import org.mockito.release.notes.model.ReleaseNotesData;
 
 import java.text.MessageFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 class DetailedFormatter implements MultiReleaseNotesFormatter {
 
@@ -39,7 +37,7 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
 
             if (!d.getContributions().getContributions().isEmpty()) {
                 //no point printing any improvements information if there are no code changes
-                sb.append(formatImprovements(d.getImprovements()));
+                sb.append(formatImprovements(d.getImprovements(), labelMapping));
             }
 
             sb.append("\n");
@@ -63,17 +61,29 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         return sb.toString();
     }
 
-    static String formatImprovements(Collection<Improvement> improvements) {
+    static String formatImprovements(Collection<Improvement> improvements, Map<String, String> labelMapping) {
         if (improvements.isEmpty()) {
             return ":cocktail: No pull requests referenced in commit messages.";
         }
         StringBuilder sb = new StringBuilder();
         for (Improvement i : improvements) {
-            sb.append(":cocktail: ").append(i.getTitle())
+            sb.append(":cocktail: ").append(labelMapping(i.getLabels(), labelMapping))
+                    .append(i.getTitle())
                     .append(" [(#").append(i.getId()).append(")](")
                     .append(i.getUrl()).append(")").append("\n");
         }
         return sb.toString().trim();
+    }
+
+    //TODO SF add more unit test coverage
+    static String labelMapping(Collection<String> labels, Map<String, String> labelMapping) {
+        Set<String> labelSet = new HashSet<String>(labels);
+        for (String mappingKey : labelMapping.keySet()) {
+            if (labelSet.contains(mappingKey)) {
+                return "[" + labelMapping.get(mappingKey) + "] ";
+            }
+        }
+        return "";
     }
 
     static String authorsSummary(ContributionSet contributions, String vcsCommitsLink) {

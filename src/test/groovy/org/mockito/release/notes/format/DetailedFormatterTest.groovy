@@ -48,7 +48,7 @@ No release information."""
 
     def "formats no improvements"() {
         expect:
-        DetailedFormatter.formatImprovements([]) == ":cocktail: No pull requests referenced in commit messages."
+        DetailedFormatter.formatImprovements([], [:]) == ":cocktail: No pull requests referenced in commit messages."
     }
 
     def "formats few improvements"() {
@@ -56,7 +56,7 @@ No release information."""
                   new DefaultImprovement(103, "New feature", "http://issues/103", ["noteworthy"], true)]
 
         expect:
-        DetailedFormatter.formatImprovements(i) == """:cocktail: Fixed issue [(#100)](http://issues/100)
+        DetailedFormatter.formatImprovements(i, [bugfix: "Bugfixes"]) == """:cocktail: [Bugfixes] Fixed issue [(#100)](http://issues/100)
 :cocktail: New feature [(#103)](http://issues/103)"""
     }
 
