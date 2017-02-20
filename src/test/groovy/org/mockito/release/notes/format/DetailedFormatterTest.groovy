@@ -62,34 +62,32 @@ No release information."""
 
     def "release headline with no commits"() {
         expect:
-        DetailedFormatter.releaseHeadline(Stub(ContributionSet), "link") == "no code changes (no commits)"
+        DetailedFormatter.authorsSummary(Stub(ContributionSet), "link") == "no code changes (no commits)"
     }
 
-    def "release headline with 1 commit"() {
+    def "authors summary with 1 commit"() {
         def c = Stub(ContributionSet) {
             getAllCommits() >> [Stub(Commit)]
             getAuthorCount() >> 1
-            getContributions() >> [Stub(Contribution) { getAuthorName() >> "Szczepan Faber"}]
+            getContributions() >> [c("Szczepan Faber", 1)]
         }
 
         expect:
-        DetailedFormatter.releaseHeadline(c, "link") == "[1 commit](link) by Szczepan Faber"
+        DetailedFormatter.authorsSummary(c, "link") == "[1 commit](link) by Szczepan Faber"
     }
 
-    def "release headline with multiple authors"() {
+    def "authors summary with multiple authors"() {
         def c = Stub(ContributionSet) {
             getAllCommits() >> [Stub(Commit), Stub(Commit), Stub(Commit), Stub(Commit)]
             getAuthorCount() >> 2
-            getContributions() >> [
-                    Stub(Contribution) { getAuthorName() >> "Szczepan Faber"},
-                    Stub(Contribution) { getAuthorName() >> "Brice Dutheil"}]
+            getContributions() >> [ c("Szczepan Faber", 2), c("Brice Dutheil", 2)]
         }
 
         expect:
-        DetailedFormatter.releaseHeadline(c, "link") == "[4 commits](link) by Szczepan Faber, Brice Dutheil"
+        DetailedFormatter.authorsSummary(c, "link") == "[4 commits](link) by Szczepan Faber (2), Brice Dutheil (2)"
     }
 
-    def "release headline with many authors"() {
+    def "authors summary with many authors"() {
         def c = Stub(ContributionSet) {
             getAllCommits() >> [Stub(Commit)] * 100 //100 commits
             getAuthorCount() >> 10
@@ -97,6 +95,28 @@ No release information."""
         }
 
         expect:
-        DetailedFormatter.releaseHeadline(c, "link") == "[100 commits](link) by 10 authors"
+        DetailedFormatter.authorsSummary(c, "link") == "[100 commits](link) by 10 authors"
+    }
+
+    def "release notes with many authors"() {
+        def c = Stub(ContributionSet) {
+            getAllCommits() >> [Stub(Commit)] * 100 //100 commits
+            getAuthorCount() >> 4
+            getContributions() >> [ c("Szczepan Faber", 40),
+                                    c("Brice Dutheil", 30),
+                                    c("Rafael Winterhalter", 20),
+                                    c("Tim van der Lippe", 10)]
+        }
+
+        expect:
+        DetailedFormatter.releaseSummary(new Date(1483500000000), c, "link") == """[100 commits](link) by 4 authors - *2017-01-04*
+:cocktail: Commits: Szczepan Faber (40), Brice Dutheil (30), Rafael Winterhalter (20), Tim van der Lippe (10)"""
+    }
+
+    private Contribution c(String name, int commits) {
+        return Stub(Contribution) {
+            getAuthorName() >> name
+            getCommits() >> [Stub(Commit)] * commits
+        }
     }
 }

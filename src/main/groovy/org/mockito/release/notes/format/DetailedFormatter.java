@@ -8,6 +8,7 @@ import org.mockito.release.notes.model.ReleaseNotesData;
 
 import java.text.MessageFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 
 class DetailedFormatter implements MultiReleaseNotesFormatter {
@@ -34,8 +35,7 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         for (ReleaseNotesData d : data) {
             sb.append("**").append(d.getVersion()).append("** - ");
             String vcsCommitsLink = MessageFormat.format(vcsCommitsLinkTemplate, d.getPreviousVersionVcsTag(), d.getVcsTag());
-            sb.append(releaseHeadline(d.getContributions(), vcsCommitsLink));
-            sb.append(" - *").append(DateFormat.formatDate(d.getDate())).append("*\n");
+            sb.append(releaseSummary(d.getDate(), d.getContributions(), vcsCommitsLink));
 
             if (!d.getContributions().getContributions().isEmpty()) {
                 //no point printing any improvements information if there are no code changes
@@ -46,6 +46,21 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         }
 
         return sb.toString().trim();
+    }
+
+    static String releaseSummary(Date date, ContributionSet contributions, String vcsCommitsLink) {
+        return authorsSummary(contributions, vcsCommitsLink) +
+                " - *" + DateFormat.formatDate(date) + "*\n" +
+                authorsSummaryAppendix(contributions);
+    }
+
+    private static String authorsSummaryAppendix(ContributionSet contributions) {
+        StringBuilder sb = new StringBuilder();
+        //add extra information about authors when there are many of them
+        if (contributions.getAuthorCount() > MAX_AUTHORS) {
+            sb.append(":cocktail: Commits: ").append(itemizedAuthors(contributions));
+        }
+        return sb.toString();
     }
 
     static String formatImprovements(Collection<Improvement> improvements) {
@@ -61,7 +76,7 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         return sb.toString().trim();
     }
 
-    static String releaseHeadline(ContributionSet contributions, String vcsCommitsLink) {
+    static String authorsSummary(ContributionSet contributions, String vcsCommitsLink) {
         if (contributions.getContributions().isEmpty()) {
             return "no code changes (no commits)";
         }
@@ -79,14 +94,23 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
     private static String allAuthors(ContributionSet contributions) {
         if (contributions.getContributions().size() <= MAX_AUTHORS) {
             //if there is little authors, we just print them by name
-            StringBuilder sb = new StringBuilder();
-            for (Contribution c : contributions.getContributions()) {
-                sb.append(c.getAuthorName()).append(", ");
-            }
-            return sb.substring(0, sb.length() - 2); //lose trailing ", "
+            return itemizedAuthors(contributions);
         }
         //if there are many authors, we just write the total
         return "" + contributions.getAuthorCount() + " authors";
+    }
+
+    private static String itemizedAuthors(ContributionSet contributions) {
+        StringBuilder sb = new StringBuilder();
+        boolean showIndividualCommits = contributions.getAuthorCount() > 1;
+        for (Contribution c : contributions.getContributions()) {
+            sb.append(c.getAuthorName());
+            if (showIndividualCommits) {
+                sb.append(" (").append(c.getCommits().size()).append(")");
+            }
+            sb.append(", ");
+        }
+        return sb.substring(0, sb.length() - 2); //lose trailing ", "
     }
 
     private static String pluralize(int size, String singularNoun) {
