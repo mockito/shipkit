@@ -6,6 +6,7 @@ import org.mockito.release.notes.model.ContributionSet;
 import org.mockito.release.notes.model.Improvement;
 import org.mockito.release.notes.model.ReleaseNotesData;
 
+import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Map;
 
@@ -32,7 +33,8 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
 
         for (ReleaseNotesData d : data) {
             sb.append("**").append(d.getVersion()).append("** - ");
-            sb.append(releaseHeadline(d.getContributions()));
+            String vcsCommitsLink = MessageFormat.format(vcsCommitsLinkTemplate, d.getPreviousVersionVcsTag(), d.getVcsTag());
+            sb.append(releaseHeadline(d.getContributions(), vcsCommitsLink));
             sb.append(" - *").append(DateFormat.formatDate(d.getDate())).append("*\n");
 
             if (!d.getContributions().getContributions().isEmpty()) {
@@ -59,14 +61,19 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         return sb.toString().trim();
     }
 
-    static String releaseHeadline(ContributionSet contributions) {
+    static String releaseHeadline(ContributionSet contributions, String vcsCommitsLink) {
         if (contributions.getContributions().isEmpty()) {
             return "no code changes (no commits)";
         }
         StringBuilder sb = new StringBuilder();
         String commits = pluralize(contributions.getAllCommits().size(), "commit");
-        sb.append(commits).append(" by ").append(allAuthors(contributions));
+        String linkedCommits = link(commits, vcsCommitsLink);
+        sb.append(linkedCommits).append(" by ").append(allAuthors(contributions));
         return sb.toString();
+    }
+
+    private static String link(String text, String link) {
+        return "[" + text + "](" + link + ")";
     }
 
     private static String allAuthors(ContributionSet contributions) {

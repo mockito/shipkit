@@ -42,7 +42,7 @@ No release information."""
         expect:
         f.formatReleaseNotes([d]) == """Release notes:
 
-**2.0.0** - 1 commit by Szczepan Faber - *2017-01-04*
+**2.0.0** - [1 commit](http://commits/v1.9.0...v2.0.0) by Szczepan Faber - *2017-01-04*
 :cocktail: No pull requests referenced in commit messages."""
     }
 
@@ -62,7 +62,7 @@ No release information."""
 
     def "release headline with no commits"() {
         expect:
-        DetailedFormatter.releaseHeadline(Stub(ContributionSet)) == "no code changes (no commits)"
+        DetailedFormatter.releaseHeadline(Stub(ContributionSet), "link") == "no code changes (no commits)"
     }
 
     def "release headline with 1 commit"() {
@@ -73,7 +73,7 @@ No release information."""
         }
 
         expect:
-        DetailedFormatter.releaseHeadline(c) == "1 commit by Szczepan Faber"
+        DetailedFormatter.releaseHeadline(c, "link") == "[1 commit](link) by Szczepan Faber"
     }
 
     def "release headline with multiple authors"() {
@@ -86,7 +86,7 @@ No release information."""
         }
 
         expect:
-        DetailedFormatter.releaseHeadline(c) == "4 commits by Szczepan Faber, Brice Dutheil"
+        DetailedFormatter.releaseHeadline(c, "link") == "[4 commits](link) by Szczepan Faber, Brice Dutheil"
     }
 
     def "release headline with many authors"() {
@@ -97,6 +97,6 @@ No release information."""
         }
 
         expect:
-        DetailedFormatter.releaseHeadline(c) == "100 commits by 10 authors"
+        DetailedFormatter.releaseHeadline(c, "link") == "[100 commits](link) by 10 authors"
     }
 }
