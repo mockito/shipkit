@@ -88,4 +88,15 @@ No release information."""
         expect:
         DetailedFormatter.releaseHeadline(c) == "4 commits by Szczepan Faber, Brice Dutheil"
     }
+
+    def "release headline with many authors"() {
+        def c = Stub(ContributionSet) {
+            getAllCommits() >> [Stub(Commit)] * 100 //100 commits
+            getAuthorCount() >> 10
+            getContributions() >> [Stub(Contribution)] * 10 //10 authors
+        }
+
+        expect:
+        DetailedFormatter.releaseHeadline(c) == "100 commits by 10 authors"
+    }
 }

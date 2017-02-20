@@ -11,6 +11,7 @@ import java.util.Map;
 
 class DetailedFormatter implements MultiReleaseNotesFormatter {
 
+    private static final int MAX_AUTHORS = 3;
     private final String introductionText;
     private final Map<String, String> labelMapping;
     private final String vcsCommitsLinkTemplate;
@@ -69,12 +70,16 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
     }
 
     private static String allAuthors(ContributionSet contributions) {
-        StringBuilder sb = new StringBuilder();
-        for (Contribution c : contributions.getContributions()) {
-            sb.append(c.getAuthorName()).append(", ");
+        if (contributions.getContributions().size() <= MAX_AUTHORS) {
+            //if there is little authors, we just print them by name
+            StringBuilder sb = new StringBuilder();
+            for (Contribution c : contributions.getContributions()) {
+                sb.append(c.getAuthorName()).append(", ");
+            }
+            return sb.substring(0, sb.length() - 2); //lose trailing ", "
         }
-
-        return sb.substring(0, sb.length() - 2); //lose trailing ", "
+        //if there are many authors, we just write the total
+        return "" + contributions.getAuthorCount() + " authors";
     }
 
     private static String pluralize(int size, String singularNoun) {
