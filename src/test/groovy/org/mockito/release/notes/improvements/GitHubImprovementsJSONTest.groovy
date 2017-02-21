@@ -4,7 +4,7 @@ import org.json.simple.JSONArray
 import org.json.simple.JSONObject
 import spock.lang.Specification
 
-class GitHubJSONTest extends Specification {
+class GitHubImprovementsJSONTest extends Specification {
 
     def "parses issue"() {
         def issue = new JSONObject([number: 100L, html_url: "http://issues/100", title: "Some bugfix"])
@@ -14,7 +14,7 @@ class GitHubJSONTest extends Specification {
         issue.put("labels", labels)
 
         when:
-        def i = GitHubJSON.toImprovement(issue)
+        def i = GitHubImprovementsJSON.toImprovement(issue)
 
         then:
         i.id == 100L
@@ -29,7 +29,7 @@ class GitHubJSONTest extends Specification {
         issue.put("labels", new JSONArray())
 
         when:
-        def i = GitHubJSON.toImprovement(issue)
+        def i = GitHubImprovementsJSON.toImprovement(issue)
 
         then:
         i.id == 100L

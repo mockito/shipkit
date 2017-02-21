@@ -18,9 +18,9 @@ class TabularFormatterTest extends Specification {
                 new DefaultImprovement(101, "New feature", "http://issues/101", [], true)
         ]
         def contributions = new DefaultContributionSet({false} as Predicate)
-            .add(new GitCommit("a@a", "A", "fixed bug #100"))
-            .add(new GitCommit("a@a", "A", "refactoring"))
-            .add(new GitCommit("b@b", "B", "added new feature #101"))
+            .add(new GitCommit("", "a@a", "A", "fixed bug #100"))
+            .add(new GitCommit("", "a@a", "A", "refactoring"))
+            .add(new GitCommit("", "b@b", "B", "added new feature #101"))
 
         def data = new DefaultReleaseNotesData("2.0.1", date, contributions, is, "v2.0.0", "v2.0.1")
 

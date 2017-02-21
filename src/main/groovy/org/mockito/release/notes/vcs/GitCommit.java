@@ -7,16 +7,23 @@ import java.util.Set;
 
 class GitCommit implements Commit {
 
+    private final String commitId;
     private final String email;
     private final String author;
     private final String message;
     private final Set<String> tickets;
 
-    GitCommit(String email, String author, String message) {
+    GitCommit(String commitId, String email, String author, String message) {
+        this.commitId = commitId;
         this.email = email;
         this.author = author;
         this.message = message;
         this.tickets = TicketParser.parseTickets(message);
+    }
+
+    @Override
+    public String getCommitId() {
+        return commitId;
     }
 
     public String getAuthorEmail() {

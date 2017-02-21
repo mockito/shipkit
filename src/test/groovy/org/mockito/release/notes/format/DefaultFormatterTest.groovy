@@ -74,9 +74,9 @@ class DefaultFormatterTest extends Specification {
     def "many contributions"() {
         ContributionSet contributions = new DefaultContributionSet({false} as Predicate)
 
-        contributions.add(new GitCommit("a@x", "A", "1"))
-        contributions.add(new GitCommit("b@x", "B", "2"))
-        contributions.add(new GitCommit("b@x", "B", "3"))
+        contributions.add(new GitCommit("", "a@x", "A", "1"))
+        contributions.add(new GitCommit("", "b@x", "B", "2"))
+        contributions.add(new GitCommit("", "b@x", "B", "3"))
 
         expect:
         f.format(contributions) == """* Authors: 2
@@ -94,10 +94,10 @@ class DefaultFormatterTest extends Specification {
     def "contributions by same author with different email"() {
         ContributionSet contributions = new DefaultContributionSet({false} as Predicate)
 
-        contributions.add(new GitCommit("john@x", "john", ""))
-        contributions.add(new GitCommit("john@x", "john", ""))
-        contributions.add(new GitCommit("john@y", "john", "")) //same person, different email
-        contributions.add(new GitCommit("x@y", "x", "")) //different person
+        contributions.add(new GitCommit("", "john@x", "john", ""))
+        contributions.add(new GitCommit("", "john@x", "john", ""))
+        contributions.add(new GitCommit("", "john@y", "john", "")) //same person, different email
+        contributions.add(new GitCommit("", "x@y", "x", "")) //different person
 
         expect:
         f.format(contributions) == """* Authors: 2
@@ -109,11 +109,11 @@ class DefaultFormatterTest extends Specification {
     def "contributions sorted by name if number of commits the same"() {
         ContributionSet contributions = new DefaultContributionSet({false} as Predicate)
 
-        contributions.add(new GitCommit("d@d", "d", ""))
-        contributions.add(new GitCommit("d@d", "d", ""))
-        contributions.add(new GitCommit("c@c", "c", ""))
-        contributions.add(new GitCommit("B@B", "B", ""))
-        contributions.add(new GitCommit("a@a", "a", ""))
+        contributions.add(new GitCommit("", "d@d", "d", ""))
+        contributions.add(new GitCommit("", "d@d", "d", ""))
+        contributions.add(new GitCommit("", "c@c", "c", ""))
+        contributions.add(new GitCommit("", "B@B", "B", ""))
+        contributions.add(new GitCommit("", "a@a", "a", ""))
 
         expect:
         f.format(contributions) == """* Authors: 4
@@ -127,7 +127,7 @@ class DefaultFormatterTest extends Specification {
     def "formats notes"() {
         def date = new Date(1483570800000)
         def is = [new DefaultImprovement(100, "Fix bug x", "http://issues/100", ["bug"], true)]
-        def contributions = new DefaultContributionSet({false} as Predicate).add(new GitCommit("a", "a", "m"))
+        def contributions = new DefaultContributionSet({false} as Predicate).add(new GitCommit("", "a", "a", "m"))
         when: def notes = f.formatVersion(new DefaultReleaseNotesData("2.0.1", date, contributions, is, "v2.0.0", "v2.0.1"))
         then: notes == """### 2.0.1 (2017-01-04)
 

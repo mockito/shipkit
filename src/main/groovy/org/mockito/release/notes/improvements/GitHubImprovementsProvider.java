@@ -9,7 +9,7 @@ import java.util.Collection;
 
 class GitHubImprovementsProvider implements ImprovementsProvider {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GitHubImprovementsProvider.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GitHubImprovementsProvider.class);
     private final String authToken;
     private final String repository;
 
@@ -19,7 +19,7 @@ class GitHubImprovementsProvider implements ImprovementsProvider {
     }
 
     public Collection<Improvement> getImprovements(ContributionSet contributions, Collection<String> labels, boolean onlyPullRequests) {
-        LOGGER.info("Parsing {} commits with {} tickets", contributions.getAllCommits().size(), contributions.getAllTickets().size());
+        LOG.info("Parsing {} commits with {} tickets", contributions.getAllCommits().size(), contributions.getAllTickets().size());
         return new GitHubTicketFetcher().fetchTickets(repository, authToken, contributions.getAllTickets(), labels, onlyPullRequests);
     }
 }

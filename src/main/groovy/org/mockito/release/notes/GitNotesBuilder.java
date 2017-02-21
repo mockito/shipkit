@@ -1,9 +1,13 @@
 package org.mockito.release.notes;
 
 import org.mockito.release.exec.Exec;
+import org.mockito.release.notes.contributors.Contributors;
+import org.mockito.release.notes.contributors.ContributorsMap;
+import org.mockito.release.notes.contributors.GitHubContributorsProvider;
 import org.mockito.release.notes.format.ReleaseNotesFormatters;
 import org.mockito.release.notes.format.SingleReleaseNotesFormatter;
-import org.mockito.release.notes.improvements.*;
+import org.mockito.release.notes.improvements.Improvements;
+import org.mockito.release.notes.improvements.ImprovementsProvider;
 import org.mockito.release.notes.internal.DefaultReleaseNotesData;
 import org.mockito.release.notes.model.ContributionSet;
 import org.mockito.release.notes.model.Improvement;
@@ -43,6 +47,9 @@ class GitNotesBuilder implements NotesBuilder {
 
         ContributionsProvider contributionsProvider = Vcs.getContributionsProvider(Exec.getProcessRunner(workDir));
         ContributionSet contributions = contributionsProvider.getContributionsBetween(fromRevision, toRevision);
+
+        GitHubContributorsProvider contibutorsProvider = Contributors.getGitHubContibutorsProvider(authToken);
+        ContributorsMap contributors = contibutorsProvider.mapContributorsToGitHubUser(contributions, fromRevision, toRevision);
 
         ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(repository, authToken);
         Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, Collections.<String>emptyList(), false);
