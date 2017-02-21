@@ -1,5 +1,6 @@
 package org.mockito.release.notes.generator
 
+import org.mockito.release.notes.contributors.ContributorsProvider
 import org.mockito.release.notes.format.ReleaseNotesFormatters
 import org.mockito.release.notes.improvements.ImprovementsProvider
 import org.mockito.release.notes.model.ContributionSet
@@ -14,7 +15,8 @@ class DefaultReleaseNotesGeneratorTest extends Specification {
     def contributionsProvider = Mock(ContributionsProvider)
     def improvementsProvider = Mock(ImprovementsProvider)
     def releaseDateProvider = Stub(ReleaseDateProvider)
-    def gen = new DefaultReleaseNotesGenerator(contributionsProvider, improvementsProvider, releaseDateProvider)
+    def contributorsProvider = Stub(ContributorsProvider)
+    def gen = new DefaultReleaseNotesGenerator(contributionsProvider, improvementsProvider, releaseDateProvider, contributorsProvider)
 
     def "generates release notes"() {
         def c1 = Stub(ContributionSet), c2 = Stub(ContributionSet)
@@ -58,7 +60,7 @@ class DefaultReleaseNotesGeneratorTest extends Specification {
 
     @Ignore
     def "lifecycle test"() {
-        def workDir = new File("/Users/sfaber/mockito/src");
+        def workDir = new File("/Users/sfaber/mockito/src")
         def authToken = "a0a4c0f41c200f7c653323014d6a72a127764e17"
         def gen = ReleaseNotesGenerators.releaseNotesGenerator(workDir, "mockito/mockito", authToken)
         def notes = gen.generateReleaseNotesData(["2.7.0", "2.6.1", "2.5.0", "2.4.0"], "v", ["noteworthy"], true)

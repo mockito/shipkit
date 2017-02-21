@@ -1,5 +1,7 @@
 package org.mockito.release.notes.format
 
+import org.mockito.release.notes.contributors.DefaultContributor
+import org.mockito.release.notes.contributors.DefaultContributorsMap
 import org.mockito.release.notes.internal.DefaultReleaseNotesData
 import org.mockito.release.notes.internal.DefaultImprovement
 import org.mockito.release.notes.util.Predicate
@@ -71,27 +73,49 @@ class DefaultFormatterTest extends Specification {
         improvements == reordered
     }
 
-    def "many contributions"() {
+    def "many contributions, no profile URLs"() {
         ContributionSet contributions = new DefaultContributionSet({false} as Predicate)
 
-        contributions.add(new GitCommit("", "a@x", "A", "1"))
-        contributions.add(new GitCommit("", "b@x", "B", "2"))
-        contributions.add(new GitCommit("", "b@x", "B", "3"))
+        contributions.add(new GitCommit("1", "a@x", "Monalisa Octocat", "1"))
+        contributions.add(new GitCommit("2", "b@x", "CD Drone", "2"))
+        contributions.add(new GitCommit("3", "b@x", "CD Drone", "3"))
+
+        def contributors = new DefaultContributorsMap()
 
         expect:
-        f.format(contributions) == """* Authors: 2
+        f.format(contributions, contributors) == """* Authors: 2
 * Commits: 3
-  * 2: B
-  * 1: A"""
+  * 2: CD Drone
+  * 1: Monalisa Octocat"""
+    }
+
+    def "many contributions and profile URLs"() {
+        ContributionSet contributions = new DefaultContributionSet({false} as Predicate)
+
+        contributions.add(new GitCommit("1", "a@x", "Monalisa Octocat", "1"))
+        contributions.add(new GitCommit("2", "b@x", "CD Drone", "2"))
+        contributions.add(new GitCommit("3", "b@x", "CD Drone", "3"))
+
+        def contributors = new DefaultContributorsMap()
+        contributors.put("Monalisa Octocat", new DefaultContributor("Monalisa Octocat", "octocat", "http://gh.com/octocat"))
+        contributors.put("CD Drone", new DefaultContributor("CD Drone", "cddrone", "http://gh.com/cddrone"))
+
+        expect:
+        f.format(contributions, contributors) == """* Authors: 2
+* Commits: 3
+  * 2: [CD Drone](http://gh.com/cddrone)
+  * 1: [Monalisa Octocat](http://gh.com/octocat)"""
     }
 
     def "empty contributions"() {
         ContributionSet contributions = new DefaultContributionSet({false} as Predicate)
+        def contributors = new DefaultContributorsMap()
+
         expect:
-        f.format(contributions) == "* Authors: 0\n* Commits: 0"
+        f.format(contributions, contributors) == "* Authors: 0\n* Commits: 0"
     }
 
-    def "contributions by same author with different email"() {
+    def "contributions by same author with different email, no profile URLs"() {
         ContributionSet contributions = new DefaultContributionSet({false} as Predicate)
 
         contributions.add(new GitCommit("", "john@x", "john", ""))
@@ -99,14 +123,35 @@ class DefaultFormatterTest extends Specification {
         contributions.add(new GitCommit("", "john@y", "john", "")) //same person, different email
         contributions.add(new GitCommit("", "x@y", "x", "")) //different person
 
+        def contributors = new DefaultContributorsMap()
+
         expect:
-        f.format(contributions) == """* Authors: 2
+        f.format(contributions, contributors) == """* Authors: 2
 * Commits: 4
   * 3: john
   * 1: x"""
     }
 
-    def "contributions sorted by name if number of commits the same"() {
+    def "contributions by same author with different email and profile URLs"() {
+        ContributionSet contributions = new DefaultContributionSet({false} as Predicate)
+
+        contributions.add(new GitCommit("", "john@x", "john", ""))
+        contributions.add(new GitCommit("", "john@x", "john", ""))
+        contributions.add(new GitCommit("", "john@y", "john", "")) //same person, different email
+        contributions.add(new GitCommit("", "x@y", "x", "")) //different person
+
+        def contributors = new DefaultContributorsMap()
+        contributors.put("john", new DefaultContributor("john", "johnx", "gh/johnx"))
+        contributors.put("x", new DefaultContributor("x", "x", "gh/x"))
+
+        expect:
+        f.format(contributions, contributors) == """* Authors: 2
+* Commits: 4
+  * 3: [john](gh/johnx)
+  * 1: [x](gh/x)"""
+    }
+
+    def "contributions sorted by name if number of commits the same, no profile URLs"() {
         ContributionSet contributions = new DefaultContributionSet({false} as Predicate)
 
         contributions.add(new GitCommit("", "d@d", "d", ""))
@@ -115,8 +160,10 @@ class DefaultFormatterTest extends Specification {
         contributions.add(new GitCommit("", "B@B", "B", ""))
         contributions.add(new GitCommit("", "a@a", "a", ""))
 
+        def contributors = new DefaultContributorsMap()
+
         expect:
-        f.format(contributions) == """* Authors: 4
+        f.format(contributions, contributors) == """* Authors: 4
 * Commits: 5
   * 2: d
   * 1: a
@@ -124,12 +171,38 @@ class DefaultFormatterTest extends Specification {
   * 1: c"""
     }
 
+    def "contributions sorted by name if number of commits the same and profile URLs"() {
+        ContributionSet contributions = new DefaultContributionSet({false} as Predicate)
+
+        contributions.add(new GitCommit("", "d@d", "d", ""))
+        contributions.add(new GitCommit("", "d@d", "d", ""))
+        contributions.add(new GitCommit("", "c@c", "c", ""))
+        contributions.add(new GitCommit("", "B@B", "B", ""))
+        contributions.add(new GitCommit("", "a@a", "a", ""))
+
+        def contributors = new DefaultContributorsMap()
+        contributors.put("d", new DefaultContributor("d", "dd", "gh/dd"))
+        contributors.put("c", new DefaultContributor("c", "cc", "gh/cc"))
+        contributors.put("B", new DefaultContributor("B", "BB", "gh/BB"))
+        contributors.put("a", new DefaultContributor("a", "aa", "gh/aa"))
+
+        expect:
+        f.format(contributions, contributors) == """* Authors: 4
+* Commits: 5
+  * 2: [d](gh/dd)
+  * 1: [a](gh/aa)
+  * 1: [B](gh/BB)
+  * 1: [c](gh/cc)"""
+    }
+
     def "formats notes"() {
         def date = new Date(1483570800000)
         def is = [new DefaultImprovement(100, "Fix bug x", "http://issues/100", ["bug"], true)]
         def contributions = new DefaultContributionSet({false} as Predicate).add(new GitCommit("", "a", "a", "m"))
-        when: def notes = f.formatVersion(new DefaultReleaseNotesData("2.0.1", date, contributions, is, "v2.0.0", "v2.0.1"))
-        then: notes == """### 2.0.1 (2017-01-04)
+        def contributors = new DefaultContributorsMap()
+
+        when: def notes = f.formatVersion(new DefaultReleaseNotesData("2.0.1", date, contributions, is, contributors, "v2.0.0", "v2.0.1"))
+
 
 * Authors: 1
 * Commits: 1

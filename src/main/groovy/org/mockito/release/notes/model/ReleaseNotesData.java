@@ -1,5 +1,7 @@
 package org.mockito.release.notes.model;
 
+import org.mockito.release.notes.contributors.ContributorsMap;
+
 import java.util.Collection;
 import java.util.Date;
 
@@ -37,4 +39,9 @@ public interface ReleaseNotesData {
      * The vcs addressable tag of previous version
      */
     String getPreviousVersionVcsTag();
+
+    /**
+     * Contributors (authors and links to www pages)
+     */
+    ContributorsMap getContributors();
 }
