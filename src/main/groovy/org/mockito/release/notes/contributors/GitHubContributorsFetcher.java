@@ -93,8 +93,9 @@ public class GitHubContributorsFetcher {
 
             GitHubCommits build() {
                 // see API doc: https://developer.github.com/v3/repos/commits/#list-commits-on-a-repository
-                String nextPageUrl = String.format("%s%s%s",
-                        "https://api.github.com/repos/mockito/mockito/commits?access_token=" + authToken,
+                String nextPageUrl = String.format("%s%s%s%s",
+                        "https://api.github.com/repos/mockito/mockito/commits",
+                        "?access_token=" + authToken,
                         max(toRevision),
                         "&page=1");
                 return new GitHubCommits(nextPageUrl, fromRevision);
