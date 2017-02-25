@@ -55,9 +55,33 @@ No release information."""
         def i = [new DefaultImprovement(100, "Fixed issue", "http://issues/100", ["bugfix"], true),
                   new DefaultImprovement(103, "New feature", "http://issues/103", ["noteworthy"], true)]
 
+        def labelMapping = [bugfix: "Bugfixes"]
+
         expect:
-        DetailedFormatter.formatImprovements(i, [bugfix: "Bugfixes"]) == """:cocktail: [Bugfixes] Fixed issue [(#100)](http://issues/100)
+        //issues that have label that matches the mapping have an extra label prefix
+        DetailedFormatter.formatImprovements(i, labelMapping) == """:cocktail: [Bugfixes] Fixed issue [(#100)](http://issues/100)
 :cocktail: New feature [(#103)](http://issues/103)"""
+    }
+
+    def "formats and sorts many improvements"() {
+        def i = [new DefaultImprovement(100, "Fixed problem",         "http://issues/100", ["bugfix"], true),
+                 new DefaultImprovement(103, "Fixed major issue",     "http://issues/103", ["noteworthy", "bugfix"], true),
+                 new DefaultImprovement(105, "Refactoring",           "http://issues/105", [], true),
+                 new DefaultImprovement(106, "Fixed bugs in javadoc", "http://issues/106", ["docs", "bugfix"], true),
+                 new DefaultImprovement(107, "Big refactoring", "http://issues/107", ["refactoring"], true),
+                 new DefaultImprovement(108, "Small tweak", "http://issues/108", [], true)]
+
+        def labelMapping = [noteworthy: "Noteworthy", bugfix: "Bugfixes"]
+
+        expect:
+        //improvements are sorted based on the label mapping
+        //if an issue has labels that match multiple mapping, first mapping in label mapping wins
+        DetailedFormatter.formatImprovements(i, labelMapping) == """:cocktail: [Noteworthy] Fixed major issue [(#103)](http://issues/103)
+:cocktail: [Bugfixes] Fixed problem [(#100)](http://issues/100)
+:cocktail: [Bugfixes] Fixed bugs in javadoc [(#106)](http://issues/106)
+:cocktail: Refactoring [(#105)](http://issues/105)
+:cocktail: Big refactoring [(#107)](http://issues/107)
+:cocktail: Small tweak [(#108)](http://issues/108)"""
     }
 
     def "release headline with no commits"() {

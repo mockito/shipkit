@@ -5,6 +5,7 @@ import org.mockito.release.notes.model.Contribution;
 import org.mockito.release.notes.model.ContributionSet;
 import org.mockito.release.notes.model.Improvement;
 import org.mockito.release.notes.model.ReleaseNotesData;
+import org.mockito.release.util.MultiMap;
 
 import java.text.MessageFormat;
 import java.util.*;
@@ -12,6 +13,7 @@ import java.util.*;
 class DetailedFormatter implements MultiReleaseNotesFormatter {
 
     private static final int MAX_AUTHORS = 3;
+    private static final String NO_LABEL = "Remaining changes";
     private final String introductionText;
     private final Map<String, String> labelMapping;
     private final String vcsCommitsLinkTemplate;
@@ -65,25 +67,47 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         if (improvements.isEmpty()) {
             return ":cocktail: No pull requests referenced in commit messages.";
         }
+
         StringBuilder sb = new StringBuilder();
-        for (Improvement i : improvements) {
-            sb.append(":cocktail: ").append(labelMapping(i.getLabels(), labelMapping))
-                    .append(i.getTitle())
-                    .append(" [(#").append(i.getId()).append(")](")
-                    .append(i.getUrl()).append(")").append("\n");
+        MultiMap<String, Improvement> sorted = sortImprovements(improvements, labelMapping);
+
+        for (String label: sorted.keySet()) {
+            for (Improvement i : sorted.get(label)) {
+                String labelPrefix = label.equals(NO_LABEL)? "":"[" + label + "] ";
+                sb.append(":cocktail: ").append(labelPrefix).append(formatImprovement(i)).append("\n");
+            }
         }
+
         return sb.toString().trim();
     }
 
-    //TODO SF add more unit test coverage
-    static String labelMapping(Collection<String> labels, Map<String, String> labelMapping) {
-        Set<String> labelSet = new HashSet<String>(labels);
-        for (String mappingKey : labelMapping.keySet()) {
-            if (labelSet.contains(mappingKey)) {
-                return "[" + labelMapping.get(mappingKey) + "] ";
+    private static String formatImprovement(Improvement i) {
+        return i.getTitle() +
+                " [(#" + i.getId() + ")](" +
+                i.getUrl() + ")";
+    }
+
+    private static MultiMap<String, Improvement> sortImprovements(Collection<Improvement> improvements, Map<String, String> labelMapping) {
+        MultiMap<String, Improvement> byLabel = new MultiMap<String, Improvement>();
+        Set<Improvement> remainingImprovements = new LinkedHashSet<Improvement>(improvements);
+
+        //Step 1, find improvements that match input labels
+        //Iterate label first because the input labels determine the order
+        for (String label : labelMapping.keySet()) {
+            for (Improvement i : improvements) {
+                if (i.getLabels().contains(label) && remainingImprovements.contains(i)) {
+                    remainingImprovements.remove(i);
+                    byLabel.put(labelMapping.get(label), i);
+                }
             }
         }
-        return "";
+
+        //Step 2, add remaining improvments
+        for (Improvement i : remainingImprovements) {
+            byLabel.put(NO_LABEL, i);
+        }
+
+        return byLabel;
     }
 
     static String authorsSummary(ContributionSet contributions, String vcsCommitsLink) {
