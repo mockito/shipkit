@@ -10,7 +10,8 @@ buildscript {
 
 apply plugin: 'idea'
 apply plugin: 'groovy'
-apply plugin: "com.gradle.plugin-publish"
+apply plugin: 'com.gradle.plugin-publish'
+apply plugin: 'maven'
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
@@ -18,7 +19,7 @@ targetCompatibility = 1.6
 repositories { jcenter() }
 
 version = '0.0.4'
-group = "org.mockito"
+group = 'gradle.plugin.org.mockito'
 
 dependencies {
     compile gradleApi()
@@ -53,6 +54,7 @@ pluginBundle {
     }
 
     mavenCoordinates {
+        groupId = 'gradle.plugin.org.mockito'
         artifactId = "mockito-release-tools"
     }
 }
