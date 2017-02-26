@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * This class contains standard operations for skim over GitHub API responses.
  */
-public abstract class GitHubFetcher {
+public class GitHubFetcher {
 
     private static final Logger LOG = LoggerFactory.getLogger(GitHubFetcher.class);
 

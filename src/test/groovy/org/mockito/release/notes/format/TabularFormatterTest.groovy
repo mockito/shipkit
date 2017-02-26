@@ -1,6 +1,6 @@
 package org.mockito.release.notes.format
 
-import org.mockito.release.notes.contributors.DefaultContributorsMap
+import org.mockito.release.notes.contributors.DefaultContributorsSet
 import org.mockito.release.notes.internal.DefaultReleaseNotesData
 import org.mockito.release.notes.internal.DefaultImprovement
 import org.mockito.release.notes.util.Predicate
@@ -23,7 +23,7 @@ class TabularFormatterTest extends Specification {
             .add(new GitCommit("", "a@a", "A", "refactoring"))
             .add(new GitCommit("", "b@b", "B", "added new feature #101"))
 
-        def contributors = new DefaultContributorsMap()
+        def contributors = new DefaultContributorsSet()
 
         def data = new DefaultReleaseNotesData("2.0.1", date, contributions, is, contributors, "v2.0.0", "v2.0.1")
 

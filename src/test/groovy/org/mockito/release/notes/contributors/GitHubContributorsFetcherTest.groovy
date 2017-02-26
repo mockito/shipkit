@@ -22,12 +22,12 @@ class GitHubContributorsFetcherTest extends Specification {
         def contributors = fetcher.fetchContributors(readOnlyToken, contributions, "", "HEAD")
 
         then:
-        contributors.get("Continuous Delivery Drone").login == "continuous-delivery-drone"
-        contributors.get("Continuous Delivery Drone").name == "Continuous Delivery Drone"
-        contributors.get("Continuous Delivery Drone").profileUrl == "https://github.com/continuous-delivery-drone"
-        contributors.get("Szczepan Faber").login == "szczepiq"
-        contributors.get("Szczepan Faber").name == "Szczepan Faber"
-        contributors.get("Szczepan Faber").profileUrl == "https://github.com/szczepiq"
+        contributors.findByAuthorName("Continuous Delivery Drone").login == "continuous-delivery-drone"
+        contributors.findByAuthorName("Continuous Delivery Drone").name == "Continuous Delivery Drone"
+        contributors.findByAuthorName("Continuous Delivery Drone").profileUrl == "https://github.com/continuous-delivery-drone"
+        contributors.findByAuthorName("Szczepan Faber").login == "szczepiq"
+        contributors.findByAuthorName("Szczepan Faber").name == "Szczepan Faber"
+        contributors.findByAuthorName("Szczepan Faber").profileUrl == "https://github.com/szczepiq"
     }
 
     def "dont fetch contributors when empty contributions"() {
@@ -35,6 +35,6 @@ class GitHubContributorsFetcherTest extends Specification {
         def contributors = fetcher.fetchContributors(readOnlyToken, Collections.emptyList(), "", "HEAD")
 
         then:
-        contributors.isEmpty()
+        contributors.size() == 0
     }
 }

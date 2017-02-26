@@ -2,7 +2,7 @@ package org.mockito.release.notes;
 
 import org.mockito.release.exec.Exec;
 import org.mockito.release.notes.contributors.Contributors;
-import org.mockito.release.notes.contributors.ContributorsMap;
+import org.mockito.release.notes.contributors.ContributorsSet;
 import org.mockito.release.notes.contributors.GitHubContributorsProvider;
 import org.mockito.release.notes.format.ReleaseNotesFormatters;
 import org.mockito.release.notes.format.SingleReleaseNotesFormatter;
@@ -49,7 +49,7 @@ class GitNotesBuilder implements NotesBuilder {
         ContributionSet contributions = contributionsProvider.getContributionsBetween(fromRevision, toRevision);
 
         GitHubContributorsProvider contibutorsProvider = Contributors.getGitHubContibutorsProvider(authToken);
-        ContributorsMap contributors = contibutorsProvider.mapContributorsToGitHubUser(contributions, fromRevision, toRevision);
+        ContributorsSet contributors = contibutorsProvider.mapContributorsToGitHubUser(contributions, fromRevision, toRevision);
 
         ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(repository, authToken);
         Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, Collections.<String>emptyList(), false);

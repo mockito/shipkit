@@ -6,6 +6,7 @@ import org.mockito.release.notes.util.GitHubFetcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.*;
 
 class GitHubTicketFetcher {
@@ -87,10 +88,20 @@ class GitHubTicketFetcher {
         return pagedImprovements;
     }
 
-    private static class GitHubIssues extends GitHubFetcher {
+    private static class GitHubIssues {
+
+        private final GitHubFetcher fetcher;
 
         private GitHubIssues(String nextPageUrl) {
-            super(nextPageUrl);
+            fetcher = new GitHubFetcher(nextPageUrl);
+        }
+
+        boolean hasNextPage() {
+            return fetcher.hasNextPage();
+        }
+
+        List<JSONObject> nextPage() throws IOException {
+            return fetcher.nextPage();
         }
 
         static GitHubIssuesBuilder forRepo(String repository, String authToken) {

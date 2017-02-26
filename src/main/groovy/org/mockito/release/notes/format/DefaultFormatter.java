@@ -1,6 +1,6 @@
 package org.mockito.release.notes.format;
 
-import org.mockito.release.notes.contributors.ContributorsMap;
+import org.mockito.release.notes.contributors.ContributorsSet;
 import org.mockito.release.notes.internal.DateFormat;
 import org.mockito.release.notes.model.*;
 import org.mockito.release.util.MultiMap;
@@ -75,12 +75,14 @@ class DefaultFormatter implements SingleReleaseNotesFormatter {
         return contribution.getCommits().size() + ": " + contribution.getAuthorName();
     }
 
-    private String format(ContributionSet contributions, ContributorsMap contributorsMap) {
-        StringBuilder sb = new StringBuilder("* Authors: ").append(contributions.getContributions().size())
-                .append("\n* Commits: ").append(contributions.getAllCommits().size());
+    private String format(ContributionSet contributions, ContributorsSet contributorsSet) {
+        StringBuilder sb = new StringBuilder("* Authors: ")
+                .append(contributions.getContributions().size())
+                .append("\n* Commits: ")
+                .append(contributions.getAllCommits().size());
 
         for (Contribution c : contributions.getContributions()) {
-            Contributor contributor = contributorsMap.get(c.getAuthorName());
+            Contributor contributor = contributorsSet.findByAuthorName(c.getAuthorName());
             sb.append("\n  * ").append(format(c, contributor));
         }
 

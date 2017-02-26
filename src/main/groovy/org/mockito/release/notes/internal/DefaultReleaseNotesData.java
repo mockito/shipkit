@@ -1,6 +1,6 @@
 package org.mockito.release.notes.internal;
 
-import org.mockito.release.notes.contributors.ContributorsMap;
+import org.mockito.release.notes.contributors.ContributorsSet;
 import org.mockito.release.notes.model.ContributionSet;
 import org.mockito.release.notes.model.Improvement;
 import org.mockito.release.notes.model.ReleaseNotesData;
@@ -13,12 +13,12 @@ public class DefaultReleaseNotesData implements ReleaseNotesData {
     private final Date date;
     private final ContributionSet contributions;
     private final Collection<Improvement> improvements;
-    private final ContributorsMap contributors;
+    private final ContributorsSet contributors;
     private final String previousVersionTag;
     private final String thisVersionTag;
 
     public DefaultReleaseNotesData(String version, Date date, ContributionSet contributions,
-                                   Collection<Improvement> improvements, ContributorsMap contributors, String previousVersionTag, String thisVersionTag) {
+                                   Collection<Improvement> improvements, ContributorsSet contributors, String previousVersionTag, String thisVersionTag) {
 
         this.version = version;
         this.date = date;
@@ -60,7 +60,7 @@ public class DefaultReleaseNotesData implements ReleaseNotesData {
     }
 
     @Override
-    public ContributorsMap getContributors() {
+    public ContributorsSet getContributors() {
         return contributors;
     }
 }

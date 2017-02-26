@@ -1,6 +1,6 @@
 package org.mockito.release.notes.format
 
-import org.mockito.release.notes.contributors.DefaultContributorsMap
+import org.mockito.release.notes.contributors.DefaultContributorsSet
 import org.mockito.release.notes.internal.DefaultImprovement
 import org.mockito.release.notes.internal.DefaultReleaseNotesData
 import org.mockito.release.notes.model.Commit
@@ -20,7 +20,7 @@ class NotableFormatterTest extends Specification {
 
         def i2 = [new DefaultImprovement(105, "Big change", "http://issues/105", [], true)]
 
-        def contributors = new DefaultContributorsMap()
+        def contributors = new DefaultContributorsSet()
 
         def data = [new DefaultReleaseNotesData("1.1.0", new Date(1486700000000), c, i2, contributors, "v1.0.0", "v1.1.0"),
                     new DefaultReleaseNotesData("1.0.0", new Date(1486200000000), c, i1, contributors, "v0.0.9", "v1.0.0")]

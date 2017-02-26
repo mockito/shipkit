@@ -13,7 +13,7 @@ public class GitHubContributorsProvider implements ContributorsProvider {
         this.authToken = authToken;
     }
 
-    public ContributorsMap mapContributorsToGitHubUser(ContributionSet contributions, String fromRevision, String toRevision) {
+    public ContributorsSet mapContributorsToGitHubUser(ContributionSet contributions, String fromRevision, String toRevision) {
         LOG.info("Parsing {} commits with {} contributors", contributions.getAllCommits().size(), contributions.getAuthorCount());
         return new GitHubContributorsFetcher().fetchContributors(authToken, contributions.getContributions(), fromRevision, toRevision);
     }

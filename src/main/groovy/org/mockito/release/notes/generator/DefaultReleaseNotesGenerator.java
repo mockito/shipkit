@@ -1,6 +1,6 @@
 package org.mockito.release.notes.generator;
 
-import org.mockito.release.notes.contributors.ContributorsMap;
+import org.mockito.release.notes.contributors.ContributorsSet;
 import org.mockito.release.notes.contributors.ContributorsProvider;
 import org.mockito.release.notes.improvements.ImprovementsProvider;
 import org.mockito.release.notes.internal.DefaultReleaseNotesData;
@@ -44,7 +44,7 @@ class DefaultReleaseNotesGenerator implements ReleaseNotesGenerator {
 
             ContributionSet contributions = contributionsProvider.getContributionsBetween(fromRev, toRev);
             Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, gitHubLabels, onlyPullRequests);
-            ContributorsMap contributors = contributorsProvider.mapContributorsToGitHubUser(contributions, fromRev, toRev);
+            ContributorsSet contributors = contributorsProvider.mapContributorsToGitHubUser(contributions, fromRev, toRev);
             out.add(new DefaultReleaseNotesData(to, releaseDates.get(to), contributions, improvements, contributors, fromRev, toRev));
 
             //next version

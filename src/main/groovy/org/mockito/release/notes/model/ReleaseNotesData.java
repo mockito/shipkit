@@ -1,6 +1,6 @@
 package org.mockito.release.notes.model;
 
-import org.mockito.release.notes.contributors.ContributorsMap;
+import org.mockito.release.notes.contributors.ContributorsSet;
 
 import java.util.Collection;
 import java.util.Date;
@@ -43,5 +43,5 @@ public interface ReleaseNotesData {
     /**
      * Contributors (authors and links to www pages)
      */
-    ContributorsMap getContributors();
+    ContributorsSet getContributors();
 }

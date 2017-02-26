@@ -1,7 +1,7 @@
 package org.mockito.release.notes.format
 
 import org.mockito.release.notes.contributors.DefaultContributor
-import org.mockito.release.notes.contributors.DefaultContributorsMap
+import org.mockito.release.notes.contributors.DefaultContributorsSet
 import org.mockito.release.notes.internal.DefaultReleaseNotesData
 import org.mockito.release.notes.internal.DefaultImprovement
 import org.mockito.release.notes.util.Predicate
@@ -80,7 +80,7 @@ class DefaultFormatterTest extends Specification {
         contributions.add(new GitCommit("2", "b@x", "CD Drone", "2"))
         contributions.add(new GitCommit("3", "b@x", "CD Drone", "3"))
 
-        def contributors = new DefaultContributorsMap()
+        def contributors = new DefaultContributorsSet()
 
         expect:
         f.format(contributions, contributors) == """* Authors: 2
@@ -96,9 +96,9 @@ class DefaultFormatterTest extends Specification {
         contributions.add(new GitCommit("2", "b@x", "CD Drone", "2"))
         contributions.add(new GitCommit("3", "b@x", "CD Drone", "3"))
 
-        def contributors = new DefaultContributorsMap()
-        contributors.put("Monalisa Octocat", new DefaultContributor("Monalisa Octocat", "octocat", "http://gh.com/octocat"))
-        contributors.put("CD Drone", new DefaultContributor("CD Drone", "cddrone", "http://gh.com/cddrone"))
+        def contributors = new DefaultContributorsSet()
+        contributors.addContributor(new DefaultContributor("Monalisa Octocat", "octocat", "http://gh.com/octocat"))
+        contributors.addContributor(new DefaultContributor("CD Drone", "cddrone", "http://gh.com/cddrone"))
 
         expect:
         f.format(contributions, contributors) == """* Authors: 2
@@ -109,7 +109,7 @@ class DefaultFormatterTest extends Specification {
 
     def "empty contributions"() {
         ContributionSet contributions = new DefaultContributionSet({false} as Predicate)
-        def contributors = new DefaultContributorsMap()
+        def contributors = new DefaultContributorsSet()
 
         expect:
         f.format(contributions, contributors) == "* Authors: 0\n* Commits: 0"
@@ -123,7 +123,7 @@ class DefaultFormatterTest extends Specification {
         contributions.add(new GitCommit("", "john@y", "john", "")) //same person, different email
         contributions.add(new GitCommit("", "x@y", "x", "")) //different person
 
-        def contributors = new DefaultContributorsMap()
+        def contributors = new DefaultContributorsSet()
 
         expect:
         f.format(contributions, contributors) == """* Authors: 2
@@ -140,9 +140,9 @@ class DefaultFormatterTest extends Specification {
         contributions.add(new GitCommit("", "john@y", "john", "")) //same person, different email
         contributions.add(new GitCommit("", "x@y", "x", "")) //different person
 
-        def contributors = new DefaultContributorsMap()
-        contributors.put("john", new DefaultContributor("john", "johnx", "gh/johnx"))
-        contributors.put("x", new DefaultContributor("x", "x", "gh/x"))
+        def contributors = new DefaultContributorsSet()
+        contributors.addContributor(new DefaultContributor("john", "johnx", "gh/johnx"))
+        contributors.addContributor(new DefaultContributor("x", "x", "gh/x"))
 
         expect:
         f.format(contributions, contributors) == """* Authors: 2
@@ -160,7 +160,7 @@ class DefaultFormatterTest extends Specification {
         contributions.add(new GitCommit("", "B@B", "B", ""))
         contributions.add(new GitCommit("", "a@a", "a", ""))
 
-        def contributors = new DefaultContributorsMap()
+        def contributors = new DefaultContributorsSet()
 
         expect:
         f.format(contributions, contributors) == """* Authors: 4
@@ -180,11 +180,11 @@ class DefaultFormatterTest extends Specification {
         contributions.add(new GitCommit("", "B@B", "B", ""))
         contributions.add(new GitCommit("", "a@a", "a", ""))
 
-        def contributors = new DefaultContributorsMap()
-        contributors.put("d", new DefaultContributor("d", "dd", "gh/dd"))
-        contributors.put("c", new DefaultContributor("c", "cc", "gh/cc"))
-        contributors.put("B", new DefaultContributor("B", "BB", "gh/BB"))
-        contributors.put("a", new DefaultContributor("a", "aa", "gh/aa"))
+        def contributors = new DefaultContributorsSet()
+        contributors.addContributor(new DefaultContributor("d", "dd", "gh/dd"))
+        contributors.addContributor(new DefaultContributor("c", "cc", "gh/cc"))
+        contributors.addContributor(new DefaultContributor("B", "BB", "gh/BB"))
+        contributors.addContributor(new DefaultContributor("a", "aa", "gh/aa"))
 
         expect:
         f.format(contributions, contributors) == """* Authors: 4
@@ -199,7 +199,7 @@ class DefaultFormatterTest extends Specification {
         def date = new Date(1483570800000)
         def is = [new DefaultImprovement(100, "Fix bug x", "http://issues/100", ["bug"], true)]
         def contributions = new DefaultContributionSet({false} as Predicate).add(new GitCommit("", "a", "a", "m"))
-        def contributors = new DefaultContributorsMap()
+        def contributors = new DefaultContributorsSet()
 
         when: def notes = f.formatVersion(new DefaultReleaseNotesData("2.0.1", date, contributions, is, contributors, "v2.0.0", "v2.0.1"))
 
