@@ -1,10 +1,12 @@
 package org.mockito.release.notes.format
 
+import org.mockito.release.notes.contributors.ContributorsSet
 import org.mockito.release.notes.contributors.DefaultContributorsSet
 import org.mockito.release.notes.internal.DefaultImprovement
 import org.mockito.release.notes.internal.DefaultReleaseNotesData
 import org.mockito.release.notes.model.Commit
 import org.mockito.release.notes.model.ContributionSet
+import org.mockito.release.notes.model.Improvement
 import spock.lang.Specification
 
 class NotableFormatterTest extends Specification {
@@ -49,7 +51,7 @@ Authors: [2](http://release-notes), commits: [2](https://github.com/mockito/mock
     }
 
     def "empty release notes"() {
-        def data = [new DefaultReleaseNotesData("1.1.0", new Date(1486700000000), Stub(ContributionSet), [], "v1.0.0", "v1.1.0")]
+        def data = [new DefaultReleaseNotesData("1.1.0", new Date(1486700000000), Stub(ContributionSet), [], Stub(ContributorsSet), "v1.0.0", "v1.1.0")]
 
         when:
         def text = new NotableFormatter(null, "http://detailed", "http://commits").formatReleaseNotes(data)
@@ -68,7 +70,7 @@ No code changes. No commits found.
             getAuthorCount() >> 2
         }
 
-        def data = [new DefaultReleaseNotesData("1.1.0", new Date(1486700000000), c, [], "v1.0.0", "v1.1.0")]
+        def data = [new DefaultReleaseNotesData("1.1.0", new Date(1486700000000), c, [], Stub(ContributorsSet), "v1.0.0", "v1.1.0")]
 
         when:
         def text = new NotableFormatter(null, "http://detailed", "http://commits/{0}..{1}").formatReleaseNotes(data)

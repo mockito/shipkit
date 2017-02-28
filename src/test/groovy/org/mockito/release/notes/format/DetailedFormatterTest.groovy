@@ -1,5 +1,6 @@
 package org.mockito.release.notes.format
 
+import org.mockito.release.notes.contributors.ContributorsSet
 import org.mockito.release.notes.internal.DefaultImprovement
 import org.mockito.release.notes.internal.DefaultReleaseNotesData
 import org.mockito.release.notes.model.Commit
@@ -19,8 +20,8 @@ No release information."""
     }
 
     def "empty releases"() {
-        def d1 = new DefaultReleaseNotesData("2.0.0", new Date(1483500000000), Stub(ContributionSet), [], "v1.9.0", "v2.0.0")
-        def d2 = new DefaultReleaseNotesData("1.9.0", new Date(1483100000000), Stub(ContributionSet), [], "v1.8.0", "v1.9.0")
+        def d1 = new DefaultReleaseNotesData("2.0.0", new Date(1483500000000), Stub(ContributionSet), [], Stub(ContributorsSet), "v1.9.0", "v2.0.0")
+        def d2 = new DefaultReleaseNotesData("1.9.0", new Date(1483100000000), Stub(ContributionSet), [], Stub(ContributorsSet), "v1.8.0", "v1.9.0")
 
         expect:
         f.formatReleaseNotes([d1, d2]) == """Release notes:
@@ -37,7 +38,7 @@ No release information."""
             getContributions() >> [Stub(Contribution) { getAuthorName() >> "Szczepan Faber"}]
         }
 
-        def d = new DefaultReleaseNotesData("2.0.0", new Date(1483500000000), c, [], "v1.9.0", "v2.0.0")
+        def d = new DefaultReleaseNotesData("2.0.0", new Date(1483500000000), c, [], Stub(ContributorsSet), "v1.9.0", "v2.0.0")
 
         expect:
         f.formatReleaseNotes([d]) == """Release notes:

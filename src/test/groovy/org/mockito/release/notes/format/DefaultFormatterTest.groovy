@@ -203,6 +203,7 @@ class DefaultFormatterTest extends Specification {
 
         when: def notes = f.formatVersion(new DefaultReleaseNotesData("2.0.1", date, contributions, is, contributors, "v2.0.0", "v2.0.1"))
 
+        then: notes == """### 2.0.1 (2017-01-04)
 
 * Authors: 1
 * Commits: 1
