@@ -20,6 +20,7 @@ public interface ReleaseNotesGenerator {
      *                  Typically it is "v". Empty string is ok, it means that there is no prefix.
      * @param gitHubLabels only include improvements with one of those labels.
      *                     The report should be concise so please include small set of labels.
+     *                     If no labels are provided, _all_ improvements are included!
      * @param onlyPullRequests only include pull requests in the data
      */
     Collection<ReleaseNotesData> generateReleaseNotesData(Collection<String> targetVersions,

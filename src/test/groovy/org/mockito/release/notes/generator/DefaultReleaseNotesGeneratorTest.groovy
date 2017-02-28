@@ -64,6 +64,6 @@ class DefaultReleaseNotesGeneratorTest extends Specification {
         def notes = gen.generateReleaseNotesData(["2.7.0", "2.6.1", "2.5.0", "2.4.0"], "v", ["noteworthy"], true)
 
         expect:
-        println ReleaseNotesFormatters.conciseFormatter("Release notes:\n\n").formatReleaseNotes(notes)
+        println ReleaseNotesFormatters.notableFormatter("Release notes:\n\n").formatReleaseNotes(notes)
     }
 }

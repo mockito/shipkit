@@ -1,9 +1,11 @@
 package org.mockito.release.notes.improvements
 
 import org.mockito.release.notes.format.DefaultFormatter
+import spock.lang.Ignore
 import spock.lang.Specification
 import spock.lang.Subject
 
+@Ignore
 class GitHubTicketFetcherTest extends Specification {
 
     @Subject fetcher = new GitHubTicketFetcher()

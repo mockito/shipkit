@@ -23,7 +23,7 @@ class DefaultReleaseDateProviderTest extends Specification {
 
         then:
         dates.size() == 2
-        DateFormat.formatDate(dates["1.0.0"]) == "2017-01-29 16:14"
-        DateFormat.formatDate(dates["2.0.0"]) == "2017-01-30 14:14"
+        DateFormat.formatDate(dates["1.0.0"]) == "2017-01-29"
+        DateFormat.formatDate(dates["2.0.0"]) == "2017-01-30"
     }
 }
