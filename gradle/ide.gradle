@@ -1,0 +1,7 @@
+assert rootProject == project
+
+allprojects {
+    apply plugin: 'idea'
+}
+
+idea.project.vcs = 'Git'

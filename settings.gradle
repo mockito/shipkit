@@ -1,0 +1,12 @@
+include "api"
+include "impl"
+include "demo"
+
+rootProject.name = 'example-release'
+
+rootProject.children.each { project ->
+    String projectDirName = "subprojects/$project.name"
+    project.projectDir = new File(settingsDir, projectDirName)
+    assert project.projectDir.isDirectory()
+    assert project.buildFile.isFile()
+}
