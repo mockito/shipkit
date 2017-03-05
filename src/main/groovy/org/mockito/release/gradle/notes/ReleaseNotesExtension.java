@@ -49,6 +49,7 @@ public interface ReleaseNotesExtension {
     String getGitHubAuthToken();
 
     /**
+     * TODO rename to 'gitHubReadOnlyAuthToken' so that it is clear that it is read only and we don't have to document it everywhere
      * GitHub read only auth token for getting the issue links.
      */
     void setGitHubAuthToken(String gitHubAuthToken);
