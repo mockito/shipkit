@@ -60,4 +60,9 @@ public interface ReleaseNotesExtension {
      * Examples: ['java-9': 'Java 9 support', 'BDD': 'Behavior-Driven Development support']
      */
     Map<String, String> getGitHubLabelMapping();
+
+    /**
+     * See {@link #getGitHubLabelMapping()}.
+     */
+    void setGitHubLabelMapping(Map<String, String> gitHubLabelMapping);
 }

@@ -21,11 +21,11 @@ public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
 
     private File notesFile;
     private String gitHubAuthToken;
+    private Map<String, String> gitHubLabelMapping = new LinkedHashMap<String, String>();
 
     private final String version;
     private final File workDir;
     private final String extensionName;
-    private final Map<String, String> gitHubLabelMapping = new LinkedHashMap<String, String>();
 
     public DefaultReleaseNotesExtension(File workDir, String version, String extensionName) {
         this.workDir = workDir;
@@ -103,5 +103,10 @@ public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
     @Override
     public Map<String, String> getGitHubLabelMapping() {
         return gitHubLabelMapping;
+    }
+
+    @Override
+    public void setGitHubLabelMapping(Map<String, String> gitHubLabelMapping) {
+        this.gitHubLabelMapping = gitHubLabelMapping;
     }
 }
