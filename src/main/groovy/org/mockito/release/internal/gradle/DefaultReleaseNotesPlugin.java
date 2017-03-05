@@ -16,10 +16,12 @@ import org.mockito.release.gradle.notes.ReleaseNotesPlugin;
  */
 public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
 
+    private final static String EXTENSION_NAME = "notes";
+
     public void apply(Project project) {
         final DefaultReleaseNotesExtension notes = project.getExtensions().create(
-                "notes", DefaultReleaseNotesExtension.class,
-                project.getProjectDir(), project.getVersion().toString());
+                EXTENSION_NAME, DefaultReleaseNotesExtension.class,
+                project.getProjectDir(), project.getVersion().toString(), EXTENSION_NAME);
 
         project.getTasks().create("updateReleaseNotes", new Action<Task>() {
             public void execute(Task task) {
@@ -40,7 +42,7 @@ public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
                 task.doLast(new Action<Task>() {
                     public void execute(Task task) {
                         String content = notes.getReleaseNotes();
-                        task.getLogger().lifecycle("----------------\n$content----------------");
+                        task.getLogger().lifecycle("----------------\n" + content + "----------------");
                     }
                 });
             }
