@@ -46,17 +46,17 @@ public interface ReleaseNotesExtension {
     /**
      * GitHub read only auth token for getting the issue links.
      */
-    String getAuthToken();
+    String getGitHubAuthToken();
 
     /**
      * GitHub read only auth token for getting the issue links.
      */
-    void setAuthToken(String authToken);
+    void setGitHubAuthToken(String gitHubAuthToken);
 
     /**
      * The mapping of "GitHub label" to human readable and presentable name.
      * The order of labels is important and will influence the order in which groups of issues are generated in release notes.
      * Examples: ['java-9': 'Java 9 support', 'BDD': 'Behavior-Driven Development support']
      */
-    Map<String, String> getLabels();
+    Map<String, String> getGitHubLabelMapping();
 }
