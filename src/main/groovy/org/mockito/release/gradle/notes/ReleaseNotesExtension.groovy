@@ -13,7 +13,7 @@ class ReleaseNotesExtension {
 
     private static final Logger LOG = Logging.getLogger(ReleaseNotesExtension)
 
-    final static String EXT_NAME = "notes"
+    public final static String EXT_NAME = "notes"
 
     File notesFile;
     final String authToken = "a0a4c0f41c200f7c653323014d6a72a127764e17"; //read-only token
