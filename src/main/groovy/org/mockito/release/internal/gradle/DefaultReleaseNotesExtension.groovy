@@ -1,17 +1,18 @@
-package org.mockito.release.gradle.notes
+package org.mockito.release.internal.gradle
 
 import groovy.transform.CompileStatic
 import org.gradle.api.GradleException
 import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
+import org.mockito.release.gradle.notes.ReleaseNotesExtension
 import org.mockito.release.notes.Notes
 import org.mockito.release.notes.format.ReleaseNotesFormatters
 import org.mockito.release.notes.generator.ReleaseNotesGenerators
 
 @CompileStatic
-class ReleaseNotesExtension {
+class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
 
-    private static final Logger LOG = Logging.getLogger(ReleaseNotesExtension)
+    private static final Logger LOG = Logging.getLogger(DefaultReleaseNotesExtension)
 
     public final static String EXT_NAME = "notes"
 
@@ -24,7 +25,7 @@ class ReleaseNotesExtension {
     //TODO SF document the behavior
     Map labels = new LinkedHashMap<String, String>()
 
-    ReleaseNotesExtension(File workDir, String version) {
+    DefaultReleaseNotesExtension(File workDir, String version) {
         this.workDir = workDir
         this.version = version
     }
