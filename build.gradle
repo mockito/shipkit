@@ -1,7 +1,26 @@
-apply from: "gradle/ide.gradle"
-
+buildscript {
+    repositories {
+        mavenLocal() //for local testing of mockito-release-tools
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath "gradle.plugin.org.mockito:mockito-release-tools:0.0.4"
+    }
+}
 allprojects {
     repositories {
         jcenter()
     }
+}
+
+apply from: "gradle/ide.gradle"
+
+version = "0.0.2"
+
+apply plugin: "org.mockito.release-notes"
+
+notes {
+    notesFile = file("docs/release-notes.md")
+    gitHubAuthToken = "e7fe8fcdd6ffed5c38498c4c79b2a68e6f6ed1bb" //read-only token
+    gitHubLabelMapping = ["noteworthy": "Noteworthy", "bugfix": "Bugfixes"]
 }
