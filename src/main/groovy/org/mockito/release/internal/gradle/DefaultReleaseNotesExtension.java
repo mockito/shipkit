@@ -20,7 +20,7 @@ public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
     private static final Logger LOG = Logging.getLogger(DefaultReleaseNotesExtension.class);
 
     private File notesFile;
-    private String gitHubAuthToken = "a0a4c0f41c200f7c653323014d6a72a127764e17";
+    private String gitHubAuthToken;
 
     private final String version;
     private final File workDir;
