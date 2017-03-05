@@ -6,9 +6,9 @@ import org.gradle.api.Task;
 import org.mockito.release.gradle.notes.ReleaseNotesPlugin;
 
 /**
- * --------------------
- * >>>> IMPORTANT <<<<<
- * --------------------
+ * --------------------------
+ * ******* IMPORTANT ********
+ * --------------------------
  *
  * Please update the documentation in the {@link ReleaseNotesPlugin} interface
  * when you make changes to this implementation
@@ -17,8 +17,10 @@ import org.mockito.release.gradle.notes.ReleaseNotesPlugin;
 public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
 
     public void apply(Project project) {
-        final DefaultReleaseNotesExtension notes = project.getExtensions().create(DefaultReleaseNotesExtension.EXT_NAME, DefaultReleaseNotesExtension.class,
+        final DefaultReleaseNotesExtension notes = project.getExtensions().create(
+                "notes", DefaultReleaseNotesExtension.class,
                 project.getProjectDir(), project.getVersion().toString());
+
         project.getTasks().create("updateReleaseNotes", new Action<Task>() {
             public void execute(Task task) {
                 task.setGroup("Release Notes");

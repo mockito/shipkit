@@ -12,14 +12,6 @@ import org.gradle.api.Project;
  * </ul>
  *
  * The plugin also adds "notes" extension, for more information see {@link ReleaseNotesExtension}.
- *
- * <pre>
- *  notes {
- *    notesFile = file("docs/release-notes.md")
- *    gitHubAuthToken = "secret"
- *    gitHubLabelMappings = [:]
- *  }
- * </pre>
  */
 public interface ReleaseNotesPlugin extends Plugin<Project> {
 }
