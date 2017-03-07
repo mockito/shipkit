@@ -14,10 +14,11 @@ public class Notes {
      * Release notes build based on git and GitHub.
      *
      * @param workDir working directory for executing external processes like 'git log'
+     * @param repository GitHub repository, for example "mockito/mockito"
      * @param authTokenEnvVar env variable name that holds the GitHub auth token
      */
-    public static NotesBuilder gitHubNotesBuilder(File workDir, String authTokenEnvVar) {
-        return new GitNotesBuilder(workDir, authTokenEnvVar);
+    public static NotesBuilder gitHubNotesBuilder(File workDir, String repository, String authTokenEnvVar) {
+        return new GitNotesBuilder(workDir, repository, authTokenEnvVar);
     }
 
     /**

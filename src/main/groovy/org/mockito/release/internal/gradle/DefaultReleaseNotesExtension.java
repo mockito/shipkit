@@ -21,6 +21,7 @@ public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
 
     private File notesFile;
     private String gitHubAuthToken;
+    private String gitHubRepository;
     private Map<String, String> gitHubLabelMapping = new LinkedHashMap<String, String>();
 
     private final String version;
@@ -34,16 +35,21 @@ public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
     }
 
     private void assertConfigured() {
+        //TODO SF unit test coverage
         if (notesFile == null || !notesFile.isFile()) {
             throw new GradleException("'notesFile' must be configured and the file must be present.\n"
                     + "Example: " + extensionName + ".notesFile = project.file(\'docs/release-notes.md\')");
         }
 
         if (gitHubAuthToken == null || gitHubAuthToken.trim().isEmpty()) {
-            throw new GradleException("'authToken' must be configured.\n"
+            throw new GradleException("'gitHubAuthToken' must be configured.\n"
                     + "Example: " + extensionName + ".authToken = \'secret\'");
         }
 
+        if (gitHubRepository == null || gitHubRepository.trim().isEmpty()) {
+            throw new GradleException("'gitHubRepository' must be configured.\n"
+                    + "Example: " + extensionName + ".gitHubRepository = \'mockito/mockito\'");
+        }
     }
 
     @Override
@@ -57,7 +63,7 @@ public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
     public String getReleaseNotes() {
         assertConfigured();
         LOG.lifecycle("Building new release notes based on {}", notesFile);
-        NotesBuilder builder = Notes.gitHubNotesBuilder(workDir, gitHubAuthToken);
+        NotesBuilder builder = Notes.gitHubNotesBuilder(workDir, gitHubRepository, gitHubAuthToken);
         String prev = "v" + getPreviousVersion();
         String current = "HEAD";
         LOG.lifecycle("Building notes for revisions: {} -> {}", prev, current);
@@ -74,7 +80,7 @@ public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
 
     public String getCompleteReleaseNotes() {
         //in progress
-        ReleaseNotesGenerator generator = ReleaseNotesGenerators.releaseNotesGenerator(workDir, gitHubAuthToken);
+        ReleaseNotesGenerator generator = ReleaseNotesGenerators.releaseNotesGenerator(workDir, gitHubRepository, gitHubAuthToken);
         Collection<ReleaseNotesData> releaseNotes = generator.generateReleaseNotesData(new ArrayList<String>(Arrays.asList("2.7.5", "2.7.4", "2.7.3")), "v", new ArrayList(), true);
         MultiReleaseNotesFormatter formatter = ReleaseNotesFormatters.detailedFormatter("Detailed release notes:\n\n", gitHubLabelMapping, "https://github.com/mockito/mockito/compare/{0}...{1}");
         return formatter.formatReleaseNotes(releaseNotes);
@@ -108,5 +114,15 @@ public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
     @Override
     public void setGitHubLabelMapping(Map<String, String> gitHubLabelMapping) {
         this.gitHubLabelMapping = gitHubLabelMapping;
+    }
+
+    @Override
+    public String getGitHubRepository() {
+        return gitHubRepository;
+    }
+
+    @Override
+    public void setGitHubRepository(String gitHubRepository) {
+        this.gitHubRepository = gitHubRepository;
     }
 }

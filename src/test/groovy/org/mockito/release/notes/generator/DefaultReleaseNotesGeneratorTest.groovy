@@ -60,10 +60,12 @@ class DefaultReleaseNotesGeneratorTest extends Specification {
     def "lifecycle test"() {
         def workDir = new File("/Users/sfaber/mockito/src");
         def authToken = "a0a4c0f41c200f7c653323014d6a72a127764e17"
-        def gen = ReleaseNotesGenerators.releaseNotesGenerator(workDir, authToken)
+        def gen = ReleaseNotesGenerators.releaseNotesGenerator(workDir, "mockito/mockito", authToken)
         def notes = gen.generateReleaseNotesData(["2.7.0", "2.6.1", "2.5.0", "2.4.0"], "v", ["noteworthy"], true)
 
         expect:
-        println ReleaseNotesFormatters.notableFormatter("Release notes:\n\n").formatReleaseNotes(notes)
+        println ReleaseNotesFormatters.notableFormatter(
+                "Release notes:\n\n", "http://release-notes",
+                "https://github.com/mockito/mockito/compare/{0}...{1}").formatReleaseNotes(notes)
     }
 }
