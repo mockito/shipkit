@@ -21,6 +21,7 @@ apply plugin: "org.mockito.release-notes"
 
 notes {
     notesFile = file("docs/release-notes.md")
+    gitHubRepository = "mockito/mockito-release-tools-example"
     gitHubAuthToken = "e7fe8fcdd6ffed5c38498c4c79b2a68e6f6ed1bb" //read-only token
     gitHubLabelMapping = ["noteworthy": "Noteworthy", "bugfix": "Bugfixes"]
 }
