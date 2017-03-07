@@ -15,6 +15,11 @@ stuff
         new FromNotesContent(notes).previousVersion == "1.10.12"
     }
 
+    def "gets previous version when no date provided"() {
+        expect:
+        new FromNotesContent("### 1.0.0 foo").previousVersion == "1.0.0"
+    }
+
     def "throws reasonable exception if version cannot be parsed"() {
         when: new FromNotesContent("foo").previousVersion
         then: thrown(ReleaseNotesException)
