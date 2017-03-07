@@ -98,15 +98,12 @@ class GitHubTicketFetcher {
 
         private GitHubIssues(String repository, String authToken, String state, String filter, String labels, String direction) {
             // see API doc : https://developer.github.com/v3/issues/
-            //TODO SF below has bug - we don't pass all parameters
-            nextPageUrl = String.format("%s%s%s%s%s",
-                    "https://api.github.com/repos/" + repository + "/issues?access_token=" + authToken,
-                    state == null ? "" : "&state=" + state,
-                    filter == null ? "" : "&filter=" + filter,
-                    "&labels=" + labels,
-                    direction == null ? "" : "&direction=" + direction,
-                    "&page=1"
-            );
+            nextPageUrl = "https://api.github.com/repos/" + repository + "/issues?access_token=" + authToken
+                    + (state == null? "" : "&state=" + state)
+                    + (filter == null? "" : "&filter=" + filter)
+                    + "&labels=" + labels
+                    + (direction == null ? "" : "&direction=" + direction)
+                    + "&page=1";
         }
 
         boolean hasNextPage() {
