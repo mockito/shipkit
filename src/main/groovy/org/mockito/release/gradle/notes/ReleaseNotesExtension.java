@@ -65,4 +65,14 @@ public interface ReleaseNotesExtension {
      * See {@link #getGitHubLabelMapping()}.
      */
     void setGitHubLabelMapping(Map<String, String> gitHubLabelMapping);
+
+    /**
+     * GitHub repository, for example: "mockito/mockito"
+     */
+    String getGitHubRepository();
+
+    /**
+     * GitHub repository, for example: "mockito/mockito"
+     */
+    void setGitHubRepository(String gitHubRepository);
 }

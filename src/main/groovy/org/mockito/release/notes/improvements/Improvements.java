@@ -8,9 +8,10 @@ public class Improvements {
     /**
      * Fetches tickets from GitHub. Needs GitHub auth token.
      *
+     * @param repository the repository in format USER|COMPANY/REPO_NAME, for example: mockito/mockito
      * @param authToken the GitHub auth token
      */
-    public static ImprovementsProvider getGitHubProvider(final String authToken) {
-        return new GitHubImprovementsProvider(authToken);
+    public static ImprovementsProvider getGitHubProvider(String repository, final String authToken) {
+        return new GitHubImprovementsProvider(repository, authToken);
     }
 }

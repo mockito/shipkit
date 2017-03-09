@@ -14,6 +14,7 @@ import java.util.Collection;
 public class NotableReleaseNotesGeneratorTask extends DefaultTask {
 
     private File gitWorkingDir;
+    private String gitHubRepository;
     private String gitHubAuthToken;
     private Collection<String> targetVersions;
     private String tagPrefix;
@@ -28,7 +29,7 @@ public class NotableReleaseNotesGeneratorTask extends DefaultTask {
 
         //TODO SF this task is not functioning, I'm using it only to model the public API of interfaces I need.
 
-        ReleaseNotesGenerator generator = ReleaseNotesGenerators.releaseNotesGenerator(gitWorkingDir, gitHubAuthToken);
+        ReleaseNotesGenerator generator = ReleaseNotesGenerators.releaseNotesGenerator(gitWorkingDir, gitHubRepository, gitHubAuthToken);
         Collection<ReleaseNotesData> releaseNotes = generator.generateReleaseNotesData(targetVersions, tagPrefix, gitHubLabels, onlyPullRequests);
         String notes = ReleaseNotesFormatters.notableFormatter(introductionText, detailedReleaseNotesLink, vcsCommitsLinkTemplate).formatReleaseNotes(releaseNotes);
         IOUtil.writeFile(outputFile, notes);

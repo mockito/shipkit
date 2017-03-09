@@ -12,10 +12,10 @@ import java.io.File;
 
 public class ReleaseNotesGenerators {
 
-    public static ReleaseNotesGenerator releaseNotesGenerator(File workDir, String authToken) {
+    public static ReleaseNotesGenerator releaseNotesGenerator(File workDir, String repository, String authToken) {
         ProcessRunner processRunner = Exec.getProcessRunner(workDir);
         ContributionsProvider contributionsProvider = Vcs.getContributionsProvider(processRunner);
-        ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(authToken);
+        ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(repository, authToken);
         ReleaseDateProvider releaseDateProvider = Vcs.getReleaseDateProvider(processRunner);
         return new DefaultReleaseNotesGenerator(contributionsProvider, improvementsProvider, releaseDateProvider);
     }

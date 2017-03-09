@@ -24,15 +24,18 @@ class GitNotesBuilder implements NotesBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(GitNotesBuilder.class);
 
     private final File workDir;
-    private final String authTokenEnvVar;
+    private final String authToken;
+    private final String repository;
 
     /**
      * @param workDir the working directory for external processes execution (for example: git log)
-     * @param authTokenEnvVar the env var that holds the GitHub auth token
+     * @param repository GitHub repository, for example: "mockito/mockito"
+     * @param authToken the GitHub auth token
      */
-    GitNotesBuilder(File workDir, String authTokenEnvVar) {
+    GitNotesBuilder(File workDir, String repository, String authToken) {
         this.workDir = workDir;
-        this.authTokenEnvVar = authTokenEnvVar;
+        this.repository = repository;
+        this.authToken = authToken;
     }
 
     public String buildNotes(String version, String fromRevision, String toRevision, final Map<String, String> labels) {
@@ -41,7 +44,7 @@ class GitNotesBuilder implements NotesBuilder {
         ContributionsProvider contributionsProvider = Vcs.getContributionsProvider(Exec.getProcessRunner(workDir));
         ContributionSet contributions = contributionsProvider.getContributionsBetween(fromRevision, toRevision);
 
-        ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(authTokenEnvVar);
+        ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(repository, authToken);
         Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, Collections.<String>emptyList(), false);
 
         ReleaseNotesData data = new DefaultReleaseNotesData(version, new Date(), contributions, improvements, fromRevision, toRevision);

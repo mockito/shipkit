@@ -16,7 +16,7 @@ class GitHubTicketFetcherTest extends Specification {
     def "fetches improvements from GitHub"() {
         def readOnlyToken = "a0a4c0f41c200f7c653323014d6a72a127764e17"
         when:
-        def improvements = fetcher.fetchTickets(readOnlyToken, ['109', '108', '99999', '112'], [], false) as List
+        def improvements = fetcher.fetchTickets("mockito/mockito", readOnlyToken, ['109', '108', '99999', '112'], [], false) as List
 
         then:
         //TODO SF we can leave this test but we should create a sample project for it instead of using Mockito repo

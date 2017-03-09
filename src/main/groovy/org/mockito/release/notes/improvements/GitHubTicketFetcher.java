@@ -17,7 +17,7 @@ class GitHubTicketFetcher {
 
     private static final Logger LOG = LoggerFactory.getLogger(GitHubTicketFetcher.class);
 
-    Collection<Improvement> fetchTickets(String authToken, Collection<String> ticketIds, Collection<String> labels,
+    Collection<Improvement> fetchTickets(String repository, String authToken, Collection<String> ticketIds, Collection<String> labels,
                                          boolean onlyPullRequests) {
         List<Improvement> out = new LinkedList<Improvement>();
         if (ticketIds.isEmpty()) {
@@ -28,7 +28,7 @@ class GitHubTicketFetcher {
         Queue<Long> tickets = queuedTicketNumbers(ticketIds);
 
         try {
-            GitHubIssues issues = GitHubIssues.authenticatingWith(authToken)
+            GitHubIssues issues = GitHubIssues.forRepo(repository, authToken)
                     .state("closed")
                     .labels(CommaSeparated.commaSeparated(labels))
                     .filter("all")
@@ -96,30 +96,21 @@ class GitHubTicketFetcher {
         public static final String RELATIVE_LINK_NOT_FOUND = "none";
         private String nextPageUrl;
 
-        private GitHubIssues(String authToken, String state, String filter, String labels, String direction) {
+        private GitHubIssues(String repository, String authToken, String state, String filter, String labels, String direction) {
             // see API doc : https://developer.github.com/v3/issues/
-            nextPageUrl = String.format("%s%s%s%s%s",
-                    "https://api.github.com/repos/mockito/mockito/issues?access_token=" + authToken,
-                    state == null ? "" : "&state=" + state,
-                    filter == null ? "" : "&filter=" + filter,
-                    "&labels=" + labels,
-                    direction == null ? "" : "&direction=" + direction,
-                    "&page=1"
-            );
+            nextPageUrl = "https://api.github.com/repos/" + repository + "/issues?access_token=" + authToken
+                    + (state == null? "" : "&state=" + state)
+                    + (filter == null? "" : "&filter=" + filter)
+                    + "&labels=" + labels
+                    + (direction == null ? "" : "&direction=" + direction)
+                    + "&page=1";
         }
 
-
-        public GitHubIssues init() throws IOException {
-            URLConnection urlConnection = new URL(nextPageUrl).openConnection();
-            nextPageUrl = extractRelativeLink(urlConnection.getHeaderField("Link"), "next");
-            return this;
-        }
-
-        public boolean hasNextPage() {
+        boolean hasNextPage() {
             return !RELATIVE_LINK_NOT_FOUND.equals(nextPageUrl);
         }
 
-        public List<JSONObject> nextPage() throws IOException {
+        List<JSONObject> nextPage() throws IOException {
             if(RELATIVE_LINK_NOT_FOUND.equals(nextPageUrl)) {
                 throw new IllegalStateException("GitHub API no more issues to fetch");
             }
@@ -131,7 +122,7 @@ class GitHubTicketFetcher {
                     urlConnection.getHeaderField("X-RateLimit-Remaining"),
                     urlConnection.getHeaderField("X-RateLimit-Limit")
             );
-            nextPageUrl = extractRelativeLink(urlConnection.getHeaderField("Link"), "next");
+            nextPageUrl = extractRelativeLink(urlConnection.getHeaderField("Link"));
 
             return parseJsonFrom(urlConnection);
         }
@@ -157,8 +148,7 @@ class GitHubTicketFetcher {
             return issues;
         }
 
-
-        private String extractRelativeLink(String linkHeader, final String relativeType) {
+        private String extractRelativeLink(String linkHeader) {
             if (linkHeader == null) {
                 return RELATIVE_LINK_NOT_FOUND;
             }
@@ -167,41 +157,43 @@ class GitHubTicketFetcher {
             // Link: <https://api.github.com/repositories/6207167/issues?access_token=a0a4c0f41c200f7c653323014d6a72a127764e17&state=closed&filter=all&page=2>; rel="next",
             //       <https://api.github.com/repositories/62207167/issues?access_token=a0a4c0f41c200f7c653323014d6a72a127764e17&state=closed&filter=all&page=4>; rel="last"
             for (String linkRel : linkHeader.split(",")) {
-                if (linkRel.contains("rel=\"" + relativeType + "\"")) {
+                if (linkRel.contains("rel=\"next\"")) {
                     return linkRel.substring(
                             linkRel.indexOf("http"),
-                            linkRel.indexOf(">; rel=\"" + relativeType + "\""));
+                            linkRel.indexOf(">; rel=\"next\""));
                 }
             }
             return RELATIVE_LINK_NOT_FOUND;
         }
 
-        public static GitHubIssuesBuilder authenticatingWith(String authToken) {
-            return new GitHubIssuesBuilder(authToken);
+        static GitHubIssuesBuilder forRepo(String repository, String authToken) {
+            return new GitHubIssuesBuilder(repository, authToken);
         }
 
         private static class GitHubIssuesBuilder {
             private final String authToken;
+            private final String repository;
             private String state;
             private String filter;
             private String direction;
             private String labels;
 
-            public GitHubIssuesBuilder(String authToken) {
+            GitHubIssuesBuilder(String repository, String authToken) {
+                this.repository = repository;
                 this.authToken = authToken;
             }
 
-            public GitHubIssuesBuilder state(String state) {
+            GitHubIssuesBuilder state(String state) {
                 this.state = state;
                 return this;
             }
 
-            public GitHubIssuesBuilder filter(String filter) {
+            GitHubIssuesBuilder filter(String filter) {
                 this.filter = filter;
                 return this;
             }
 
-            public GitHubIssuesBuilder direction(String direction) {
+            GitHubIssuesBuilder direction(String direction) {
                 this.direction = direction;
                 return this;
             }
@@ -215,8 +207,8 @@ class GitHubTicketFetcher {
                 return this;
             }
 
-            public GitHubIssues browse() {
-                return new GitHubIssues(authToken, state, filter, labels, direction);
+            GitHubIssues browse() {
+                return new GitHubIssues(repository, authToken, state, filter, labels, direction);
             }
         }
     }
