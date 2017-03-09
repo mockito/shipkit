@@ -1,0 +1,52 @@
+apply plugin: "org.mockito.release-notes"
+
+notes {
+    notesFile = file("docs/release-notes.md")
+    gitHubRepository = "mockito/mockito-release-tools-example"
+    gitHubAuthToken = "e7fe8fcdd6ffed5c38498c4c79b2a68e6f6ed1bb" //read-only token
+    gitHubLabelMapping = ["noteworthy": "Noteworthy", "bugfix": "Bugfixes"]
+}
+
+allprojects {
+    plugins.withId("maven-publish") {
+        project.publishing {
+            publications {
+                DefaultPublication(MavenPublication) {
+                    from components.java
+                }
+            }
+        }
+
+        project.apply plugin: "com.jfrog.bintray"
+
+        bintray {
+            user = 'szczepiq'
+            key = System.env.BINTRAY_API_KEY
+
+            publications = project.publishing.publications*.name
+
+            publish = true
+
+            pkg {
+                repo = 'mockito-release-tools-example-repo'
+                userOrg = 'mockito'
+                name = 'mockito-release-tools-example'
+                desc = project.description
+                websiteUrl = 'http://mockito.org'
+                issueTrackerUrl = 'https://github.com/mockito/mockito-release-tools/issues'
+                vcsUrl = 'https://github.com/mockito/mockito-release-tools.git'
+                licenses = ['MIT']
+                labels = ['continuous delivery', 'release automation', 'mockito']
+                publicDownloadNumbers = true
+
+                // optional version attributes
+                version {
+                    vcsTag = "v$project.version"
+                    gpg {
+                        sign = true
+                    }
+                }
+            }
+        }
+    }
+}

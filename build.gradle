@@ -5,23 +5,18 @@ buildscript {
     }
     dependencies {
         classpath "gradle.plugin.org.mockito:mockito-release-tools:0.0.5"
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
     }
 }
+
 allprojects {
     repositories {
         jcenter()
     }
+
+    group = "org.mockito.release-tools-example"
+    version = "0.0.3"
 }
 
 apply from: "gradle/ide.gradle"
-
-version = "0.0.2"
-
-apply plugin: "org.mockito.release-notes"
-
-notes {
-    notesFile = file("docs/release-notes.md")
-    gitHubRepository = "mockito/mockito-release-tools-example"
-    gitHubAuthToken = "e7fe8fcdd6ffed5c38498c4c79b2a68e6f6ed1bb" //read-only token
-    gitHubLabelMapping = ["noteworthy": "Noteworthy", "bugfix": "Bugfixes"]
-}
+apply from: "gradle/release.gradle"
