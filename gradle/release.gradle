@@ -1,4 +1,5 @@
 apply plugin: "org.mockito.release-notes"
+apply plugin: "org.mockito.release-tools.versioning"
 
 notes {
     notesFile = file("docs/release-notes.md")
