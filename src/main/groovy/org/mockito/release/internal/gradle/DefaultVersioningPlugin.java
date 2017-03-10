@@ -1,5 +1,6 @@
 package org.mockito.release.internal.gradle;
 
+import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.mockito.release.gradle.notes.BumpVersionFileTask;
 import org.mockito.release.gradle.notes.VersioningPlugin;
@@ -13,8 +14,14 @@ public class DefaultVersioningPlugin implements VersioningPlugin {
 
     public void apply(Project project) {
         File versionFile = project.file("version.properties");
+        final String version = Version.versionFile(versionFile).getVersion();
 
-        project.setVersion(Version.versionFile(versionFile).getVersion());
+        project.allprojects(new Action<Project>() {
+            @Override
+            public void execute(Project project) {
+                project.setVersion(version);
+            }
+        });
 
         BumpVersionFileTask task = project.getTasks().create("bumpVersionFile", DefaultBumpVersionFileTask.class);
         task.setVersionFile(versionFile);
