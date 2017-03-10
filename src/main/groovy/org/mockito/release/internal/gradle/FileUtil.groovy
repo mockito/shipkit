@@ -1,12 +1,16 @@
 package org.mockito.release.internal.gradle
 
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
 
 /**
  * File utilities.
  */
 @CompileStatic
+@PackageScope
 class FileUtil {
+
+    //TODO convert to Java at some point
 
     /**
      * Returns first line of the file.
