@@ -10,7 +10,7 @@ import org.gradle.api.Project;
  *     <li>bumpVersionFile - increments version in "version.properties" file, see {@link BumpVersionFileTask}</li>
  * </ul>
  *
- * Also, the plugin configures project's version to the value specified in "version.properties"
+ * Also, the plugin configures all projects' version property to the value specified in "version.properties"
  */
 public interface VersioningPlugin extends Plugin<Project> {
 }
