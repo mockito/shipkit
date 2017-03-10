@@ -23,6 +23,7 @@ public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
                 EXTENSION_NAME, DefaultReleaseNotesExtension.class,
                 project.getProjectDir(), project.getVersion().toString(), EXTENSION_NAME);
 
+        //TODO those should be task classes with decent API
         project.getTasks().create("updateReleaseNotes", new Action<Task>() {
             public void execute(Task task) {
                 task.setGroup("Release Notes");
