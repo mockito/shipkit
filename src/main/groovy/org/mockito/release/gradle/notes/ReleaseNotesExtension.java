@@ -24,14 +24,16 @@ public interface ReleaseNotesExtension {
 
     /**
      * Generates and returns incremental release notes text that can be appended to the release notes file.
+     * @param version of the release to generate notes for
      */
-    String getReleaseNotes();
+    String getReleaseNotes(String version);
 
     /**
-     * Generates incremental release notes content using {@link #getReleaseNotes()}
+     * Generates incremental release notes content using {@link #getReleaseNotes(String)} )}
      * and appends it to the top of release notes file.
+     * @param version of the release to generate notes for
      */
-    void updateReleaseNotes();
+    void updateReleaseNotes(String version);
 
     /**
      * The file where the release notes are kept.
