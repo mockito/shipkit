@@ -112,7 +112,9 @@ allprojects {
             ['BINTRAY_API_KEY'].each { assert System.env[it]: "Please export '$it' env variable first." }
 
             //Using doFirst so that we can pick up updated 'releaseDryRun' property
-            bintray.dryRun = project.ext.has("releaseDryRun")
+            bintray.dryRun = rootProject.ext.has("releaseDryRun")
+
+            println "Publishing to Bintray. Dry run is: $bintray.dryRun"
         }
 
         bintray {
