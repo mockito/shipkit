@@ -82,6 +82,9 @@ task prepareRelease {
 
 task finalizeRelease {
     description = "Finalizes the release, pushes code, publishes to repositories."
+
+    dependsOn gitPush
+    dependsOn bintrayUploadAll
 }
 
 allprojects {
