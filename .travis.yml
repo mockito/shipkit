@@ -1,0 +1,36 @@
+# More details on how to configure the Travis build
+# https://docs.travis-ci.com/user/customizing-the-build/
+
+# Speed up build with travis caches
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+
+language: java
+
+before_install:
+  - export TRAVIS_COMMIT_MESSAGE=$(git log --format=%B -n 1 $TRAVIS_COMMIT)
+  - echo "$TRAVIS_COMMIT_MESSAGE"
+
+jdk:
+  - openjdk6
+
+env:
+  global:
+  - TERM=dumb
+  - GRADLE_OPTS="-XX:+UseCompressedOops -Djava.awt.headless=true"
+
+branches:
+  except:
+  - /^v\d/
+
+#TODO what is this?
+install:
+ - true
+
+script:
+  - ./gradlew build -s
+
+after_success:
+  - ./gradlew prepareRelese && ./gradlew finalizeRelease
