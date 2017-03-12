@@ -1,3 +1,9 @@
+### 0.1.7 (2017-03-12)
+
+* Authors: 0
+* Commits: 0
+* No notable improvements. See the commits for detailed changes.
+
 ### 0.1.6 (2017-03-12)
 
 * Authors: 0
