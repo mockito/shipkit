@@ -1,6 +1,5 @@
 include "api"
 include "impl"
-include "demo"
 
 rootProject.name = 'example-release'
 
