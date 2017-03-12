@@ -33,4 +33,4 @@ script:
   - ./gradlew build -s
 
 after_success:
-  - ./gradlew prepareRelese && ./gradlew finalizeRelease
+  - ./gradlew performRelease releaseCleanUp -PreleaseDryRun && ./gradlew performRelease

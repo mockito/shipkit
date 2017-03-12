@@ -37,17 +37,18 @@ task gitTag(type: Exec) {
     commandLine "git", "tag", "-a", "v${project.version}", "-m", commitMessage("Created new tag v${project.version}")
 }
 
+/*
 task configureDryRun {
     doLast {
         println "Configuring root project property 'ext.releaseDryRun=true'"
         rootProject.ext.releaseDryRun = true
     }
 }
+*/
 
 task gitPush(type: Exec) {
     description = "Pushes changes to '${System.env.TRAVIS_BRANCH}' branch."
 
-    mustRunAfter configureDryRun
     mustRunAfter gitCommit, gitTag
 
     //Using doFirst so that we can pick up updated 'releaseDryRun' property
@@ -70,14 +71,21 @@ task bintrayUploadAll {
     description = "Depends on all 'bintrayUpload' tasks from all Gradle projects."
 }
 
-task prepareRelease {
-    description = "Prepares release. Also useful for local testing."
+task performRelease {
+    description = "Performs release. To test release use './gradlew performRelease releaseCleanUp -PreleaseDryRun'"
 
     dependsOn bumpVersionFile, updateReleaseNotes
     dependsOn gitAddBumpVersion, gitAddReleaseNotes, gitCommit, gitTag
-    dependsOn configureDryRun
     dependsOn gitPush
     dependsOn bintrayUploadAll
+}
+
+task releaseCleanUp {
+    mustRunAfter performRelease
+    doLast {
+        exec { commandLine = ["git", "reset", "--hard", "HEAD~"] }
+        exec { commandLine = ["git", "tag", "-d", "v$project.version"] }
+    }
 }
 
 task finalizeRelease {
@@ -100,7 +108,6 @@ allprojects {
         project.apply plugin: "com.jfrog.bintray"
 
         bintrayUploadAll.dependsOn bintrayUpload
-        bintrayUpload.mustRunAfter configureDryRun
         bintrayUpload.doFirst {
             ['BINTRAY_API_KEY'].each { assert System.env[it]: "Please export '$it' env variable first." }
 
