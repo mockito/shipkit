@@ -45,7 +45,8 @@ task configureDryRun {
 }
 
 task gitPush(type: Exec) {
-    mustRunAfter gitCommit, configureDryRun
+    mustRunAfter configureDryRun
+    mustRunAfter gitCommit, gitTag
 
     doFirst {
         ['TRAVIS_BRANCH', 'GH_TOKEN'].each {
@@ -73,7 +74,7 @@ task prepareRelease {
     description = "Prepares release. Also useful for local testing."
 
     dependsOn bumpVersionFile, updateReleaseNotes
-    dependsOn gitAddBumpVersion, gitAddReleaseNotes, gitCommit
+    dependsOn gitAddBumpVersion, gitAddReleaseNotes, gitCommit, gitTag
     dependsOn configureDryRun
     dependsOn gitPush
     dependsOn bintrayUploadAll
