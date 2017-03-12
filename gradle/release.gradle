@@ -46,6 +46,13 @@ task configureDryRun {
 
 task gitPush(type: Exec) {
     mustRunAfter gitCommit, configureDryRun
+
+    doFirst {
+        ['TRAVIS_BRANCH', 'GH_TOKEN'].each {
+            assert System.env[it]: "Please export '$it' env variable first."
+        }
+    }
+
     description = "Pushes changes to '${System.env.TRAVIS_BRANCH}' branch."
     //!!!Below command _MUST_ be quiet otherwise it exposes GitHub write token!!!
     def mustBeQuiet = "-q"
@@ -90,6 +97,9 @@ allprojects {
 
         bintrayUploadAll.dependsOn bintrayUpload
         bintrayUpload.mustRunAfter configureDryRun
+        bintrayUpload.doFirst {
+            ['BINTRAY_API_KEY'].each { assert System.env[it]: "Please export '$it' env variable first." }
+        }
 
         bintray {
             user = 'szczepiq'
