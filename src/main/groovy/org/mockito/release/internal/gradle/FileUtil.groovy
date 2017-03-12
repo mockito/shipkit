@@ -26,4 +26,18 @@ class FileUtil {
         def existing = notesFile.text
         notesFile.text = content + existing
     }
+
+    /**
+     * Reads content of the file
+     */
+    static String readFile(File file) {
+        file.text
+    }
+
+    /**
+     * Writes content to the file
+     */
+    static void writeFile(File file, String content) {
+        file.text = content
+    }
 }
