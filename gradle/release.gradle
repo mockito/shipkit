@@ -8,6 +8,15 @@ notes {
     gitHubLabelMapping = ["noteworthy": "Noteworthy", "bugfix": "Bugfixes"]
 }
 
+static String commitMessage(String message) {
+    def buildNo = System.env.TRAVIS_BUILD_NUMBER
+    if (buildNo) {
+        return message + " by Travis CI build $System.env.TRAVIS_BUILD_NUMBER [ci skip]"
+    } else {
+        return message + " [ci skip]"
+    }
+}
+
 task gitAddBumpVersion(type: Exec) {
     mustRunAfter tasks.bumpVersionFile
     commandLine = ["git", "add", "version.properties"]
@@ -21,12 +30,46 @@ task gitAddReleaseNotes(type: Exec) {
 task gitCommit(type: Exec) {
     mustRunAfter tasks.gitAddBumpVersion, tasks.gitAddReleaseNotes
     commandLine = ["git", "commit", "--author", "Mockito Release Tools <mockito.release.tools@gmail.com>",
-                   "-m", "Bumped version and updated release notes"]
+                   "-m", commitMessage("Bumped version and updated release notes")]
+}
+
+task gitTag(type: Exec) {
+    commandLine "git", "tag", "-a", "v${project.version}", "-m", commitMessage("Created new tag v${project.version}")
+}
+
+task configureDryRun {
+    doLast {
+        println "Configuring root project property 'ext.releaseDryRun=true'"
+        rootProject.ext.releaseDryRun = true
+    }
+}
+
+task gitPush(type: Exec) {
+    mustRunAfter gitCommit, configureDryRun
+    description = "Pushes changes to '${System.env.TRAVIS_BRANCH}' branch."
+    //!!!Below command _MUST_ be quiet otherwise it exposes GitHub write token!!!
+    def mustBeQuiet = "-q"
+    def pushCommandLine = ["git", "push",
+                           "https://szczepiq:${System.env.GH_TOKEN}@github.com/mockito/mockito-release-tools.git",
+                           System.env.TRAVIS_BRANCH, "v$project.version", mustBeQuiet]
+    if (rootProject.ext.has('releaseDryRun')) {
+        pushCommandLine << '--dry-run'
+    }
+    commandLine pushCommandLine
+}
+
+task bintrayUploadAll {
+    description = "Depends on all 'bintrayUpload' tasks from all Gradle projects."
 }
 
 task prepareRelease {
-    dependsOn bumpVersionFile, updateReleaseNotes, gitAddBumpVersion, gitAddReleaseNotes, gitCommit
     description = "Prepares release. Also useful for local testing."
+
+    dependsOn bumpVersionFile, updateReleaseNotes
+    dependsOn gitAddBumpVersion, gitAddReleaseNotes, gitCommit
+    dependsOn configureDryRun
+    dependsOn gitPush
+    dependsOn bintrayUploadAll
 }
 
 task finalizeRelease {
@@ -44,11 +87,15 @@ allprojects {
         }
 
         project.apply plugin: "com.jfrog.bintray"
-        finalizeRelease.dependsOn bintrayUpload
+
+        bintrayUploadAll.dependsOn bintrayUpload
+        bintrayUpload.mustRunAfter configureDryRun
 
         bintray {
             user = 'szczepiq'
             key = System.env.BINTRAY_API_KEY
+
+            dryRun = project.ext.has("bintrayDryRun")
 
             afterEvaluate {
                 //we have to access publications as late as possible,
