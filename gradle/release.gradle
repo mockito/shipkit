@@ -45,25 +45,25 @@ task configureDryRun {
 }
 
 task gitPush(type: Exec) {
+    description = "Pushes changes to '${System.env.TRAVIS_BRANCH}' branch."
+
     mustRunAfter configureDryRun
     mustRunAfter gitCommit, gitTag
 
+    //Using doFirst so that we can pick up updated 'releaseDryRun' property
     doFirst {
         ['TRAVIS_BRANCH', 'GH_TOKEN'].each {
             assert System.env[it]: "Please export '$it' env variable first."
         }
+        //!!!Below command _MUST_ be quiet otherwise it exposes GitHub write token!!!
+        def mustBeQuiet = "-q"
+        commandLine = ["git", "push",
+                               "https://szczepiq:${System.env.GH_TOKEN}@github.com/mockito/mockito-release-tools.git",
+                               System.env.TRAVIS_BRANCH, "v$project.version", mustBeQuiet]
+        if (rootProject.ext.has('releaseDryRun')) {
+            commandLine << '--dry-run'
+        }
     }
-
-    description = "Pushes changes to '${System.env.TRAVIS_BRANCH}' branch."
-    //!!!Below command _MUST_ be quiet otherwise it exposes GitHub write token!!!
-    def mustBeQuiet = "-q"
-    def pushCommandLine = ["git", "push",
-                           "https://szczepiq:${System.env.GH_TOKEN}@github.com/mockito/mockito-release-tools.git",
-                           System.env.TRAVIS_BRANCH, "v$project.version", mustBeQuiet]
-    if (rootProject.ext.has('releaseDryRun')) {
-        pushCommandLine << '--dry-run'
-    }
-    commandLine pushCommandLine
 }
 
 task bintrayUploadAll {
@@ -100,13 +100,14 @@ allprojects {
         bintrayUpload.mustRunAfter configureDryRun
         bintrayUpload.doFirst {
             ['BINTRAY_API_KEY'].each { assert System.env[it]: "Please export '$it' env variable first." }
+
+            //Using doFirst so that we can pick up updated 'releaseDryRun' property
+            bintray.dryRun = project.ext.has("releaseDryRun")
         }
 
         bintray {
             user = 'szczepiq'
             key = System.env.BINTRAY_API_KEY
-
-            dryRun = project.ext.has("releaseDryRun")
 
             afterEvaluate {
                 //we have to access publications as late as possible,
