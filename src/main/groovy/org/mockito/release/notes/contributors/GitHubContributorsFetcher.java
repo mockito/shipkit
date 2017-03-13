@@ -38,6 +38,7 @@ public class GitHubContributorsFetcher {
                 }
             }
         } catch (Exception e) {
+            LOG.info("Problems fetching commits from GitHub", e);
             throw new RuntimeException("Problems fetching commits from GitHub", e);
         }
 
@@ -56,12 +57,14 @@ public class GitHubContributorsFetcher {
         Set<Contributor> result = new HashSet<Contributor>();
         for (JSONObject commit : commits) {
             Contributor contributor = GitHubCommitsJSON.toContributor(commit);
-            if(authors.contains(contributor.getName())) {
-                result.add(contributor);
-                authors.remove(contributor.getName());
-            }
-            if(authors.isEmpty()) {
-                return result;
+            if(contributor != null) {
+                if (authors.contains(contributor.getName())) {
+                    result.add(contributor);
+                    authors.remove(contributor.getName());
+                }
+                if (authors.isEmpty()) {
+                    return result;
+                }
             }
         }
         return result;
@@ -109,6 +112,7 @@ public class GitHubContributorsFetcher {
 
         private final String fromRevision;
         private final GitHubFetcher fetcher;
+        private List<JSONObject> lastFetchedPage;
 
         private GitHubCommits(String nextPageUrl, String fromRevision) {
             fetcher = new GitHubFetcher(nextPageUrl);
@@ -116,11 +120,24 @@ public class GitHubContributorsFetcher {
         }
 
         boolean hasNextPage() {
-            return fetcher.hasNextPage();
+            return !containsRevision(lastFetchedPage, fromRevision) && fetcher.hasNextPage();
+        }
+
+        private boolean containsRevision(List<JSONObject> lastFetchedPage, String revision) {
+            if(lastFetchedPage == null) {
+                return false;
+            }
+            for (JSONObject commit : lastFetchedPage) {
+                if(GitHubCommitsJSON.containsRevision(commit, revision)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         List<JSONObject> nextPage() throws IOException {
-            return fetcher.nextPage();
+            lastFetchedPage = fetcher.nextPage();
+            return lastFetchedPage;
         }
 
         static GitHubCommitsBuilder authenticatingWith(String authToken) {

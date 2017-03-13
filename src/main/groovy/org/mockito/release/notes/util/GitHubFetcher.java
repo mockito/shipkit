@@ -2,6 +2,7 @@ package org.mockito.release.notes.util;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.mockito.release.notes.internal.DateFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -44,9 +46,13 @@ public class GitHubFetcher {
         LOG.info("GitHub API querying issue page {}", queryParamValue(url, "page"));
         URLConnection urlConnection = url.openConnection();
 
-        LOG.info("GitHub API rate info => Remaining : {}, Limit : {}",
+        Date resetInEpochSeconds = DateFormat.parseDateInEpochSeconds(urlConnection.getHeaderField("X-RateLimit-Reset"));
+        String resetInLocalTime = DateFormat.formatDateToLocalTime(resetInEpochSeconds);
+
+        LOG.info("GitHub API rate info => Remaining : {}, Limit : {}, Reset at: {}",
                 urlConnection.getHeaderField("X-RateLimit-Remaining"),
-                urlConnection.getHeaderField("X-RateLimit-Limit")
+                urlConnection.getHeaderField("X-RateLimit-Limit"),
+                resetInLocalTime
         );
         nextPageUrl = extractRelativeLink(urlConnection.getHeaderField("Link"), "next");
 

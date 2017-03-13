@@ -1,6 +1,7 @@
 package org.mockito.release.notes;
 
 import org.mockito.release.exec.Exec;
+import org.mockito.release.exec.ProcessRunner;
 import org.mockito.release.notes.contributors.Contributors;
 import org.mockito.release.notes.contributors.ContributorsSet;
 import org.mockito.release.notes.contributors.GitHubContributorsProvider;
@@ -13,6 +14,7 @@ import org.mockito.release.notes.model.ContributionSet;
 import org.mockito.release.notes.model.Improvement;
 import org.mockito.release.notes.model.ReleaseNotesData;
 import org.mockito.release.notes.vcs.ContributionsProvider;
+import org.mockito.release.notes.vcs.RevisionProvider;
 import org.mockito.release.notes.vcs.Vcs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,11 +47,15 @@ class GitNotesBuilder implements NotesBuilder {
     public String buildNotes(String version, String fromRevision, String toRevision, final Map<String, String> labels) {
         LOG.info("Getting release notes between {} and {}", fromRevision, toRevision);
 
-        ContributionsProvider contributionsProvider = Vcs.getContributionsProvider(Exec.getProcessRunner(workDir));
+        ProcessRunner processRunner = Exec.getProcessRunner(workDir);
+        ContributionsProvider contributionsProvider = Vcs.getContributionsProvider(processRunner);
         ContributionSet contributions = contributionsProvider.getContributionsBetween(fromRevision, toRevision);
 
-        GitHubContributorsProvider contibutorsProvider = Contributors.getGitHubContibutorsProvider(authToken);
-        ContributorsSet contributors = contibutorsProvider.mapContributorsToGitHubUser(contributions, fromRevision, toRevision);
+        RevisionProvider revisionProvider = Vcs.getRevisionProvider(processRunner);
+        String fromRev = revisionProvider.getRevisionForTagOrRevision(fromRevision);
+
+        GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContibutorsProvider(authToken);
+        ContributorsSet contributors = contributorsProvider.mapContributorsToGitHubUser(contributions, fromRev, toRevision);
 
         ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(repository, authToken);
         Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, Collections.<String>emptyList(), false);
