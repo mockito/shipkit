@@ -19,7 +19,7 @@ targetCompatibility = 1.6
 
 repositories { jcenter() }
 
-version = '0.0.6'
+version = '0.1.0'
 group = 'gradle.plugin.org.mockito'
 
 dependencies {
