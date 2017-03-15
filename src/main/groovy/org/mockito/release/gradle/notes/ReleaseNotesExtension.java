@@ -38,23 +38,22 @@ public interface ReleaseNotesExtension {
     /**
      * The file where the release notes are kept.
      */
-    File getNotesFile();
+    File getReleaseNotesFile();
 
     /**
      * The file where the release notes are kept.
      */
-    void setNotesFile(File notesFile);
+    void setReleaseNotesFile(File notesFile);
 
     /**
      * GitHub read only auth token for getting the issue links.
      */
-    String getGitHubAuthToken();
+    String getGitHubReadOnlyAuthToken();
 
     /**
-     * TODO rename to 'gitHubReadOnlyAuthToken' so that it is clear that it is read only and we don't have to document it everywhere
      * GitHub read only auth token for getting the issue links.
      */
-    void setGitHubAuthToken(String gitHubAuthToken);
+    void setGitHubReadOnlyAuthToken(String gitHubAuthToken);
 
     /**
      * The mapping of "GitHub label" to human readable and presentable name.
