@@ -19,7 +19,7 @@ public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
 
     private static final Logger LOG = Logging.getLogger(DefaultReleaseNotesExtension.class);
 
-    private File notesFile;
+    private File releaseNotesFile;
     private String gitHubAuthToken;
     private String gitHubRepository;
     private Map<String, String> gitHubLabelMapping = new LinkedHashMap<String, String>();
@@ -34,7 +34,7 @@ public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
 
     private void assertConfigured() {
         //TODO SF unit test coverage
-        if (notesFile == null || !notesFile.isFile()) {
+        if (releaseNotesFile == null || !releaseNotesFile.isFile()) {
             throw new GradleException("'notesFile' must be configured and the file must be present.\n"
                     + "Example: " + extensionName + ".notesFile = project.file(\'docs/release-notes.md\')");
         }
@@ -53,14 +53,14 @@ public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
     @Override
     public String getPreviousVersion() {
         assertConfigured();
-        String firstLine = FileUtil.firstLine(notesFile);
+        String firstLine = FileUtil.firstLine(releaseNotesFile);
         return Notes.previousVersion(firstLine).getPreviousVersion();
     }
 
     @Override
     public String getReleaseNotes(String version) {
         assertConfigured();
-        LOG.lifecycle("Building new release notes based on {}", notesFile);
+        LOG.lifecycle("Building new release notes based on {}", releaseNotesFile);
         NotesBuilder builder = Notes.gitHubNotesBuilder(workDir, gitHubRepository, gitHubAuthToken);
         String prev = "v" + getPreviousVersion();
         String current = "HEAD";
@@ -72,7 +72,7 @@ public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
     @Override
     public void updateReleaseNotes(String version) {
         String newContent = getReleaseNotes(version);
-        FileUtil.appendToTop(newContent, notesFile);
+        FileUtil.appendToTop(newContent, releaseNotesFile);
         LOG.lifecycle("Successfully updated release notes!");
     }
 
@@ -85,22 +85,22 @@ public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
     }
 
     @Override
-    public File getNotesFile() {
-        return notesFile;
+    public File getReleaseNotesFile() {
+        return releaseNotesFile;
     }
 
     @Override
-    public void setNotesFile(File notesFile) {
-        this.notesFile = notesFile;
+    public void setReleaseNotesFile(File file) {
+        this.releaseNotesFile = file;
     }
 
     @Override
-    public String getGitHubAuthToken() {
+    public String getGitHubReadOnlyAuthToken() {
         return gitHubAuthToken;
     }
 
     @Override
-    public void setGitHubAuthToken(String gitHubAuthToken) {
+    public void setGitHubReadOnlyAuthToken(String gitHubAuthToken) {
         this.gitHubAuthToken = gitHubAuthToken;
     }
 

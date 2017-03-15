@@ -15,10 +15,10 @@ public class Notes {
      *
      * @param workDir working directory for executing external processes like 'git log'
      * @param repository GitHub repository, for example "mockito/mockito"
-     * @param authTokenEnvVar env variable name that holds the GitHub auth token
+     * @param gitHubReadOnlyAuthToken GitHub auth token, read-only please!
      */
-    public static NotesBuilder gitHubNotesBuilder(File workDir, String repository, String authTokenEnvVar) {
-        return new GitNotesBuilder(workDir, repository, authTokenEnvVar);
+    public static NotesBuilder gitHubNotesBuilder(File workDir, String repository, String gitHubReadOnlyAuthToken) {
+        return new GitNotesBuilder(workDir, repository, gitHubReadOnlyAuthToken);
     }
 
     /**
