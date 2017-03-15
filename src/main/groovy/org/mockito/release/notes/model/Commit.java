@@ -8,6 +8,11 @@ import java.util.Collection;
 public interface Commit {
 
     /**
+     * Commit identifier. For git it would be 'hash' (SHA-1)
+     */
+    String getCommitId();
+
+    /**
      * Author identifier. For git it would be 'email'
      */
     String getAuthorEmail();

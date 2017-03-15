@@ -20,4 +20,8 @@ public class Vcs {
     public static ReleaseDateProvider getReleaseDateProvider(ProcessRunner runner) {
         return new DefaultReleaseDateProvider(runner);
     }
+
+    public static RevisionProvider getRevisionProvider(ProcessRunner runner) {
+        return new GitRevisionProvider(runner);
+    }
 }

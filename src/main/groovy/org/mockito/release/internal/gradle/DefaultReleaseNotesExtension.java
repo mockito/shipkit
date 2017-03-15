@@ -41,7 +41,7 @@ public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
 
         if (gitHubAuthToken == null || gitHubAuthToken.trim().isEmpty()) {
             throw new GradleException("'gitHubAuthToken' must be configured.\n"
-                    + "Example: " + extensionName + ".authToken = \'secret\'");
+                    + "Example: " + extensionName + ".gitHubAuthToken = \'secret\'");
         }
 
         if (gitHubRepository == null || gitHubRepository.trim().isEmpty()) {
@@ -79,7 +79,7 @@ public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
     public String getCompleteReleaseNotes() {
         //in progress
         ReleaseNotesGenerator generator = ReleaseNotesGenerators.releaseNotesGenerator(workDir, gitHubRepository, gitHubAuthToken);
-        Collection<ReleaseNotesData> releaseNotes = generator.generateReleaseNotesData(new ArrayList<String>(Arrays.asList("2.7.5", "2.7.4", "2.7.3")), "v", new ArrayList(), true);
+        Collection<ReleaseNotesData> releaseNotes = generator.generateReleaseNotesData(new ArrayList<String>(Arrays.asList("2.7.5", "2.7.4", "2.7.3")), "v", new ArrayList<String>(), true);
         MultiReleaseNotesFormatter formatter = ReleaseNotesFormatters.detailedFormatter("Detailed release notes:\n\n", gitHubLabelMapping, "https://github.com/mockito/mockito/compare/{0}...{1}");
         return formatter.formatReleaseNotes(releaseNotes);
     }

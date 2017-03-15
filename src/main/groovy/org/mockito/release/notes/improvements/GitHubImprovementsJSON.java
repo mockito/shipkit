@@ -12,7 +12,7 @@ import java.util.Set;
 /**
  * Provides means to parse JSONObjects returned from calling GitHub API.
  */
-class GitHubJSON {
+class GitHubImprovementsJSON {
 
     /**
      * Parses GitHub JSONObject in accordance to the API (https://developer.github.com/v3/issues/)

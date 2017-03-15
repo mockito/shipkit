@@ -1,16 +1,12 @@
 package org.mockito.release.notes.improvements;
 
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 import org.mockito.release.notes.model.Improvement;
-import org.mockito.release.notes.util.IOUtil;
+import org.mockito.release.notes.util.GitHubFetcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.*;
 
 class GitHubTicketFetcher {
@@ -78,7 +74,7 @@ class GitHubTicketFetcher {
 
         ArrayList<Improvement> pagedImprovements = new ArrayList<Improvement>();
         for (JSONObject issue : issues) {
-            Improvement i = GitHubJSON.toImprovement(issue);
+            Improvement i = GitHubImprovementsJSON.toImprovement(issue);
             if (tickets.remove(i.getId())) {
                 if (!onlyPullRequests || i.isPullRequest()) {
                     pagedImprovements.add(i);
@@ -93,77 +89,19 @@ class GitHubTicketFetcher {
     }
 
     private static class GitHubIssues {
-        public static final String RELATIVE_LINK_NOT_FOUND = "none";
-        private String nextPageUrl;
 
-        private GitHubIssues(String repository, String authToken, String state, String filter, String labels, String direction) {
-            // see API doc : https://developer.github.com/v3/issues/
-            nextPageUrl = "https://api.github.com/repos/" + repository + "/issues?access_token=" + authToken
-                    + (state == null? "" : "&state=" + state)
-                    + (filter == null? "" : "&filter=" + filter)
-                    + "&labels=" + labels
-                    + (direction == null ? "" : "&direction=" + direction)
-                    + "&page=1";
+        private final GitHubFetcher fetcher;
+
+        private GitHubIssues(String nextPageUrl) {
+            fetcher = new GitHubFetcher(nextPageUrl);
         }
 
         boolean hasNextPage() {
-            return !RELATIVE_LINK_NOT_FOUND.equals(nextPageUrl);
+            return fetcher.hasNextPage();
         }
 
         List<JSONObject> nextPage() throws IOException {
-            if(RELATIVE_LINK_NOT_FOUND.equals(nextPageUrl)) {
-                throw new IllegalStateException("GitHub API no more issues to fetch");
-            }
-            URL url = new URL(nextPageUrl);
-            LOG.info("GitHub API querying issue page {}", queryParamValue(url, "page"));
-            URLConnection urlConnection = url.openConnection();
-
-            LOG.info("GitHub API rate info => Remaining : {}, Limit : {}",
-                    urlConnection.getHeaderField("X-RateLimit-Remaining"),
-                    urlConnection.getHeaderField("X-RateLimit-Limit")
-            );
-            nextPageUrl = extractRelativeLink(urlConnection.getHeaderField("Link"));
-
-            return parseJsonFrom(urlConnection);
-        }
-
-        private String queryParamValue(URL url, String page) {
-            String query = url.getQuery();
-            for (String param : query.split("&")) {
-                if(param.startsWith(page)) {
-                    return param.substring(param.indexOf('=') + 1, param.length());
-                }
-            }
-            return "N/A";
-        }
-
-        private List<JSONObject> parseJsonFrom(URLConnection urlConnection) throws IOException {
-            InputStream response = urlConnection.getInputStream();
-
-            String content = IOUtil.readFully(response);
-            LOG.info("GitHub API responded successfully.");
-            @SuppressWarnings("unchecked")
-            List<JSONObject> issues = (List<JSONObject>) JSONValue.parse(content);
-            LOG.info("GitHub API returned {} issues.", issues.size());
-            return issues;
-        }
-
-        private String extractRelativeLink(String linkHeader) {
-            if (linkHeader == null) {
-                return RELATIVE_LINK_NOT_FOUND;
-            }
-
-            // See GitHub API doc : https://developer.github.com/guides/traversing-with-pagination/
-            // Link: <https://api.github.com/repositories/6207167/issues?access_token=a0a4c0f41c200f7c653323014d6a72a127764e17&state=closed&filter=all&page=2>; rel="next",
-            //       <https://api.github.com/repositories/62207167/issues?access_token=a0a4c0f41c200f7c653323014d6a72a127764e17&state=closed&filter=all&page=4>; rel="last"
-            for (String linkRel : linkHeader.split(",")) {
-                if (linkRel.contains("rel=\"next\"")) {
-                    return linkRel.substring(
-                            linkRel.indexOf("http"),
-                            linkRel.indexOf(">; rel=\"next\""));
-                }
-            }
-            return RELATIVE_LINK_NOT_FOUND;
+            return fetcher.nextPage();
         }
 
         static GitHubIssuesBuilder forRepo(String repository, String authToken) {
@@ -208,7 +146,17 @@ class GitHubTicketFetcher {
             }
 
             GitHubIssues browse() {
-                return new GitHubIssues(repository, authToken, state, filter, labels, direction);
+                // see API doc: https://developer.github.com/v3/issues/
+                String nextPageUrl = String.format("%s%s%s%s%s%s%s",
+                        "https://api.github.com/repos/mockito/mockito/issues",
+                        "?access_token=" + authToken,
+                        state == null ? "" : "&state=" + state,
+                        filter == null ? "" : "&filter=" + filter,
+                        "&labels=" + labels,
+                        direction == null ? "" : "&direction=" + direction,
+                        "&page=1"
+                );
+                return new GitHubIssues(nextPageUrl);
             }
         }
     }

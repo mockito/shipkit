@@ -1,0 +1,38 @@
+package org.mockito.release.notes.contributors;
+
+import org.mockito.release.notes.model.Contributor;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+class DefaultContributorsSet implements ContributorsSet {
+
+    private final Map<String, Contributor> map;
+
+    DefaultContributorsSet() {
+        map = new HashMap<String, Contributor>();
+    }
+
+    @Override
+    public Contributor findByAuthorName(String authorName) {
+        return map.get(authorName);
+    }
+
+    @Override
+    public void addContributor(Contributor contributor) {
+        map.put(contributor.getName(), contributor);
+    }
+
+    @Override
+    public void addAllContributors(Set<Contributor> contributors) {
+        for (Contributor contributor : contributors) {
+            map.put(contributor.getName(), contributor);
+        }
+    }
+
+    @Override
+    public int size() {
+        return map.size();
+    }
+}

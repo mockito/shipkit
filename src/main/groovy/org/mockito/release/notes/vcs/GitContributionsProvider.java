@@ -24,18 +24,24 @@ class GitContributionsProvider implements ContributionsProvider {
 
         String commitToken = "@@commit@@";
         String infoToken = "@@info@@";
-        String log = logProvider.getLog(fromRev, toRev, "--pretty=format:%ae" + infoToken + "%an" + infoToken + "%B%N" + commitToken);
+        // %H: commit hash
+        // %ae: author email
+        // %an: author name
+        // %B: raw body (unwrapped subject and body)
+        // %N: commit notes
+        String log = logProvider.getLog(fromRev, toRev, "--pretty=format:%H" + infoToken + "%ae" + infoToken + "%an" + infoToken + "%B%N" + commitToken);
 
         DefaultContributionSet contributions = new DefaultContributionSet(ignoredCommit);
 
         for (String entry : log.split(commitToken)) {
             String[] entryParts = entry.split(infoToken);
-            if (entryParts.length == 3) {
-                String email = entryParts[0].trim();
-                String author = entryParts[1].trim();
-                String message = entryParts[2].trim();
+            if (entryParts.length == 4) {
+                String commitId = entryParts[0].trim();
+                String email = entryParts[1].trim();
+                String author = entryParts[2].trim();
+                String message = entryParts[3].trim();
                 LOG.info("Loaded commit - email: {}, author: {}, message (trimmed): {}", email, author, message.replaceAll("\n.*", ""));
-                contributions.add(new GitCommit(email, author, message));
+                contributions.add(new GitCommit(commitId, email, author, message));
             }
         }
 

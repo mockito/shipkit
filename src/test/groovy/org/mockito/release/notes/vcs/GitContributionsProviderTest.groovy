@@ -8,22 +8,23 @@ class GitContributionsProviderTest extends Specification {
     def logProvider = Mock(GitLogProvider)
     @Subject provider = new GitContributionsProvider(logProvider, new IgnoreCiSkip())
 
-    def log = """szczepiq@gmail.com@@info@@Szczepan Faber@@info@@Tidy-up in buildSrc
+    def log = """a5797f9e6cfc06e2fa70ed12ee6c9571af8a7fc9@@info@@szczepiq@gmail.com@@info@@Szczepan Faber@@info@@Tidy-up in buildSrc
 next line
 @@commit@@
-szczepiq@gmail.com@@info@@Szczepan Faber@@info@@Tidy-up in buildSrc - started using an interface where possible
+b9d694f4c25880d9dda21ac216053f2bd0f5673c@@info@@szczepiq@gmail.com@@info@@Szczepan Faber@@info@@Tidy-up in buildSrc - started using an interface where possible
 @@commit@@
-john@doe@@info@@John R. Doe@@info@@dummy commit
+c76924d41c219f3b71b50a28d80c23c9c81b7a8c@@info@@john@doe@@info@@John R. Doe@@info@@dummy commit
 @@commit@@"""
 
     def "provides contributions"() {
-        logProvider.getLog("v1.10.10", "HEAD", "--pretty=format:%ae@@info@@%an@@info@@%B%N@@commit@@") >> log
+        logProvider.getLog("v1.10.10", "HEAD", "--pretty=format:%H@@info@@%ae@@info@@%an@@info@@%B%N@@commit@@") >> log
 
         when:
         def c = provider.getContributionsBetween("v1.10.10", "HEAD")
 
         then:
         def commits = c.allCommits as List
+        commits[0].commitId == "a5797f9e6cfc06e2fa70ed12ee6c9571af8a7fc9"
         commits[0].authorName == "Szczepan Faber"
         commits[0].authorEmail == "szczepiq@gmail.com"
         commits[0].message == "Tidy-up in buildSrc\nnext line"

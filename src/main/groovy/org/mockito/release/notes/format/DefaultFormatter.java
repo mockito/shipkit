@@ -1,10 +1,8 @@
 package org.mockito.release.notes.format;
 
+import org.mockito.release.notes.contributors.ContributorsSet;
 import org.mockito.release.notes.internal.DateFormat;
-import org.mockito.release.notes.model.Contribution;
-import org.mockito.release.notes.model.ContributionSet;
-import org.mockito.release.notes.model.Improvement;
-import org.mockito.release.notes.model.ReleaseNotesData;
+import org.mockito.release.notes.model.*;
 import org.mockito.release.util.MultiMap;
 
 import java.util.*;
@@ -67,16 +65,25 @@ class DefaultFormatter implements SingleReleaseNotesFormatter {
         return sb.toString();
     }
 
-    private String format(Contribution contribution) {
+    private String format(Contribution contribution, Contributor contributor) {
+        if(contributor != null) {
+            return String.format("%d: [%s](%s)",
+                    contribution.getCommits().size(),
+                    contribution.getAuthorName(),
+                    contributor.getProfileUrl());
+        }
         return contribution.getCommits().size() + ": " + contribution.getAuthorName();
     }
 
-    private String format(ContributionSet contributions) {
-        StringBuilder sb = new StringBuilder("* Authors: ").append(contributions.getContributions().size())
-                .append("\n* Commits: ").append(contributions.getAllCommits().size());
+    private String format(ContributionSet contributions, ContributorsSet contributorsSet) {
+        StringBuilder sb = new StringBuilder("* Authors: ")
+                .append(contributions.getContributions().size())
+                .append("\n* Commits: ")
+                .append(contributions.getAllCommits().size());
 
         for (Contribution c : contributions.getContributions()) {
-            sb.append("\n  * ").append(format(c));
+            Contributor contributor = contributorsSet.findByAuthorName(c.getAuthorName());
+            sb.append("\n  * ").append(format(c, contributor));
         }
 
         return sb.toString();
@@ -86,7 +93,7 @@ class DefaultFormatter implements SingleReleaseNotesFormatter {
         String now = DateFormat.formatDate(data.getDate());
 
         return "### " + data.getVersion() + " (" + now + ")" + "\n\n"
-                + format(data.getContributions()) + "\n"
+                + format(data.getContributions(), data.getContributors()) + "\n"
                 + format(labelMapping, data.getImprovements()) + "\n\n";
     }
 }
