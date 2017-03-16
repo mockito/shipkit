@@ -3,7 +3,7 @@ package org.mockito.release.internal.gradle;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.mockito.release.gradle.notes.ReleaseNotesPlugin;
+import org.mockito.release.gradle.ReleaseNotesPlugin;
 
 import static org.mockito.release.internal.gradle.CommonSettings.TASK_GROUP;
 

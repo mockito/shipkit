@@ -2,8 +2,8 @@ package org.mockito.release.internal.gradle;
 
 import org.gradle.api.Action;
 import org.gradle.api.Project;
-import org.mockito.release.gradle.notes.BumpVersionFileTask;
-import org.mockito.release.gradle.notes.VersioningPlugin;
+import org.mockito.release.gradle.BumpVersionFileTask;
+import org.mockito.release.gradle.VersioningPlugin;
 import org.mockito.release.version.Version;
 
 import java.io.File;

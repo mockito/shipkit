@@ -1,4 +1,4 @@
-package org.mockito.release.gradle.notes;
+package org.mockito.release.gradle;
 
 import java.io.File;
 import java.util.Map;
