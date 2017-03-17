@@ -54,7 +54,7 @@ class GitNotesBuilder implements NotesBuilder {
         RevisionProvider revisionProvider = Vcs.getRevisionProvider(processRunner);
         String fromRev = revisionProvider.getRevisionForTagOrRevision(fromRevision);
 
-        GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContibutorsProvider(authToken);
+        GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContibutorsProvider(repository, authToken);
         ContributorsSet contributors = contributorsProvider.mapContributorsToGitHubUser(contributions, fromRev, toRevision);
 
         ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(repository, authToken);

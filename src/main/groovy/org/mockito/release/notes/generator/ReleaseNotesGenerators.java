@@ -19,7 +19,7 @@ public class ReleaseNotesGenerators {
         ContributionsProvider contributionsProvider = Vcs.getContributionsProvider(processRunner);
         ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(repository, authToken);
         ReleaseDateProvider releaseDateProvider = Vcs.getReleaseDateProvider(processRunner);
-        GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContibutorsProvider(authToken);
+        GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContibutorsProvider(repository, authToken);
         return new DefaultReleaseNotesGenerator(contributionsProvider, improvementsProvider, releaseDateProvider,
                 contributorsProvider);
     }

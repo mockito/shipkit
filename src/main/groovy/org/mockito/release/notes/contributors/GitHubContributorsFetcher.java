@@ -15,14 +15,14 @@ public class GitHubContributorsFetcher {
 
     private static final Logger LOG = LoggerFactory.getLogger(GitHubContributorsFetcher.class);
 
-    ContributorsSet fetchContributors(String authToken, Collection<Contribution> contributions, String fromRevision, String toRevision) {
+    ContributorsSet fetchContributors(String repository, String authToken, Collection<Contribution> contributions, String fromRevision, String toRevision) {
         ContributorsSet result = new DefaultContributorsSet();
         LOG.info("Querying GitHub API for commits (for contributors)");
 
         Set<String> authors = getAuthors(contributions);
 
         try {
-            GitHubCommits commits = GitHubCommits.authenticatingWith(authToken)
+            GitHubCommits commits = GitHubCommits.authenticatingWith(repository, authToken)
                     .fromRevision(fromRevision)
                     .toRevision(toRevision)
                     .build();
@@ -140,16 +140,18 @@ public class GitHubContributorsFetcher {
             return lastFetchedPage;
         }
 
-        static GitHubCommitsBuilder authenticatingWith(String authToken) {
-            return new GitHubCommitsBuilder(authToken);
+        static GitHubCommitsBuilder authenticatingWith(String repository, String authToken) {
+            return new GitHubCommitsBuilder(repository, authToken);
         }
 
         private static class GitHubCommitsBuilder {
+            private final String repository;
             private final String authToken;
             private String fromRevision;
             private String toRevision;
 
-            private GitHubCommitsBuilder(String authToken) {
+            private GitHubCommitsBuilder(String repository, String authToken) {
+                this.repository = repository;
                 this.authToken = authToken;
             }
 
@@ -166,7 +168,7 @@ public class GitHubContributorsFetcher {
             GitHubCommits build() {
                 // see API doc: https://developer.github.com/v3/repos/commits/#list-commits-on-a-repository
                 String nextPageUrl = String.format("%s%s%s%s",
-                        "https://api.github.com/repos/mockito/mockito/commits",
+                        "https://api.github.com/repos/" + repository + "/commits",
                         "?access_token=" + authToken,
                         max(toRevision),
                         "&page=1");
