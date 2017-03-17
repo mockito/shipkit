@@ -62,11 +62,14 @@ pluginBundle {
 
 task travisRelease {
     doLast {
-        if ("master" == System.getenv('TRAVIS_BRANCH')) {
+        def pullRequest = System.getenv('TRAVIS_PULL_REQUEST')?.matches("\\d+")
+        def onMaster = "master" == System.getenv('TRAVIS_BRANCH')
+        if (!pullRequest && onMaster) {
             logger.lifecycle("Publishing to Gradle Plugin Portal...")
             exec { commandLine "./gradlew", "publishPlugins" }
         } else {
-            logger.lifecycle("Current branch is not 'master'. Skipping publication to Gradle Plugin Portal.")
+            logger.lifecycle("Current branch is not 'master' or we're building pull request.\n" +
+                    "  Skipping publication to Gradle Plugin Portal.")
         }
     }
 }
