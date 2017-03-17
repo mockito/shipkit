@@ -1,4 +1,4 @@
-package org.mockito.release.gradle.notes;
+package org.mockito.release.gradle;
 
 import org.gradle.api.Task;
 

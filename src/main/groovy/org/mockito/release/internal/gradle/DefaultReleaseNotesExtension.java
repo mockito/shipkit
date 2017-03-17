@@ -3,7 +3,7 @@ package org.mockito.release.internal.gradle;
 import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.mockito.release.gradle.notes.ReleaseNotesExtension;
+import org.mockito.release.gradle.ReleaseNotesExtension;
 import org.mockito.release.notes.Notes;
 import org.mockito.release.notes.NotesBuilder;
 import org.mockito.release.notes.format.MultiReleaseNotesFormatter;
