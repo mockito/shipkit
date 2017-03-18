@@ -12,6 +12,12 @@ language: java
 jdk:
   - oraclejdk8
 
+#TODO why do we need below?
+env:
+  global:
+  - TERM=dumb
+  - GRADLE_OPTS="-XX:+UseCompressedOops -Djava.awt.headless=true"
+
 #don't build tags
 branches:
   except:
