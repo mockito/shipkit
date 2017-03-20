@@ -19,7 +19,7 @@ targetCompatibility = 1.6
 
 repositories { jcenter() }
 
-version = '0.1.2'
+version = '0.1.3'
 group = 'gradle.plugin.org.mockito'
 
 dependencies {
@@ -60,16 +60,30 @@ pluginBundle {
     }
 }
 
-task travisRelease {
+task releaseNeeded {
+    ext.needed = true
     doLast {
         def pullRequest = System.getenv('TRAVIS_PULL_REQUEST')?.matches("\\d+")
         def onMaster = "master" == System.getenv('TRAVIS_BRANCH')
-        if (!pullRequest && onMaster) {
-            logger.lifecycle("Publishing to Gradle Plugin Portal...")
-            exec { commandLine "./gradlew", "publishPlugins" }
+        ext.needed = !pullRequest && onMaster
+        if (needed) {
+            logger.lifecycle("{} - Release to Gradle Plugin Portal is needed.", path)
         } else {
-            logger.lifecycle("Current branch is not 'master' or we're building pull request.\n" +
-                    "  Skipping publication to Gradle Plugin Portal.")
+            logger.lifecycle("{} - Current branch is not 'master' or we're building pull request.\n" +
+                    "  Release to Gradle Plugin Portal is not needed.", path)
+        }
+    }
+}
+
+task travisRelease {
+    dependsOn releaseNeeded
+    onlyIf { releaseNeeded.needed }
+    doLast {
+        logger.lifecycle("{} - Publishing to Gradle Plugin Portal...", path)
+        exec {
+            commandLine "./gradlew", "publishPlugins",
+                    "-Pgradle.publish.key=${System.getenv('GRADLE_PUBLISH_KEY')}",
+                    "-Pgradle.publish.secret=${System.getenv('GRADLE_PUBLISH_SECRET')}"
         }
     }
 }
