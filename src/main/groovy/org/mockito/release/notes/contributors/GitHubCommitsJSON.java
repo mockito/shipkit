@@ -1,19 +1,19 @@
 package org.mockito.release.notes.contributors;
 
-import org.json.simple.JSONObject;
+import org.json.simple.JsonObject;
 import org.mockito.release.notes.model.Contributor;
 
 import java.util.Map;
 
 /**
- * Provides means to parse JSONObjects returned from calling GitHub API.
+ * Provides means to parse JsonObjects returned from calling GitHub API.
  */
 public class GitHubCommitsJSON {
 
     /**
-     * Parses GitHub JSONObject in accordance to the API (https://developer.github.com/v3/repos/commits)
+     * Parses GitHub JsonObject in accordance to the API (https://developer.github.com/v3/repos/commits)
      */
-    static Contributor toContributor(JSONObject commit) {
+    static Contributor toContributor(JsonObject commit) {
         try {
             String name = (String) ((Map) ((Map) commit.get("commit")).get("author")).get("name");
             String login = (String) ((Map) commit.get("author")).get("login");
@@ -24,7 +24,7 @@ public class GitHubCommitsJSON {
         }
     }
 
-    public static boolean containsRevision(JSONObject commit, String revision) {
+    public static boolean containsRevision(JsonObject commit, String revision) {
         String sha = (String)commit.get("sha");
         return sha.equals(revision);
     }

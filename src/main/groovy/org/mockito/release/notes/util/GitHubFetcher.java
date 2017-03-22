@@ -1,7 +1,8 @@
 package org.mockito.release.notes.util;
 
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
+import org.json.simple.DeserializationException;
+import org.json.simple.JsonObject;
+import org.json.simple.Jsoner;
 import org.mockito.release.notes.internal.DateFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,7 @@ public class GitHubFetcher {
         return !RELATIVE_LINK_NOT_FOUND.equals(nextPageUrl);
     }
 
-    public List<JSONObject> nextPage() throws IOException {
+    public List<JsonObject> nextPage() throws IOException, DeserializationException {
         if(RELATIVE_LINK_NOT_FOUND.equals(nextPageUrl)) {
             throw new IllegalStateException("GitHub API no more issues to fetch");
         }
@@ -69,13 +70,13 @@ public class GitHubFetcher {
         return "N/A";
     }
 
-    private List<JSONObject> parseJsonFrom(URLConnection urlConnection) throws IOException {
+    private List<JsonObject> parseJsonFrom(URLConnection urlConnection) throws IOException, DeserializationException {
         InputStream response = urlConnection.getInputStream();
 
         String content = IOUtil.readFully(response);
         LOG.info("GitHub API responded successfully.");
         @SuppressWarnings("unchecked")
-        List<JSONObject> issues = (List<JSONObject>) JSONValue.parse(content);
+        List<JsonObject> issues = (List<JsonObject>) Jsoner.deserialize(content);
         LOG.info("GitHub API returned {} issues.", issues.size());
         return issues;
     }

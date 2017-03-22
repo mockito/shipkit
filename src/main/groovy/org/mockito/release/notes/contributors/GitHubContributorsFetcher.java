@@ -1,6 +1,7 @@
 package org.mockito.release.notes.contributors;
 
-import org.json.simple.JSONObject;
+import org.json.simple.DeserializationException;
+import org.json.simple.JsonObject;
 import org.mockito.release.notes.model.Commit;
 import org.mockito.release.notes.model.Contribution;
 import org.mockito.release.notes.model.Contributor;
@@ -28,7 +29,7 @@ public class GitHubContributorsFetcher {
                     .build();
 
             while(!authors.isEmpty() && commits.hasNextPage()) {
-                List<JSONObject> page = commits.nextPage();
+                List<JsonObject> page = commits.nextPage();
                 result.addAllContributors(extractContributors(page, authors));
             }
             if(!authors.isEmpty()) {
@@ -53,9 +54,9 @@ public class GitHubContributorsFetcher {
         return authors;
     }
 
-    private Set<Contributor> extractContributors(List<JSONObject> commits, Set<String> authors) {
+    private Set<Contributor> extractContributors(List<JsonObject> commits, Set<String> authors) {
         Set<Contributor> result = new HashSet<Contributor>();
-        for (JSONObject commit : commits) {
+        for (JsonObject commit : commits) {
             Contributor contributor = GitHubCommitsJSON.toContributor(commit);
             if(contributor != null) {
                 if (authors.contains(contributor.getName())) {
@@ -112,7 +113,7 @@ public class GitHubContributorsFetcher {
 
         private final String fromRevision;
         private final GitHubFetcher fetcher;
-        private List<JSONObject> lastFetchedPage;
+        private List<JsonObject> lastFetchedPage;
 
         private GitHubCommits(String nextPageUrl, String fromRevision) {
             fetcher = new GitHubFetcher(nextPageUrl);
@@ -123,11 +124,11 @@ public class GitHubContributorsFetcher {
             return !containsRevision(lastFetchedPage, fromRevision) && fetcher.hasNextPage();
         }
 
-        private boolean containsRevision(List<JSONObject> lastFetchedPage, String revision) {
+        private boolean containsRevision(List<JsonObject> lastFetchedPage, String revision) {
             if(lastFetchedPage == null) {
                 return false;
             }
-            for (JSONObject commit : lastFetchedPage) {
+            for (JsonObject commit : lastFetchedPage) {
                 if(GitHubCommitsJSON.containsRevision(commit, revision)) {
                     return true;
                 }
@@ -135,7 +136,7 @@ public class GitHubContributorsFetcher {
             return false;
         }
 
-        List<JSONObject> nextPage() throws IOException {
+        List<JsonObject> nextPage() throws IOException, DeserializationException {
             lastFetchedPage = fetcher.nextPage();
             return lastFetchedPage;
         }

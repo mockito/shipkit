@@ -1,37 +1,38 @@
 package org.mockito.release.notes.improvements;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.simple.JsonArray;
+import org.json.simple.JsonObject;
 import org.mockito.release.notes.internal.DefaultImprovement;
 import org.mockito.release.notes.model.Improvement;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * Provides means to parse JSONObjects returned from calling GitHub API.
+ * Provides means to parse JsonObjects returned from calling GitHub API.
  */
 class GitHubImprovementsJSON {
 
     /**
-     * Parses GitHub JSONObject in accordance to the API (https://developer.github.com/v3/issues/)
+     * Parses GitHub JsonObject in accordance to the API (https://developer.github.com/v3/issues/)
      */
-    static Improvement toImprovement(JSONObject issue) {
-        Long id = (Long) issue.get("number");
+    static Improvement toImprovement(JsonObject issue) {
+        BigDecimal id = (BigDecimal) issue.get("number");
         String issueUrl = (String) issue.get("html_url");
         String title = (String) issue.get("title");
         boolean isPullRequest = issue.get("pull_request") != null;
         Collection<String> labels = extractLabels(issue);
 
-        return new DefaultImprovement(id, title, issueUrl, labels, isPullRequest);
+        return new DefaultImprovement(id.longValue(), title, issueUrl, labels, isPullRequest);
     }
 
-    private static Collection<String> extractLabels(JSONObject issue) {
+    private static Collection<String> extractLabels(JsonObject issue) {
         Set<String> out = new LinkedHashSet<String>();
-        JSONArray labels = (JSONArray) issue.get("labels");
+        JsonArray labels = (JsonArray) issue.get("labels");
         for (Object o : labels.toArray()) {
-            JSONObject label = (JSONObject) o;
+            JsonObject label = (JsonObject) o;
             out.add((String) label.get("name"));
         }
         return out;
