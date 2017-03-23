@@ -41,9 +41,7 @@ class GitHubTicketFetcher {
                         page, onlyPullRequests));
             }
         } catch (Exception e) {
-            String message = "Problems fetching " + ticketIds.size() + " tickets from GitHub";
-            LOG.info(message, e);
-            throw new RuntimeException(message, e);
+            throw new RuntimeException("Problems fetching " + ticketIds.size() + " tickets from GitHub", e);
         }
         return out;
     }
