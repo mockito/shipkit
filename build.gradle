@@ -87,3 +87,15 @@ task travisRelease {
         }
     }
 }
+
+task fastInstall { Task t ->
+    description = "Fast installation for quick local testing."
+    t.dependsOn install
+    gradle.taskGraph.whenReady {
+        if (it.hasTask(t)) {
+            //we don't need them for local testing so lets disable for faster execution
+            tasks.javadoc.enabled = false
+            tasks.groovydoc.enabled = false
+        }
+    }
+}
