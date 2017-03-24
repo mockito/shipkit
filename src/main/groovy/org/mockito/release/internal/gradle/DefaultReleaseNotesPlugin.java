@@ -4,6 +4,7 @@ import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.mockito.release.gradle.ReleaseNotesPlugin;
+import org.mockito.release.gradle.ReleaseToolsProperties;
 
 import static org.mockito.release.internal.gradle.CommonSettings.TASK_GROUP;
 
@@ -54,10 +55,10 @@ public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
 
     private static void configureNotes(DefaultReleaseNotesExtension notes, Project project) {
         ExtContainer ext = new ExtContainer(project);
-        notes.setGitHubLabelMapping(ext.getMap("releaseNotes_labelMapping"));
-        notes.setGitHubReadOnlyAuthToken(ext.getString("gh_readOnlyAuthToken"));
-        notes.setGitHubRepository(ext.getString("gh_repository"));
-        notes.setReleaseNotesFile(project.file(ext.getString("releaseNotes_file")));
+        notes.setGitHubLabelMapping(ext.getMap(ReleaseToolsProperties.releaseNotes_labelMapping.toString()));
+        notes.setGitHubReadOnlyAuthToken(ext.getString(ReleaseToolsProperties.gh_readOnlyAuthToken.toString()));
+        notes.setGitHubRepository(ext.getString(ReleaseToolsProperties.gh_repository.toString()));
+        notes.setReleaseNotesFile(project.file(ext.getString(ReleaseToolsProperties.releaseNotes_file.toString())));
         notes.assertConfigured();
 
         //TODO make use of: ext.gh_writeAuthTokenEnvName = "GH_WRITE_TOKEN"
