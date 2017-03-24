@@ -85,42 +85,18 @@ public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
         return formatter.formatReleaseNotes(releaseNotes);
     }
 
-    @Override
-    public File getReleaseNotesFile() {
-        return releaseNotesFile;
-    }
-
-    @Override
     public void setReleaseNotesFile(File file) {
         this.releaseNotesFile = file;
     }
 
-    @Override
-    public String getGitHubReadOnlyAuthToken() {
-        return gitHubAuthToken;
-    }
-
-    @Override
     public void setGitHubReadOnlyAuthToken(String gitHubAuthToken) {
         this.gitHubAuthToken = gitHubAuthToken;
     }
 
-    @Override
-    public Map<String, String> getGitHubLabelMapping() {
-        return gitHubLabelMapping;
-    }
-
-    @Override
     public void setGitHubLabelMapping(Map<String, String> gitHubLabelMapping) {
         this.gitHubLabelMapping = gitHubLabelMapping;
     }
 
-    @Override
-    public String getGitHubRepository() {
-        return gitHubRepository;
-    }
-
-    @Override
     public void setGitHubRepository(String gitHubRepository) {
         this.gitHubRepository = gitHubRepository;
     }
