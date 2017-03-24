@@ -4,16 +4,9 @@ import java.io.File;
 import java.util.Map;
 
 /**
- * This extension object is added by {@link ReleaseNotesPlugin}. Example configuration:
- *
- * <pre>
- *  notes {
- *    notesFile = file("docs/release-notes.md")
- *    gitHubAuthToken = "secret"
- *    gitHubLabelMappings = ['java-9': 'Java 9 support', 'BDD': 'Behavior-Driven Development support']
- *  }
- * </pre>
+ * TODO: kill this API, figure out what to do with 'getPreviousVersion'
  */
+@Deprecated
 public interface ReleaseNotesExtension {
 
     /**

@@ -32,7 +32,7 @@ public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
         this.extensionName = extensionName;
     }
 
-    private void assertConfigured() {
+    void assertConfigured() {
         //TODO SF unit test coverage
         if (releaseNotesFile == null || !releaseNotesFile.isFile()) {
             throw new GradleException("'notesFile' must be configured and the file must be present.\n"

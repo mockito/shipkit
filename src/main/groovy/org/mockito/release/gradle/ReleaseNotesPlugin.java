@@ -11,7 +11,7 @@ import org.gradle.api.Project;
  *     <li>previewReleaseNotes - prints incremental release notes to the console for preview.</li>
  * </ul>
  *
- * The plugin also adds "notes" extension, for more information see {@link ReleaseNotesExtension}.
+ * TODO document project properties used
  */
 public interface ReleaseNotesPlugin extends Plugin<Project> {
 }
