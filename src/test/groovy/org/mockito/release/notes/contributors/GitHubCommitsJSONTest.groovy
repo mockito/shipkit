@@ -1,12 +1,12 @@
 package org.mockito.release.notes.contributors
 
-import org.json.simple.JSONObject
+import org.json.simple.JsonObject
 import spock.lang.Specification
 
 class GitHubCommitsJSONTest extends Specification {
 
     def "parse commits"() {
-        def commit = new JSONObject([commit: [author: [name: "Continuous Delivery Drone"]],
+        def commit = new JsonObject([commit: [author: [name: "Continuous Delivery Drone"]],
                                       author: [login: "continuous-delivery-drone",
                                                html_url: "https://github.com/continuous-delivery-drone"]])
 
@@ -21,7 +21,7 @@ class GitHubCommitsJSONTest extends Specification {
 
     def "return null when author doesn't exit (author deleted GitHub account)"() {
         // example: https://github.com/mockito/mockito/commit/87f3a5ee98fcc7c4b6d6d30aec0a2e64562a36eb accout for Ben Yu doesn't exist anymore
-        def commit = new JSONObject([commit: [author: [name: "Continuous Delivery Drone"]],
+        def commit = new JsonObject([commit: [author: [name: "Continuous Delivery Drone"]],
                                       author: null])
 
         when:
@@ -32,7 +32,7 @@ class GitHubCommitsJSONTest extends Specification {
     }
 
     def "return true when commit contains revision"() {
-        def commit = new JSONObject([sha: '1234'])
+        def commit = new JsonObject([sha: '1234'])
 
         when:
         def result = GitHubCommitsJSON.containsRevision(commit, "1234")
@@ -42,7 +42,7 @@ class GitHubCommitsJSONTest extends Specification {
     }
 
     def "return false when commit NOT contains revision"() {
-        def commit = new JSONObject([sha: '1234'])
+        def commit = new JsonObject([sha: '1234'])
 
         when:
         def result = GitHubCommitsJSON.containsRevision(commit, "abc")

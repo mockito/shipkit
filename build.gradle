@@ -28,8 +28,7 @@ dependencies {
     //TODO SF use jcabi to edit issues after the release so that they have the milestone attached
     //compile "com.jcabi:jcabi-github:0.17"
 
-    //Using @jar to avoid transitive dependencies (json-simple declares compile dependency on junit!)
-    compile "com.googlecode.json-simple:json-simple:1.1.1@jar"
+    compile "com.github.cliftonlabs:json-simple:2.1.2"
 
     testCompile("org.spockframework:spock-core:0.7-groovy-2.0") {
         exclude module: "groovy-all"

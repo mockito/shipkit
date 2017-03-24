@@ -1,12 +1,14 @@
 package org.mockito.release.notes.improvements;
 
-import org.json.simple.JSONObject;
+import org.json.simple.DeserializationException;
+import org.json.simple.JsonObject;
 import org.mockito.release.notes.model.Improvement;
 import org.mockito.release.notes.util.GitHubFetcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.*;
 
 class GitHubTicketFetcher {
@@ -32,24 +34,24 @@ class GitHubTicketFetcher {
                     .browse();
 
             while (!tickets.isEmpty() && issues.hasNextPage()) {
-                List<JSONObject> page = issues.nextPage();
+                List<JsonObject> page = issues.nextPage();
 
                 out.addAll(extractImprovements(
                         dropTicketsAboveMaxInPage(tickets, page),
                         page, onlyPullRequests));
             }
         } catch (Exception e) {
-            throw new RuntimeException("Problems fetching " + ticketIds.size() + " from GitHub", e);
+            throw new RuntimeException("Problems fetching " + ticketIds.size() + " tickets from GitHub", e);
         }
         return out;
     }
 
-    private Queue<Long> dropTicketsAboveMaxInPage(Queue<Long> tickets, List<JSONObject> page) {
+    private Queue<Long> dropTicketsAboveMaxInPage(Queue<Long> tickets, List<JsonObject> page) {
         if (page.isEmpty()) {
             return tickets;
         }
-        Long highestId = (Long) page.get(0).get("number");
-        while (!tickets.isEmpty() && tickets.peek() > highestId) {
+        BigDecimal highestId = (BigDecimal) page.get(0).get("number");
+        while (!tickets.isEmpty() && tickets.peek() > highestId.longValue()) {
             tickets.poll();
         }
         return tickets;
@@ -66,14 +68,14 @@ class GitHubTicketFetcher {
         return longs;
     }
 
-    private static List<Improvement> extractImprovements(Collection<Long> tickets, List<JSONObject> issues,
+    private static List<Improvement> extractImprovements(Collection<Long> tickets, List<JsonObject> issues,
                                                          boolean onlyPullRequests) {
         if(tickets.isEmpty()) {
             return Collections.emptyList();
         }
 
         ArrayList<Improvement> pagedImprovements = new ArrayList<Improvement>();
-        for (JSONObject issue : issues) {
+        for (JsonObject issue : issues) {
             Improvement i = GitHubImprovementsJSON.toImprovement(issue);
             if (tickets.remove(i.getId())) {
                 if (!onlyPullRequests || i.isPullRequest()) {
@@ -100,7 +102,7 @@ class GitHubTicketFetcher {
             return fetcher.hasNextPage();
         }
 
-        List<JSONObject> nextPage() throws IOException {
+        List<JsonObject> nextPage() throws IOException, DeserializationException {
             return fetcher.nextPage();
         }
 
