@@ -4,6 +4,7 @@ import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.mockito.release.gradle.ReleaseNotesExtension;
+import org.mockito.release.internal.gradle.util.FileUtil;
 import org.mockito.release.notes.Notes;
 import org.mockito.release.notes.NotesBuilder;
 import org.mockito.release.notes.format.MultiReleaseNotesFormatter;
@@ -32,7 +33,7 @@ public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
         this.extensionName = extensionName;
     }
 
-    private void assertConfigured() {
+    void assertConfigured() {
         //TODO SF unit test coverage
         if (releaseNotesFile == null || !releaseNotesFile.isFile()) {
             throw new GradleException("'notesFile' must be configured and the file must be present.\n"
@@ -84,42 +85,18 @@ public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
         return formatter.formatReleaseNotes(releaseNotes);
     }
 
-    @Override
-    public File getReleaseNotesFile() {
-        return releaseNotesFile;
-    }
-
-    @Override
     public void setReleaseNotesFile(File file) {
         this.releaseNotesFile = file;
     }
 
-    @Override
-    public String getGitHubReadOnlyAuthToken() {
-        return gitHubAuthToken;
-    }
-
-    @Override
     public void setGitHubReadOnlyAuthToken(String gitHubAuthToken) {
         this.gitHubAuthToken = gitHubAuthToken;
     }
 
-    @Override
-    public Map<String, String> getGitHubLabelMapping() {
-        return gitHubLabelMapping;
-    }
-
-    @Override
     public void setGitHubLabelMapping(Map<String, String> gitHubLabelMapping) {
         this.gitHubLabelMapping = gitHubLabelMapping;
     }
 
-    @Override
-    public String getGitHubRepository() {
-        return gitHubRepository;
-    }
-
-    @Override
     public void setGitHubRepository(String gitHubRepository) {
         this.gitHubRepository = gitHubRepository;
     }

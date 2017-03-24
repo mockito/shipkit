@@ -11,7 +11,14 @@ import org.gradle.api.Project;
  *     <li>previewReleaseNotes - prints incremental release notes to the console for preview.</li>
  * </ul>
  *
- * The plugin also adds "notes" extension, for more information see {@link ReleaseNotesExtension}.
+ * Requires following properties:
+ * <ul>
+ *     <li>{@link ReleaseToolsProperties#gh_repository}</li>
+ *     <li>{@link ReleaseToolsProperties#gh_readOnlyAuthToken}</li>
+ *     <li>{@link ReleaseToolsProperties#releaseNotes_file}</li>
+ *     <li>Optional: {@link ReleaseToolsProperties#releaseNotes_labelMapping}</li>
+ * </ul>
  */
 public interface ReleaseNotesPlugin extends Plugin<Project> {
+
 }

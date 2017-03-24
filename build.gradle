@@ -19,7 +19,7 @@ targetCompatibility = 1.6
 
 repositories { jcenter() }
 
-version = '0.1.4'
+version = '0.1.5'
 println "  Version: $version"
 group = 'gradle.plugin.org.mockito'
 
@@ -84,6 +84,18 @@ task travisRelease {
             commandLine "./gradlew", "publishPlugins",
                     "-Pgradle.publish.key=${System.getenv('GRADLE_PUBLISH_KEY')}",
                     "-Pgradle.publish.secret=${System.getenv('GRADLE_PUBLISH_SECRET')}"
+        }
+    }
+}
+
+task fastInstall { Task t ->
+    description = "Fast installation for quick local testing."
+    t.dependsOn install
+    gradle.taskGraph.whenReady {
+        if (it.hasTask(t)) {
+            //we don't need them for local testing so lets disable for faster execution
+            tasks.javadoc.enabled = false
+            tasks.groovydoc.enabled = false
         }
     }
 }

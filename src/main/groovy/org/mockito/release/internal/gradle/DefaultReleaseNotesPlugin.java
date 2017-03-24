@@ -4,6 +4,8 @@ import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.mockito.release.gradle.ReleaseNotesPlugin;
+import org.mockito.release.gradle.ReleaseToolsProperties;
+import org.mockito.release.internal.gradle.util.ExtContainer;
 
 import static org.mockito.release.internal.gradle.CommonSettings.TASK_GROUP;
 
@@ -21,9 +23,7 @@ public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
     private final static String EXTENSION_NAME = "notes";
 
     public void apply(final Project project) {
-        final DefaultReleaseNotesExtension notes = project.getExtensions().create(
-                EXTENSION_NAME, DefaultReleaseNotesExtension.class,
-                project.getProjectDir(), EXTENSION_NAME);
+        final DefaultReleaseNotesExtension notes = new DefaultReleaseNotesExtension(project.getProjectDir(), EXTENSION_NAME);
 
         //TODO those should be task classes with decent API
         project.getTasks().create("updateReleaseNotes", new Action<Task>() {
@@ -32,6 +32,7 @@ public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
                 task.setDescription("Updates release notes file.");
                 task.doLast(new Action<Task>() {
                     public void execute(Task task) {
+                        configureNotes(notes, project);
                         notes.updateReleaseNotes(project.getVersion().toString());
                     }
                 });
@@ -44,11 +45,23 @@ public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
                 task.setDescription("Shows new incremental content of release notes. Useful for previewing the release notes.");
                 task.doLast(new Action<Task>() {
                     public void execute(Task task) {
+                        configureNotes(notes, project);
                         String content = notes.getReleaseNotes(project.getVersion().toString());
                         task.getLogger().lifecycle("----------------\n" + content + "----------------");
                     }
                 });
             }
         });
+    }
+
+    private static void configureNotes(DefaultReleaseNotesExtension notes, Project project) {
+        ExtContainer ext = new ExtContainer(project);
+        notes.setGitHubLabelMapping(ext.getMap(ReleaseToolsProperties.releaseNotes_labelMapping));
+        notes.setGitHubReadOnlyAuthToken(ext.getString(ReleaseToolsProperties.gh_readOnlyAuthToken));
+        notes.setGitHubRepository(ext.getString(ReleaseToolsProperties.gh_repository));
+        notes.setReleaseNotesFile(project.file(ext.getString(ReleaseToolsProperties.releaseNotes_file)));
+        notes.assertConfigured();
+
+        //TODO make use of: ext.gh_writeAuthTokenEnvName = "GH_WRITE_TOKEN"
     }
 }
