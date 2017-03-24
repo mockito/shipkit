@@ -1,13 +1,11 @@
-package org.mockito.release.internal.gradle
+package org.mockito.release.internal.gradle.util
 
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 
 /**
  * File utilities.
  */
 @CompileStatic
-@PackageScope
 class FileUtil {
 
     //TODO convert to Java at some point
