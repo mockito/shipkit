@@ -10,7 +10,7 @@ import org.gradle.api.logging.Logging;
 import org.mockito.release.gradle.BintrayPlugin;
 import org.mockito.release.internal.gradle.util.EnvVariables;
 import org.mockito.release.internal.gradle.util.ExtContainer;
-import org.mockito.release.internal.gradle.util.GradleProjectUtil;
+import org.mockito.release.internal.gradle.util.GradleDSLHelper;
 
 import java.util.List;
 
@@ -42,7 +42,7 @@ public class DefaultBintrayPlugin implements BintrayPlugin {
             //afterEvaluate so that we access publications as late as possible
             // otherwise stuff does not work, for example pom does not have dependencies :)
             if (project.getPlugins().hasPlugin("maven-publish")) {
-                List<String> publicationNames = GradleProjectUtil.publicationNames(project);
+                List<String> publicationNames = GradleDSLHelper.publicationNames(project);
                 bintray.setPublications(publicationNames.toArray(new String[publicationNames.size()]));
             }
             }

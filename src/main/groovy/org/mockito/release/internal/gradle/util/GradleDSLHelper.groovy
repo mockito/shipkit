@@ -9,7 +9,7 @@ import org.gradle.api.publish.PublicationContainer
 import org.gradle.api.publish.PublishingExtension
 
 @CompileStatic
-class GradleProjectUtil {
+class GradleDSLHelper {
 
     /**
      * Needed because we cannot access publications or publishing normally via Java
