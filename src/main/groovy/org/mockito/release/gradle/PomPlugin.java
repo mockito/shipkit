@@ -1,5 +1,8 @@
 package org.mockito.release.gradle;
 
+import org.gradle.api.Plugin;
+import org.gradle.api.Project;
+
 /**
  * Adds "ext.pom_customizePom(Project, MavenPublication)" method to the project.
  * The method can be used to customize the pom.
@@ -13,5 +16,5 @@ package org.mockito.release.gradle;
  *  <li> project.rootProject.ext.pom_contributors
  * </ul>
  */
-public interface PomPlugin {
+public interface PomPlugin extends Plugin<Project> {
 }
