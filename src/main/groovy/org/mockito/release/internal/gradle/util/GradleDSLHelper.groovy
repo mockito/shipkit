@@ -8,6 +8,9 @@ import org.gradle.api.publish.Publication
 import org.gradle.api.publish.PublicationContainer
 import org.gradle.api.publish.PublishingExtension
 
+/**
+ * Useful to work around Gradle API that requires the use of Groovy.
+ */
 @CompileStatic
 class GradleDSLHelper {
 
