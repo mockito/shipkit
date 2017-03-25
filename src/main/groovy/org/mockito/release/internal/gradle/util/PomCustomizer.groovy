@@ -1,22 +1,40 @@
-package org.mockito.release.internal.gradle.pom
+package org.mockito.release.internal.gradle.util
 
-import groovy.transform.PackageScope
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 import org.gradle.api.publish.maven.MavenPublication
 import org.mockito.release.gradle.ReleaseToolsProperties
-import org.mockito.release.internal.gradle.util.ExtContainer
 
-@PackageScope
 class PomCustomizer {
 
     private static final Logger LOG = Logging.getLogger(PomCustomizer)
 
     /**
-     * Documentation for this method needs to be kept in {@link org.mockito.release.gradle.PomPlugin}
+     * Customizes the pom. The method requires following 'ext' properties on the project to function correctly:
+     *
+     * <ul>
+     *  <li> project.description
+     *  <li> project.archivesBaseName
+     *  <li> project.rootProject.ext.gh_repository
+     *  <li> project.rootProject.ext.pom_developers
+     *  <li> project.rootProject.ext.pom_contributors
+     * </ul>
      */
     static void customizePom(Project project, MavenPublication publication) {
+
+        /**
+         * See issue https://github.com/mockito/mockito-release-tools/issues/36
+         *
+         * To implement automatic contributors in the pom, we would need something like (brainstorming):
+         *  - getting all contributors for the project using GitHub api and feeding this plugin with it
+         *  - parse the release notes file and just include all contributors we can find there :)
+         *  - make the release generation create an additional file with release notes metadata in some structured format
+         *      (like JSON or xml), then we could parse that file to get the contributors
+         *  - make the release create additional file with contributors
+         *  - the list of core developers would be static, but the list of contributors would grow
+         */
+
         //TODO accessing 'ext' properties needs to be 'safe' and fail if the user have not provided stuff
         //TODO relies on ext properties set on the root project. Seems not right
         def ext = new ExtContainer(project.rootProject)
