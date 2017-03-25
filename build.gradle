@@ -19,7 +19,7 @@ targetCompatibility = 1.6
 
 repositories { jcenter() }
 
-version = '0.1.5'
+version = '0.1.6'
 println "  Version: $version"
 group = 'gradle.plugin.org.mockito'
 
@@ -29,6 +29,7 @@ dependencies {
     //compile "com.jcabi:jcabi-github:0.17"
 
     compile "com.github.cliftonlabs:json-simple:2.1.2"
+    compile 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
 
     testCompile("org.spockframework:spock-core:0.7-groovy-2.0") {
         exclude module: "groovy-all"
