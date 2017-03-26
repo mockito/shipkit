@@ -150,7 +150,7 @@ class GitHubTicketFetcher {
             GitHubIssues browse() {
                 // see API doc: https://developer.github.com/v3/issues/
                 String nextPageUrl = String.format("%s%s%s%s%s%s%s",
-                        "https://api.github.com/repos/mockito/mockito/issues",
+                        "https://api.github.com/repos/" + repository + "/issues",
                         "?access_token=" + authToken,
                         state == null ? "" : "&state=" + state,
                         filter == null ? "" : "&filter=" + filter,

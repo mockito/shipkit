@@ -22,7 +22,6 @@ public class DefaultBintrayPlugin implements BintrayPlugin {
         //TODO since this plugin depends on bintray,
         // we need to either shade bintray plugin or ship this Gradle plugin in a separate jar
         project.getPlugins().apply("com.jfrog.bintray");
-        project.getPlugins().apply("com.jfrog.bintray");
         project.getTasks().getByName("bintrayUpload").doFirst(new Action<Task>() {
             public void execute(Task task) {
                 BintrayUploadTask t = (BintrayUploadTask) task;
@@ -39,12 +38,12 @@ public class DefaultBintrayPlugin implements BintrayPlugin {
         final BintrayExtension bintray = project.getExtensions().getByType(BintrayExtension.class);
         project.afterEvaluate(new Action<Project>() {
             public void execute(Project project) {
-            //afterEvaluate so that we access publications as late as possible
-            // otherwise stuff does not work, for example pom does not have dependencies :)
-            if (project.getPlugins().hasPlugin("maven-publish")) {
-                List<String> publicationNames = GradleDSLHelper.publicationNames(project);
-                bintray.setPublications(publicationNames.toArray(new String[publicationNames.size()]));
-            }
+                //afterEvaluate so that we access publications as late as possible
+                // otherwise stuff does not work, for example pom does not have dependencies :)
+                if (project.getPlugins().hasPlugin("maven-publish")) {
+                    List<String> publicationNames = GradleDSLHelper.publicationNames(project);
+                    bintray.setPublications(publicationNames.toArray(new String[publicationNames.size()]));
+                }
             }
         });
 
