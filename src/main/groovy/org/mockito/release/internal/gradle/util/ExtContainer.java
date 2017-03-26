@@ -152,4 +152,11 @@ public class ExtContainer {
     public String getBintrayNotableRepo() {
         return getString("bintray_notableRepo");
     }
+
+    /**
+     * GitHub read only auth token
+     */
+    public String getGitHubReadOnlyAuthToken() {
+        return getString(ReleaseToolsProperties.gh_readOnlyAuthToken);
+    }
 }
