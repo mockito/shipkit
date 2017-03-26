@@ -9,6 +9,7 @@ import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.Exec;
 import org.gradle.process.ExecResult;
 import org.gradle.process.ExecSpec;
+import org.mockito.release.gradle.BintrayPlugin;
 import org.mockito.release.gradle.ContinuousDeliveryPlugin;
 import org.mockito.release.internal.gradle.util.CommonSettings;
 import org.mockito.release.internal.gradle.util.ExtContainer;
@@ -102,9 +103,19 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
             }
         });
 
-        CommonSettings.task(project, "bintrayUploadAll", new Action<Task>() {
+        final Task bintrayUploadAll = CommonSettings.task(project, "bintrayUploadAll", new Action<Task>() {
             public void execute(Task t) {
                 t.setDescription("Depends on all 'bintrayUpload' tasks from all Gradle projects.");
+            }
+        });
+
+        project.allprojects(new Action<Project>() {
+            public void execute(Project project) {
+                project.getPlugins().withType(BintrayPlugin.class, new Action<BintrayPlugin>() {
+                    public void execute(BintrayPlugin bintrayPlugin) {
+                        bintrayUploadAll.dependsOn(BintrayPlugin.BINTRAY_UPLOAD_TASK);
+                    }
+                });
             }
         });
 

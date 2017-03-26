@@ -8,4 +8,8 @@ import org.gradle.api.Project;
  */
 public interface BintrayPlugin extends Plugin<Project> {
 
+    /**
+     * Name of the task that is configured by this plugin
+     */
+    String BINTRAY_UPLOAD_TASK = "bintrayUpload";
 }
