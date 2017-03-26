@@ -1,0 +1,19 @@
+package org.mockito.release.internal.gradle.util
+
+import groovy.transform.CompileStatic
+
+/**
+ * String utilities.
+ */
+@CompileStatic
+class StringUtil {
+
+    //TODO convert to Java at some point
+
+    /**
+     * Classic string join
+     */
+    static String join(List<String> collection, String separator) {
+        return collection.join(separator)
+    }
+}
