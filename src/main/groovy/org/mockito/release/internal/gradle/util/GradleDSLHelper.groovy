@@ -8,8 +8,11 @@ import org.gradle.api.publish.Publication
 import org.gradle.api.publish.PublicationContainer
 import org.gradle.api.publish.PublishingExtension
 
+/**
+ * Useful to work around Gradle API that requires the use of Groovy.
+ */
 @CompileStatic
-class GradleProjectUtil {
+class GradleDSLHelper {
 
     /**
      * Needed because we cannot access publications or publishing normally via Java

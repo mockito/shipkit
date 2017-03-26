@@ -1,26 +1,35 @@
 package org.mockito.release.internal.gradle.util;
 
 import org.gradle.api.Project;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.gradle.api.plugins.ExtraPropertiesExtension;
 import org.mockito.release.gradle.ReleaseToolsProperties;
 
+import java.text.MessageFormat;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static org.mockito.release.gradle.ReleaseToolsProperties.gh_repository;
 
 //TODO add:
 // - documentation, unit tests
 // - validation of presence of value
 // - ability to be overridden by project parameters
-
-// rename to ReleaseToolsSettings
+// rename to ReleaseToolsSettings, figure out the overlap with EnvVariables
 public class ExtContainer {
 
+    private final static Logger LOG = Logging.getLogger(ExtContainer.class);
+
     private final ExtraPropertiesExtension ext;
+    private final Project project;
 
     public ExtContainer(Project project) {
         this.ext = project.getExtensions().getExtraProperties();
+        this.project = project;
     }
 
     public Map<String, String> getMap(Object name) {
@@ -52,11 +61,91 @@ public class ExtContainer {
     public String getBintrayRepo() {
         return getString("bintray_repo");
     }
+    //TODO document String literal in enum or get rid of the enum. Also applies to all string literals in this class
 
     /**
      * GitHub repository name, for example: "mockito/mockito"
      */
     public String getGitHubRepository() {
         return getString(gh_repository.toString());
+    }
+
+    /**
+     * Release notes file relative path, for example: "docs/release-notes.md"
+     */
+    public String getReleaseNotesFile() {
+        return getString(ReleaseToolsProperties.releaseNotes_file.toString());
+    }
+
+    /**
+     * Returns Git generic user notation based on settings, for example:
+     * "Mockito Release Tools &lt;mockito.release.tools@gmail.com&gt;"
+     */
+    public String getGitGenericUserNotation() {
+        //TODO unit testable
+        return getGitGenericUser() + " <" + getGitGenericEmail() + ">";
+    }
+
+    /**
+     * Tag name to be used, "v" + project.version
+     */
+    public String getTag() {
+        return "v" + project.getVersion();
+    }
+
+    /**
+     * Quiet command line to be used to perform git push
+     */
+    public List<String> getQuietGitPushArgs() {
+        //TODO unit testable
+        //!!!Below command _MUST_ be quiet otherwise it exposes GitHub write token!!!
+        String mustBeQuiet = "-q";
+        String ghUser = getString("gh_user");
+        String ghWriteToken = EnvVariables.getEnv("GH_TOKEN");
+        String ghRepo = getGitHubRepository();
+        String branch = getCurrentBranch();
+        String url = MessageFormat.format("https://{0}:{1}@github.com/{2}.git", ghUser, ghWriteToken, ghRepo);
+
+        LinkedList<String> args = new LinkedList<String>(asList("git", "push", url, branch, getTag(), mustBeQuiet));
+        if (isReleaseDryRun()) {
+            LOG.lifecycle("  Will run 'git push' with '--dry-run' in quiet mode.");
+            args.add("--dry-run");
+        }
+        return args;
+    }
+
+    /**
+     * Returns the branch to work on by checking the env variable 'TRAVIS_BRANCH'
+     */
+    public String getCurrentBranch() {
+        return EnvVariables.getEnv("TRAVIS_BRANCH");
+    }
+
+    /**
+     * Generic git user to be used for commits, for example "mockito.release.tools"
+     */
+    public String getGitGenericUser() {
+        return getString("git_genericUser");
+    }
+
+    /**
+     * Generic git email to be used for commits, for example "mockito.release.tools@gmail.com"
+     */
+    public String getGitGenericEmail() {
+        return getString("git_genericEmail");
+    }
+
+    /**
+     * Regex to be used to identify branches that entitled to be released, for example "master|release/.+"
+     */
+    public String getReleasableBranchRegex() {
+        return getString("git_releasableBranchRegex");
+    }
+
+    /**
+     * Name of Bintray repo for notable releases, for example "mockito-notable"
+     */
+    public String getBintrayNotableRepo() {
+        return getString("bintray_notableRepo");
     }
 }
