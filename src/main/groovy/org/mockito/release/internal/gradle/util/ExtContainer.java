@@ -59,9 +59,13 @@ public class ExtContainer {
      * Bintray repo name for upload
      */
     public String getBintrayRepo() {
-        return getString("bintray_repo");
+        //TODO document String literal in enum or get rid of the enum. Also applies to all string literals in this class
+        if (ext.has("release_notable") && "true".equals(ext.get("release_notable"))) {
+            return getString("bintray_notableRepo");
+        } else {
+            return getString("bintray_repo");
+        }
     }
-    //TODO document String literal in enum or get rid of the enum. Also applies to all string literals in this class
 
     /**
      * GitHub repository name, for example: "mockito/mockito"

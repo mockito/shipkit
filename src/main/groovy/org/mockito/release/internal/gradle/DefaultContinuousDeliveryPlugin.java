@@ -299,7 +299,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
             List<String> args = new LinkedList<String>(asList(
                     "./gradlew", "bintrayUploadAll",
                     "-Prelease_version=" + v,
-                    "-Pbintray_repo=" + ext.getBintrayNotableRepo(),
+                    "-Prelease_notable=true",
                     "-Pbintray_mavenCentralSync"));
 
             if (dryRun) {
