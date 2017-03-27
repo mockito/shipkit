@@ -28,12 +28,11 @@ To develop improvements in release notes automation and test with Mockito projec
 
 1. Clone mockito-release-tools repo, make your changes, run './gradlew install' task.
  This will install the artifacts in local maven repository for easy sharing.
-2. Clone mockito repo and ensure that mockito 'gradle.properties' file has correct version of mockito-release-tools.
- It should declare the same version of release tools that was built in the previous step.
-3. In mockito clone, edit the 'doc/release-notes/official.md' file.
- Delete one or many versions from the top of the file so that release notes generation will regenerate them.
- For example, if 'offcial.md' has version '2.7.6' at the top, remove it so that there is '2.7.5' version at the top.
-4. Run './gradlew previewReleaseNotes' and inspect the console output.
-5. You can delete more versions (step 3) and preview release notes (step 4) to view a larger set of improvements included in the release notes.
-
-Soon we will make e2e testing of the release notes automation easier!
+ Notice the version you're building in the build output.
+2. Clone mockito-release-tools-example repo and ensure that 'release-tools-example/build.gradle' file uses the correct version of mockito-release-tools (declared at the top of build.gradle).
+ It should use the same version that was built in the previous step.
+3. Tests you can do in mockito-release-tools-example:
+  - run './gradlew testRelease'
+  - edit the 'doc/release-notes.md' file.
+   Delete one or many versions from the top of the file so that release notes generation will regenerate them.
+   Run './gradlew previewReleaseNotes' and inspect the console output.
