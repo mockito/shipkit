@@ -14,7 +14,7 @@ and automatically publish new versions to
 
 ## We need help!
 
-If the vision of the project connects with you help us!!!
+If the vision of the project connects with you help us!!! Get in touch on the [mailing list](https://groups.google.com/forum/#!forum/mockito-release-tools).
 
 - Implementing features - see the issue marked with "[please contribute](https://github.com/mockito/mockito-release-tools/issues?q=is%3Aissue+is%3Aopen+label%3A%22please+contribute%21%22)" label.
 - Using the release tools in your project and giving us feedback.
