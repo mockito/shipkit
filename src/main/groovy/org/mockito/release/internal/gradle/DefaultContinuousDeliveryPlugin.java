@@ -260,7 +260,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
                         //also checking didWork so that we can "-x releaseNeeded" to force the release without criteria check
                         return releaseNeededTask.getDidWork()
                                 //TODO below is awkward, we need a new task type
-                                && true == (Boolean) releaseNeededTask.getExtensions().getExtraProperties().get("needed");
+                                && (Boolean) releaseNeededTask.getExtensions().getExtraProperties().get("needed");
                     }
                 });
                 t.doLast(new Action<Task>() {
@@ -272,7 +272,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
                         //finally, let's make the release!
                         exec(project, "./gradlew", "performRelease");
                         //perform notable release if needed
-                        performNotableRelease(project, ext, false);
+                        performNotableRelease(project, false);
                     }
                 });
             }
@@ -294,14 +294,14 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
                 t.setDescription("Tests the notable release, intended to be used locally by engineers");
                 t.doLast(new Action<Task>() {
                     public void execute(Task task) {
-                        performNotableRelease(project, ext, true);
+                        performNotableRelease(project, true);
                     }
                 });
             }
         });
     }
 
-    static void performNotableRelease(Project project, ExtContainer ext, boolean dryRun) {
+    private static void performNotableRelease(Project project, boolean dryRun) {
         String v = project.getVersion().toString();
         if (v.endsWith(".0") || v.endsWith(".0.0")) { //new minor or major version
             LOG.lifecycle("  It looks like we are releasing a new notable version '{}'!\n" +
@@ -325,11 +325,11 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
         }
     }
 
-    static void performReleaseTest(Project project) {
+    private static void performReleaseTest(Project project) {
         exec(project, "./gradlew", "performRelease", "releaseCleanUp", "-PreleaseDryRun");
     }
 
-    static ExecResult exec(Project project, final String ... commandLine) {
+    private static ExecResult exec(Project project, final String... commandLine) {
         return project.exec(new Action<ExecSpec>() {
             public void execute(ExecSpec e) {
                 e.commandLine(commandLine);
