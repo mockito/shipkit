@@ -10,6 +10,7 @@ import org.gradle.api.tasks.Exec;
 import org.gradle.process.ExecResult;
 import org.gradle.process.ExecSpec;
 import org.mockito.release.gradle.BintrayPlugin;
+import org.mockito.release.gradle.BumpVersionFileTask;
 import org.mockito.release.gradle.ContinuousDeliveryPlugin;
 import org.mockito.release.internal.gradle.util.CommonSettings;
 import org.mockito.release.internal.gradle.util.ExtContainer;
@@ -34,6 +35,9 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
 
         final ExtContainer ext = new ExtContainer(project);
 
+        ((BumpVersionFileTask) project.getTasks().getByName("bumpVersionFile"))
+                .setUpdateNotableVersions(isNotableRelease(project));
+
         CommonSettings.execTask(project, "gitAddBumpVersion", new Action<Exec>() {
             public void execute(Exec t) {
                 t.setDescription("Performs 'git add' for the version properties file");
@@ -44,7 +48,6 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
             }
         });
 
-
         CommonSettings.execTask(project, "gitAddReleaseNotes", new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Performs 'git add' for the release notes file");
@@ -52,7 +55,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
                 t.doFirst(new Action<Task>() {
                     public void execute(Task task) {
                         //doFirst (execution time)
-                        // so that we can access user-configured 'releaseNotesFile' property
+                        // so that we can access user-configured properties
                         t.commandLine("git", "add", ext.getReleaseNotesFile());
                     }
                 });
@@ -303,7 +306,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
 
     private static void performNotableRelease(Project project, boolean dryRun) {
         String v = project.getVersion().toString();
-        if (v.endsWith(".0") || v.endsWith(".0.0")) { //new minor or major version
+        if (isNotableRelease(project)) { //new minor or major version
             LOG.lifecycle("  It looks like we are releasing a new notable version '{}'!\n" +
                     "  Performing additional upload to 'notable versions' repository and Maven Central.", v);
 
@@ -323,6 +326,12 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
             LOG.lifecycle("  Version '{}' is not a notable version.\n" +
                     "  NO additional upload to 'notable versions' repository and NO sync to Maven Central.", v);
         }
+    }
+
+    private static boolean isNotableRelease(Project project) {
+        //TODO also check for env variable here / commit message, we already check for 'TRAVIS_COMMIT_MESSAGE' elsewhere
+        String v = project.getVersion().toString();
+        return v.endsWith(".0") || v.endsWith(".0.0");
     }
 
     private static void performReleaseTest(Project project) {
