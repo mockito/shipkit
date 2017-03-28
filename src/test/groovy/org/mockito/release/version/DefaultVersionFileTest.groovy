@@ -56,4 +56,16 @@ x
         then:
         f.text == "foo=bar\nversion=2.0.1\n"
     }
+
+    def "knows notable versions"() {
+        expect:
+        def f = dir.newFile() << "version=1.0\n" + file
+        new DefaultVersionFile(f).notableVersions.toString() == versions.toString()
+
+        where:
+        file                                       | versions
+        "notableVersions= 1.0, 2.0-beta.1, 3.5.6 " | ['1.0', '2.0-beta.1', '3.5.6']
+        "notableVersions="                         | []
+        "foo="                                     | []
+    }
 }
