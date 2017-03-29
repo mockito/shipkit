@@ -14,8 +14,10 @@ import org.mockito.release.gradle.BumpVersionFileTask;
 import org.mockito.release.gradle.ContinuousDeliveryPlugin;
 import org.mockito.release.internal.gradle.util.CommonSettings;
 import org.mockito.release.internal.gradle.util.ExtContainer;
+import org.mockito.release.version.VersionFile;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,15 +50,17 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
             }
         });
 
+        configureNotableReleaseNotes(project);
+
         CommonSettings.execTask(project, "gitAddReleaseNotes", new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Performs 'git add' for the release notes file");
-                t.mustRunAfter("updateReleaseNotes");
+                t.mustRunAfter("updateReleaseNotes", "updateNotableReleaseNotes");
                 t.doFirst(new Action<Task>() {
                     public void execute(Task task) {
                         //doFirst (execution time)
                         // so that we can access user-configured properties
-                        t.commandLine("git", "add", ext.getReleaseNotesFile());
+                        t.commandLine("git", "add", ext.getReleaseNotesFile(), ext.getNotableReleaseNotesFile());
                     }
                 });
             }
@@ -84,15 +88,12 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
             }
         });
 
-        CommonSettings.execTask(project, "gitPush", new Action<Exec>() {
+        boolean mustBeQuiet = true; //so that we don't expose the token
+        CommonSettings.execTask(project, "gitPush", mustBeQuiet, new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Pushes changes to remote repo.");
                 t.mustRunAfter("gitCommit", "gitTag");
 
-                //Uses 'exec' method and not Exec task on purpose
-                // so that there is no risk of exposing the sensitive information!
-                // When standard exec task fails it can expose command line parameters in failure message
-                // (like 'git push' does it)
                 t.doFirst(new Action<Task>() {
                     public void execute(Task task) {
                         t.commandLine(ext.getQuietGitPushArgs());
@@ -113,10 +114,11 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
         });
 
         project.allprojects(new Action<Project>() {
-            public void execute(Project project) {
+            public void execute(final Project project) {
                 project.getPlugins().withType(BintrayPlugin.class, new Action<BintrayPlugin>() {
                     public void execute(BintrayPlugin bintrayPlugin) {
-                        bintrayUploadAll.dependsOn(BintrayPlugin.BINTRAY_UPLOAD_TASK);
+                        Task bintrayUpload = project.getTasks().getByName(BintrayPlugin.BINTRAY_UPLOAD_TASK);
+                        bintrayUploadAll.dependsOn(bintrayUpload);
                     }
                 });
             }
@@ -126,7 +128,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
             public void execute(final Task t) {
                 t.setDescription("Performs release. To test release use './gradlew testRelease'");
 
-                t.dependsOn("bumpVersionFile", "updateReleaseNotes");
+                t.dependsOn("bumpVersionFile", "updateReleaseNotes", "updateNotableReleaseNotes");
                 t.dependsOn("gitAddBumpVersion", "gitAddReleaseNotes", "gitCommit", "gitTag");
                 t.dependsOn("gitPush");
                 t.dependsOn("bintrayUploadAll");
@@ -302,6 +304,22 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
                 });
             }
         });
+    }
+
+    private static void configureNotableReleaseNotes(Project project) {
+        VersionFile versionFile = project.getExtensions().getByType(VersionFile.class);
+        Collection<String> notableVersions;
+        if (isNotableRelease(project)) {
+            notableVersions = new LinkedList<String>();
+            notableVersions.add(project.getVersion().toString());
+            notableVersions.addAll(versionFile.getNotableVersions());
+        } else {
+            notableVersions = versionFile.getNotableVersions();
+        }
+        NotableReleaseNotesGeneratorTask task = (NotableReleaseNotesGeneratorTask) project.getTasks().getByName("updateNotableReleaseNotes");
+        task.getNotesGeneration().setTargetVersions(notableVersions);
+        //So that the current version is already tagged and we can generate the notes
+        task.mustRunAfter("gitTag");
     }
 
     private static void performNotableRelease(Project project, boolean dryRun) {
