@@ -1,18 +1,27 @@
 package org.mockito.release.version;
 
+import java.util.Collection;
+
 /**
  * The file that contains version number
+ * TODO rename to VersionInfo
  */
 public interface VersionFile {
 
     /**
-     * the version number
+     * Version number
      */
     String getVersion();
 
     /**
-     * increments version number in the file and returns incremented value
+     * Increments version number in the backing object (typically a file) and returns incremented value.
+     *
+     * @param updateNotable if true, the previous version will be included in the notable versions, too.
      */
-    String incrementVersion();
+    String bumpVersion(boolean updateNotable);
 
+    /**
+     * Returns notable versions
+     */
+    Collection<String> getNotableVersions();
 }

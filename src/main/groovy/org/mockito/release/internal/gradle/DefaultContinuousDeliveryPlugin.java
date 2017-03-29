@@ -10,6 +10,7 @@ import org.gradle.api.tasks.Exec;
 import org.gradle.process.ExecResult;
 import org.gradle.process.ExecSpec;
 import org.mockito.release.gradle.BintrayPlugin;
+import org.mockito.release.gradle.BumpVersionFileTask;
 import org.mockito.release.gradle.ContinuousDeliveryPlugin;
 import org.mockito.release.internal.gradle.util.CommonSettings;
 import org.mockito.release.internal.gradle.util.ExtContainer;
@@ -34,6 +35,9 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
 
         final ExtContainer ext = new ExtContainer(project);
 
+        ((BumpVersionFileTask) project.getTasks().getByName("bumpVersionFile"))
+                .setUpdateNotableVersions(isNotableRelease(project));
+
         CommonSettings.execTask(project, "gitAddBumpVersion", new Action<Exec>() {
             public void execute(Exec t) {
                 t.setDescription("Performs 'git add' for the version properties file");
@@ -44,7 +48,6 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
             }
         });
 
-
         CommonSettings.execTask(project, "gitAddReleaseNotes", new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Performs 'git add' for the release notes file");
@@ -52,7 +55,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
                 t.doFirst(new Action<Task>() {
                     public void execute(Task task) {
                         //doFirst (execution time)
-                        // so that we can access user-configured 'releaseNotesFile' property
+                        // so that we can access user-configured properties
                         t.commandLine("git", "add", ext.getReleaseNotesFile());
                     }
                 });
@@ -260,7 +263,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
                         //also checking didWork so that we can "-x releaseNeeded" to force the release without criteria check
                         return releaseNeededTask.getDidWork()
                                 //TODO below is awkward, we need a new task type
-                                && true == (Boolean) releaseNeededTask.getExtensions().getExtraProperties().get("needed");
+                                && (Boolean) releaseNeededTask.getExtensions().getExtraProperties().get("needed");
                     }
                 });
                 t.doLast(new Action<Task>() {
@@ -272,7 +275,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
                         //finally, let's make the release!
                         exec(project, "./gradlew", "performRelease");
                         //perform notable release if needed
-                        performNotableRelease(project, ext, false);
+                        performNotableRelease(project, false);
                     }
                 });
             }
@@ -294,16 +297,16 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
                 t.setDescription("Tests the notable release, intended to be used locally by engineers");
                 t.doLast(new Action<Task>() {
                     public void execute(Task task) {
-                        performNotableRelease(project, ext, true);
+                        performNotableRelease(project, true);
                     }
                 });
             }
         });
     }
 
-    static void performNotableRelease(Project project, ExtContainer ext, boolean dryRun) {
+    private static void performNotableRelease(Project project, boolean dryRun) {
         String v = project.getVersion().toString();
-        if (v.endsWith(".0") || v.endsWith(".0.0")) { //new minor or major version
+        if (isNotableRelease(project)) { //new minor or major version
             LOG.lifecycle("  It looks like we are releasing a new notable version '{}'!\n" +
                     "  Performing additional upload to 'notable versions' repository and Maven Central.", v);
 
@@ -325,11 +328,17 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
         }
     }
 
-    static void performReleaseTest(Project project) {
+    private static boolean isNotableRelease(Project project) {
+        //TODO also check for env variable here / commit message, we already check for 'TRAVIS_COMMIT_MESSAGE' elsewhere
+        String v = project.getVersion().toString();
+        return v.endsWith(".0") || v.endsWith(".0.0");
+    }
+
+    private static void performReleaseTest(Project project) {
         exec(project, "./gradlew", "performRelease", "releaseCleanUp", "-PreleaseDryRun");
     }
 
-    static ExecResult exec(Project project, final String ... commandLine) {
+    private static ExecResult exec(Project project, final String... commandLine) {
         return project.exec(new Action<ExecSpec>() {
             public void execute(ExecSpec e) {
                 e.commandLine(commandLine);

@@ -35,7 +35,7 @@ x
 
         when:
         def v = new DefaultVersionFile(f)
-        v.incrementVersion()
+        v.bumpVersion(false)
 
         then:
         f.text == """
@@ -51,9 +51,53 @@ x
         def f = dir.newFile() << "foo=bar\nversion=2.0.0"
 
         when:
-        new DefaultVersionFile(f).incrementVersion()
+        new DefaultVersionFile(f).bumpVersion(false)
 
         then:
         f.text == "foo=bar\nversion=2.0.1\n"
+    }
+
+    def "knows notable versions"() {
+        expect:
+        def f = dir.newFile() << "version=1.0\n" + file
+        new DefaultVersionFile(f).notableVersions.toString() == versions.toString()
+
+        where:
+        file                                       | versions
+        "notableVersions= 1.0, 2.0-beta.1, 3.5.6 " | ['1.0', '2.0-beta.1', '3.5.6']
+        "notableVersions="                         | []
+        "foo="                                     | []
+    }
+
+    def "bumps notable version"() {
+        def f = dir.newFile() << """
+version=2.0.0
+notableVersions=1.0.0
+"""
+
+        when:
+        def v = new DefaultVersionFile(f)
+        v.bumpVersion(true)
+
+        then:
+        f.text == """
+version=2.0.1
+notableVersions=1.0.0, 2.0.0
+"""
+        v.notableVersions.toString() == ["1.0.0", "2.0.0"].toString()
+    }
+
+    def "bumps notable version when no prior notable versions"() {
+        def f = dir.newFile() << "version=1.0.0"
+
+        when:
+        def v = new DefaultVersionFile(f)
+        v.bumpVersion(true)
+
+        then:
+        f.text == """version=1.0.1
+notableVersions=1.0.0
+"""
+        v.notableVersions.toString() == ["1.0.0"].toString()
     }
 }

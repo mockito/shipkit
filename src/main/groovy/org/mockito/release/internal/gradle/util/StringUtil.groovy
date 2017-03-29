@@ -13,7 +13,7 @@ class StringUtil {
     /**
      * Classic string join
      */
-    static String join(List<String> collection, String separator) {
+    static String join(Collection<String> collection, String separator) {
         return collection.join(separator)
     }
 }
