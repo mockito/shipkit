@@ -6,6 +6,7 @@ import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.specs.Spec;
+import org.gradle.api.specs.Specs;
 import org.gradle.api.tasks.Exec;
 import org.gradle.process.ExecResult;
 import org.gradle.process.ExecSpec;
@@ -89,7 +90,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
         });
 
         boolean mustBeQuiet = true; //so that we don't expose the token
-        CommonSettings.execTask(project, "gitPush", mustBeQuiet, new Action<Exec>() {
+        final Task gitPush = CommonSettings.execTask(project, "gitPush", mustBeQuiet, new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Pushes changes to remote repo.");
                 t.mustRunAfter("gitCommit", "gitTag");
@@ -104,6 +105,10 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
                         t.setErrorOutput(output);
                     }
                 });
+
+                //Add soft ordering rule to make git push run as late as possible
+                //it is an operation that is hard to roll back / recover
+                t.shouldRunAfter(project.getTasks().matching(Specs.SATISFIES_ALL));
             }
         });
 
@@ -113,6 +118,10 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
                 //It is safer to run bintray upload after git push
                 //This way, when git push fails we don't publish jars to bintray
                 t.mustRunAfter("gitPush");
+
+                //Add soft ordering rule to make bintray upload run as late as possible
+                //it is an operation that is hard to roll back / recover
+                t.shouldRunAfter(project.getTasks().matching(Specs.SATISFIES_ALL));
             }
         });
 
@@ -122,6 +131,10 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
                     public void execute(BintrayPlugin bintrayPlugin) {
                         Task bintrayUpload = project.getTasks().getByName(BintrayPlugin.BINTRAY_UPLOAD_TASK);
                         bintrayUploadAll.dependsOn(bintrayUpload);
+
+                        //Add soft ordering rule to make git push run as late as possible
+                        //it is an operation that is hard to roll back / recover
+                        gitPush.shouldRunAfter(bintrayUpload);
                     }
                 });
             }
