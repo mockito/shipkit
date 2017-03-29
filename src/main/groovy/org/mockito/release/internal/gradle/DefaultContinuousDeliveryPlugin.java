@@ -110,6 +110,9 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
         final Task bintrayUploadAll = CommonSettings.task(project, "bintrayUploadAll", new Action<Task>() {
             public void execute(Task t) {
                 t.setDescription("Depends on all 'bintrayUpload' tasks from all Gradle projects.");
+                //It is safer to run bintray upload after git push
+                //This way, when git push fails we don't publish jars to bintray
+                t.mustRunAfter("gitPush");
             }
         });
 
