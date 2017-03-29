@@ -14,6 +14,7 @@ import org.mockito.release.gradle.BumpVersionFileTask;
 import org.mockito.release.gradle.ContinuousDeliveryPlugin;
 import org.mockito.release.internal.gradle.util.CommonSettings;
 import org.mockito.release.internal.gradle.util.ExtContainer;
+import org.mockito.release.internal.gradle.util.StringUtil;
 import org.mockito.release.version.VersionFile;
 
 import java.io.ByteArrayOutputStream;
@@ -89,7 +90,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
         });
 
         boolean mustBeQuiet = true; //so that we don't expose the token
-        CommonSettings.execTask(project, "gitPush", mustBeQuiet, new Action<Exec>() {
+        final Task gitPush = CommonSettings.execTask(project, "gitPush", mustBeQuiet, new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Pushes changes to remote repo.");
                 t.mustRunAfter("gitCommit", "gitTag");
@@ -110,6 +111,9 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
         final Task bintrayUploadAll = CommonSettings.task(project, "bintrayUploadAll", new Action<Task>() {
             public void execute(Task t) {
                 t.setDescription("Depends on all 'bintrayUpload' tasks from all Gradle projects.");
+                //It is safer to run bintray upload after git push (hard to reverse operation)
+                //This way, when git push fails we don't publish jars to bintray
+                t.mustRunAfter("gitPush");
             }
         });
 
@@ -357,6 +361,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
     }
 
     private static ExecResult exec(Project project, final String... commandLine) {
+        LOG.lifecycle("  Running:\n    " + StringUtil.join(asList(commandLine), " ") );
         return project.exec(new Action<ExecSpec>() {
             public void execute(ExecSpec e) {
                 e.commandLine(commandLine);

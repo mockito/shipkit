@@ -82,9 +82,9 @@ notableVersions=1.0.0
         then:
         f.text == """
 version=2.0.1
-notableVersions=1.0.0, 2.0.0
+notableVersions=2.0.0, 1.0.0
 """
-        v.notableVersions.toString() == ["1.0.0", "2.0.0"].toString()
+        v.notableVersions.toString() == ["2.0.0", "1.0.0"].toString()
     }
 
     def "bumps notable version when no prior notable versions"() {
