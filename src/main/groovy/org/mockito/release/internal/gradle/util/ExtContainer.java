@@ -27,6 +27,7 @@ public class ExtContainer {
     private final ExtraPropertiesExtension ext;
     private final Project project;
 
+    //TODO it would be nice if it was some kind of singleton, perhaps extension on root?
     public ExtContainer(Project project) {
         this.ext = project.getExtensions().getExtraProperties();
         this.project = project;

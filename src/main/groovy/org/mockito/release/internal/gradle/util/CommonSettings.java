@@ -20,11 +20,20 @@ public class CommonSettings {
      * Creates exec task with preconfigured defaults
      */
     public static Exec execTask(Project project, String name, Action<Exec> configureTask) {
+        return execTask(project, name, false, configureTask);
+    }
+
+    /**
+     * Creates exec task with preconfigured defaults
+     */
+    public static Exec execTask(Project project, String name, final boolean quiet, Action<Exec> configureTask) {
+        //TODO unit testable
         final Exec exec = project.getTasks().create(name, Exec.class);
         exec.doFirst(new Action<Task>() {
             public void execute(Task task) {
-            //TODO unit testable
-            LOG.lifecycle("  Running:\n    {}", join(exec.getCommandLine(), " "));
+                if (!quiet) {
+                    LOG.lifecycle("  Running:\n    {}", join(exec.getCommandLine(), " "));
+                }
             }
         });
         return configure(configureTask, exec);
