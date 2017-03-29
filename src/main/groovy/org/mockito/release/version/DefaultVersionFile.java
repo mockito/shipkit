@@ -13,7 +13,7 @@ import java.util.Properties;
 class DefaultVersionFile implements VersionFile {
 
     private final File versionFile;
-    private final List<String> notableVersions;
+    private final LinkedList<String> notableVersions;
     private String version;
 
     DefaultVersionFile(File versionFile) {
@@ -26,8 +26,8 @@ class DefaultVersionFile implements VersionFile {
         this.notableVersions = parseNotableVersions(properties);
     }
 
-    private List<String> parseNotableVersions(Properties properties) {
-        List<String> result = new LinkedList<String>();
+    private static LinkedList<String> parseNotableVersions(Properties properties) {
+        LinkedList<String> result = new LinkedList<String>();
         String value = properties.getProperty("notableVersions");
         if (value != null) {
             String[] versions = value.split(",");
@@ -59,7 +59,7 @@ class DefaultVersionFile implements VersionFile {
     public String bumpVersion(boolean updateNotable) {
         String content = IOUtil.readFully(versionFile);
         if (updateNotable) {
-            notableVersions.add(version);
+            notableVersions.addFirst(version);
             String asString = "notableVersions=" + StringUtil.join(notableVersions, ", ") + "\n";
             if (notableVersions.size() == 1) {
                 //when no prior notable versions, we just add new entry
