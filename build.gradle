@@ -19,14 +19,12 @@ targetCompatibility = 1.6
 
 repositories { jcenter() }
 
-version = '0.2.4'
+version = '0.3.0'
 println "  Version: $version"
 group = 'gradle.plugin.org.mockito'
 
 dependencies {
     compile gradleApi()
-    //TODO SF use jcabi to edit issues after the release so that they have the milestone attached
-    //compile "com.jcabi:jcabi-github:0.17"
 
     compile "com.github.cliftonlabs:json-simple:2.1.2"
     compile 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'

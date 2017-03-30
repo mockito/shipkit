@@ -322,7 +322,9 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
         }
         NotableReleaseNotesGeneratorTask task = (NotableReleaseNotesGeneratorTask) project.getTasks().getByName("updateNotableReleaseNotes");
         task.getNotesGeneration().setTargetVersions(notableVersions);
+
         //So that the current version is already tagged and we can generate the notes
+        //It is only really needed when we release a new notable version, but it safe to declare this task ordering rule anyway
         task.mustRunAfter("gitTag");
     }
 

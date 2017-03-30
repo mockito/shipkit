@@ -60,15 +60,11 @@ public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
                 new Action<NotableReleaseNotesGeneratorTask>() {
             public void execute(NotableReleaseNotesGeneratorTask task) {
                 final NotableReleaseNotesGeneratorTask.NotesGeneration gen = task.getNotesGeneration();
-
-                //TODO hardcoded
                 gen.setGitHubLabels(asList("noteworthy"));
-                gen.setDetailedReleaseNotesLink("https://github.com/mockito/mockito-release-tools-example/blob/master/docs/release-notes.md");
                 gen.setGitWorkingDir(project.getRootDir());
                 gen.setIntroductionText("Notable release notes:\n\n");
                 gen.setOnlyPullRequests(true);
                 gen.setTagPrefix("v");
-                gen.setVcsCommitsLinkTemplate("https://github.com/mockito/mockito-release-tools-example/compare/{0}...{1}");
 
                 task.doFirst(new Action<Task>() {
                     public void execute(Task task) {
@@ -85,6 +81,8 @@ public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
         gen.setGitHubReadOnlyAuthToken(ext.getGitHubReadOnlyAuthToken());
         gen.setGitHubRepository(ext.getGitHubRepository());
         gen.setOutputFile(project.file(ext.getNotableReleaseNotesFile()));
+        gen.setVcsCommitsLinkTemplate("https://github.com/" + ext.getGitHubRepository() + "/compare/{0}...{1}");
+        gen.setDetailedReleaseNotesLink(ext.getGitHubRepository() + "/blob/" + ext.getCurrentBranch() + "/" + ext.getNotableReleaseNotesFile());
     }
 
     private static void configureNotes(DefaultReleaseNotesExtension notes, Project project) {
