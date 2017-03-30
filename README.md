@@ -33,6 +33,9 @@ To develop improvements in release notes automation and test with Mockito projec
  It should use the same version that was built in the previous step.
 3. Tests you can do in mockito-release-tools-example:
   - run './gradlew testRelease'
+  - run './gradlew testNotableRelease'
+  - run './gradlew preformRelease -m' (-m means dry run)
   - edit the 'doc/release-notes.md' file.
    Delete one or many versions from the top of the file so that release notes generation will regenerate them.
    Run './gradlew previewReleaseNotes' and inspect the console output.
+  - run './gradlew tasks', experiment / test various tasks created by release automation
