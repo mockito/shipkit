@@ -24,7 +24,5 @@ install:
 script:
   - ./gradlew build -s
 
-#TODO we need to pass Gradle Plugin Portal secure variables as project properties
-#"export ORG_GRADLE_PROJECT_gradle.publish.key=foo" does not work in bash
 after_success:
   - ./gradlew travisRelease -s
