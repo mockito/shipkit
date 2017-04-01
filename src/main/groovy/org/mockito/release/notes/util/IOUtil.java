@@ -57,6 +57,7 @@ public class IOUtil {
     public static void writeFile(File target, String content) {
         PrintWriter p = null;
         try {
+            target.getParentFile().mkdirs();
             p = new PrintWriter(new FileWriter(target));
             p.write(content);
         } catch (Exception e) {

@@ -26,7 +26,7 @@ class IOUtilTest extends Specification {
     }
 
     def "writes file"() {
-        def f = tmp.newFile()
+        def f = new File(tmp.root, "x/y/z.txt")
         writeFile(f, "ala\nma")
 
         expect:
