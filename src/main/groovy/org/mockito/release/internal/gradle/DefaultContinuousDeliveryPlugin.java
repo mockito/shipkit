@@ -83,6 +83,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
 
         CommonSettings.execTask(project, "gitTag", new Action<Exec>() {
             public void execute(Exec t) {
+                t.mustRunAfter("gitCommit");
                 String tag = "v" + project.getVersion();
                 t.setDescription("Creates new version tag '" + tag + "'");
                 t.commandLine("git", "tag", "-a", tag, "-m", commitMessage("Created new tag " + tag));
@@ -90,7 +91,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
         });
 
         boolean mustBeQuiet = true; //so that we don't expose the token
-        final Task gitPush = CommonSettings.execTask(project, "gitPush", mustBeQuiet, new Action<Exec>() {
+        CommonSettings.execTask(project, "gitPush", mustBeQuiet, new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Pushes changes to remote repo.");
                 t.mustRunAfter("gitCommit", "gitTag");
@@ -243,6 +244,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
                         String pr = System.getenv("TRAVIS_PULL_REQUEST");
                         boolean pullRequest = pr != null && !pr.trim().isEmpty() && !pr.equals("false");
 
+                        //TODO create task that reads the current branch in case TRAVIS_BRANCH env variable is not set
                         String branch = System.getenv("TRAVIS_BRANCH");
                         boolean releasableBranch = branch != null && branch.matches(ext.getReleasableBranchRegex());
 
@@ -314,6 +316,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
         VersionFile versionFile = project.getExtensions().getByType(VersionFile.class);
         Collection<String> notableVersions;
         if (isNotableRelease(project)) {
+            //TODO below no longer works
             notableVersions = new LinkedList<String>();
             notableVersions.add(project.getVersion().toString());
             notableVersions.addAll(versionFile.getNotableVersions());
@@ -322,10 +325,6 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
         }
         NotableReleaseNotesGeneratorTask task = (NotableReleaseNotesGeneratorTask) project.getTasks().getByName("updateNotableReleaseNotes");
         task.getNotesGeneration().setTargetVersions(notableVersions);
-
-        //So that the current version is already tagged and we can generate the notes
-        //It is only really needed when we release a new notable version, but it safe to declare this task ordering rule anyway
-        task.mustRunAfter("gitTag");
     }
 
     private static void performNotableRelease(Project project, boolean dryRun) {
