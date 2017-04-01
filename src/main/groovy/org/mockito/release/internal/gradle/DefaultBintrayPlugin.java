@@ -35,18 +35,7 @@ public class DefaultBintrayPlugin implements BintrayPlugin {
             }
         });
 
-        final BintrayExtension bintray = project.getExtensions().getByType(BintrayExtension.class);
-        project.afterEvaluate(new Action<Project>() {
-            public void execute(Project project) {
-                //afterEvaluate so that we access publications as late as possible
-                // otherwise stuff does not work, for example pom does not have dependencies :)
-                if (project.getPlugins().hasPlugin("maven-publish")) {
-                    List<String> publicationNames = GradleDSLHelper.publicationNames(project);
-                    bintray.setPublications(publicationNames.toArray(new String[publicationNames.size()]));
-                }
-            }
-        });
-
+        BintrayExtension bintray = project.getExtensions().getByType(BintrayExtension.class);
         ExtContainer ext = new ExtContainer(project.getRootProject());
 
         bintray.setPublish(true);

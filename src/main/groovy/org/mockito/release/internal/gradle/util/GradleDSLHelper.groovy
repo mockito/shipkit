@@ -4,9 +4,7 @@ import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import org.gradle.api.Action
 import org.gradle.api.Project
-import org.gradle.api.publish.Publication
 import org.gradle.api.publish.PublicationContainer
-import org.gradle.api.publish.PublishingExtension
 
 /**
  * Useful to work around Gradle API that requires the use of Groovy.
@@ -24,13 +22,5 @@ class GradleDSLHelper {
         project.publishing {
             action.execute(publications)
         }
-    }
-
-    /**
-     * Names of all publications found in this project
-     */
-    static List<String> publicationNames(Project project) {
-        PublishingExtension publishing = project.getExtensions().getByType(PublishingExtension.class)
-        return publishing.getPublications().collect { Publication it -> it.name }
     }
 }

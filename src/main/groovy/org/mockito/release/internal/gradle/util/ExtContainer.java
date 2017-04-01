@@ -7,10 +7,7 @@ import org.gradle.api.plugins.ExtraPropertiesExtension;
 import org.mockito.release.gradle.ReleaseToolsProperties;
 
 import java.text.MessageFormat;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 import static org.mockito.release.gradle.ReleaseToolsProperties.gh_repository;
@@ -106,16 +103,19 @@ public class ExtContainer {
         //!!!Below command _MUST_ be quiet otherwise it exposes GitHub write token!!!
         String mustBeQuiet = "-q";
         String ghUser = getString("gh_user");
-        String ghWriteToken = EnvVariables.getEnv("GH_TOKEN");
+        String ghWriteToken = EnvVariables.getEnv("GH_WRITE_TOKEN");
         String ghRepo = getGitHubRepository();
         String branch = getCurrentBranch();
-        String url = MessageFormat.format("https://{0}:{1}@github.com/{2}.git", ghUser, ghWriteToken, ghRepo);
+        String url = MessageFormat.format("https://{0}:[GH_WRITE_TOKEN]@github.com/{1}.git", ghUser, ghRepo);
 
-        LinkedList<String> args = new LinkedList<String>(asList("git", "push", url, branch, getTag(), mustBeQuiet));
+        ArrayList<String> args = new ArrayList<String>(asList("git", "push", url, branch, getTag(), mustBeQuiet));
         if (isReleaseDryRun()) {
-            LOG.lifecycle("  Will run 'git push' with '--dry-run' in quiet mode.");
             args.add("--dry-run");
         }
+        LOG.lifecycle("  'git push' arguments:\n    {}", StringUtil.join(args, " "));
+        //!!! Setting the url after printing the command so that we don't expose the sensitive token!!!
+        String actualUrl = args.get(2).replace("[GH_WRITE_TOKEN]", ghWriteToken);
+        args.set(2, actualUrl);
         return args;
     }
 

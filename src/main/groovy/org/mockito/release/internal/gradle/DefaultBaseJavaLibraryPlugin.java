@@ -4,6 +4,8 @@ import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.file.CopySpec;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.publish.PublicationContainer;
 import org.gradle.api.publish.maven.MavenPublication;
@@ -16,6 +18,10 @@ import org.mockito.release.internal.gradle.util.GradleDSLHelper;
  * Please keep documentation up to date at {@link BaseJavaLibraryPlugin}
  */
 public class DefaultBaseJavaLibraryPlugin implements BaseJavaLibraryPlugin {
+
+    private final static Logger LOG = Logging.getLogger(DefaultBaseJavaLibraryPlugin.class);
+
+    final static String PUBLICATION_NAME = "javaLibrary";
 
     public void apply(final Project project) {
         project.getPlugins().apply("java");
@@ -52,14 +58,16 @@ public class DefaultBaseJavaLibraryPlugin implements BaseJavaLibraryPlugin {
 
         GradleDSLHelper.publications(project, new Action<PublicationContainer>() {
             public void execute(PublicationContainer publications) {
-                publications.create("javaLibrary", MavenPublication.class, new Action<MavenPublication>() {
+                MavenPublication p = publications.create(PUBLICATION_NAME, MavenPublication.class, new Action<MavenPublication>() {
                     public void execute(MavenPublication publication) {
                         publication.from(project.getComponents().getByName("java"));
                         publication.artifact(sourcesJar);
                         publication.artifact(javadocJar);
+                        publication.setArtifactId(((Jar) project.getTasks().getByName("jar")).getBaseName());
                         PomCustomizer.customizePom(project, publication);
                     }
                 });
+                LOG.info("{} - configured '{}' publication", project.getPath(), p.getArtifactId());
             }
         });
 
