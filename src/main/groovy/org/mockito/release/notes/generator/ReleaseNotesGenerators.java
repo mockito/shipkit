@@ -7,7 +7,7 @@ import org.mockito.release.notes.contributors.GitHubContributorsProvider;
 import org.mockito.release.notes.improvements.Improvements;
 import org.mockito.release.notes.improvements.ImprovementsProvider;
 import org.mockito.release.notes.vcs.ContributionsProvider;
-import org.mockito.release.notes.vcs.ReleaseDateProvider;
+import org.mockito.release.notes.vcs.ReleasedVersionsProvider;
 import org.mockito.release.notes.vcs.Vcs;
 
 import java.io.File;
@@ -18,9 +18,9 @@ public class ReleaseNotesGenerators {
         ProcessRunner processRunner = Exec.getProcessRunner(workDir);
         ContributionsProvider contributionsProvider = Vcs.getContributionsProvider(processRunner);
         ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(repository, authToken);
-        ReleaseDateProvider releaseDateProvider = Vcs.getReleaseDateProvider(processRunner);
+        ReleasedVersionsProvider releasedVersionsProvider = Vcs.getReleaseDateProvider(processRunner);
         GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContibutorsProvider(repository, authToken);
-        return new DefaultReleaseNotesGenerator(contributionsProvider, improvementsProvider, releaseDateProvider,
+        return new DefaultReleaseNotesGenerator(contributionsProvider, improvementsProvider, releasedVersionsProvider,
                 contributorsProvider);
     }
 }

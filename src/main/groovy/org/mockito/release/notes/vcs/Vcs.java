@@ -15,10 +15,10 @@ public class Vcs {
     }
 
     /**
-     * Provides means to get release dates
+     * Provides means to get release versions
      */
-    public static ReleaseDateProvider getReleaseDateProvider(ProcessRunner runner) {
-        return new DefaultReleaseDateProvider(runner);
+    public static ReleasedVersionsProvider getReleaseDateProvider(ProcessRunner runner) {
+        return new DefaultReleasedVersionsProvider(runner);
     }
 
     public static RevisionProvider getRevisionProvider(ProcessRunner runner) {
