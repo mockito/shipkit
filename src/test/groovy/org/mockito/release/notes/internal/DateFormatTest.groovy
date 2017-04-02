@@ -16,6 +16,11 @@ class DateFormatTest extends Specification {
         f.format(date) == "2017-01-29 16:14"
     }
 
+    def "parses UTC date"() {
+        expect:
+        DateFormat.formatDate(DateFormat.parseUTCDate("2017-01-15")) == "2017-01-15"
+    }
+
     def "throws meaningful exception when date cannot be parsed"() {
         when:
         DateFormat.parseDate("2017-01- 08:14:09 -0800")
