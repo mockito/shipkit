@@ -26,7 +26,7 @@ public class NotableReleaseNotesGeneratorTask extends DefaultTask {
         //TODO release notes generation should produce JSON data that we can keep between the builds in the cache
         //then, the markdown generation logic would parse the JSON and produce human readable notes
         Collection<ReleaseNotesData> releaseNotes = generator.generateReleaseNotesData(
-                notesGeneration.targetVersions, notesGeneration.tagPrefix, notesGeneration.gitHubLabels, notesGeneration.onlyPullRequests);
+                notesGeneration.headVersion, notesGeneration.targetVersions, notesGeneration.tagPrefix, notesGeneration.gitHubLabels, notesGeneration.onlyPullRequests);
         String notes = ReleaseNotesFormatters.notableFormatter(
                 notesGeneration.introductionText, notesGeneration.detailedReleaseNotesLink, notesGeneration.vcsCommitsLinkTemplate)
                 .formatReleaseNotes(releaseNotes);
@@ -46,6 +46,7 @@ public class NotableReleaseNotesGeneratorTask extends DefaultTask {
         private String introductionText;
         private String detailedReleaseNotesLink;
         private String vcsCommitsLinkTemplate;
+        private String headVersion;
 
         public File getGitWorkingDir() {
             return gitWorkingDir;
@@ -133,6 +134,14 @@ public class NotableReleaseNotesGeneratorTask extends DefaultTask {
 
         public void setVcsCommitsLinkTemplate(String vcsCommitsLinkTemplate) {
             this.vcsCommitsLinkTemplate = vcsCommitsLinkTemplate;
+        }
+
+        public String getHeadVersion() {
+            return headVersion;
+        }
+
+        public void setHeadVersion(String headVersion) {
+            this.headVersion = headVersion;
         }
     }
 }

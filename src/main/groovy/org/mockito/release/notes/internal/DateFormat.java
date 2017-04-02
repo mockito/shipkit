@@ -16,11 +16,25 @@ public class DateFormat {
     public static Date parseDate(String date) {
         String pattern = "yyyy-MM-dd HH:mm:ss Z";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
+        return parse(date, pattern, format);
+    }
+
+    private static Date parse(String date, String pattern, SimpleDateFormat format) {
         try {
             return format.parse(date.trim());
         } catch (ParseException e) {
             throw new RuntimeException("Problems parsing date: [" + date + "]. Required format is: [" + pattern + "].", e);
         }
+    }
+
+    /**
+     * Parses date in simple format, UTC, e.g. "yyyy-MM-dd"
+     */
+    public static Date parseUTCDate(String date) {
+        String pattern = "yyyy-MM-dd";
+        SimpleDateFormat f = new SimpleDateFormat(pattern);
+        f.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return parse(date, pattern, f);
     }
 
     /**
