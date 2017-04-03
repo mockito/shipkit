@@ -315,11 +315,17 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
     private static void configureNotableReleaseNotes(Project project) {
         VersionFile versionFile = project.getExtensions().getByType(VersionFile.class);
         NotableReleaseNotesGeneratorTask task = (NotableReleaseNotesGeneratorTask) project.getTasks().getByName("updateNotableReleaseNotes");
+        NotableNotesFetcherTask fetcherTask = (NotableNotesFetcherTask) project.getTasks().getByName("fetchNotableNotes");
+
         task.getNotesGeneration().setTargetVersions(versionFile.getNotableVersions());
+
+        fetcherTask.getNotesGeneration().setTargetVersions(versionFile.getNotableVersions());
+        fetcherTask.getInputs().property("notableVersions", versionFile.getNotableVersions());
+
         if (isNotableRelease(project)) {
             task.getNotesGeneration().setHeadVersion(project.getVersion().toString());
+            fetcherTask.getNotesGeneration().setHeadVersion(project.getVersion().toString());
         }
-
     }
 
     private static void performNotableRelease(Project project, boolean dryRun) {

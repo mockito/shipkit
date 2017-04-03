@@ -2,11 +2,12 @@ package org.mockito.release.notes.contributors;
 
 import org.mockito.release.notes.model.Contributor;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-class DefaultContributorsSet implements ContributorsSet {
+class DefaultContributorsSet implements ContributorsSet, Serializable{
 
     private final Map<String, Contributor> map;
 
