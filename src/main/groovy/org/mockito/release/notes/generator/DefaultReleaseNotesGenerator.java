@@ -56,8 +56,10 @@ class DefaultReleaseNotesGenerator implements ReleaseNotesGenerator {
             LOG.lifecycle("Retrieved " + improvements.size() + " improvement(s) for tickets: " + contributions.getAllTickets());
 
             //TODO below is duplicated if the author is the same and he is already mapped
-            LOG.lifecycle("Getting contributor details for " + contributions.getAuthorCount() + " author(s).");
-            ContributorsSet contributors = contributorsProvider.mapContributorsToGitHubUser(contributions, v.getPreviousRev(), v.getRev());
+            //TODO commented out to speed up generation of notable release notes, which currently don't need the contributors
+            //LOG.lifecycle("Getting contributor details for " + contributions.getAuthorCount() + " author(s).");
+            //ContributorsSet contributors = contributorsProvider.mapContributorsToGitHubUser(contributions, v.getPreviousRev(), v.getRev());
+            ContributorsSet contributors = null;
 
             out.add(new DefaultReleaseNotesData(v.getVersion(), v.getDate(), contributions, improvements, contributors, v.getPreviousRev(), v.getRev()));
         }
