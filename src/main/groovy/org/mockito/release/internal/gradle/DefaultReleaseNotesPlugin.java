@@ -57,12 +57,10 @@ public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
             }
         });
 
-        project.getTasks().create("fetchNotableNotes", NotableNotesFetcherTask.class, new Action<NotableNotesFetcherTask>() {
-            public void execute(NotableNotesFetcherTask task) {
+        project.getTasks().create("fetchNotableReleaseNotes", NotableReleaseNotesFetcherTask.class, new Action<NotableReleaseNotesFetcherTask>() {
+            public void execute(NotableReleaseNotesFetcherTask task) {
                 final NotesGeneration gen = task.getNotesGeneration();
                 preconfigureNotableNotes(project, gen);
-
-                task.getOutputs().file(getTemporaryReleaseNotesFile(project));
 
                 task.doFirst(new Action<Task>() {
                     public void execute(Task task) {
@@ -79,7 +77,7 @@ public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
                 final NotesGeneration gen = task.getNotesGeneration();
                 preconfigureNotableNotes(project, gen);
 
-                task.dependsOn("fetchNotableNotes");
+                task.dependsOn("fetchNotableReleaseNotes");
 
                 task.doFirst(new Action<Task>() {
                     public void execute(Task task) {
@@ -97,6 +95,7 @@ public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
         gen.setIntroductionText("Notable release notes:\n\n");
         gen.setOnlyPullRequests(true);
         gen.setTagPrefix("v");
+        gen.setTemporarySerializedNotesFile(getTemporaryReleaseNotesFile(project));
     }
 
     private static void configureNotableNotes(Project project, NotesGeneration gen) {
@@ -106,7 +105,6 @@ public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
         gen.setOutputFile(project.file(ext.getNotableReleaseNotesFile()));
         gen.setVcsCommitsLinkTemplate("https://github.com/" + ext.getGitHubRepository() + "/compare/{0}...{1}");
         gen.setDetailedReleaseNotesLink(ext.getGitHubRepository() + "/blob/" + ext.getCurrentBranch() + "/" + ext.getNotableReleaseNotesFile());
-        gen.setTemporarySerializedNotesFile(getTemporaryReleaseNotesFile(project));
     }
 
     private static void configureNotes(DefaultReleaseNotesExtension notes, Project project) {
@@ -121,7 +119,7 @@ public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
     }
 
     private static File getTemporaryReleaseNotesFile(Project project){
-        String path = project.getProjectDir()  + TEMP_SERIALIZED_NOTES_FILE;
+        String path = project.getBuildDir()  + TEMP_SERIALIZED_NOTES_FILE;
         return project.file(path);
     }
 }

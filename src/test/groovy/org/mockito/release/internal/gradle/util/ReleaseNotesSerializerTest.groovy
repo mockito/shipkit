@@ -6,15 +6,15 @@ import org.junit.rules.TemporaryFolder
 import org.mockito.release.notes.internal.DefaultReleaseNotesData
 import spock.lang.Specification
 
-class DefaultReleaseNotesSerializerTest extends Specification {
+class ReleaseNotesSerializerTest extends Specification {
 
     @Rule TemporaryFolder tmp = new TemporaryFolder()
 
-    DefaultReleaseNotesSerializer serializer
+    ReleaseNotesSerializer serializer
 
     def setup(){
         def tmpFile = tmp.newFile()
-        serializer = new DefaultReleaseNotesSerializer(tmpFile)
+        serializer = new ReleaseNotesSerializer(tmpFile)
     }
 
     def "should serialize and deserialize file"(){

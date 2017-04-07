@@ -2,13 +2,11 @@ package org.mockito.release.internal.gradle;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
-import org.mockito.release.internal.gradle.util.DefaultReleaseNotesSerializer;
 import org.mockito.release.internal.gradle.util.ReleaseNotesSerializer;
 import org.mockito.release.notes.format.ReleaseNotesFormatters;
 import org.mockito.release.notes.model.ReleaseNotesData;
 import org.mockito.release.notes.util.IOUtil;
 
-import java.io.*;
 import java.util.Collection;
 
 public class NotableReleaseNotesGeneratorTask extends DefaultTask {
@@ -21,7 +19,7 @@ public class NotableReleaseNotesGeneratorTask extends DefaultTask {
     }
 
     @TaskAction public void generateReleaseNotes() {
-        ReleaseNotesSerializer releaseNotesSerializer = new DefaultReleaseNotesSerializer(notesGeneration.getTemporarySerializedNotesFile());
+        ReleaseNotesSerializer releaseNotesSerializer = new ReleaseNotesSerializer(notesGeneration.getTemporarySerializedNotesFile());
         Collection<ReleaseNotesData> releaseNotes = releaseNotesSerializer.deserialize();
         String notes = ReleaseNotesFormatters.notableFormatter(
                 notesGeneration.getIntroductionText(), notesGeneration.getDetailedReleaseNotesLink(), notesGeneration.getVcsCommitsLinkTemplate())

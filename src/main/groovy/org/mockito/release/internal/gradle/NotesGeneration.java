@@ -1,11 +1,12 @@
 package org.mockito.release.internal.gradle;
 
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.OutputFile;
+
 import java.io.File;
 import java.util.Collection;
 
-/**
- * Created by wilk.wojtek@gmail.com.
- */ //TODO expose as public API
+//TODO expose as public API
 public class NotesGeneration {
     private File gitWorkingDir;
     private String gitHubRepository;
@@ -45,6 +46,7 @@ public class NotesGeneration {
         this.gitHubReadOnlyAuthToken = gitHubReadOnlyAuthToken;
     }
 
+    @Input
     public Collection<String> getTargetVersions() {
         return targetVersions;
     }
@@ -117,6 +119,7 @@ public class NotesGeneration {
         this.headVersion = headVersion;
     }
 
+    @OutputFile
     public File getTemporarySerializedNotesFile() {
         return temporarySerializedNotesFile;
     }
