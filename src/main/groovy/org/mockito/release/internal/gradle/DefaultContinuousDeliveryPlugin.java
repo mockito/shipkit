@@ -18,7 +18,6 @@ import org.mockito.release.internal.gradle.util.StringUtil;
 import org.mockito.release.version.VersionFile;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -314,12 +313,16 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
 
     private static void configureNotableReleaseNotes(Project project) {
         VersionFile versionFile = project.getExtensions().getByType(VersionFile.class);
-        NotableReleaseNotesGeneratorTask task = (NotableReleaseNotesGeneratorTask) project.getTasks().getByName("updateNotableReleaseNotes");
-        task.getNotesGeneration().setTargetVersions(versionFile.getNotableVersions());
-        if (isNotableRelease(project)) {
-            task.getNotesGeneration().setHeadVersion(project.getVersion().toString());
-        }
+        NotableReleaseNotesGeneratorTask generatorTask = (NotableReleaseNotesGeneratorTask) project.getTasks().getByName("updateNotableReleaseNotes");
+        NotableReleaseNotesFetcherTask fetcherTask = (NotableReleaseNotesFetcherTask) project.getTasks().getByName("fetchNotableReleaseNotes");
 
+        generatorTask.getNotesGeneration().setTargetVersions(versionFile.getNotableVersions());
+        fetcherTask.getNotesGeneration().setTargetVersions(versionFile.getNotableVersions());
+
+        if (isNotableRelease(project)) {
+            generatorTask.getNotesGeneration().setHeadVersion(project.getVersion().toString());
+            fetcherTask.getNotesGeneration().setHeadVersion(project.getVersion().toString());
+        }
     }
 
     private static void performNotableRelease(Project project, boolean dryRun) {

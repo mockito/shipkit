@@ -1,12 +1,13 @@
 package org.mockito.release.notes.model;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
  * Improvement tracked by given issue/bug tracker.
  * Example: an improvement corresponds to a JIRA ticket or a GitHub issue/pull request.
  */
-public interface Improvement {
+public interface Improvement extends Serializable{
 
     /**
      * Identifier of the improvement. In case of GitHub it is a number.

@@ -1,11 +1,12 @@
 package org.mockito.release.notes.model;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
  * VCS change, a commit
  */
-public interface Commit {
+public interface Commit extends Serializable{
 
     /**
      * Commit identifier. For git it would be 'hash' (SHA-1)

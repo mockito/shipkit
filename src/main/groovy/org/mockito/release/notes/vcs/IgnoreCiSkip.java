@@ -3,10 +3,12 @@ package org.mockito.release.notes.vcs;
 import org.mockito.release.notes.model.Commit;
 import org.mockito.release.notes.util.Predicate;
 
+import java.io.Serializable;
+
 /**
  * Ignores commits with [ci skip]
  */
-class IgnoreCiSkip implements Predicate<Commit> {
+class IgnoreCiSkip implements Predicate<Commit>, Serializable{
 
     public boolean isTrue(Commit commit) {
         //we used #id for Travis CI build number in commits performed by Travis. Let's avoid pulling those ids here.

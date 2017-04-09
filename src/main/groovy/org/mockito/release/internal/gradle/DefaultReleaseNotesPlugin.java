@@ -24,6 +24,7 @@ import static org.mockito.release.internal.gradle.util.CommonSettings.TASK_GROUP
 public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
 
     private final static String EXTENSION_NAME = "notes";
+    public static final String TEMP_SERIALIZED_NOTES_FILE = "/notableReleaseNotes.ser";
 
     public void apply(final Project project) {
         final DefaultReleaseNotesExtension notes = new DefaultReleaseNotesExtension(project.getProjectDir(), EXTENSION_NAME);
@@ -56,15 +57,27 @@ public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
             }
         });
 
+        project.getTasks().create("fetchNotableReleaseNotes", NotableReleaseNotesFetcherTask.class, new Action<NotableReleaseNotesFetcherTask>() {
+            public void execute(NotableReleaseNotesFetcherTask task) {
+                final NotesGeneration gen = task.getNotesGeneration();
+                preconfigureNotableNotes(project, gen);
+
+                task.doFirst(new Action<Task>() {
+                    public void execute(Task task) {
+                        //lazily configure to give the user chance to specify those settings in build.gradle file
+                        configureNotableNotes(project, gen);
+                    }
+                });
+            }
+        });
+
         project.getTasks().create("updateNotableReleaseNotes", NotableReleaseNotesGeneratorTask.class,
                 new Action<NotableReleaseNotesGeneratorTask>() {
             public void execute(NotableReleaseNotesGeneratorTask task) {
-                final NotableReleaseNotesGeneratorTask.NotesGeneration gen = task.getNotesGeneration();
-                gen.setGitHubLabels(asList("noteworthy"));
-                gen.setGitWorkingDir(project.getRootDir());
-                gen.setIntroductionText("Notable release notes:\n\n");
-                gen.setOnlyPullRequests(true);
-                gen.setTagPrefix("v");
+                final NotesGeneration gen = task.getNotesGeneration();
+                preconfigureNotableNotes(project, gen);
+
+                task.dependsOn("fetchNotableReleaseNotes");
 
                 task.doFirst(new Action<Task>() {
                     public void execute(Task task) {
@@ -76,7 +89,16 @@ public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
         });
     }
 
-    private static void configureNotableNotes(Project project, NotableReleaseNotesGeneratorTask.NotesGeneration gen) {
+    private static void preconfigureNotableNotes(Project project, NotesGeneration gen){
+        gen.setGitHubLabels(asList("noteworthy"));
+        gen.setGitWorkingDir(project.getRootDir());
+        gen.setIntroductionText("Notable release notes:\n\n");
+        gen.setOnlyPullRequests(true);
+        gen.setTagPrefix("v");
+        gen.setTemporarySerializedNotesFile(getTemporaryReleaseNotesFile(project));
+    }
+
+    private static void configureNotableNotes(Project project, NotesGeneration gen) {
         ExtContainer ext = new ExtContainer(project);
         gen.setGitHubReadOnlyAuthToken(ext.getGitHubReadOnlyAuthToken());
         gen.setGitHubRepository(ext.getGitHubRepository());
@@ -94,5 +116,10 @@ public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
         notes.assertConfigured();
 
         //TODO make use of: ext.gh_writeAuthTokenEnvName = "GH_WRITE_TOKEN"
+    }
+
+    private static File getTemporaryReleaseNotesFile(Project project){
+        String path = project.getBuildDir()  + TEMP_SERIALIZED_NOTES_FILE;
+        return project.file(path);
     }
 }
