@@ -58,11 +58,14 @@ public class ExtContainer {
      */
     public String getBintrayRepo() {
         //TODO document String literal in enum or get rid of the enum. Also applies to all string literals in this class
-        if (ext.has("release_notable") && "true".equals(ext.get("release_notable"))) {
-            return getString("bintray_notableRepo");
-        } else {
-            return getString("bintray_repo");
+        return getMaybeNotable("bintray_repo", "bintray_notableRepo");
+    }
+
+    private String getMaybeNotable(String key, String notableKey) {
+        if (ext.has("release_notable") && "true".equals(ext.get("release_notable")) && ext.has(notableKey)) {
+            return getString(notableKey);
         }
+        return getString(key);
     }
 
     /**
@@ -123,6 +126,7 @@ public class ExtContainer {
      * Returns the branch to work on by checking the env variable 'TRAVIS_BRANCH'
      */
     public String getCurrentBranch() {
+        //TODO if not set, we should just call 'git branch' and parse the output. This will make things easier for local testing.
         return EnvVariables.getEnv("TRAVIS_BRANCH");
     }
 
@@ -148,13 +152,6 @@ public class ExtContainer {
     }
 
     /**
-     * Name of Bintray repo for notable releases, for example "mockito-notable"
-     */
-    public String getBintrayNotableRepo() {
-        return getString("bintray_notableRepo");
-    }
-
-    /**
      * GitHub read only auth token
      */
     public String getGitHubReadOnlyAuthToken() {
@@ -166,5 +163,12 @@ public class ExtContainer {
      */
     public String getNotableReleaseNotesFile() {
         return getString("releaseNotes_notableFile");
+    }
+
+    /**
+     * Bintray package name,
+     */
+    public String getBintrayPkgName() {
+        return getMaybeNotable("bintray_pkg", "bintray_notablePkg");
     }
 }
