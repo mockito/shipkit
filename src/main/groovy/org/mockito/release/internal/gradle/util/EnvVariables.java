@@ -6,6 +6,7 @@ public class EnvVariables {
      * Provides env variables and validates presence.
      *
      * TODO merge somehow with ExtContainer, have one class that has all settings.
+     * TODO validate presence of every required env variable that will be needed during the build before the build starts
      */
     public static String getEnv(String envName) {
         String value = System.getenv(envName);
