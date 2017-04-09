@@ -9,6 +9,7 @@ class DefaultBintrayPluginTest extends Specification {
 
     def "applies"() {
         project.ext.bintray_repo = "my-repo"
+        project.ext.bintray_pkg = "my-pkg"
         project.ext.gh_repository = "mockito/mockito"
 
         expect:
