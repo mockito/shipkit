@@ -26,10 +26,12 @@ public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
     private Map<String, String> gitHubLabelMapping = new LinkedHashMap<String, String>();
 
     private final File workDir;
+    private final File buildDir;
     private final String extensionName;
 
-    public DefaultReleaseNotesExtension(File workDir, String extensionName) {
+    public DefaultReleaseNotesExtension(File workDir, File buildDir, String extensionName) {
         this.workDir = workDir;
+        this.buildDir = buildDir;
         this.extensionName = extensionName;
     }
 
@@ -62,7 +64,7 @@ public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
     public String getReleaseNotes(String version) {
         assertConfigured();
         LOG.lifecycle("Building new release notes based on {}", releaseNotesFile);
-        NotesBuilder builder = Notes.gitHubNotesBuilder(workDir, gitHubRepository, gitHubAuthToken);
+        NotesBuilder builder = Notes.gitHubNotesBuilder(workDir, buildDir, gitHubRepository, gitHubAuthToken);
         String prev = "v" + getPreviousVersion();
         String current = "HEAD";
         LOG.lifecycle("Building notes for revisions: {} -> {}", prev, current);

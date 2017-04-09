@@ -15,6 +15,7 @@ public class GitHubContributorsProvider implements ContributorsProvider {
         this.authToken = authToken;
     }
 
+    @Override
     public ContributorsSet mapContributorsToGitHubUser(ContributionSet contributions, String fromRevision, String toRevision) {
         LOG.info("Parsing {} commits with {} contributors", contributions.getAllCommits().size(), contributions.getAuthorCount());
         return new GitHubContributorsFetcher().fetchContributors(repository, authToken, contributions.getContributions(), fromRevision, toRevision);

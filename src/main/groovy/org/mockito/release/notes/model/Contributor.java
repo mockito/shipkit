@@ -1,8 +1,9 @@
 package org.mockito.release.notes.model;
 
+import org.json.simple.Jsonable;
 import java.io.Serializable;
 
-public interface Contributor extends Serializable{
+public interface Contributor extends Jsonable, Serializable {
 
     /**
      * The name of the author. For GitHub it would be name e.g. Monalisa Octocat

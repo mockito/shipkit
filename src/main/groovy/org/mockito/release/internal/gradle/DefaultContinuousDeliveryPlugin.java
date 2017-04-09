@@ -34,6 +34,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
     public void apply(final Project project) {
         project.getPlugins().apply("org.mockito.release-notes");
         project.getPlugins().apply("org.mockito.release-tools.versioning");
+        project.getPlugins().apply("org.mockito.release-tools.contributors");
 
         final ExtContainer ext = new ExtContainer(project);
 

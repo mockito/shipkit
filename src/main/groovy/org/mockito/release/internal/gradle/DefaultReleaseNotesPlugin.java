@@ -27,13 +27,14 @@ public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
     public static final String TEMP_SERIALIZED_NOTES_FILE = "/notableReleaseNotes.ser";
 
     public void apply(final Project project) {
-        final DefaultReleaseNotesExtension notes = new DefaultReleaseNotesExtension(project.getProjectDir(), EXTENSION_NAME);
+        final DefaultReleaseNotesExtension notes = new DefaultReleaseNotesExtension(project.getProjectDir(), project.getBuildDir(), EXTENSION_NAME);
 
         //TODO those should be task classes with decent API
         project.getTasks().create("updateReleaseNotes", new Action<Task>() {
             public void execute(Task task) {
                 task.setGroup(TASK_GROUP);
                 task.setDescription("Updates release notes file.");
+                task.dependsOn("fetchContributorsFromGitHub");
                 task.doLast(new Action<Task>() {
                     public void execute(Task task) {
                         configureNotes(notes, project);
@@ -47,6 +48,7 @@ public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
             public void execute(Task task) {
                 task.setGroup(TASK_GROUP);
                 task.setDescription("Shows new incremental content of release notes. Useful for previewing the release notes.");
+                task.dependsOn("fetchContributorsFromGitHub");
                 task.doLast(new Action<Task>() {
                     public void execute(Task task) {
                         configureNotes(notes, project);
