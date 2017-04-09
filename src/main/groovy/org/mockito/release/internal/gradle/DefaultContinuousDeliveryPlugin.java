@@ -12,6 +12,7 @@ import org.gradle.process.ExecSpec;
 import org.mockito.release.gradle.BintrayPlugin;
 import org.mockito.release.gradle.BumpVersionFileTask;
 import org.mockito.release.gradle.ContinuousDeliveryPlugin;
+import org.mockito.release.gradle.ContributorsPlugin;
 import org.mockito.release.internal.gradle.util.CommonSettings;
 import org.mockito.release.internal.gradle.util.ExtContainer;
 import org.mockito.release.internal.gradle.util.StringUtil;
@@ -32,9 +33,8 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
     private static final Logger LOG = Logging.getLogger(DefaultContinuousDeliveryPlugin.class);
 
     public void apply(final Project project) {
-        project.getPlugins().apply("org.mockito.release-notes");
-        project.getPlugins().apply("org.mockito.release-tools.versioning");
-        project.getPlugins().apply("org.mockito.release-tools.contributors");
+        project.getPlugins().apply(DefaultReleaseNotesPlugin.class);
+        project.getPlugins().apply(DefaultVersioningPlugin.class);
 
         final ExtContainer ext = new ExtContainer(project);
 

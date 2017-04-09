@@ -15,28 +15,20 @@ public class DefaultContributorsPlugin implements ContributorsPlugin {
     public void apply(final Project project) {
         final ExtContainer ext = new ExtContainer(project);
 
-        project.getTasks().create("fetchContributorsFromGitHub", new Action<Task>() {
+        project.getTasks().create("fetchContributorsFromGitHub", ContributorsFetcherTask.class, new Action<ContributorsFetcherTask>() {
             @Override
-            public void execute(Task task) {
-                final DefaultContributorsExtension extension = new DefaultContributorsExtension();
-
+            public void execute(final ContributorsFetcherTask task) {
                 task.setGroup(CommonSettings.TASK_GROUP);
                 task.setDescription("Fetch info about last contributors from GitHub and store it in file");
 
+                task.setToRevision("HEAD");
+
                 task.doFirst(new Action<Task>() {
                     @Override
-                    public void execute(Task task) {
-                        extension.setAuthToken(ext.getGitHubReadOnlyAuthToken());
-                        extension.setRepository(ext.getGitHubRepository());
-                        extension.setBuildDir(project.getBuildDir());
-                        extension.setWorkDir(project.getProjectDir());
-                    }
-                });
-
-                task.doLast(new Action<Task>() {
-                    public void execute(Task task) {
-                        //TODO MS call method
-                        extension.fetchContributorsFromGitHub(fromRevision(project, ext), toRevision());
+                    public void execute(Task t) {
+                        task.setAuthToken(ext.getGitHubReadOnlyAuthToken());
+                        task.setRepository(ext.getGitHubRepository());
+                        task.setFromRevision(fromRevision(project, ext));
                     }
                 });
             }
@@ -48,10 +40,6 @@ public class DefaultContributorsPlugin implements ContributorsPlugin {
         project.file(ext.getReleaseNotesFile());
         String firstLine = FileUtil.firstLine(project.file(ext.getReleaseNotesFile()));
         return "v" + Notes.previousVersion(firstLine).getPreviousVersion();
-    }
-
-    private String toRevision() {
-        return "HEAD";
     }
 }
 

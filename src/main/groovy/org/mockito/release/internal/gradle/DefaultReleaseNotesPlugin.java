@@ -27,6 +27,8 @@ public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
     public static final String TEMP_SERIALIZED_NOTES_FILE = "/notableReleaseNotes.ser";
 
     public void apply(final Project project) {
+        project.getPlugins().apply(DefaultContributorsPlugin.class);
+
         final DefaultReleaseNotesExtension notes = new DefaultReleaseNotesExtension(project.getProjectDir(), project.getBuildDir(), EXTENSION_NAME);
 
         //TODO those should be task classes with decent API
