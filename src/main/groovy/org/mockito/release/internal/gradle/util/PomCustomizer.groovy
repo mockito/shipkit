@@ -39,7 +39,7 @@ class PomCustomizer {
         //TODO relies on ext properties set on the root project. Seems not right
         def ext = new ExtContainer(project.rootProject)
         publication.pom.withXml {
-            LOG.lifecycle("""  Customizing pom for publication '$publication.name' in project '$project.path'
+            LOG.info("""  Customizing pom for publication '$publication.name' in project '$project.path'
     - Module name (project.archivesBaseName): $project.archivesBaseName
     - Description (project.description): $project.description
     - GitHub repository (project.rootProject.ext.gh_repository): ${ext.getString(ReleaseToolsProperties.gh_repository)}

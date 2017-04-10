@@ -6,6 +6,7 @@ import org.gradle.api.Task;
 import org.mockito.release.gradle.ReleaseNotesPlugin;
 import org.mockito.release.gradle.ReleaseToolsProperties;
 import org.mockito.release.internal.gradle.util.ExtContainer;
+import org.mockito.release.internal.gradle.util.SettingsConfigurer;
 
 import java.io.File;
 
@@ -62,9 +63,8 @@ public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
                 final NotesGeneration gen = task.getNotesGeneration();
                 preconfigureNotableNotes(project, gen);
 
-                task.doFirst(new Action<Task>() {
-                    public void execute(Task task) {
-                        //lazily configure to give the user chance to specify those settings in build.gradle file
+                SettingsConfigurer.getConfigurer(project).configureLazily(task, new Runnable() {
+                    public void run() {
                         configureNotableNotes(project, gen);
                     }
                 });
@@ -79,9 +79,8 @@ public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
 
                 task.dependsOn("fetchNotableReleaseNotes");
 
-                task.doFirst(new Action<Task>() {
-                    public void execute(Task task) {
-                        //lazily configure to give the user chance to specify those settings in build.gradle file
+                SettingsConfigurer.getConfigurer(project).configureLazily(task, new Runnable() {
+                    public void run() {
                         configureNotableNotes(project, gen);
                     }
                 });

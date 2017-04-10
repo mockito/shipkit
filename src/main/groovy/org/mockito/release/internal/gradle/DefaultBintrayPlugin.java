@@ -10,9 +10,6 @@ import org.gradle.api.logging.Logging;
 import org.mockito.release.gradle.BintrayPlugin;
 import org.mockito.release.internal.gradle.util.EnvVariables;
 import org.mockito.release.internal.gradle.util.ExtContainer;
-import org.mockito.release.internal.gradle.util.GradleDSLHelper;
-
-import java.util.List;
 
 public class DefaultBintrayPlugin implements BintrayPlugin {
 
@@ -48,6 +45,7 @@ public class DefaultBintrayPlugin implements BintrayPlugin {
         pkg.setWebsiteUrl("https://github.com/" + ext.getGitHubRepository());
         pkg.setIssueTrackerUrl("https://github.com/" + ext.getGitHubRepository() + "/issues");
         pkg.setVcsUrl("https://github.com/" + ext.getGitHubRepository() + ".git");
+        pkg.setName(ext.getBintrayPkgName());
 
         pkg.getVersion().setVcsTag("v" + project.getVersion());
         pkg.getVersion().getGpg().setSign(true);
