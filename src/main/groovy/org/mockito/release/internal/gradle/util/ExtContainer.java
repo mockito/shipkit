@@ -54,21 +54,6 @@ public class ExtContainer {
     }
 
     /**
-     * Bintray repo name for upload
-     */
-    public String getBintrayRepo() {
-        //TODO document String literal in enum or get rid of the enum. Also applies to all string literals in this class
-        return getMaybeNotable("bintray_repo", "bintray_notableRepo");
-    }
-
-    private String getMaybeNotable(String key, String notableKey) {
-        if (ext.has("release_notable") && "true".equals(ext.get("release_notable")) && ext.has(notableKey)) {
-            return getString(notableKey);
-        }
-        return getString(key);
-    }
-
-    /**
      * GitHub repository name, for example: "mockito/mockito"
      */
     public String getGitHubRepository() {
@@ -163,12 +148,5 @@ public class ExtContainer {
      */
     public String getNotableReleaseNotesFile() {
         return getString("releaseNotes_notableFile");
-    }
-
-    /**
-     * Bintray package name,
-     */
-    public String getBintrayPkgName() {
-        return getMaybeNotable("bintray_pkg", "bintray_notablePkg");
     }
 }
