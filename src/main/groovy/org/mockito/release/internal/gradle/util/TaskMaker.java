@@ -25,14 +25,14 @@ public class TaskMaker {
     /**
      * Creates exec task with preconfigured defaults
      */
-    public static Exec execTask(Project project, String name, Action<Exec> configureTask) {
-        return execTask(project, name, false, configureTask);
+    public static Exec execTask(Project project, String name, Action<Exec> configure) {
+        return execTask(project, name, false, configure);
     }
 
     /**
      * Creates exec task with preconfigured defaults
      */
-    public static Exec execTask(Project project, String name, final boolean quiet, Action<Exec> configureTask) {
+    public static Exec execTask(Project project, String name, final boolean quiet, Action<Exec> configure) {
         //TODO unit testable
         final Exec exec = project.getTasks().create(name, Exec.class);
         exec.doFirst(new Action<Task>() {
@@ -42,20 +42,28 @@ public class TaskMaker {
                 }
             }
         });
-        return configure(configureTask, exec);
+        return configure(configure, exec);
     }
 
     /**
      * Creates task with preconfigured defaults
      */
-    public static Task task(Project project, String name, Action<Task> configureTask) {
+    public static Task task(Project project, String name, Action<Task> configure) {
         Task task = project.getTasks().create(name);
-        return configure(configureTask, task);
+        return configure(configure, task);
     }
 
-    private static <T extends Task> T configure(Action<T> configureTask, T task) {
+    /**
+     * Creates task of specific type with preconfigured defaults
+     */
+    public static <T extends Task> T task(Project project, String name, Class<T> taskType, Action<T> configure) {
+        T task = project.getTasks().create(name, taskType);
+        return configure(configure, task);
+    }
+
+    private static <T extends Task> T configure(Action<T> configure, T task) {
         task.setGroup(TASK_GROUP);
-        configureTask.execute(task);
+        configure.execute(task);
         if(task.getDescription() == null) {
             //TODO unit testable
             throw new IllegalArgumentException("Please provide description for the task!");
