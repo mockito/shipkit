@@ -56,7 +56,6 @@ public class DefaultBintrayPlugin implements BintrayPlugin {
         BintrayExtension.PackageConfig pkg = bintray.getPkg();
         pkg.setDesc(project.getDescription());
         pkg.setPublicDownloadNumbers(true);
-        pkg.setRepo(ext.getBintrayRepo());
         pkg.setWebsiteUrl("https://github.com/" + ext.getGitHubRepository());
         pkg.setIssueTrackerUrl("https://github.com/" + ext.getGitHubRepository() + "/issues");
         pkg.setVcsUrl("https://github.com/" + ext.getGitHubRepository() + ".git");
