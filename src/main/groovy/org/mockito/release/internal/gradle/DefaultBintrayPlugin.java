@@ -42,8 +42,8 @@ public class DefaultBintrayPlugin implements BintrayPlugin {
                     "  - dry run: " + t.getDryRun()
                         + ", version: " + t.getVersionName()
                         + ", Maven Central sync: " + t.getSyncToMavenCentral() + "\n" +
-                    "  - repository/package: " + t.getRepoName() + "/" + t.getPackageName()
-                        + ", user/user org: " + t.getUser() + "/" + t.getUserOrg() + "\n");
+                    "  - user/org: " + t.getUser() + "/" + t.getUserOrg()
+                        + ", repository/package: " + t.getRepoName() + "/" + t.getPackageName());
             }
         });
 
