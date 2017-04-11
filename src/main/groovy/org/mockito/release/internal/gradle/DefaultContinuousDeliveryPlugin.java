@@ -13,6 +13,7 @@ import org.mockito.release.gradle.BumpVersionFileTask;
 import org.mockito.release.gradle.ContinuousDeliveryPlugin;
 import org.mockito.release.internal.gradle.util.CommonSettings;
 import org.mockito.release.internal.gradle.util.ExtContainer;
+import org.mockito.release.internal.gradle.util.LazyConfigurer;
 import org.mockito.release.internal.gradle.util.StringUtil;
 import org.mockito.release.version.VersionFile;
 
@@ -94,8 +95,8 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
                 t.setDescription("Pushes changes to remote repo.");
                 t.mustRunAfter("gitCommit", "gitTag");
 
-                t.doFirst(new Action<Task>() {
-                    public void execute(Task task) {
+                LazyConfigurer.getConfigurer(project).configureLazily(t, new Runnable() {
+                    public void run() {
                         t.commandLine(ext.getQuietGitPushArgs());
 
                         //!!!We must capture and hide the output because when git push fails it can expose the token!
@@ -186,11 +187,9 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
         CommonSettings.execTask(project, "checkOutBranch", new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Checks out the branch that can be committed. CI systems often check out revision that is not committable.");
-                t.doFirst(new Action<Task>() {
-                    public void execute(Task task) {
-                        //using doFirst() so that we request and validate presence of env var only during execution time
+                LazyConfigurer.getConfigurer(project).configureLazily(t, new Runnable() {
+                    public void run() {
                         t.commandLine("git", "checkout", ext.getCurrentBranch());
-                        //TODO consider putting all command line args in a separate class for testability
                     }
                 });
             }
