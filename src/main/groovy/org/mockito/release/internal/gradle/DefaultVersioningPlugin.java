@@ -18,6 +18,8 @@ public class DefaultVersioningPlugin implements VersioningPlugin {
     private static Logger LOG = Logging.getLogger(DefaultVersioningPlugin.class);
 
     public void apply(Project project) {
+        //TODO "version.properties" is hardcoded all over the place.
+        // At the very least we should have a constant in this plugin.
         final File versionFile = new File(project.getRootDir(), "version.properties");
         VersionFile versionInfo = Version.versionFile(versionFile);
         project.getExtensions().add(VersionFile.class.getName(), versionInfo);
@@ -26,10 +28,10 @@ public class DefaultVersioningPlugin implements VersioningPlugin {
         final String version;
         if (ext.has("release_version")) {
             version = ext.get("release_version").toString();
-            LOG.lifecycle("  Using version '{}' supplied via 'release_version' project property.", version);
+            LOG.lifecycle("  Building version '{}' (value supplied via 'release_version' project property).", version);
         } else {
             version = versionInfo.getVersion();
-            LOG.lifecycle("  Using version '{}' from '{}' file.", version, versionFile.getName());
+            LOG.lifecycle("  Building version '{}' (value loaded from '{}' file).", version, versionFile.getName());
         }
 
         project.allprojects(new Action<Project>() {
