@@ -45,7 +45,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
                 //TODO dependency/assumptions on versioning plugin (move to git plugin this and other tasks?):
                 t.mustRunAfter("bumpVersionFile");
                 t.commandLine("git", "add", "version.properties");
-                project.getTasks().getByName("gitCommit").mustRunAfter(t);
+                project.getTasks().getByName(GitPlugin.COMMIT_TASK).mustRunAfter(t);
             }
         });
 
@@ -55,7 +55,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
             public void execute(final Exec t) {
                 t.setDescription("Performs 'git add' for the release notes file");
                 t.mustRunAfter("updateReleaseNotes", "updateNotableReleaseNotes");
-                project.getTasks().getByName("gitCommit").mustRunAfter(t);
+                project.getTasks().getByName(GitPlugin.COMMIT_TASK).mustRunAfter(t);
                 t.doFirst(new Action<Task>() {
                     public void execute(Task task) {
                         //doFirst (execution time)
@@ -71,7 +71,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
                 t.setDescription("Depends on all 'bintrayUpload' tasks from all Gradle projects.");
                 //It is safer to run bintray upload after git push (hard to reverse operation)
                 //This way, when git push fails we don't publish jars to bintray
-                t.mustRunAfter("gitPush");
+                t.mustRunAfter(GitPlugin.PUSH_TASK);
             }
         });
 
@@ -91,12 +91,12 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
                 t.setDescription("Performs release. To test release use './gradlew testRelease'");
 
                 t.dependsOn("bumpVersionFile", "updateReleaseNotes", "updateNotableReleaseNotes");
-                t.dependsOn("gitAddBumpVersion", "gitAddReleaseNotes", "gitCommit", "gitTag");
-                t.dependsOn("gitPush");
+                t.dependsOn("gitAddBumpVersion", "gitAddReleaseNotes", GitPlugin.COMMIT_TASK, GitPlugin.TAG_TASK);
+                t.dependsOn(GitPlugin.PUSH_TASK);
                 t.dependsOn("bintrayUploadAll");
 
-                project.getTasks().getByName("gitCommitCleanUp").mustRunAfter(t);
-                project.getTasks().getByName("gitTagCleanUp").mustRunAfter(t);
+                project.getTasks().getByName(GitPlugin.COMMIT_CLEANUP_TASK).mustRunAfter(t);
+                project.getTasks().getByName(GitPlugin.TAG_CLEANUP_TASK).mustRunAfter(t);
             }
         });
 
@@ -105,15 +105,15 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
                 t.setDescription("Cleans up the working copy, useful after dry running the release");
 
                 //using finalizedBy so that all clean up tasks run, even if one of them fails
-                t.finalizedBy("gitCommitCleanUp");
-                t.finalizedBy("gitTagCleanUp");
+                t.finalizedBy(GitPlugin.COMMIT_CLEANUP_TASK);
+                t.finalizedBy(GitPlugin.TAG_CLEANUP_TASK);
             }
         });
 
         TaskMaker.task(project, "travisReleasePrepare", new Action<Task>() {
             public void execute(Task t) {
                 t.setDescription("Prepares the working copy for releasing using Travis CI");
-                t.dependsOn("gitUnshallow", "checkOutBranch", "configureGitUserName", "configureGitUserEmail");
+                t.dependsOn(GitPlugin.UNSHALLOW_TASK, GitPlugin.CHECKOUT_BRANCH_TASK, GitPlugin.SET_USER_TASK, GitPlugin.SET_EMAIL_TASK);
             }
         });
 
