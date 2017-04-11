@@ -14,7 +14,7 @@ import java.util.Map;
  * This is important, because when tasks are executed they can do stuff that is hard to reverse.
  * So we want to do all the validation beforehand.
  */
-public class SettingsConfigurer implements TaskExecutionGraphListener {
+public class LazyConfigurer implements TaskExecutionGraphListener {
 
     private Map<Task, Runnable> actions = new LinkedHashMap<Task, Runnable>();
 
@@ -29,15 +29,15 @@ public class SettingsConfigurer implements TaskExecutionGraphListener {
     /**
      * Gets the configurer for the project. Configurer is a singleton hooked up to the root project.
      */
-    public static SettingsConfigurer getConfigurer(Project project) {
+    public static LazyConfigurer getConfigurer(Project project) {
         Project rootProject = project.getRootProject();
         //single configurer for the entire build, hooked up to the root project, for simplicity and speed
         //we don't want too many listeners that introduce blocking callbacks to Gradle internals
 
-        SettingsConfigurer validator = rootProject.getExtensions().findByType(SettingsConfigurer.class);
+        LazyConfigurer validator = rootProject.getExtensions().findByType(LazyConfigurer.class);
         if (validator == null) {
-            validator = new SettingsConfigurer();
-            rootProject.getExtensions().add(SettingsConfigurer.class.getName(), validator);
+            validator = new LazyConfigurer();
+            rootProject.getExtensions().add(LazyConfigurer.class.getName(), validator);
             rootProject.getGradle().addListener(validator);
         }
         return validator;
