@@ -34,6 +34,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
     public void apply(final Project project) {
         project.getPlugins().apply("org.mockito.release-notes");
         project.getPlugins().apply("org.mockito.release-tools.versioning");
+        project.getPlugins().apply(GitPlugin.class);
 
         final ExtContainer ext = new ExtContainer(project);
 
@@ -47,6 +48,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
                 //TODO dependency/assumptions on versioning plugin (move to git plugin this and other tasks?):
                 t.mustRunAfter("bumpVersionFile");
                 t.commandLine("git", "add", "version.properties");
+                project.getTasks().getByName("gitCommit").mustRunAfter(t);
             }
         });
 
@@ -56,53 +58,12 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
             public void execute(final Exec t) {
                 t.setDescription("Performs 'git add' for the release notes file");
                 t.mustRunAfter("updateReleaseNotes", "updateNotableReleaseNotes");
+                project.getTasks().getByName("gitCommit").mustRunAfter(t);
                 t.doFirst(new Action<Task>() {
                     public void execute(Task task) {
                         //doFirst (execution time)
                         // so that we can access user-configured properties
                         t.commandLine("git", "add", ext.getReleaseNotesFile(), ext.getNotableReleaseNotesFile());
-                    }
-                });
-            }
-        });
-
-        CommonSettings.execTask(project, "gitCommit", new Action<Exec>() {
-            public void execute(final Exec t) {
-                t.setDescription("Commits staged changes using generic --author");
-                t.mustRunAfter("gitAddBumpVersion", "gitAddReleaseNotes");
-                t.doFirst(new Action<Task>() {
-                    public void execute(Task task) {
-                    //doFirst (execution time) to pick up user-configured setting
-                    t.commandLine("git", "commit", "--author",
-                        ext.getGitGenericUserNotation(), "-m", commitMessage("Bumped version and updated release notes"));
-                    }
-                });
-            }
-        });
-
-        CommonSettings.execTask(project, "gitTag", new Action<Exec>() {
-            public void execute(Exec t) {
-                t.mustRunAfter("gitCommit");
-                String tag = "v" + project.getVersion();
-                t.setDescription("Creates new version tag '" + tag + "'");
-                t.commandLine("git", "tag", "-a", tag, "-m", commitMessage("Created new tag " + tag));
-            }
-        });
-
-        boolean mustBeQuiet = true; //so that we don't expose the token
-        CommonSettings.execTask(project, "gitPush", mustBeQuiet, new Action<Exec>() {
-            public void execute(final Exec t) {
-                t.setDescription("Pushes changes to remote repo.");
-                t.mustRunAfter("gitCommit", "gitTag");
-
-                LazyConfigurer.getConfigurer(project).configureLazily(t, new Runnable() {
-                    public void run() {
-                        t.commandLine(ext.getQuietGitPushArgs());
-
-                        //!!!We must capture and hide the output because when git push fails it can expose the token!
-                        ByteArrayOutputStream output = new ByteArrayOutputStream();
-                        t.setStandardOutput(output);
-                        t.setErrorOutput(output);
                     }
                 });
             }
@@ -136,22 +97,9 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
                 t.dependsOn("gitAddBumpVersion", "gitAddReleaseNotes", "gitCommit", "gitTag");
                 t.dependsOn("gitPush");
                 t.dependsOn("bintrayUploadAll");
-            }
-        });
 
-        CommonSettings.execTask(project, "gitCommitCleanUp", new Action<Exec>() {
-            public void execute(final Exec t) {
-                t.setDescription("Removes last commit, using 'reset --hard HEAD~'");
-                t.mustRunAfter("performRelease");
-                t.commandLine("git", "reset", "--hard", "HEAD~");
-            }
-        });
-
-        CommonSettings.execTask(project, "gitTagCleanUp", new Action<Exec>() {
-            public void execute(final Exec t) {
-                t.setDescription("Deletes version tag '" + ext.getTag() + "'");
-                t.mustRunAfter("performRelease");
-                t.commandLine("git", "tag", "-d", ext.getTag());
+                project.getTasks().getByName("gitCommitCleanUp").mustRunAfter(t);
+                project.getTasks().getByName("gitTagCleanUp").mustRunAfter(t);
             }
         });
 
@@ -162,61 +110,6 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
                 //using finalizedBy so that all clean up tasks run, even if one of them fails
                 t.finalizedBy("gitCommitCleanUp");
                 t.finalizedBy("gitTagCleanUp");
-            }
-        });
-
-        CommonSettings.execTask(project, "gitUnshallow", new Action<Exec>() {
-            public void execute(final Exec t) {
-                //Travis default clone is shallow which will prevent correct release notes generation for repos with lots of commits
-                t.commandLine("git", "fetch", "--unshallow");
-                t.setDescription("Ensures good chunk of recent commits is available for release notes automation. Runs: " + t.getCommandLine());
-
-                t.setIgnoreExitValue(true);
-                t.doLast(new Action<Task>() {
-                    public void execute(Task task) {
-                        if (t.getExecResult().getExitValue() != 0) {
-                            LOG.lifecycle("  Following git command failed and will be ignored:" +
-                                    "\n    " + join(t.getCommandLine(), " ") +
-                                    "\n  Most likely the repository already contains all history.");
-                        }
-                    }
-                });
-            }
-        });
-
-        CommonSettings.execTask(project, "checkOutBranch", new Action<Exec>() {
-            public void execute(final Exec t) {
-                t.setDescription("Checks out the branch that can be committed. CI systems often check out revision that is not committable.");
-                LazyConfigurer.getConfigurer(project).configureLazily(t, new Runnable() {
-                    public void run() {
-                        t.commandLine("git", "checkout", ext.getCurrentBranch());
-                    }
-                });
-            }
-        });
-
-        CommonSettings.execTask(project, "configureGitUserName", new Action<Exec>() {
-            public void execute(final Exec t) {
-                t.setDescription("Overwrites local git 'user.name' with a generic name. Intended for CI.");
-                t.doFirst(new Action<Task>() {
-                    public void execute(Task task) {
-                        //using doFirst() so that we request and validate presence of env var only during execution time
-                        t.commandLine("git", "config", "--local", "user.name", ext.getGitGenericUser());
-                    }
-                });
-            }
-        });
-
-        CommonSettings.execTask(project, "configureGitUserEmail", new Action<Exec>() {
-            public void execute(final Exec t) {
-                t.setDescription("Overwrites local git 'user.email' with a generic email. Intended for CI.");
-                t.doFirst(new Action<Task>() {
-                    public void execute(Task task) {
-                        //using doFirst() so that we request and validate presence of env var only during execution time
-                        //TODO consider adding 'lazyExec' task or method that automatically uses do first
-                        t.commandLine("git", "config", "--local", "user.email", ext.getGitGenericEmail());
-                    }
-                });
             }
         });
 
@@ -364,14 +257,5 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
                 e.commandLine(commandLine);
             }
         });
-    }
-
-    private static String commitMessage(String message) {
-        String buildNo = System.getenv("TRAVIS_BUILD_NUMBER");
-        if (buildNo != null) {
-            return message + " by Travis CI build " + buildNo + " [ci skip]";
-        } else {
-            return message + " [ci skip]";
-        }
     }
 }
