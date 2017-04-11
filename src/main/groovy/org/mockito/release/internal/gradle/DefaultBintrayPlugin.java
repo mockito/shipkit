@@ -3,6 +3,7 @@ package org.mockito.release.internal.gradle;
 import com.jfrog.bintray.gradle.BintrayExtension;
 import com.jfrog.bintray.gradle.BintrayUploadTask;
 import org.gradle.api.Action;
+import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
@@ -26,6 +27,11 @@ public class DefaultBintrayPlugin implements BintrayPlugin {
             @Override
             public void run() {
                 bintrayUpload.setApiKey(EnvVariables.getEnv("BINTRAY_API_KEY"));
+                if (bintrayUpload.getUser() == null) {
+                    //workaround for https://github.com/bintray/gradle-bintray-plugin/issues/170
+                    throw new GradleException("Missing Bintray 'user' setting.\n" +
+                            "Please configure Bintray extension or the bintrayUpload task so that 'user' is specified.");
+                }
             }
         });
 
