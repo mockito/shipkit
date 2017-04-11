@@ -1,9 +1,9 @@
-package org.mockito.release.internal.gradle
+package org.mockito.release.gradle
 
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
-class DefaultBintrayPluginTest extends Specification {
+class BintrayPluginTest extends Specification {
 
     def project = new ProjectBuilder().build()
 
