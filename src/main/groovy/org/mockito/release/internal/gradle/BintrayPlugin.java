@@ -1,4 +1,4 @@
-package org.mockito.release.gradle;
+package org.mockito.release.internal.gradle;
 
 import com.jfrog.bintray.gradle.BintrayExtension;
 import com.jfrog.bintray.gradle.BintrayUploadTask;
@@ -14,7 +14,7 @@ public class BintrayPlugin implements Plugin<Project> {
     /**
      * Name of the task that is configured by this plugin
      */
-    public static final String BINTRAY_UPLOAD_TASK = "bintrayUpload";
+    static final String BINTRAY_UPLOAD_TASK = "bintrayUpload";
 
     private final static Logger LOGGER = Logging.getLogger(BintrayPlugin.class);
 

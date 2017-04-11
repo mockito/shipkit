@@ -1,4 +1,4 @@
-package org.mockito.release.gradle
+package org.mockito.release.internal.gradle
 
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
