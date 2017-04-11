@@ -10,6 +10,7 @@ import org.gradle.api.logging.Logging;
 import org.mockito.release.gradle.BintrayPlugin;
 import org.mockito.release.internal.gradle.util.EnvVariables;
 import org.mockito.release.internal.gradle.util.ExtContainer;
+import org.mockito.release.internal.gradle.util.LazyConfigurer;
 
 public class DefaultBintrayPlugin implements BintrayPlugin {
 
@@ -19,16 +20,24 @@ public class DefaultBintrayPlugin implements BintrayPlugin {
         //TODO since this plugin depends on bintray,
         // we need to either shade bintray plugin or ship this Gradle plugin in a separate jar
         project.getPlugins().apply("com.jfrog.bintray");
-        project.getTasks().getByName("bintrayUpload").doFirst(new Action<Task>() {
+
+        final BintrayUploadTask bintrayUpload = (BintrayUploadTask) project.getTasks().getByName("bintrayUpload");
+        LazyConfigurer.getConfigurer(project).configureLazily(bintrayUpload, new Runnable() {
+            @Override
+            public void run() {
+                bintrayUpload.setApiKey(EnvVariables.getEnv("BINTRAY_API_KEY"));
+            }
+        });
+
+        bintrayUpload.doFirst(new Action<Task>() {
             public void execute(Task task) {
                 BintrayUploadTask t = (BintrayUploadTask) task;
-                t.setApiKey(EnvVariables.getEnv("BINTRAY_API_KEY"));
-                LOGGER.lifecycle("{} - publishing to Bintray\n" +
-                    "  - dry run: {}\n" +
-                    "  - repository: {}\n" +
-                    "  - version: {}\n" +
-                    "  - Maven Central sync: {}",
-                    t.getPath(), t.getDryRun(), t.getRepoName(), t.getVersionName(), t.getSyncToMavenCentral());
+                LOGGER.lifecycle(t.getPath() + " - publishing to Bintray\n" +
+                    "  - dry run: " + t.getDryRun()
+                        + ", version: " + t.getVersionName()
+                        + ", Maven Central sync: " + t.getSyncToMavenCentral() + "\n" +
+                    "  - repository/package: " + t.getRepoName() + "/" + t.getPackageName()
+                        + ", user/user org: " + t.getUser() + "/" + t.getUserOrg() + "\n");
             }
         });
 
