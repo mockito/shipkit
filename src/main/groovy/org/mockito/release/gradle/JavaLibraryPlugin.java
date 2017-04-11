@@ -2,6 +2,7 @@ package org.mockito.release.gradle;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.mockito.release.internal.gradle.BintrayPlugin;
 
 /**
  * Intended to be applied in individual Java submodule. Applies following plugins:
