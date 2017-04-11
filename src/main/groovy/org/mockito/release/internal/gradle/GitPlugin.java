@@ -7,7 +7,7 @@ import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Exec;
-import org.mockito.release.internal.gradle.util.CommonSettings;
+import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.internal.gradle.util.ExtContainer;
 import org.mockito.release.internal.gradle.util.LazyConfigurer;
 
@@ -25,7 +25,7 @@ public class GitPlugin implements Plugin<Project> {
     public void apply(final Project project) {
         final ExtContainer ext = new ExtContainer(project);
 
-        CommonSettings.execTask(project, "gitCommit", new Action<Exec>() {
+        TaskMaker.execTask(project, "gitCommit", new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Commits staged changes using generic --author");
                 t.doFirst(new Action<Task>() {
@@ -38,7 +38,7 @@ public class GitPlugin implements Plugin<Project> {
             }
         });
 
-        CommonSettings.execTask(project, "gitTag", new Action<Exec>() {
+        TaskMaker.execTask(project, "gitTag", new Action<Exec>() {
             public void execute(Exec t) {
                 t.mustRunAfter("gitCommit");
                 String tag = "v" + project.getVersion();
@@ -48,7 +48,7 @@ public class GitPlugin implements Plugin<Project> {
         });
 
         boolean mustBeQuiet = true; //so that we don't expose the token
-        CommonSettings.execTask(project, "gitPush", mustBeQuiet, new Action<Exec>() {
+        TaskMaker.execTask(project, "gitPush", mustBeQuiet, new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Pushes changes to remote repo.");
                 t.mustRunAfter("gitCommit", "gitTag");
@@ -66,7 +66,7 @@ public class GitPlugin implements Plugin<Project> {
             }
         });
 
-        CommonSettings.execTask(project, "gitCommitCleanUp", new Action<Exec>() {
+        TaskMaker.execTask(project, "gitCommitCleanUp", new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Removes last commit, using 'reset --hard HEAD~'");
                 //TODO replace with combination of 'git reset --soft HEAD~ && git stash' so that we don't lose commits
@@ -74,14 +74,14 @@ public class GitPlugin implements Plugin<Project> {
             }
         });
 
-        CommonSettings.execTask(project, "gitTagCleanUp", new Action<Exec>() {
+        TaskMaker.execTask(project, "gitTagCleanUp", new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Deletes version tag '" + ext.getTag() + "'");
                 t.commandLine("git", "tag", "-d", ext.getTag());
             }
         });
 
-        CommonSettings.execTask(project, "gitUnshallow", new Action<Exec>() {
+        TaskMaker.execTask(project, "gitUnshallow", new Action<Exec>() {
             public void execute(final Exec t) {
                 //Travis default clone is shallow which will prevent correct release notes generation for repos with lots of commits
                 t.commandLine("git", "fetch", "--unshallow");
@@ -100,7 +100,7 @@ public class GitPlugin implements Plugin<Project> {
             }
         });
 
-        CommonSettings.execTask(project, "checkOutBranch", new Action<Exec>() {
+        TaskMaker.execTask(project, "checkOutBranch", new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Checks out the branch that can be committed. CI systems often check out revision that is not committable.");
                 LazyConfigurer.getConfigurer(project).configureLazily(t, new Runnable() {
@@ -111,7 +111,7 @@ public class GitPlugin implements Plugin<Project> {
             }
         });
 
-        CommonSettings.execTask(project, "configureGitUserName", new Action<Exec>() {
+        TaskMaker.execTask(project, "configureGitUserName", new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Overwrites local git 'user.name' with a generic name. Intended for CI.");
                 //TODO replace all doFirst in this class with LazyConfigurer
@@ -124,7 +124,7 @@ public class GitPlugin implements Plugin<Project> {
             }
         });
 
-        CommonSettings.execTask(project, "configureGitUserEmail", new Action<Exec>() {
+        TaskMaker.execTask(project, "configureGitUserEmail", new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Overwrites local git 'user.email' with a generic email. Intended for CI.");
                 t.doFirst(new Action<Task>() {

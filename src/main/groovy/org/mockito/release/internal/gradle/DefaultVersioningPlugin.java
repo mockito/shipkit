@@ -11,7 +11,7 @@ import org.mockito.release.version.VersionFile;
 
 import java.io.File;
 
-import static org.mockito.release.internal.gradle.util.CommonSettings.TASK_GROUP;
+import static org.mockito.release.internal.gradle.util.TaskMaker.TASK_GROUP;
 
 public class DefaultVersioningPlugin implements VersioningPlugin {
 

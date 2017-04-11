@@ -11,18 +11,15 @@ import org.gradle.process.ExecResult;
 import org.gradle.process.ExecSpec;
 import org.mockito.release.gradle.BumpVersionFileTask;
 import org.mockito.release.gradle.ContinuousDeliveryPlugin;
-import org.mockito.release.internal.gradle.util.CommonSettings;
+import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.internal.gradle.util.ExtContainer;
-import org.mockito.release.internal.gradle.util.LazyConfigurer;
 import org.mockito.release.internal.gradle.util.StringUtil;
 import org.mockito.release.version.VersionFile;
 
-import java.io.ByteArrayOutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.mockito.release.internal.gradle.util.StringUtil.join;
 
 /**
  * Please keep documentation up to date at {@link ContinuousDeliveryPlugin}
@@ -41,7 +38,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
         ((BumpVersionFileTask) project.getTasks().getByName("bumpVersionFile"))
                 .setUpdateNotableVersions(isNotableRelease(project));
 
-        CommonSettings.execTask(project, "gitAddBumpVersion", new Action<Exec>() {
+        TaskMaker.execTask(project, "gitAddBumpVersion", new Action<Exec>() {
             public void execute(Exec t) {
                 t.setDescription("Performs 'git add' for the version properties file");
 
@@ -54,7 +51,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
 
         configureNotableReleaseNotes(project);
 
-        CommonSettings.execTask(project, "gitAddReleaseNotes", new Action<Exec>() {
+        TaskMaker.execTask(project, "gitAddReleaseNotes", new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Performs 'git add' for the release notes file");
                 t.mustRunAfter("updateReleaseNotes", "updateNotableReleaseNotes");
@@ -69,7 +66,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
             }
         });
 
-        final Task bintrayUploadAll = CommonSettings.task(project, "bintrayUploadAll", new Action<Task>() {
+        final Task bintrayUploadAll = TaskMaker.task(project, "bintrayUploadAll", new Action<Task>() {
             public void execute(Task t) {
                 t.setDescription("Depends on all 'bintrayUpload' tasks from all Gradle projects.");
                 //It is safer to run bintray upload after git push (hard to reverse operation)
@@ -89,7 +86,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
             }
         });
 
-        CommonSettings.task(project, "performRelease", new Action<Task>() {
+        TaskMaker.task(project, "performRelease", new Action<Task>() {
             public void execute(final Task t) {
                 t.setDescription("Performs release. To test release use './gradlew testRelease'");
 
@@ -103,7 +100,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
             }
         });
 
-        CommonSettings.task(project, "releaseCleanUp", new Action<Task>() {
+        TaskMaker.task(project, "releaseCleanUp", new Action<Task>() {
             public void execute(final Task t) {
                 t.setDescription("Cleans up the working copy, useful after dry running the release");
 
@@ -113,14 +110,14 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
             }
         });
 
-        CommonSettings.task(project, "travisReleasePrepare", new Action<Task>() {
+        TaskMaker.task(project, "travisReleasePrepare", new Action<Task>() {
             public void execute(Task t) {
                 t.setDescription("Prepares the working copy for releasing using Travis CI");
                 t.dependsOn("gitUnshallow", "checkOutBranch", "configureGitUserName", "configureGitUserEmail");
             }
         });
 
-        final Task releaseNeededTask = CommonSettings.task(project, "releaseNeeded", new Action<Task>() {
+        final Task releaseNeededTask = TaskMaker.task(project, "releaseNeeded", new Action<Task>() {
             public void execute(final Task t) {
                 t.setDescription("Checks if the criteria for the release are met.");
                 t.doLast(new Action<Task>() {
@@ -152,7 +149,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
             }
         });
 
-        CommonSettings.task(project, "travisRelease", new Action<Task>() {
+        TaskMaker.task(project, "travisRelease", new Action<Task>() {
             public void execute(final Task t) {
                 t.setDescription("Performs the release if release criteria are met, intended to be used by Travis CI job");
                 t.dependsOn("releaseNeeded");
@@ -179,7 +176,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
             }
         });
 
-        CommonSettings.task(project, "testRelease", new Action<Task>() {
+        TaskMaker.task(project, "testRelease", new Action<Task>() {
             public void execute(Task t) {
                 t.setDescription("Tests the release, intended to be used locally by engineers");
                 t.doLast(new Action<Task>() {
@@ -190,7 +187,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
             }
         });
 
-        CommonSettings.task(project, "testNotableRelease", new Action<Task>() {
+        TaskMaker.task(project, "testNotableRelease", new Action<Task>() {
             public void execute(Task t) {
                 t.setDescription("Tests the notable release, intended to be used locally by engineers");
                 t.doLast(new Action<Task>() {

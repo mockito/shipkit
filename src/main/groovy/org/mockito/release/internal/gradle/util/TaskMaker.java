@@ -9,11 +9,17 @@ import org.gradle.api.tasks.Exec;
 
 import static org.mockito.release.internal.gradle.util.StringUtil.join;
 
-//TODO weird name
-public class CommonSettings {
+/**
+ * Handy class that should be used to create tasks.
+ * It ensures the correct defaults are used by tasks.
+ * It also adds consistent logging for some kinds of tasks (like exec tasks).
+ */
+public class TaskMaker {
 
-    private static final Logger LOG = Logging.getLogger(CommonSettings.class);
+    private static final Logger LOG = Logging.getLogger(TaskMaker.class);
 
+    //TODO remove this property, all current client of this property should be using factory methods
+    // available on this class to create tasks
     public final static String TASK_GROUP = "Mockito Release Tools";
 
     /**
