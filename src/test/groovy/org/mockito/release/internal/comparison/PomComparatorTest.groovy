@@ -1,6 +1,5 @@
-package org.mockito.release.comparison
+package org.mockito.release.internal.comparison
 
-import org.mockito.release.internal.comparison.comparison.PomComparator
 import spock.lang.Specification
 
 class PomComparatorTest extends Specification {

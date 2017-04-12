@@ -1,8 +1,7 @@
-package org.mockito.release.comparison
+package org.mockito.release.internal.comparison
 
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import org.mockito.release.internal.comparison.comparison.ZipComparator
 import spock.lang.Specification
 
 class ZipComparatorTest extends Specification {
