@@ -9,7 +9,7 @@ class DefaultContinuousDeliveryPluginTest extends Specification {
 
     def "applies"() {
         //TODO, without this file, the plugin breaks in ugly way
-        project.file("version.properties") << "version=1.0.0"
+        project.file(VersioningPlugin.VERSION_FILE_NAME) << "version=1.0.0"
 
         expect:
         project.plugins.apply("org.mockito.mockito-release-tools.continuous-delivery")

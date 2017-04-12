@@ -35,10 +35,10 @@ public class VersioningPlugin implements Plugin<Project> {
 
     private static Logger LOG = Logging.getLogger(VersioningPlugin.class);
 
+    public final static String VERSION_FILE_NAME = "version.properties";
+
     public void apply(Project project) {
-        //TODO "version.properties" is hardcoded all over the place.
-        // At the very least we should have a constant in this plugin.
-        final File versionFile = new File(project.getRootDir(), "version.properties");
+        final File versionFile = new File(project.getRootDir(), VERSION_FILE_NAME);
         VersionInfo versionInfo = Version.versionInfo(versionFile);
 
         //TODO let's add unit tests

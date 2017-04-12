@@ -42,7 +42,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
 
                 //TODO dependency/assumptions on versioning plugin (move to git plugin this and other tasks?):
                 t.mustRunAfter("bumpVersionFile");
-                t.commandLine("git", "add", "version.properties");
+                t.commandLine("git", "add", VersioningPlugin.VERSION_FILE_NAME);
                 project.getTasks().getByName(GitPlugin.COMMIT_TASK).mustRunAfter(t);
             }
         });
