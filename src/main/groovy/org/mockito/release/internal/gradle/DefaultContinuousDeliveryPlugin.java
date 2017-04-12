@@ -9,7 +9,6 @@ import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.Exec;
 import org.gradle.process.ExecResult;
 import org.gradle.process.ExecSpec;
-import org.mockito.release.gradle.BumpVersionFileTask;
 import org.mockito.release.gradle.ContinuousDeliveryPlugin;
 import org.mockito.release.internal.gradle.util.ExtContainer;
 import org.mockito.release.internal.gradle.util.StringUtil;
@@ -33,7 +32,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
 
         final ExtContainer ext = new ExtContainer(project);
 
-        ((BumpVersionFileTask) project.getTasks().getByName("bumpVersionFile"))
+        ((DefaultBumpVersionFileTask) project.getTasks().getByName("bumpVersionFile"))
                 .setUpdateNotableVersions(notableRelease);
 
         TaskMaker.execTask(project, "gitAddBumpVersion", new Action<Exec>() {
