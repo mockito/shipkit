@@ -31,9 +31,9 @@ import java.io.File;
  *
  * Also, the plugin configures all projects' version property to the value specified in "version.properties"
  */
-public class DefaultVersioningPlugin implements Plugin<Project> {
+public class VersioningPlugin implements Plugin<Project> {
 
-    private static Logger LOG = Logging.getLogger(DefaultVersioningPlugin.class);
+    private static Logger LOG = Logging.getLogger(VersioningPlugin.class);
 
     public void apply(Project project) {
         //TODO "version.properties" is hardcoded all over the place.
