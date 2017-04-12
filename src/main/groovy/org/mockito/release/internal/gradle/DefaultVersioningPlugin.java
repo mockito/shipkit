@@ -4,7 +4,6 @@ import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.gradle.api.plugins.ExtraPropertiesExtension;
 import org.mockito.release.gradle.VersioningPlugin;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.version.Version;
@@ -21,9 +20,11 @@ public class DefaultVersioningPlugin implements VersioningPlugin {
         // At the very least we should have a constant in this plugin.
         final File versionFile = new File(project.getRootDir(), "version.properties");
         VersionFile versionInfo = Version.versionFile(versionFile);
-        project.getExtensions().add(VersionFile.class.getName(), versionInfo);
 
-        ExtraPropertiesExtension ext = project.getExtensions().getExtraProperties();
+        //TODO let's add unit tests
+        project.getExtensions().add(VersionFile.class.getName(), versionInfo);
+        project.getExtensions().getExtraProperties().set("release_notable", versionInfo.isNotableRelease());
+
         final String version = versionInfo.getVersion();
         LOG.lifecycle("  Building version '{}' (value loaded from '{}' file).", version, versionFile.getName());
 
