@@ -9,6 +9,7 @@ import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.Exec;
 import org.gradle.process.ExecResult;
 import org.gradle.process.ExecSpec;
+import org.mockito.release.gradle.BumpVersionFileTask;
 import org.mockito.release.gradle.ContinuousDeliveryPlugin;
 import org.mockito.release.internal.gradle.util.ExtContainer;
 import org.mockito.release.internal.gradle.util.StringUtil;

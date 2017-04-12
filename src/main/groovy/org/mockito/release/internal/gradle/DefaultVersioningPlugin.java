@@ -4,6 +4,7 @@ import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
+import org.mockito.release.gradle.BumpVersionFileTask;
 import org.mockito.release.gradle.VersioningPlugin;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.version.Version;

@@ -1,4 +1,4 @@
-package org.mockito.release.internal.gradle;
+package org.mockito.release.gradle;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.Logger;

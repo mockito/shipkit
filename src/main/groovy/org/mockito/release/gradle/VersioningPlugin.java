@@ -2,7 +2,6 @@ package org.mockito.release.gradle;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.mockito.release.internal.gradle.BumpVersionFileTask;
 
 /**
  * The plugin adds following tasks:
