@@ -1,8 +1,8 @@
-package org.mockito.release.util
+package org.mockito.release.internal.util
 
 import spock.lang.Specification
 
-import static org.mockito.release.util.ArgumentValidation.notNull
+import static org.mockito.release.internal.util.ArgumentValidation.notNull
 
 class ArgumentValidationTest extends Specification {
 

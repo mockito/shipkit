@@ -1,4 +1,4 @@
-package org.mockito.release.util;
+package org.mockito.release.internal.util;
 
 /**
  * Utility for validation of arguments

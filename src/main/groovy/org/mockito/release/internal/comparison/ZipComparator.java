@@ -4,7 +4,7 @@ import groovy.lang.Closure;
 
 import java.io.File;
 
-import static org.mockito.release.util.ArgumentValidation.notNull;
+import static org.mockito.release.internal.util.ArgumentValidation.notNull;
 
 class ZipComparator {
 

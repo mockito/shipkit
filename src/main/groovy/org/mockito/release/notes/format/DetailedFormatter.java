@@ -1,11 +1,11 @@
 package org.mockito.release.notes.format;
 
+import org.mockito.release.internal.util.MultiMap;
 import org.mockito.release.notes.internal.DateFormat;
 import org.mockito.release.notes.model.Contribution;
 import org.mockito.release.notes.model.ContributionSet;
 import org.mockito.release.notes.model.Improvement;
 import org.mockito.release.notes.model.ReleaseNotesData;
-import org.mockito.release.util.MultiMap;
 
 import java.text.MessageFormat;
 import java.util.*;

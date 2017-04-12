@@ -2,7 +2,7 @@ package org.mockito.release.internal.comparison;
 
 import groovy.lang.Closure;
 
-import static org.mockito.release.util.ArgumentValidation.notNull;
+import static org.mockito.release.internal.util.ArgumentValidation.notNull;
 
 class PomComparator {
 

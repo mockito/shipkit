@@ -1,4 +1,4 @@
-package org.mockito.release.util
+package org.mockito.release.internal.util
 
 import spock.lang.Specification
 
