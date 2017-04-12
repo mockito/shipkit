@@ -18,10 +18,15 @@ public interface VersionFile {
      *
      * @param updateNotable if true, the previous version will be included in the notable versions, too.
      */
-    String bumpVersion(boolean updateNotable);
+    VersionFile bumpVersion(boolean updateNotable);
 
     /**
      * Returns notable versions
      */
     Collection<String> getNotableVersions();
+
+    /**
+     * Informs if the current version is a notable release
+     */
+    boolean isNotableRelease();
 }

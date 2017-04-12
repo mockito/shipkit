@@ -42,7 +42,7 @@ public class DefaultBumpVersionFileTask extends DefaultTask implements BumpVersi
 
     @TaskAction public void bumpVersionFile() {
         VersionFile versionFile = Version.versionFile(this.versionFile);
-        String newVersion = versionFile.bumpVersion(updateNotableVersions);
+        VersionFile newVersion = versionFile.bumpVersion(updateNotableVersions);
         LOG.lifecycle("{} - updated version file '{}'\n" +
                 "  - new version: {}\n" +
                 "  - notable versions updated: {}\n" +

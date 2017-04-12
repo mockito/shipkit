@@ -11,13 +11,10 @@ import org.gradle.process.ExecResult;
 import org.gradle.process.ExecSpec;
 import org.mockito.release.gradle.BumpVersionFileTask;
 import org.mockito.release.gradle.ContinuousDeliveryPlugin;
-import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.internal.gradle.util.ExtContainer;
 import org.mockito.release.internal.gradle.util.StringUtil;
+import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.version.VersionFile;
-
-import java.util.LinkedList;
-import java.util.List;
 
 import static java.util.Arrays.asList;
 
@@ -32,11 +29,12 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
         project.getPlugins().apply("org.mockito.release-notes");
         project.getPlugins().apply("org.mockito.release-tools.versioning");
         project.getPlugins().apply(GitPlugin.class);
+        final boolean notableRelease = project.getExtensions().getByType(VersionFile.class).isNotableRelease();
 
         final ExtContainer ext = new ExtContainer(project);
 
         ((BumpVersionFileTask) project.getTasks().getByName("bumpVersionFile"))
-                .setUpdateNotableVersions(isNotableRelease(project));
+                .setUpdateNotableVersions(notableRelease);
 
         TaskMaker.execTask(project, "gitAddBumpVersion", new Action<Exec>() {
             public void execute(Exec t) {
@@ -49,7 +47,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
             }
         });
 
-        configureNotableReleaseNotes(project);
+        configureNotableReleaseNotes(project, notableRelease);
 
         TaskMaker.execTask(project, "gitAddReleaseNotes", new Action<Exec>() {
             public void execute(final Exec t) {
@@ -163,7 +161,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
                 });
                 t.doLast(new Action<Task>() {
                     public void execute(Task task) {
-                        LOG.lifecycle("  Performing release of version '{}' (notable version: {})", project.getVersion(), isNotableRelease(project));
+                        LOG.lifecycle("  Performing release of version '{}' (notable version: {})", project.getVersion(), notableRelease);
                         //first, we need to prepare Travis working copy
                         exec(project, "./gradlew", "travisReleasePrepare");
                         //then, we will do the full release with dry run to flesh out any issues
@@ -191,7 +189,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
         });
     }
 
-    private static void configureNotableReleaseNotes(Project project) {
+    private static void configureNotableReleaseNotes(Project project, boolean notableRelease) {
         VersionFile versionFile = project.getExtensions().getByType(VersionFile.class);
         NotableReleaseNotesGeneratorTask generatorTask = (NotableReleaseNotesGeneratorTask) project.getTasks().getByName("updateNotableReleaseNotes");
         NotableReleaseNotesFetcherTask fetcherTask = (NotableReleaseNotesFetcherTask) project.getTasks().getByName("fetchNotableReleaseNotes");
@@ -199,16 +197,10 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
         generatorTask.getNotesGeneration().setTargetVersions(versionFile.getNotableVersions());
         fetcherTask.getNotesGeneration().setTargetVersions(versionFile.getNotableVersions());
 
-        if (isNotableRelease(project)) {
+        if (notableRelease) {
             generatorTask.getNotesGeneration().setHeadVersion(project.getVersion().toString());
             fetcherTask.getNotesGeneration().setHeadVersion(project.getVersion().toString());
         }
-    }
-
-    private static boolean isNotableRelease(Project project) {
-        //TODO also check for env variable here / commit message, we already check for 'TRAVIS_COMMIT_MESSAGE' elsewhere
-        String v = project.getVersion().toString();
-        return v.endsWith(".0") || v.endsWith(".0.0");
     }
 
     private static void performReleaseTest(Project project) {
