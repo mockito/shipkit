@@ -9,26 +9,26 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Properties;
 
-class DefaultVersionFile implements VersionFile {
+class DefaultVersionInfo implements VersionInfo {
 
     private final File versionFile;
     private final LinkedList<String> notableVersions;
     private final String version;
 
-    DefaultVersionFile(File versionFile, String version, LinkedList<String> notableVersions) {
+    DefaultVersionInfo(File versionFile, String version, LinkedList<String> notableVersions) {
         this.versionFile = versionFile;
         this.version = version;
         this.notableVersions = notableVersions;
     }
 
-    static DefaultVersionFile fromFile(File versionFile) {
+    static DefaultVersionInfo fromFile(File versionFile) {
         Properties properties = readProperties(versionFile);
         String version = properties.getProperty("version");
         if (version == null) {
             throw new IllegalArgumentException("Missing 'version=' properties in file: " + versionFile);
         }
         LinkedList<String> notableVersions = parseNotableVersions(properties);
-        return new DefaultVersionFile(versionFile, version, notableVersions);
+        return new DefaultVersionInfo(versionFile, version, notableVersions);
     }
 
     private static LinkedList<String> parseNotableVersions(Properties properties) {
@@ -61,7 +61,7 @@ class DefaultVersionFile implements VersionFile {
         return version;
     }
 
-    public DefaultVersionFile bumpVersion(boolean updateNotable) {
+    public DefaultVersionInfo bumpVersion(boolean updateNotable) {
         String content = IOUtil.readFully(versionFile);
         if (updateNotable) {
             notableVersions.addFirst(version);
@@ -83,7 +83,7 @@ class DefaultVersionFile implements VersionFile {
         String updated = content.replaceAll("(?m)^version=(.*?)\n", "version=" + newVersion + "\n");
 
         IOUtil.writeFile(versionFile, updated);
-        return new DefaultVersionFile(versionFile, newVersion, notableVersions);
+        return new DefaultVersionInfo(versionFile, newVersion, notableVersions);
     }
 
     public Collection<String> getNotableVersions() {

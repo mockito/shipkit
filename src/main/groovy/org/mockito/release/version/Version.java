@@ -8,9 +8,9 @@ import java.io.File;
 public class Version {
 
     /**
-     * Provides instance of version file
+     * Provides instance of version information
      */
-    public static VersionFile versionFile(File versionFile) {
-        return DefaultVersionFile.fromFile(versionFile);
+    public static VersionInfo versionInfo(File versionFile) {
+        return DefaultVersionInfo.fromFile(versionFile);
     }
 }

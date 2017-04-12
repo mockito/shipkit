@@ -14,7 +14,7 @@ import org.mockito.release.gradle.ContinuousDeliveryPlugin;
 import org.mockito.release.internal.gradle.util.ExtContainer;
 import org.mockito.release.internal.gradle.util.StringUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
-import org.mockito.release.version.VersionFile;
+import org.mockito.release.version.VersionInfo;
 
 import static java.util.Arrays.asList;
 
@@ -29,7 +29,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
         project.getPlugins().apply("org.mockito.release-notes");
         project.getPlugins().apply("org.mockito.release-tools.versioning");
         project.getPlugins().apply(GitPlugin.class);
-        final boolean notableRelease = project.getExtensions().getByType(VersionFile.class).isNotableRelease();
+        final boolean notableRelease = project.getExtensions().getByType(VersionInfo.class).isNotableRelease();
 
         final ExtContainer ext = new ExtContainer(project);
 
@@ -190,12 +190,12 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
     }
 
     private static void configureNotableReleaseNotes(Project project, boolean notableRelease) {
-        VersionFile versionFile = project.getExtensions().getByType(VersionFile.class);
+        VersionInfo versionInfo = project.getExtensions().getByType(VersionInfo.class);
         NotableReleaseNotesGeneratorTask generatorTask = (NotableReleaseNotesGeneratorTask) project.getTasks().getByName("updateNotableReleaseNotes");
         NotableReleaseNotesFetcherTask fetcherTask = (NotableReleaseNotesFetcherTask) project.getTasks().getByName("fetchNotableReleaseNotes");
 
-        generatorTask.getNotesGeneration().setTargetVersions(versionFile.getNotableVersions());
-        fetcherTask.getNotesGeneration().setTargetVersions(versionFile.getNotableVersions());
+        generatorTask.getNotesGeneration().setTargetVersions(versionInfo.getNotableVersions());
+        fetcherTask.getNotesGeneration().setTargetVersions(versionInfo.getNotableVersions());
 
         if (notableRelease) {
             generatorTask.getNotesGeneration().setHeadVersion(project.getVersion().toString());

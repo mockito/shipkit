@@ -4,9 +4,8 @@ import java.util.Collection;
 
 /**
  * The file that contains version number
- * TODO rename to VersionInfo
  */
-public interface VersionFile {
+public interface VersionInfo {
 
     /**
      * Version number
@@ -14,11 +13,12 @@ public interface VersionFile {
     String getVersion();
 
     /**
-     * Increments version number in the backing object (typically a file) and returns incremented value.
+     * Increments version number in the backing object (typically a file)
+     * and returns incremented version info instance.
      *
      * @param updateNotable if true, the previous version will be included in the notable versions, too.
      */
-    VersionFile bumpVersion(boolean updateNotable);
+    VersionInfo bumpVersion(boolean updateNotable);
 
     /**
      * Returns notable versions

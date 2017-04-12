@@ -4,13 +4,13 @@ import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 
-class DefaultVersionFileTest extends Specification {
+class DefaultVersionInfoTest extends Specification {
 
     @Rule TemporaryFolder dir = new TemporaryFolder()
 
     def "does not support files without 'version' property"() {
         def f = dir.newFile() << "asdf"
-        when: DefaultVersionFile.fromFile(f)
+        when: DefaultVersionInfo.fromFile(f)
         then: thrown(IllegalArgumentException)
     }
 
@@ -22,7 +22,7 @@ version=2.0.0
 x
 """
         expect:
-        DefaultVersionFile.fromFile(f).version == "2.0.0"
+        DefaultVersionInfo.fromFile(f).version == "2.0.0"
     }
 
     def "increments version in file"() {
@@ -34,7 +34,7 @@ x
 """
 
         when:
-        def v = DefaultVersionFile.fromFile(f)
+        def v = DefaultVersionInfo.fromFile(f)
         def v2 = v.bumpVersion(false)
 
         then:
@@ -52,7 +52,7 @@ x
         def f = dir.newFile() << "foo=bar\nversion=2.0.0"
 
         when:
-        DefaultVersionFile.fromFile(f).bumpVersion(false)
+        DefaultVersionInfo.fromFile(f).bumpVersion(false)
 
         then:
         f.text == "foo=bar\nversion=2.0.1\n"
@@ -61,7 +61,7 @@ x
     def "knows notable versions"() {
         expect:
         def f = dir.newFile() << "version=1.0\n" + file
-        DefaultVersionFile.fromFile(f).notableVersions.toString() == versions.toString()
+        DefaultVersionInfo.fromFile(f).notableVersions.toString() == versions.toString()
 
         where:
         file                                       | versions
@@ -77,7 +77,7 @@ notableVersions=1.0.0
 """
 
         when:
-        def v = DefaultVersionFile.fromFile(f)
+        def v = DefaultVersionInfo.fromFile(f)
         v.bumpVersion(true)
 
         then:
@@ -92,7 +92,7 @@ notableVersions=2.0.0, 1.0.0
         def f = dir.newFile() << "version=1.0.0"
 
         when:
-        def v = DefaultVersionFile.fromFile(f)
+        def v = DefaultVersionInfo.fromFile(f)
         v.bumpVersion(true)
 
         then:
@@ -106,7 +106,7 @@ notableVersions=1.0.0
         def f = dir.newFile() << "version=1.0.0"
 
         when:
-        def v = DefaultVersionFile.fromFile(f)
+        def v = DefaultVersionInfo.fromFile(f)
         v.bumpVersion(true)
 
         then:

@@ -8,7 +8,7 @@ import org.gradle.api.tasks.TaskAction;
 import org.mockito.release.gradle.BumpVersionFileTask;
 import org.mockito.release.internal.gradle.util.StringUtil;
 import org.mockito.release.version.Version;
-import org.mockito.release.version.VersionFile;
+import org.mockito.release.version.VersionInfo;
 
 import java.io.File;
 
@@ -41,13 +41,13 @@ public class DefaultBumpVersionFileTask extends DefaultTask implements BumpVersi
     }
 
     @TaskAction public void bumpVersionFile() {
-        VersionFile versionFile = Version.versionFile(this.versionFile);
-        VersionFile newVersion = versionFile.bumpVersion(updateNotableVersions);
+        VersionInfo versionInfo = Version.versionInfo(this.versionFile);
+        VersionInfo newVersion = versionInfo.bumpVersion(updateNotableVersions);
         LOG.lifecycle("{} - updated version file '{}'\n" +
                 "  - new version: {}\n" +
                 "  - notable versions updated: {}\n" +
                 "  - notable versions: {}",
                 getPath(), getProject().relativePath(this.versionFile), newVersion, updateNotableVersions,
-                StringUtil.join(versionFile.getNotableVersions(), ", "));
+                StringUtil.join(versionInfo.getNotableVersions(), ", "));
     }
 }

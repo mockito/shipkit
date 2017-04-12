@@ -7,7 +7,7 @@ import org.gradle.api.logging.Logging;
 import org.mockito.release.gradle.VersioningPlugin;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.version.Version;
-import org.mockito.release.version.VersionFile;
+import org.mockito.release.version.VersionInfo;
 
 import java.io.File;
 
@@ -19,10 +19,10 @@ public class DefaultVersioningPlugin implements VersioningPlugin {
         //TODO "version.properties" is hardcoded all over the place.
         // At the very least we should have a constant in this plugin.
         final File versionFile = new File(project.getRootDir(), "version.properties");
-        VersionFile versionInfo = Version.versionFile(versionFile);
+        VersionInfo versionInfo = Version.versionInfo(versionFile);
 
         //TODO let's add unit tests
-        project.getExtensions().add(VersionFile.class.getName(), versionInfo);
+        project.getExtensions().add(VersionInfo.class.getName(), versionInfo);
         project.getExtensions().getExtraProperties().set("release_notable", versionInfo.isNotableRelease());
 
         final String version = versionInfo.getVersion();
