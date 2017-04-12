@@ -17,9 +17,9 @@ import java.io.File;
  * If {@link #setUpdateNotableVersions(boolean)} is set to true
  * then the previous version will be added to notable versions, e.g. "notableVersions=1.0.0,1.5.0,2.0.0"
  */
-public class DefaultBumpVersionFileTask extends DefaultTask {
+public class BumpVersionFileTask extends DefaultTask {
 
-    private final static Logger LOG = Logging.getLogger(DefaultBumpVersionFileTask.class);
+    private final static Logger LOG = Logging.getLogger(BumpVersionFileTask.class);
 
     private File versionFile;
     private boolean updateNotableVersions;
@@ -54,7 +54,7 @@ public class DefaultBumpVersionFileTask extends DefaultTask {
     }
 
     /**
-     * See {@link DefaultBumpVersionFileTask}
+     * See {@link BumpVersionFileTask}
      */
     @TaskAction public void bumpVersionFile() {
         VersionInfo versionInfo = Version.versionInfo(this.versionFile);

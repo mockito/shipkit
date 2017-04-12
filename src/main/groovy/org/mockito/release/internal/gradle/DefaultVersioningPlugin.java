@@ -35,8 +35,8 @@ public class DefaultVersioningPlugin implements VersioningPlugin {
             }
         });
 
-        TaskMaker.task(project, "bumpVersionFile", DefaultBumpVersionFileTask.class, new Action<DefaultBumpVersionFileTask>() {
-            public void execute(DefaultBumpVersionFileTask t) {
+        TaskMaker.task(project, "bumpVersionFile", BumpVersionFileTask.class, new Action<BumpVersionFileTask>() {
+            public void execute(BumpVersionFileTask t) {
                 t.setVersionFile(versionFile);
                 t.setDescription("Increments version number in " + versionFile.getName());
             }

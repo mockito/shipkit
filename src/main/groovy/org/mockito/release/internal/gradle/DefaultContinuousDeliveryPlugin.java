@@ -32,7 +32,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
 
         final ExtContainer ext = new ExtContainer(project);
 
-        ((DefaultBumpVersionFileTask) project.getTasks().getByName("bumpVersionFile"))
+        ((BumpVersionFileTask) project.getTasks().getByName("bumpVersionFile"))
                 .setUpdateNotableVersions(notableRelease);
 
         TaskMaker.execTask(project, "gitAddBumpVersion", new Action<Exec>() {
