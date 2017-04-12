@@ -2,13 +2,13 @@ package org.mockito.release.comparison
 
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import spock.lang.Ignore
+import org.mockito.release.internal.comparison.comparison.ZipComparator
 import spock.lang.Specification
 
 class ZipComparatorTest extends Specification {
 
     @Rule TemporaryFolder tmp = new TemporaryFolder()
-    def compare = Mock(ZipCompare)
+    def compare = Mock(org.mockito.release.internal.comparison.comparison.ZipCompare)
 
     def "compares files"() {
         def f1 = tmp.newFile()

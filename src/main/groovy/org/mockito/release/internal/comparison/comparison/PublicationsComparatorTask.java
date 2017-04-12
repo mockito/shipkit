@@ -1,4 +1,4 @@
-package org.mockito.release.comparison;
+package org.mockito.release.internal.comparison.comparison;
 
 import groovy.lang.Closure;
 import org.gradle.api.DefaultTask;

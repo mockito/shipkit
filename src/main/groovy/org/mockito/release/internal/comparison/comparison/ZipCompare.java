@@ -1,4 +1,4 @@
-package org.mockito.release.comparison;
+package org.mockito.release.internal.comparison.comparison;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
