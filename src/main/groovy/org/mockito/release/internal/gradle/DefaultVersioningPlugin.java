@@ -24,14 +24,8 @@ public class DefaultVersioningPlugin implements VersioningPlugin {
         project.getExtensions().add(VersionFile.class.getName(), versionInfo);
 
         ExtraPropertiesExtension ext = project.getExtensions().getExtraProperties();
-        final String version;
-        if (ext.has("release_version")) {
-            version = ext.get("release_version").toString();
-            LOG.lifecycle("  Building version '{}' (value supplied via 'release_version' project property).", version);
-        } else {
-            version = versionInfo.getVersion();
-            LOG.lifecycle("  Building version '{}' (value loaded from '{}' file).", version, versionFile.getName());
-        }
+        final String version = versionInfo.getVersion();
+        LOG.lifecycle("  Building version '{}' (value loaded from '{}' file).", version, versionFile.getName());
 
         project.allprojects(new Action<Project>() {
             @Override

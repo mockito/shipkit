@@ -163,16 +163,19 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
                 });
                 t.doLast(new Action<Task>() {
                     public void execute(Task task) {
+                        LOG.lifecycle("  Performing release of version '{}' (notable version: {})", project.getVersion(), isNotableRelease(project));
                         //first, we need to prepare Travis working copy
                         exec(project, "./gradlew", "travisReleasePrepare");
                         //then, we will do the full release with dry run to flesh out any issues
                         performReleaseTest(project);
                         //finally, let's make the release!
                         exec(project, "./gradlew", "performRelease");
-                        //perform notable release if needed
-                        performNotableRelease(project, false);
                     }
                 });
+
+                //TODO I think we should consider deleting 'travisRelease' task. It could be repaced by something like:
+                //./gradlew assertReleaseNeeded && ./gradlew travisReleasePrepare && ./gradlew performRelease releaseCleanUp -PreleaseDryRun && ./gradlew performRelease
+                //assertReleaseNeeded task would fail when release is not needed and would stop executing further commands.
             }
         });
 
@@ -182,17 +185,6 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
                 t.doLast(new Action<Task>() {
                     public void execute(Task task) {
                         performReleaseTest(project);
-                    }
-                });
-            }
-        });
-
-        TaskMaker.task(project, "testNotableRelease", new Action<Task>() {
-            public void execute(Task t) {
-                t.setDescription("Tests the notable release, intended to be used locally by engineers");
-                t.doLast(new Action<Task>() {
-                    public void execute(Task task) {
-                        performNotableRelease(project, true);
                     }
                 });
             }
@@ -210,30 +202,6 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
         if (isNotableRelease(project)) {
             generatorTask.getNotesGeneration().setHeadVersion(project.getVersion().toString());
             fetcherTask.getNotesGeneration().setHeadVersion(project.getVersion().toString());
-        }
-    }
-
-    private static void performNotableRelease(Project project, boolean dryRun) {
-        String v = project.getVersion().toString();
-        if (isNotableRelease(project)) { //new minor or major version
-            LOG.lifecycle("  It looks like we are releasing a new notable version '{}'!\n" +
-                    "  Performing additional upload to 'notable versions' repository and Maven Central.", v);
-
-            List<String> args = new LinkedList<String>(asList(
-                    "./gradlew", "bintrayUploadAll",
-                    "-Prelease_version=" + v,
-                    "-Prelease_notable=true",
-                    "-Pbintray_mavenCentralSync"));
-
-            if (dryRun) {
-                //TODO this is hacky we should have 'release dry run' to support 'false' as argument
-                // this would clean up conditional complexity
-                args.add("-PreleaseDryRun");
-            }
-            exec(project, args.toArray(new String[args.size()]));
-        } else {
-            LOG.lifecycle("  Version '{}' is not a notable version.\n" +
-                    "  NO additional upload to 'notable versions' repository and NO sync to Maven Central.", v);
         }
     }
 
