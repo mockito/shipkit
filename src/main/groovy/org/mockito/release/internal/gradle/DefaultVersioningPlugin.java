@@ -1,18 +1,37 @@
 package org.mockito.release.internal.gradle;
 
 import org.gradle.api.Action;
+import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.mockito.release.gradle.BumpVersionFileTask;
-import org.mockito.release.gradle.VersioningPlugin;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.version.Version;
 import org.mockito.release.version.VersionInfo;
 
 import java.io.File;
 
-public class DefaultVersioningPlugin implements VersioningPlugin {
+/**
+ * The plugin adds following tasks:
+ *
+ * <ul>
+ *     <li>bumpVersionFile - increments version in "version.properties" file,
+ *     see {@link BumpVersionFileTask}</li>
+ * </ul>
+ *
+ * The plugin adds following extensions:
+ *
+ * <ul>
+ *     <li>'project.ext.release_notable' boolean property
+ *     that contains information if the current version is a notable release</li>
+ *     <li>project.extensions.'org.mockito.release.version.VersionInfo' property
+ *     of type {@link VersionInfo} that contains version information</li>
+ * </ul>
+ *
+ * Also, the plugin configures all projects' version property to the value specified in "version.properties"
+ */
+public class DefaultVersioningPlugin implements Plugin<Project> {
 
     private static Logger LOG = Logging.getLogger(DefaultVersioningPlugin.class);
 
@@ -43,5 +62,4 @@ public class DefaultVersioningPlugin implements VersioningPlugin {
             }
         });
     }
-
 }
