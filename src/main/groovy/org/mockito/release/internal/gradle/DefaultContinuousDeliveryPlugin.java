@@ -11,17 +11,15 @@ import org.gradle.process.ExecResult;
 import org.gradle.process.ExecSpec;
 import org.mockito.release.gradle.BumpVersionFileTask;
 import org.mockito.release.gradle.ContinuousDeliveryPlugin;
-import org.mockito.release.internal.gradle.util.CommonSettings;
+import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.internal.gradle.util.ExtContainer;
 import org.mockito.release.internal.gradle.util.StringUtil;
 import org.mockito.release.version.VersionFile;
 
-import java.io.ByteArrayOutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.mockito.release.internal.gradle.util.StringUtil.join;
 
 /**
  * Please keep documentation up to date at {@link ContinuousDeliveryPlugin}
@@ -33,28 +31,31 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
     public void apply(final Project project) {
         project.getPlugins().apply("org.mockito.release-notes");
         project.getPlugins().apply("org.mockito.release-tools.versioning");
+        project.getPlugins().apply(GitPlugin.class);
 
         final ExtContainer ext = new ExtContainer(project);
 
         ((BumpVersionFileTask) project.getTasks().getByName("bumpVersionFile"))
                 .setUpdateNotableVersions(isNotableRelease(project));
 
-        CommonSettings.execTask(project, "gitAddBumpVersion", new Action<Exec>() {
+        TaskMaker.execTask(project, "gitAddBumpVersion", new Action<Exec>() {
             public void execute(Exec t) {
                 t.setDescription("Performs 'git add' for the version properties file");
 
                 //TODO dependency/assumptions on versioning plugin (move to git plugin this and other tasks?):
                 t.mustRunAfter("bumpVersionFile");
                 t.commandLine("git", "add", "version.properties");
+                project.getTasks().getByName(GitPlugin.COMMIT_TASK).mustRunAfter(t);
             }
         });
 
         configureNotableReleaseNotes(project);
 
-        CommonSettings.execTask(project, "gitAddReleaseNotes", new Action<Exec>() {
+        TaskMaker.execTask(project, "gitAddReleaseNotes", new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Performs 'git add' for the release notes file");
                 t.mustRunAfter("updateReleaseNotes", "updateNotableReleaseNotes");
+                project.getTasks().getByName(GitPlugin.COMMIT_TASK).mustRunAfter(t);
                 t.doFirst(new Action<Task>() {
                     public void execute(Task task) {
                         //doFirst (execution time)
@@ -65,54 +66,12 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
             }
         });
 
-        CommonSettings.execTask(project, "gitCommit", new Action<Exec>() {
-            public void execute(final Exec t) {
-                t.setDescription("Commits staged changes using generic --author");
-                t.mustRunAfter("gitAddBumpVersion", "gitAddReleaseNotes");
-                t.doFirst(new Action<Task>() {
-                    public void execute(Task task) {
-                    //doFirst (execution time) to pick up user-configured setting
-                    t.commandLine("git", "commit", "--author",
-                        ext.getGitGenericUserNotation(), "-m", commitMessage("Bumped version and updated release notes"));
-                    }
-                });
-            }
-        });
-
-        CommonSettings.execTask(project, "gitTag", new Action<Exec>() {
-            public void execute(Exec t) {
-                t.mustRunAfter("gitCommit");
-                String tag = "v" + project.getVersion();
-                t.setDescription("Creates new version tag '" + tag + "'");
-                t.commandLine("git", "tag", "-a", tag, "-m", commitMessage("Created new tag " + tag));
-            }
-        });
-
-        boolean mustBeQuiet = true; //so that we don't expose the token
-        CommonSettings.execTask(project, "gitPush", mustBeQuiet, new Action<Exec>() {
-            public void execute(final Exec t) {
-                t.setDescription("Pushes changes to remote repo.");
-                t.mustRunAfter("gitCommit", "gitTag");
-
-                t.doFirst(new Action<Task>() {
-                    public void execute(Task task) {
-                        t.commandLine(ext.getQuietGitPushArgs());
-
-                        //!!!We must capture and hide the output because when git push fails it can expose the token!
-                        ByteArrayOutputStream output = new ByteArrayOutputStream();
-                        t.setStandardOutput(output);
-                        t.setErrorOutput(output);
-                    }
-                });
-            }
-        });
-
-        final Task bintrayUploadAll = CommonSettings.task(project, "bintrayUploadAll", new Action<Task>() {
+        final Task bintrayUploadAll = TaskMaker.task(project, "bintrayUploadAll", new Action<Task>() {
             public void execute(Task t) {
                 t.setDescription("Depends on all 'bintrayUpload' tasks from all Gradle projects.");
                 //It is safer to run bintray upload after git push (hard to reverse operation)
                 //This way, when git push fails we don't publish jars to bintray
-                t.mustRunAfter("gitPush");
+                t.mustRunAfter(GitPlugin.PUSH_TASK);
             }
         });
 
@@ -127,108 +86,38 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
             }
         });
 
-        CommonSettings.task(project, "performRelease", new Action<Task>() {
+        TaskMaker.task(project, "performRelease", new Action<Task>() {
             public void execute(final Task t) {
                 t.setDescription("Performs release. To test release use './gradlew testRelease'");
 
                 t.dependsOn("bumpVersionFile", "updateReleaseNotes", "updateNotableReleaseNotes");
-                t.dependsOn("gitAddBumpVersion", "gitAddReleaseNotes", "gitCommit", "gitTag");
-                t.dependsOn("gitPush");
+                t.dependsOn("gitAddBumpVersion", "gitAddReleaseNotes", GitPlugin.COMMIT_TASK, GitPlugin.TAG_TASK);
+                t.dependsOn(GitPlugin.PUSH_TASK);
                 t.dependsOn("bintrayUploadAll");
+
+                project.getTasks().getByName(GitPlugin.COMMIT_CLEANUP_TASK).mustRunAfter(t);
+                project.getTasks().getByName(GitPlugin.TAG_CLEANUP_TASK).mustRunAfter(t);
             }
         });
 
-        CommonSettings.execTask(project, "gitCommitCleanUp", new Action<Exec>() {
-            public void execute(final Exec t) {
-                t.setDescription("Removes last commit, using 'reset --hard HEAD~'");
-                t.mustRunAfter("performRelease");
-                t.commandLine("git", "reset", "--hard", "HEAD~");
-            }
-        });
-
-        CommonSettings.execTask(project, "gitTagCleanUp", new Action<Exec>() {
-            public void execute(final Exec t) {
-                t.setDescription("Deletes version tag '" + ext.getTag() + "'");
-                t.mustRunAfter("performRelease");
-                t.commandLine("git", "tag", "-d", ext.getTag());
-            }
-        });
-
-        CommonSettings.task(project, "releaseCleanUp", new Action<Task>() {
+        TaskMaker.task(project, "releaseCleanUp", new Action<Task>() {
             public void execute(final Task t) {
                 t.setDescription("Cleans up the working copy, useful after dry running the release");
 
                 //using finalizedBy so that all clean up tasks run, even if one of them fails
-                t.finalizedBy("gitCommitCleanUp");
-                t.finalizedBy("gitTagCleanUp");
+                t.finalizedBy(GitPlugin.COMMIT_CLEANUP_TASK);
+                t.finalizedBy(GitPlugin.TAG_CLEANUP_TASK);
             }
         });
 
-        CommonSettings.execTask(project, "gitUnshallow", new Action<Exec>() {
-            public void execute(final Exec t) {
-                //Travis default clone is shallow which will prevent correct release notes generation for repos with lots of commits
-                t.commandLine("git", "fetch", "--unshallow");
-                t.setDescription("Ensures good chunk of recent commits is available for release notes automation. Runs: " + t.getCommandLine());
-
-                t.setIgnoreExitValue(true);
-                t.doLast(new Action<Task>() {
-                    public void execute(Task task) {
-                        if (t.getExecResult().getExitValue() != 0) {
-                            LOG.lifecycle("  Following git command failed and will be ignored:" +
-                                    "\n    " + join(t.getCommandLine(), " ") +
-                                    "\n  Most likely the repository already contains all history.");
-                        }
-                    }
-                });
-            }
-        });
-
-        CommonSettings.execTask(project, "checkOutBranch", new Action<Exec>() {
-            public void execute(final Exec t) {
-                t.setDescription("Checks out the branch that can be committed. CI systems often check out revision that is not committable.");
-                t.doFirst(new Action<Task>() {
-                    public void execute(Task task) {
-                        //using doFirst() so that we request and validate presence of env var only during execution time
-                        t.commandLine("git", "checkout", ext.getCurrentBranch());
-                        //TODO consider putting all command line args in a separate class for testability
-                    }
-                });
-            }
-        });
-
-        CommonSettings.execTask(project, "configureGitUserName", new Action<Exec>() {
-            public void execute(final Exec t) {
-                t.setDescription("Overwrites local git 'user.name' with a generic name. Intended for CI.");
-                t.doFirst(new Action<Task>() {
-                    public void execute(Task task) {
-                        //using doFirst() so that we request and validate presence of env var only during execution time
-                        t.commandLine("git", "config", "--local", "user.name", ext.getGitGenericUser());
-                    }
-                });
-            }
-        });
-
-        CommonSettings.execTask(project, "configureGitUserEmail", new Action<Exec>() {
-            public void execute(final Exec t) {
-                t.setDescription("Overwrites local git 'user.email' with a generic email. Intended for CI.");
-                t.doFirst(new Action<Task>() {
-                    public void execute(Task task) {
-                        //using doFirst() so that we request and validate presence of env var only during execution time
-                        //TODO consider adding 'lazyExec' task or method that automatically uses do first
-                        t.commandLine("git", "config", "--local", "user.email", ext.getGitGenericEmail());
-                    }
-                });
-            }
-        });
-
-        CommonSettings.task(project, "travisReleasePrepare", new Action<Task>() {
+        TaskMaker.task(project, "travisReleasePrepare", new Action<Task>() {
             public void execute(Task t) {
                 t.setDescription("Prepares the working copy for releasing using Travis CI");
-                t.dependsOn("gitUnshallow", "checkOutBranch", "configureGitUserName", "configureGitUserEmail");
+                t.dependsOn(GitPlugin.UNSHALLOW_TASK, GitPlugin.CHECKOUT_BRANCH_TASK, GitPlugin.SET_USER_TASK, GitPlugin.SET_EMAIL_TASK);
             }
         });
 
-        final Task releaseNeededTask = CommonSettings.task(project, "releaseNeeded", new Action<Task>() {
+        final Task releaseNeededTask = TaskMaker.task(project, "releaseNeeded", new Action<Task>() {
             public void execute(final Task t) {
                 t.setDescription("Checks if the criteria for the release are met.");
                 t.doLast(new Action<Task>() {
@@ -260,7 +149,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
             }
         });
 
-        CommonSettings.task(project, "travisRelease", new Action<Task>() {
+        TaskMaker.task(project, "travisRelease", new Action<Task>() {
             public void execute(final Task t) {
                 t.setDescription("Performs the release if release criteria are met, intended to be used by Travis CI job");
                 t.dependsOn("releaseNeeded");
@@ -287,7 +176,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
             }
         });
 
-        CommonSettings.task(project, "testRelease", new Action<Task>() {
+        TaskMaker.task(project, "testRelease", new Action<Task>() {
             public void execute(Task t) {
                 t.setDescription("Tests the release, intended to be used locally by engineers");
                 t.doLast(new Action<Task>() {
@@ -298,7 +187,7 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
             }
         });
 
-        CommonSettings.task(project, "testNotableRelease", new Action<Task>() {
+        TaskMaker.task(project, "testNotableRelease", new Action<Task>() {
             public void execute(Task t) {
                 t.setDescription("Tests the notable release, intended to be used locally by engineers");
                 t.doLast(new Action<Task>() {
@@ -365,14 +254,5 @@ public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin
                 e.commandLine(commandLine);
             }
         });
-    }
-
-    private static String commitMessage(String message) {
-        String buildNo = System.getenv("TRAVIS_BUILD_NUMBER");
-        if (buildNo != null) {
-            return message + " by Travis CI build " + buildNo + " [ci skip]";
-        } else {
-            return message + " [ci skip]";
-        }
     }
 }

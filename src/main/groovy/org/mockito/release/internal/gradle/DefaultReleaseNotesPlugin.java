@@ -11,7 +11,7 @@ import org.mockito.release.internal.gradle.util.LazyConfigurer;
 import java.io.File;
 
 import static java.util.Arrays.asList;
-import static org.mockito.release.internal.gradle.util.CommonSettings.TASK_GROUP;
+import static org.mockito.release.internal.gradle.util.TaskMaker.TASK_GROUP;
 
 /**
  * --------------------------
