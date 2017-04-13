@@ -20,22 +20,30 @@ import static java.util.Arrays.asList;
 
 /**
  * Opinionated continuous delivery plugin.
- * Applies following plugins and preconfigures them:
+ * Applies following plugins and preconfigures tasks provided by those plugins:
  *
  * <ul>
  *     <li>{@link DefaultReleaseNotesPlugin}</li>
+ *     <li>{@link VersioningPlugin}</li>
+ *     <li>{@link GitPlugin}</li>
  * </ul>
  *
- * TODO finish the docs
+ * Adds following tasks:
+ *
+ * <ul>
+ *     <li>gitAddBumpVersion</li>
+ *     TODO document all
+ * </ul>
  */
 public class ContinuousDeliveryPlugin implements Plugin<Project> {
 
     private static final Logger LOG = Logging.getLogger(ContinuousDeliveryPlugin.class);
 
     public void apply(final Project project) {
-        project.getPlugins().apply("org.mockito.release-notes");
-        project.getPlugins().apply("org.mockito.release-tools.versioning");
+        project.getPlugins().apply(DefaultReleaseNotesPlugin.class);
+        project.getPlugins().apply(VersioningPlugin.class);
         project.getPlugins().apply(GitPlugin.class);
+
         final boolean notableRelease = project.getExtensions().getByType(VersionInfo.class).isNotableRelease();
 
         final ExtContainer ext = new ExtContainer(project);
@@ -43,6 +51,8 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
         ((BumpVersionFileTask) project.getTasks().getByName("bumpVersionFile"))
                 .setUpdateNotableVersions(notableRelease);
 
+        //TODO we should have tasks from the same plugin to have the same group
+        //let's have a task maker instance in a plugin that has sets the group accordingly
         TaskMaker.execTask(project, "gitAddBumpVersion", new Action<Exec>() {
             public void execute(Exec t) {
                 t.setDescription("Performs 'git add' for the version properties file");
