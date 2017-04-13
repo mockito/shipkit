@@ -9,9 +9,9 @@ import org.mockito.release.notes.util.IOUtil;
 
 import java.util.Collection;
 
+//TODO document and elevate to public API
 public class NotableReleaseNotesGeneratorTask extends DefaultTask {
 
-    //TODO documentation
     private final NotesGeneration notesGeneration = new NotesGeneration();
 
     public NotesGeneration getNotesGeneration() {
