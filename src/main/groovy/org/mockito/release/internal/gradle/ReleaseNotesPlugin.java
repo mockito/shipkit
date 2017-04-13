@@ -23,7 +23,7 @@ import static java.util.Arrays.asList;
  *     <li>updateNotableReleaseNotes - updates notable release notes file in place.</li>
  * </ul>
  */
-public class DefaultReleaseNotesPlugin implements Plugin<Project> {
+public class ReleaseNotesPlugin implements Plugin<Project> {
 
     private static final String TEMP_SERIALIZED_NOTES_FILE = "/notableReleaseNotes.ser";
 

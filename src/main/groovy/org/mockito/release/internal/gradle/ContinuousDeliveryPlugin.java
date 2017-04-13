@@ -23,7 +23,7 @@ import static java.util.Arrays.asList;
  * Applies following plugins and preconfigures tasks provided by those plugins:
  *
  * <ul>
- *     <li>{@link DefaultReleaseNotesPlugin}</li>
+ *     <li>{@link ReleaseNotesPlugin}</li>
  *     <li>{@link VersioningPlugin}</li>
  *     <li>{@link GitPlugin}</li>
  * </ul>
@@ -40,7 +40,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
     private static final Logger LOG = Logging.getLogger(ContinuousDeliveryPlugin.class);
 
     public void apply(final Project project) {
-        project.getPlugins().apply(DefaultReleaseNotesPlugin.class);
+        project.getPlugins().apply(ReleaseNotesPlugin.class);
         project.getPlugins().apply(VersioningPlugin.class);
         project.getPlugins().apply(GitPlugin.class);
 
