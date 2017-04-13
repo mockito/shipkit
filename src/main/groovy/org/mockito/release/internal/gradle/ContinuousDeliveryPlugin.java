@@ -48,6 +48,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
 
         final ExtContainer ext = new ExtContainer(project);
 
+        //TODO use constants for all task names
         ((BumpVersionFileTask) project.getTasks().getByName("bumpVersionFile"))
                 .setUpdateNotableVersions(notableRelease);
 
