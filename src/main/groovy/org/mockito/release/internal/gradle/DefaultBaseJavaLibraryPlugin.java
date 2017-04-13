@@ -1,6 +1,7 @@
 package org.mockito.release.internal.gradle;
 
 import org.gradle.api.Action;
+import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.file.CopySpec;
@@ -10,14 +11,30 @@ import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.publish.PublicationContainer;
 import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.api.tasks.bundling.Jar;
-import org.mockito.release.gradle.BaseJavaLibraryPlugin;
-import org.mockito.release.internal.gradle.util.PomCustomizer;
 import org.mockito.release.internal.gradle.util.GradleDSLHelper;
+import org.mockito.release.internal.gradle.util.PomCustomizer;
 
 /**
- * Please keep documentation up to date at {@link BaseJavaLibraryPlugin}
+ * Intended to be applied in individual Java submodule. Applies following plugins and tasks and configures them:
+ *
+ * <ul>
+ *     <li>java</li>
+ *     <li>maven-publish</li>
+ * </ul>
+ *
+ * Adds following tasks:
+ * <ul>
+ *     <li>sourcesJar</li>
+ *     <li>javadocJar</li>
+ * </ul>
+ *
+ * Other features:
+ * <ul>
+ *     <li>Automatically includes "LICENSE" file in all jars.</li>
+ *     <li>Adds task dependency "build" -> "publishToMavenLocal" to flesh out publication issues during the build</li>
+ * </ul>
  */
-public class DefaultBaseJavaLibraryPlugin implements BaseJavaLibraryPlugin {
+public class DefaultBaseJavaLibraryPlugin implements Plugin<Project> {
 
     private final static Logger LOG = Logging.getLogger(DefaultBaseJavaLibraryPlugin.class);
 
