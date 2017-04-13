@@ -2,16 +2,16 @@ package org.mockito.release.internal.gradle;
 
 import org.gradle.api.Action;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
+import org.mockito.release.gradle.IncrementalReleaseNotes;
 import org.mockito.release.gradle.ReleaseNotesPlugin;
 import org.mockito.release.gradle.ReleaseToolsProperties;
 import org.mockito.release.internal.gradle.util.ExtContainer;
 import org.mockito.release.internal.gradle.util.LazyConfigurer;
+import org.mockito.release.internal.gradle.util.TaskMaker;
 
 import java.io.File;
 
 import static java.util.Arrays.asList;
-import static org.mockito.release.internal.gradle.util.TaskMaker.TASK_GROUP;
 
 /**
  * --------------------------
@@ -24,36 +24,20 @@ import static org.mockito.release.internal.gradle.util.TaskMaker.TASK_GROUP;
  */
 public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
 
-    public static final String TEMP_SERIALIZED_NOTES_FILE = "/notableReleaseNotes.ser";
+    private static final String TEMP_SERIALIZED_NOTES_FILE = "/notableReleaseNotes.ser";
 
     public void apply(final Project project) {
-        final DefaultReleaseNotesExtension notes = new DefaultReleaseNotesExtension(project.getProjectDir());
-
-        //TODO those should be task classes with decent API
-        project.getTasks().create("updateReleaseNotes", new Action<Task>() {
-            public void execute(Task task) {
-                task.setGroup(TASK_GROUP);
-                task.setDescription("Updates release notes file.");
-                task.doLast(new Action<Task>() {
-                    public void execute(Task task) {
-                        configureNotes(notes, project);
-                        notes.updateReleaseNotes(project.getVersion().toString());
-                    }
-                });
+        TaskMaker.task(project, "updateReleaseNotes", IncrementalReleaseNotes.UpdateTask.class, new Action<IncrementalReleaseNotes.UpdateTask>() {
+            public void execute(final IncrementalReleaseNotes.UpdateTask t) {
+                t.setDescription("Updates release notes file.");
+                preconfigureIncrementalNotes(t, project);
             }
         });
 
-        project.getTasks().create("previewReleaseNotes", new Action<Task>() {
-            public void execute(Task task) {
-                task.setGroup(TASK_GROUP);
-                task.setDescription("Shows new incremental content of release notes. Useful for previewing the release notes.");
-                task.doLast(new Action<Task>() {
-                    public void execute(Task task) {
-                        configureNotes(notes, project);
-                        String content = notes.getReleaseNotes(project.getVersion().toString());
-                        task.getLogger().lifecycle("----------------\n" + content + "----------------");
-                    }
-                });
+        TaskMaker.task(project, "previewReleaseNotes", IncrementalReleaseNotes.PreviewTask.class, new Action<IncrementalReleaseNotes.PreviewTask>() {
+            public void execute(final IncrementalReleaseNotes.PreviewTask t) {
+                t.setDescription("Shows new incremental content of release notes. Useful for previewing the release notes.");
+                preconfigureIncrementalNotes(t, project);
             }
         });
 
@@ -87,6 +71,18 @@ public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
         });
     }
 
+    private static void preconfigureIncrementalNotes(final IncrementalReleaseNotes task, final Project project) {
+        final ExtContainer ext = new ExtContainer(project);
+        LazyConfigurer.getConfigurer(project).configureLazily(task, new Runnable() {
+            public void run() {
+                task.setGitHubLabelMapping(ext.getMap(ReleaseToolsProperties.releaseNotes_labelMapping)); //TODO make it optional
+                task.setReleaseNotesFile(project.file(ext.getReleaseNotesFile())); //TODO add sensible default
+                task.setGitHubReadOnlyAuthToken(ext.getGitHubReadOnlyAuthToken());
+                task.setGitHubRepository(ext.getString(ReleaseToolsProperties.gh_repository));
+            }
+        });
+    }
+
     private static void preconfigureNotableNotes(Project project, NotesGeneration gen){
         gen.setGitHubLabels(asList("noteworthy"));
         gen.setGitWorkingDir(project.getRootDir());
@@ -103,17 +99,6 @@ public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
         gen.setOutputFile(project.file(ext.getNotableReleaseNotesFile()));
         gen.setVcsCommitsLinkTemplate("https://github.com/" + ext.getGitHubRepository() + "/compare/{0}...{1}");
         gen.setDetailedReleaseNotesLink(ext.getGitHubRepository() + "/blob/" + ext.getCurrentBranch() + "/" + ext.getNotableReleaseNotesFile());
-    }
-
-    private static void configureNotes(DefaultReleaseNotesExtension notes, Project project) {
-        ExtContainer ext = new ExtContainer(project);
-        notes.setGitHubLabelMapping(ext.getMap(ReleaseToolsProperties.releaseNotes_labelMapping));
-        notes.setGitHubReadOnlyAuthToken(ext.getGitHubReadOnlyAuthToken());
-        notes.setGitHubRepository(ext.getString(ReleaseToolsProperties.gh_repository));
-        notes.setReleaseNotesFile(project.file(ext.getReleaseNotesFile()));
-        notes.assertConfigured();
-
-        //TODO make use of: ext.gh_writeAuthTokenEnvName = "GH_WRITE_TOKEN"
     }
 
     private static File getTemporaryReleaseNotesFile(Project project){
