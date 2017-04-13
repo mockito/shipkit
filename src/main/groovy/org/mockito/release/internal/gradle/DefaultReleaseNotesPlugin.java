@@ -1,9 +1,9 @@
 package org.mockito.release.internal.gradle;
 
 import org.gradle.api.Action;
+import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.mockito.release.gradle.IncrementalReleaseNotes;
-import org.mockito.release.gradle.ReleaseNotesPlugin;
 import org.mockito.release.gradle.ReleaseToolsProperties;
 import org.mockito.release.internal.gradle.util.ExtContainer;
 import org.mockito.release.internal.gradle.util.LazyConfigurer;
@@ -14,15 +14,16 @@ import java.io.File;
 import static java.util.Arrays.asList;
 
 /**
- * --------------------------
- * ******* IMPORTANT ********
- * --------------------------
+ * The plugin adds following tasks:
  *
- * Please update the documentation in the {@link ReleaseNotesPlugin} interface
- * when you make changes to this implementation
- * (for example: adding new tasks, renaming existing tasks, etc.).
+ * <ul>
+ *     <li>updateReleaseNotes - updates release notes file in place.</li>
+ *     <li>previewReleaseNotes - prints incremental release notes to the console for preview.</li>
+ *     <li>fetchNotableReleaseNotes - queries GitHub to get notable release notes data.</li>
+ *     <li>updateNotableReleaseNotes - updates notable release notes file in place.</li>
+ * </ul>
  */
-public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
+public class DefaultReleaseNotesPlugin implements Plugin<Project> {
 
     private static final String TEMP_SERIALIZED_NOTES_FILE = "/notableReleaseNotes.ser";
 
