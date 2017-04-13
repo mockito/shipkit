@@ -3,7 +3,7 @@ package org.mockito.release.internal.gradle
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
-class DefaultJavaLibraryPluginTest extends Specification {
+class JavaLibraryPluginTest extends Specification {
 
     def project = new ProjectBuilder().build()
 

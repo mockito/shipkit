@@ -1,12 +1,20 @@
 package org.mockito.release.internal.gradle;
 
 import com.jfrog.bintray.gradle.BintrayExtension;
+import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.mockito.release.gradle.JavaLibraryPlugin;
 
 import static org.mockito.release.internal.gradle.BaseJavaLibraryPlugin.PUBLICATION_NAME;
 
-public class DefaultJavaLibraryPlugin implements JavaLibraryPlugin {
+/**
+ * Intended to be applied in individual Java submodule. Applies following plugins:
+ *
+ * <ul>
+ *     <li>org.mockito.mockito-release-tools.java-library - see {@link JavaLibraryPlugin}</li>
+ *     <li>org.mockito.mockito-release-tools.bintray - see {@link BintrayPlugin}</li>
+ * </ul>
+ */
+public class JavaLibraryPlugin implements Plugin<Project> {
 
     public void apply(Project project) {
         project.getPlugins().apply("org.mockito.mockito-release-tools.base-java-library");
