@@ -122,6 +122,9 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
         return Notes.previousVersion(firstLine).getPreviousVersion();
     }
 
+    /**
+     * Generates new incremental content of the release notes.
+     */
     protected String getNewContent() {
         assertConfigured();
         LOG.lifecycle("  Building new release notes based on {}", releaseNotesFile);
