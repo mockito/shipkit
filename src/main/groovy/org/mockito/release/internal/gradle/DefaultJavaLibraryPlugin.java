@@ -4,7 +4,7 @@ import com.jfrog.bintray.gradle.BintrayExtension;
 import org.gradle.api.Project;
 import org.mockito.release.gradle.JavaLibraryPlugin;
 
-import static org.mockito.release.internal.gradle.DefaultBaseJavaLibraryPlugin.PUBLICATION_NAME;
+import static org.mockito.release.internal.gradle.BaseJavaLibraryPlugin.PUBLICATION_NAME;
 
 public class DefaultJavaLibraryPlugin implements JavaLibraryPlugin {
 

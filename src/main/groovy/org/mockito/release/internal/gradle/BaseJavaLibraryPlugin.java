@@ -34,9 +34,9 @@ import org.mockito.release.internal.gradle.util.PomCustomizer;
  *     <li>Adds task dependency "build" -> "publishToMavenLocal" to flesh out publication issues during the build</li>
  * </ul>
  */
-public class DefaultBaseJavaLibraryPlugin implements Plugin<Project> {
+public class BaseJavaLibraryPlugin implements Plugin<Project> {
 
-    private final static Logger LOG = Logging.getLogger(DefaultBaseJavaLibraryPlugin.class);
+    private final static Logger LOG = Logging.getLogger(BaseJavaLibraryPlugin.class);
 
     final static String PUBLICATION_NAME = "javaLibrary";
 
