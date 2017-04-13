@@ -7,18 +7,19 @@ import org.gradle.api.Project;
 import static org.mockito.release.internal.gradle.BaseJavaLibraryPlugin.PUBLICATION_NAME;
 
 /**
- * Intended to be applied in individual Java submodule. Applies following plugins:
+ * Intended to be applied in individual Java submodule.
+ * Applies following plugins and configures java publications for Bintray plugin:
  *
  * <ul>
- *     <li>org.mockito.mockito-release-tools.java-library - see {@link JavaLibraryPlugin}</li>
- *     <li>org.mockito.mockito-release-tools.bintray - see {@link BintrayPlugin}</li>
+ *     <li>{@link JavaLibraryPlugin}</li>
+ *     <li>{@link BintrayPlugin}</li>
  * </ul>
  */
 public class JavaLibraryPlugin implements Plugin<Project> {
 
     public void apply(Project project) {
-        project.getPlugins().apply("org.mockito.mockito-release-tools.base-java-library");
-        project.getPlugins().apply("org.mockito.mockito-release-tools.bintray");
+        project.getPlugins().apply(BaseJavaLibraryPlugin.class);
+        project.getPlugins().apply(BintrayPlugin.class);
 
         if (shouldConfigurePublications(project)) {
             BintrayExtension bintray = project.getExtensions().getByType(BintrayExtension.class);
