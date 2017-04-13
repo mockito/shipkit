@@ -14,6 +14,8 @@ import java.io.File;
 
 public class ReleaseNotesGenerators {
 
+    //TODO move entire "org.mockito.release.notes" -> "org.mockito.release.internal.notes"
+
     public static ReleaseNotesGenerator releaseNotesGenerator(File workDir, String repository, String authToken) {
         ProcessRunner processRunner = Exec.getProcessRunner(workDir);
         ContributionsProvider contributionsProvider = Vcs.getContributionsProvider(processRunner);

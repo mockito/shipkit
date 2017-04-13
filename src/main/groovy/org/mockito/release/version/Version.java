@@ -7,6 +7,8 @@ import java.io.File;
  */
 public class Version {
 
+    //TODO move entire "org.mockito.release.version" -> "org.mockito.release.internal.version"
+
     /**
      * Provides instance of version information
      */
