@@ -24,11 +24,10 @@ import static org.mockito.release.internal.gradle.util.TaskMaker.TASK_GROUP;
  */
 public class DefaultReleaseNotesPlugin implements ReleaseNotesPlugin {
 
-    private final static String EXTENSION_NAME = "notes";
     public static final String TEMP_SERIALIZED_NOTES_FILE = "/notableReleaseNotes.ser";
 
     public void apply(final Project project) {
-        final DefaultReleaseNotesExtension notes = new DefaultReleaseNotesExtension(project.getProjectDir(), EXTENSION_NAME);
+        final DefaultReleaseNotesExtension notes = new DefaultReleaseNotesExtension(project.getProjectDir());
 
         //TODO those should be task classes with decent API
         project.getTasks().create("updateReleaseNotes", new Action<Task>() {

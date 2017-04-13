@@ -26,28 +26,23 @@ public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
     private Map<String, String> gitHubLabelMapping = new LinkedHashMap<String, String>();
 
     private final File workDir;
-    private final String extensionName;
 
-    public DefaultReleaseNotesExtension(File workDir, String extensionName) {
+    DefaultReleaseNotesExtension(File workDir) {
         this.workDir = workDir;
-        this.extensionName = extensionName;
     }
 
     void assertConfigured() {
         //TODO SF unit test coverage
         if (releaseNotesFile == null || !releaseNotesFile.isFile()) {
-            throw new GradleException("'notesFile' must be configured and the file must be present.\n"
-                    + "Example: " + extensionName + ".notesFile = project.file(\'docs/release-notes.md\')");
+            throw new GradleException("'notesFile' must be configured and the file must be present.");
         }
 
         if (gitHubAuthToken == null || gitHubAuthToken.trim().isEmpty()) {
-            throw new GradleException("'gitHubAuthToken' must be configured.\n"
-                    + "Example: " + extensionName + ".gitHubAuthToken = \'secret\'");
+            throw new GradleException("'gitHubAuthToken' must be configured.");
         }
 
         if (gitHubRepository == null || gitHubRepository.trim().isEmpty()) {
-            throw new GradleException("'gitHubRepository' must be configured.\n"
-                    + "Example: " + extensionName + ".gitHubRepository = \'mockito/mockito\'");
+            throw new GradleException("'gitHubRepository' must be configured.");
         }
     }
 
@@ -78,7 +73,7 @@ public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
     }
 
     public String getCompleteReleaseNotes() {
-        //in progress
+        //TODO we should start building complete release notes instead of incremental ones
         ReleaseNotesGenerator generator = ReleaseNotesGenerators.releaseNotesGenerator(workDir, gitHubRepository, gitHubAuthToken);
         Collection<ReleaseNotesData> releaseNotes = generator.generateReleaseNotesData(null, new ArrayList<String>(Arrays.asList("2.7.5", "2.7.4", "2.7.3")), "v", new ArrayList<String>(), true);
         MultiReleaseNotesFormatter formatter = ReleaseNotesFormatters.detailedFormatter("Detailed release notes:\n\n", gitHubLabelMapping, "https://github.com/mockito/mockito/compare/{0}...{1}");
