@@ -1,6 +1,7 @@
 package org.mockito.release.internal.gradle;
 
 import org.gradle.api.Action;
+import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
@@ -10,7 +11,6 @@ import org.gradle.api.tasks.Exec;
 import org.gradle.process.ExecResult;
 import org.gradle.process.ExecSpec;
 import org.mockito.release.gradle.BumpVersionFileTask;
-import org.mockito.release.gradle.ContinuousDeliveryPlugin;
 import org.mockito.release.internal.gradle.util.ExtContainer;
 import org.mockito.release.internal.gradle.util.StringUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
@@ -19,11 +19,18 @@ import org.mockito.release.version.VersionInfo;
 import static java.util.Arrays.asList;
 
 /**
- * Please keep documentation up to date at {@link ContinuousDeliveryPlugin}
+ * Opinionated continuous delivery plugin.
+ * Applies following plugins and preconfigures them:
+ *
+ * <ul>
+ *     <li>{@link DefaultReleaseNotesPlugin}</li>
+ * </ul>
+ *
+ * TODO finish the docs
  */
-public class DefaultContinuousDeliveryPlugin implements ContinuousDeliveryPlugin {
+public class ContinuousDeliveryPlugin implements Plugin<Project> {
 
-    private static final Logger LOG = Logging.getLogger(DefaultContinuousDeliveryPlugin.class);
+    private static final Logger LOG = Logging.getLogger(ContinuousDeliveryPlugin.class);
 
     public void apply(final Project project) {
         project.getPlugins().apply("org.mockito.release-notes");

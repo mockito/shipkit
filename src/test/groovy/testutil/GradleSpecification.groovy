@@ -4,7 +4,7 @@ import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import org.mockito.release.internal.gradle.DefaultContinuousDeliveryPlugin
+import org.mockito.release.internal.gradle.ContinuousDeliveryPlugin
 import spock.lang.Specification
 
 /**
@@ -65,7 +65,7 @@ class GradleSpecification extends Specification {
 
     private static File findClassesDir() {
         //Using one of the production classes to find directory where IDE or the build system outputs compiled production code
-        def bearing = DefaultContinuousDeliveryPlugin.class.name.replaceAll("\\.", "/") + ".class"
+        def bearing = ContinuousDeliveryPlugin.class.name.replaceAll("\\.", "/") + ".class"
         return findDir(bearing)
     }
 
