@@ -3,7 +3,6 @@ package org.mockito.release.internal.gradle;
 import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.mockito.release.gradle.ReleaseNotesExtension;
 import org.mockito.release.internal.gradle.util.FileUtil;
 import org.mockito.release.notes.Notes;
 import org.mockito.release.notes.NotesBuilder;
@@ -16,7 +15,7 @@ import org.mockito.release.notes.model.ReleaseNotesData;
 import java.io.File;
 import java.util.*;
 
-public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
+public class DefaultReleaseNotesExtension {
 
     private static final Logger LOG = Logging.getLogger(DefaultReleaseNotesExtension.class);
 
@@ -46,15 +45,25 @@ public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
         }
     }
 
-    @Override
-    public String getPreviousVersion() {
+    /**
+     * Returns previous version based on the release notes file.
+     * It parses the first line of the release notes file to identify previously released version.
+     */
+    private String getPreviousVersion() {
+        //TODO this is really awkward method.
+        // We should not be reading previous version from release notes file
+        // We should either not read it at all (e.g. write the impl so that it does not require the previous version)
+        // or store previous release version in the 'version.properties' file.
         assertConfigured();
         String firstLine = FileUtil.firstLine(releaseNotesFile);
         return Notes.previousVersion(firstLine).getPreviousVersion();
     }
 
-    @Override
-    public String getReleaseNotes(String version) {
+    /**
+     * Generates and returns incremental release notes text that can be appended to the release notes file.
+     * @param version of the release to generate notes for
+     */
+    String getReleaseNotes(String version) {
         assertConfigured();
         LOG.lifecycle("Building new release notes based on {}", releaseNotesFile);
         NotesBuilder builder = Notes.gitHubNotesBuilder(workDir, gitHubRepository, gitHubAuthToken);
@@ -65,8 +74,12 @@ public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
         return newContent;
     }
 
-    @Override
-    public void updateReleaseNotes(String version) {
+    /**
+     * Generates incremental release notes content using {@link #getReleaseNotes(String)} )}
+     * and appends it to the top of release notes file.
+     * @param version of the release to generate notes for
+     */
+    void updateReleaseNotes(String version) {
         String newContent = getReleaseNotes(version);
         FileUtil.appendToTop(newContent, releaseNotesFile);
         LOG.lifecycle("Successfully updated release notes!");
@@ -80,19 +93,19 @@ public class DefaultReleaseNotesExtension implements ReleaseNotesExtension {
         return formatter.formatReleaseNotes(releaseNotes);
     }
 
-    public void setReleaseNotesFile(File file) {
+    void setReleaseNotesFile(File file) {
         this.releaseNotesFile = file;
     }
 
-    public void setGitHubReadOnlyAuthToken(String gitHubAuthToken) {
+    void setGitHubReadOnlyAuthToken(String gitHubAuthToken) {
         this.gitHubAuthToken = gitHubAuthToken;
     }
 
-    public void setGitHubLabelMapping(Map<String, String> gitHubLabelMapping) {
+    void setGitHubLabelMapping(Map<String, String> gitHubLabelMapping) {
         this.gitHubLabelMapping = gitHubLabelMapping;
     }
 
-    public void setGitHubRepository(String gitHubRepository) {
+    void setGitHubRepository(String gitHubRepository) {
         this.gitHubRepository = gitHubRepository;
     }
 }
