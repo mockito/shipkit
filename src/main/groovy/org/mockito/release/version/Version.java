@@ -7,10 +7,12 @@ import java.io.File;
  */
 public class Version {
 
+    //TODO move entire "org.mockito.release.version" -> "org.mockito.release.internal.version"
+
     /**
-     * Provides instance of version file
+     * Provides instance of version information
      */
-    public static VersionFile versionFile(File versionFile) {
-        return new DefaultVersionFile(versionFile);
+    public static VersionInfo versionInfo(File versionFile) {
+        return DefaultVersionInfo.fromFile(versionFile);
     }
 }

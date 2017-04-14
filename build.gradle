@@ -44,13 +44,10 @@ pluginBundle {
     tags = ['mockito', 'continuous delivery', 'release']
 
     plugins {
+        //TODO update plugins
         releaseNotesPlugin {
             id = 'org.mockito.release-notes'
             displayName = 'Mockito automated release notes generation plugin'
-        }
-        releaseWorkflowPlugin {
-            id = 'org.mockito.release-workflow'
-            displayName = 'Mockito release workflow plugin'
         }
     }
 

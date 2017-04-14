@@ -1,11 +1,14 @@
 package org.mockito.release.notes.format;
 
+import org.mockito.release.internal.util.MultiMap;
 import org.mockito.release.notes.contributors.ContributorsSet;
 import org.mockito.release.notes.internal.DateFormat;
 import org.mockito.release.notes.model.*;
-import org.mockito.release.util.MultiMap;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Original formatter
