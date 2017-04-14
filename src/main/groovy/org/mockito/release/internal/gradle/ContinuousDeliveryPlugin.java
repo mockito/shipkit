@@ -32,7 +32,7 @@ import static java.util.Arrays.asList;
  *
  * <ul>
  *     <li>gitAddBumpVersion</li>
- *     TODO document all
+ *     <li>TODO document all</li>
  * </ul>
  */
 public class ContinuousDeliveryPlugin implements Plugin<Project> {

@@ -31,7 +31,7 @@ import org.mockito.release.internal.gradle.util.PomCustomizer;
  * Other features:
  * <ul>
  *     <li>Automatically includes "LICENSE" file in all jars.</li>
- *     <li>Adds task dependency "build" -> "publishToMavenLocal" to flesh out publication issues during the build</li>
+ *     <li>Adds build.dependsOn "publishToMavenLocal" to flesh out publication issues during the build</li>
  * </ul>
  */
 public class BaseJavaLibraryPlugin implements Plugin<Project> {
