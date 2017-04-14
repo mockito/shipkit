@@ -7,7 +7,7 @@ import spock.lang.Specification
 class ZipComparatorTest extends Specification {
 
     @Rule TemporaryFolder tmp = new TemporaryFolder()
-    def compare = Mock(org.mockito.release.internal.comparison.comparison.ZipCompare)
+    def compare = Mock(ZipCompare)
 
     def "compares files"() {
         def f1 = tmp.newFile()
