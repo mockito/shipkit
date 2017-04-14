@@ -15,25 +15,25 @@ public class ContributorsSerializer {
 
     private static final Logger LOG = Logging.getLogger(ContributorsSerializer.class);
 
-    private final String filePath;
+    private final File file;
     private String json;
 
-    public ContributorsSerializer(String filePath) {
-        this.filePath = filePath;
+    public ContributorsSerializer(File file) {
+        this.file = file;
     }
 
     public void serialize(ContributorsSet contributorsSet) {
         Collection<Contributor> allContributors = contributorsSet.getAllContributors();
         json = Jsoner.serialize(allContributors);
-        LOG.info("Serializacja do " + json);
-        IOUtil.writeFile(new File(filePath), json);
+        LOG.info("Serialize contributors to: {}", json);
+        IOUtil.writeFile(file, json);
     }
 
     public ContributorsSet desrialize() {
-        LOG.info("Deserializacja z " + json);
+        LOG.info("Deserialize contributors from: {}", json);
         ContributorsSet set = new DefaultContributorsSet();
         try {
-            json = IOUtil.readFully(new File(filePath));
+            json = IOUtil.readFully(file);
             JsonArray array = (JsonArray) Jsoner.deserialize(json);
             for (Object object : array) {
                 JsonObject jsonObject = (JsonObject) object;

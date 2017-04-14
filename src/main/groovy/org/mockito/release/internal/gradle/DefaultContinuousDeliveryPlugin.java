@@ -12,7 +12,6 @@ import org.gradle.process.ExecSpec;
 import org.mockito.release.gradle.BintrayPlugin;
 import org.mockito.release.gradle.BumpVersionFileTask;
 import org.mockito.release.gradle.ContinuousDeliveryPlugin;
-import org.mockito.release.gradle.ContributorsPlugin;
 import org.mockito.release.internal.gradle.util.CommonSettings;
 import org.mockito.release.internal.gradle.util.ExtContainer;
 import org.mockito.release.internal.gradle.util.StringUtil;
