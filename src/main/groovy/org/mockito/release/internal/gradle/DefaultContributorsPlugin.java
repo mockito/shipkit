@@ -12,6 +12,7 @@ import org.mockito.release.notes.contributors.Contributors;
 
 import java.io.File;
 
+//TODO rename to ContributorsPlugin
 public class DefaultContributorsPlugin implements Plugin<Project> {
 
     @Override
