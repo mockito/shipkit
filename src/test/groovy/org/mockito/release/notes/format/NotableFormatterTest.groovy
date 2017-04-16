@@ -6,7 +6,6 @@ import org.mockito.release.notes.internal.DefaultImprovement
 import org.mockito.release.notes.internal.DefaultReleaseNotesData
 import org.mockito.release.notes.model.Commit
 import org.mockito.release.notes.model.ContributionSet
-import org.mockito.release.notes.model.Improvement
 import spock.lang.Specification
 
 class NotableFormatterTest extends Specification {
