@@ -49,10 +49,6 @@ pluginBundle {
             id = 'org.mockito.release-notes'
             displayName = 'Mockito automated release notes generation plugin'
         }
-        releaseWorkflowPlugin {
-            id = 'org.mockito.release-workflow'
-            displayName = 'Mockito release workflow plugin'
-        }
     }
 
     mavenCoordinates {
