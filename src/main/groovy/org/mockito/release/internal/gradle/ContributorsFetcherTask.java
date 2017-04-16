@@ -20,7 +20,8 @@ import org.mockito.release.notes.vcs.Vcs;
 import java.io.File;
 
 /**
- * TODO document and elevate to public api
+ * Fetch info about contributors from GitHub and store it in file. It is used later in generation release notes and
+ * adding contributors to pom.xml.
  */
 public class ContributorsFetcherTask extends DefaultTask {
 

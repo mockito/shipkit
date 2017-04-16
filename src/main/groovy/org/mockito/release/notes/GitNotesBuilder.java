@@ -59,7 +59,7 @@ class GitNotesBuilder implements NotesBuilder {
         String fromRev = revisionProvider.getRevisionForTagOrRevision(fromRevision);
 
         ContributorsReader contributorsReader = ContributorsLoader.getContributorsReader();
-        String contributorsFileName = Contributors.getContributorsFileName(buildDir.getAbsolutePath(), fromRev, toRevision);
+        String contributorsFileName = Contributors.getContributorsFileName(buildDir.getAbsolutePath(), fromRevision, toRevision);
         ContributorsSet contributors = contributorsReader.loadContributors(contributorsFileName, fromRev, toRevision);
 
         ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(repository, authToken);

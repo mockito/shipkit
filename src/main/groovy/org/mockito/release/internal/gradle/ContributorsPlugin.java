@@ -14,7 +14,7 @@ import java.io.File;
 
 /**
  * Adds and configures tasks for getting contributor git user to GitHub user mappings.
- * Useful for release generation. Adds tasks:
+ * Useful for release notes and pom.xml generation. Adds tasks:
  * <ul>
  *     <li>fetchContributorsFromGitHub - {@link ContributorsFetcherTask}</li>
  * </ul>
