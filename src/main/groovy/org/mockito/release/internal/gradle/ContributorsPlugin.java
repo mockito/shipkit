@@ -1,17 +1,23 @@
 package org.mockito.release.internal.gradle;
 
 import org.gradle.api.Action;
+import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.mockito.release.gradle.ContributorsPlugin;
 import org.mockito.release.internal.gradle.util.ExtContainer;
 import org.mockito.release.internal.gradle.util.FileUtil;
 import org.mockito.release.internal.gradle.util.LazyConfigurer;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.notes.Notes;
 
-public class DefaultContributorsPlugin implements ContributorsPlugin {
+/**
+ * Adds and configures tasks for getting contributor git user -> GitHub user mappings.
+ * Useful for release generation. Adds tasks:
+ * <ul>
+ *     <li>fetchContributorsFromGitHub - {@link ContributorsFetcherTask}</li>
+ * </ul>
+ */
+public class ContributorsPlugin implements Plugin<Project> {
 
-    @Override
     public void apply(final Project project) {
         final ExtContainer ext = new ExtContainer(project);
 

@@ -19,7 +19,9 @@ import org.mockito.release.notes.vcs.Vcs;
 
 import java.io.File;
 
-
+/**
+ * TODO document and elevate to public api
+ */
 public class ContributorsFetcherTask extends DefaultTask {
 
     private static final Logger LOG = Logging.getLogger(ContributorsFetcherTask.class);

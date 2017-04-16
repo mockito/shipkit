@@ -28,7 +28,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     private static final String TEMP_SERIALIZED_NOTES_FILE = "/notableReleaseNotes.ser";
 
     public void apply(final Project project) {
-        project.getPlugins().apply(DefaultContributorsPlugin.class);
+        project.getPlugins().apply(ContributorsPlugin.class);
 
         TaskMaker.task(project, "updateReleaseNotes", IncrementalReleaseNotes.UpdateTask.class, new Action<IncrementalReleaseNotes.UpdateTask>() {
             public void execute(final IncrementalReleaseNotes.UpdateTask t) {
