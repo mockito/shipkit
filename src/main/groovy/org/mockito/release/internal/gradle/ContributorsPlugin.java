@@ -13,7 +13,7 @@ import org.mockito.release.notes.contributors.Contributors;
 import java.io.File;
 
 /**
- * Adds and configures tasks for getting contributor git user -> GitHub user mappings.
+ * Adds and configures tasks for getting contributor git user to GitHub user mappings.
  * Useful for release generation. Adds tasks:
  * <ul>
  *     <li>fetchContributorsFromGitHub - {@link ContributorsFetcherTask}</li>
