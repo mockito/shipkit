@@ -13,4 +13,6 @@
         <exclude name="MisorderedStaticImports"/>
     </ruleset-ref>
 
+    <ruleset-ref path='rulesets/unused.xml'/>
+
 </ruleset>

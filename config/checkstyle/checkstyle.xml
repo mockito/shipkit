@@ -19,4 +19,10 @@
         <property name="format" value="\s+$"/>
         <property name="message" value="Line has trailing spaces."/>
     </module>
+
+    <module name="TreeWalker">
+        <!-- Imports -->
+        <module name="RedundantImport"/>
+        <module name="UnusedImports"/>
+    </module>
 </module>
