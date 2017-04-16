@@ -8,6 +8,9 @@ import org.mockito.release.internal.gradle.util.FileUtil;
 import org.mockito.release.internal.gradle.util.LazyConfigurer;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.notes.Notes;
+import org.mockito.release.notes.contributors.Contributors;
+
+import java.io.File;
 
 /**
  * Adds and configures tasks for getting contributor git user -> GitHub user mappings.
@@ -27,13 +30,18 @@ public class ContributorsPlugin implements Plugin<Project> {
                 task.setGroup(TaskMaker.TASK_GROUP);
                 task.setDescription("Fetch info about last contributors from GitHub and store it in file");
 
-                task.setToRevision("HEAD");
+                final String toRevision = "HEAD";
+                task.setToRevision(toRevision);
 
                 LazyConfigurer.getConfigurer(project).configureLazily(task, new Runnable() {
                     public void run() {
+                        String fromRevision = fromRevision(project, ext);
+                        File contributorsFile = contributorsFile(project, fromRevision, toRevision);
+
                         task.setAuthToken(ext.getGitHubReadOnlyAuthToken());
                         task.setRepository(ext.getGitHubRepository());
-                        task.setFromRevision(fromRevision(project, ext));
+                        task.setFromRevision(fromRevision);
+                        task.setContributorsFile(contributorsFile);
                     }
                 });
             }
@@ -45,6 +53,12 @@ public class ContributorsPlugin implements Plugin<Project> {
         project.file(ext.getReleaseNotesFile());
         String firstLine = FileUtil.firstLine(project.file(ext.getReleaseNotesFile()));
         return "v" + Notes.previousVersion(firstLine).getPreviousVersion();
+    }
+
+    private File contributorsFile(Project project, String fromRevision, String toRevision) {
+        String contributorsFileName = Contributors.getContributorsFileName(
+                project.getBuildDir().getAbsolutePath(), fromRevision, toRevision);
+        return new File(contributorsFileName);
     }
 }
 
