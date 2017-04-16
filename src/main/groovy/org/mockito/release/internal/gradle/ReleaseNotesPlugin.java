@@ -28,6 +28,8 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     private static final String TEMP_SERIALIZED_NOTES_FILE = "/notableReleaseNotes.ser";
 
     public void apply(final Project project) {
+        project.getPlugins().apply(DefaultContributorsPlugin.class);
+
         TaskMaker.task(project, "updateReleaseNotes", IncrementalReleaseNotes.UpdateTask.class, new Action<IncrementalReleaseNotes.UpdateTask>() {
             public void execute(final IncrementalReleaseNotes.UpdateTask t) {
                 t.setDescription("Updates release notes file.");
@@ -73,6 +75,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     }
 
     private static void preconfigureIncrementalNotes(final IncrementalReleaseNotes task, final Project project) {
+        task.dependsOn("fetchContributorsFromGitHub");
         final ExtContainer ext = new ExtContainer(project);
         LazyConfigurer.getConfigurer(project).configureLazily(task, new Runnable() {
             public void run() {

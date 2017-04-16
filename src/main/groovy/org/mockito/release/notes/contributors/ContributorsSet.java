@@ -2,6 +2,7 @@ package org.mockito.release.notes.contributors;
 
 import org.mockito.release.notes.model.Contributor;
 
+import java.util.Collection;
 import java.util.Set;
 
 public interface ContributorsSet {
@@ -13,4 +14,6 @@ public interface ContributorsSet {
     void addAllContributors(Set<Contributor> contributors);
 
     int size();
+
+    Collection<Contributor> getAllContributors();
 }
