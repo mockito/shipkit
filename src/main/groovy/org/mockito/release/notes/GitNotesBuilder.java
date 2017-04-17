@@ -1,10 +1,13 @@
 package org.mockito.release.notes;
 
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.mockito.release.exec.Exec;
 import org.mockito.release.exec.ProcessRunner;
 import org.mockito.release.notes.contributors.Contributors;
+import org.mockito.release.notes.contributors.ContributorsLoader;
+import org.mockito.release.notes.contributors.ContributorsReader;
 import org.mockito.release.notes.contributors.ContributorsSet;
-import org.mockito.release.notes.contributors.GitHubContributorsProvider;
 import org.mockito.release.notes.format.ReleaseNotesFormatters;
 import org.mockito.release.notes.format.SingleReleaseNotesFormatter;
 import org.mockito.release.notes.improvements.Improvements;
@@ -16,8 +19,6 @@ import org.mockito.release.notes.model.ReleaseNotesData;
 import org.mockito.release.notes.vcs.ContributionsProvider;
 import org.mockito.release.notes.vcs.RevisionProvider;
 import org.mockito.release.notes.vcs.Vcs;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Collection;
@@ -27,19 +28,22 @@ import java.util.Map;
 
 class GitNotesBuilder implements NotesBuilder {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GitNotesBuilder.class);
+    private static final Logger LOG = Logging.getLogger(GitNotesBuilder.class);
 
     private final File workDir;
     private final String authToken;
+    private final File buildDir;
     private final String repository;
 
     /**
      * @param workDir the working directory for external processes execution (for example: git log)
+     * @param buildDir build dir
      * @param repository GitHub repository, for example: "mockito/mockito"
      * @param authToken the GitHub auth token
      */
-    GitNotesBuilder(File workDir, String repository, String authToken) {
+    GitNotesBuilder(File workDir, File buildDir, String repository, String authToken) {
         this.workDir = workDir;
+        this.buildDir = buildDir;
         this.repository = repository;
         this.authToken = authToken;
     }
@@ -54,8 +58,9 @@ class GitNotesBuilder implements NotesBuilder {
         RevisionProvider revisionProvider = Vcs.getRevisionProvider(processRunner);
         String fromRev = revisionProvider.getRevisionForTagOrRevision(fromRevision);
 
-        GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContibutorsProvider(repository, authToken);
-        ContributorsSet contributors = contributorsProvider.mapContributorsToGitHubUser(contributions, fromRev, toRevision);
+        ContributorsReader contributorsReader = ContributorsLoader.getContributorsReader();
+        String contributorsFileName = Contributors.getContributorsFileName(buildDir.getAbsolutePath(), fromRevision, toRevision);
+        ContributorsSet contributors = contributorsReader.loadContributors(contributorsFileName, fromRev, toRevision);
 
         ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(repository, authToken);
         Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, Collections.<String>emptyList(), false);

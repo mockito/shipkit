@@ -128,7 +128,9 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
     protected String getNewContent() {
         assertConfigured();
         LOG.lifecycle("  Building new release notes based on {}", releaseNotesFile);
-        NotesBuilder builder = Notes.gitHubNotesBuilder(this.getProject().getProjectDir(), gitHubRepository, gitHubReadOnlyAuthToken);
+        NotesBuilder builder = Notes.gitHubNotesBuilder(
+                this.getProject().getProjectDir(), this.getProject().getBuildDir(),
+                gitHubRepository, gitHubReadOnlyAuthToken);
         String prev = "v" + getPreviousVersion();
         String current = "HEAD";
         LOG.lifecycle("  Generating release note for revisions: {} -> {}", prev, current);

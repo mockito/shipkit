@@ -3,6 +3,7 @@ package org.mockito.release.notes.contributors;
 import org.mockito.release.notes.model.Contributor;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -36,4 +37,10 @@ class DefaultContributorsSet implements ContributorsSet, Serializable{
     public int size() {
         return map.size();
     }
+
+    @Override
+    public Collection<Contributor> getAllContributors() {
+        return map.values();
+    }
+
 }

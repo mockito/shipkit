@@ -12,13 +12,13 @@ public class Notes {
 
     /**
      * Release notes build based on git and GitHub.
-     *
      * @param workDir working directory for executing external processes like 'git log'
+     * @param buildDir build directory
      * @param repository GitHub repository, for example "mockito/mockito"
      * @param gitHubReadOnlyAuthToken GitHub auth token, read-only please!
      */
-    public static NotesBuilder gitHubNotesBuilder(File workDir, String repository, String gitHubReadOnlyAuthToken) {
-        return new GitNotesBuilder(workDir, repository, gitHubReadOnlyAuthToken);
+    public static NotesBuilder gitHubNotesBuilder(File workDir, File buildDir, String repository, String gitHubReadOnlyAuthToken) {
+        return new GitNotesBuilder(workDir, buildDir, repository, gitHubReadOnlyAuthToken);
     }
 
     /**
