@@ -5,7 +5,7 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.mockito.release.internal.gradle.util.ExtContainer;
 import org.mockito.release.internal.gradle.util.FileUtil;
-import org.mockito.release.internal.gradle.util.LazyConfigurer;
+import org.mockito.release.internal.gradle.util.LazyValidator;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.notes.Notes;
 import org.mockito.release.notes.contributors.Contributors;
@@ -33,7 +33,7 @@ public class ContributorsPlugin implements Plugin<Project> {
                 final String toRevision = "HEAD";
                 task.setToRevision(toRevision);
 
-                LazyConfigurer.getConfigurer(project).configureLazily(task, new Runnable() {
+                LazyValidator.getConfigurer(project).configureLazily(task, new Runnable() {
                     public void run() {
                         String fromRevision = fromRevision(project, ext);
                         File contributorsFile = contributorsFile(project, fromRevision, toRevision);

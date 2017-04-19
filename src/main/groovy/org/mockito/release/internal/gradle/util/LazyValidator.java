@@ -6,8 +6,6 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.execution.TaskExecutionGraph;
 import org.gradle.api.execution.TaskExecutionGraphListener;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -24,9 +22,7 @@ import java.util.concurrent.Callable;
  * This is important, because when tasks are executed they can do stuff that is hard to reverse.
  * So we want to do all the validation beforehand.
  */
-public class LazyConfigurer implements TaskExecutionGraphListener {
-
-    private final static Logger LOGGER = Logging.getLogger(LazyConfigurer.class);
+public class LazyValidator implements TaskExecutionGraphListener {
 
     private Map<Task, Runnable> actions = new LinkedHashMap<Task, Runnable>();
     private Map<Task, LazyValidation> validations = new LinkedHashMap<Task, LazyValidation>();
@@ -60,7 +56,7 @@ public class LazyConfigurer implements TaskExecutionGraphListener {
      * TODO explain the use case here or in the top level type.
      */
     public static LazyValidation lazyValidation(Task task) {
-        LazyConfigurer configurer = getConfigurer(task.getProject());
+        LazyValidator configurer = getConfigurer(task.getProject());
         return configurer.addValidation(task);
     }
 
@@ -74,25 +70,25 @@ public class LazyConfigurer implements TaskExecutionGraphListener {
     }
 
     /**
-     * @deprecated please use {@link #lazyValidation(Task)} or {@link #configureLazily(Project, Action)}.
+     * @deprecated please use {@link #lazyValidation(Task)} or {@link DeferredConfiguration#deferredConfiguration(Project, Action)}.
      */
     @Deprecated
-    public static LazyConfigurer getConfigurer(Project project) {
+    public static LazyValidator getConfigurer(Project project) {
         Project rootProject = project.getRootProject();
         //single configurer for the entire build, hooked up to the root project, for simplicity and speed
         //we don't want too many listeners that introduce blocking callbacks to Gradle internals
 
-        LazyConfigurer validator = rootProject.getExtensions().findByType(LazyConfigurer.class);
+        LazyValidator validator = rootProject.getExtensions().findByType(LazyValidator.class);
         if (validator == null) {
-            validator = new LazyConfigurer();
-            rootProject.getExtensions().add(LazyConfigurer.class.getName(), validator);
+            validator = new LazyValidator();
+            rootProject.getExtensions().add(LazyValidator.class.getName(), validator);
             rootProject.getGradle().addListener(validator);
         }
         return validator;
     }
 
     /**
-     * @deprecated please use {@link #lazyValidation(Task)} or {@link #configureLazily(Project, Action)}.
+     * @deprecated please use {@link #lazyValidation(Task)} or {@link DeferredConfiguration#deferredConfiguration(Project, Action)}.
      */
     @Deprecated
     public void configureLazily(Task task, Runnable action) {
@@ -124,31 +120,4 @@ public class LazyConfigurer implements TaskExecutionGraphListener {
         }
     }
 
-    /**
-     * Defers configuring the project, making use of user-defined settings in the build script.
-     * It is needed every time we need to configure project / tasks
-     * based on values specified by the user inside of the "build.gradle" file.
-     * Example "build.gradle" file:
-     * <pre>
-     *     //plugin gets applied and the tasks and extension object are added:
-     *     apply plugin: "org.mockito.mockito-release-tools.continuous-delivery"
-     *
-     *     //the plugin was already applied but the user only now can configure the extension object:
-     *     releasing {
-     *         releaseNotes {
-     *             file = file("CHANGELOG.md")
-     *         }
-     *     }
-     *
-     *     //the settings above need to be reflected in tasks added earlier by the plugin
-     * </pre>
-     */
-    public static void configureLazily(Project project, final Action<Project> action) {
-        project.afterEvaluate(new Action<Project>() {
-            public void execute(Project project) {
-                LOGGER.info("{} - executing deferred configuration using 'afterEvaluate'", project.getPath());
-                action.execute(project);
-            }
-        });
-    }
 }

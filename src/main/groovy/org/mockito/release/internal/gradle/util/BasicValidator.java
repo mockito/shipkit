@@ -5,7 +5,7 @@ import org.gradle.api.GradleException;
 /**
  * Validates the inputs provided by users
  */
-public class Validator {
+public class BasicValidator {
 
     /**
      * Throws {@link GradleException} with specified message if the object is null.

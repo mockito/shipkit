@@ -13,9 +13,9 @@ import org.mockito.release.gradle.ReleaseConfiguration;
 import java.util.concurrent.Callable;
 
 import static org.mockito.release.internal.gradle.ReleaseConfigurationPlugin.BINTRAY_KEY_ENV;
-import static org.mockito.release.internal.gradle.util.LazyConfigurer.configureLazily;
-import static org.mockito.release.internal.gradle.util.LazyConfigurer.lazyValidation;
-import static org.mockito.release.internal.gradle.util.Validator.notNull;
+import static org.mockito.release.internal.gradle.util.BasicValidator.notNull;
+import static org.mockito.release.internal.gradle.util.DeferredConfiguration.deferredConfiguration;
+import static org.mockito.release.internal.gradle.util.LazyValidator.lazyValidation;
 
 /**
  * Applies and configures "com.jfrog.bintray" plugin based on sensible defaults
@@ -67,7 +67,7 @@ public class BintrayPlugin implements Plugin<Project> {
         pkg.getVersion().getGpg().setSign(true);
 
         //Defer configuration of other properties
-        configureLazily(project, new Action<Project>() {
+        deferredConfiguration(project, new Action<Project>() {
             public void execute(Project project) {
                 //workaround for https://github.com/bintray/gradle-bintray-plugin/issues/170
                 notNull(bintray.getUser(), "Bintray 'user' setting is required.\n" +

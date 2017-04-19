@@ -8,7 +8,7 @@ import org.gradle.api.specs.Spec;
 import org.mockito.release.gradle.IncrementalReleaseNotes;
 import org.mockito.release.gradle.ReleaseToolsProperties;
 import org.mockito.release.internal.gradle.util.ExtContainer;
-import org.mockito.release.internal.gradle.util.LazyConfigurer;
+import org.mockito.release.internal.gradle.util.LazyValidator;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 
 import java.io.File;
@@ -51,7 +51,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
                 final NotesGeneration gen = task.getNotesGeneration();
                 preconfigureNotableNotes(project, gen);
 
-                LazyConfigurer.getConfigurer(project).configureLazily(task, new Runnable() {
+                LazyValidator.getConfigurer(project).configureLazily(task, new Runnable() {
                     public void run() {
                         configureNotableNotes(project, gen);
                     }
@@ -67,7 +67,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
 
                 task.dependsOn("fetchNotableReleaseNotes");
 
-                LazyConfigurer.getConfigurer(project).configureLazily(task, new Runnable() {
+                LazyValidator.getConfigurer(project).configureLazily(task, new Runnable() {
                     public void run() {
                         configureNotableNotes(project, gen);
                     }
@@ -79,7 +79,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     private static void preconfigureIncrementalNotes(final IncrementalReleaseNotes task, final Project project) {
         task.dependsOn("fetchContributorsFromGitHub");
         final ExtContainer ext = new ExtContainer(project);
-        LazyConfigurer.getConfigurer(project).configureLazily(task, new Runnable() {
+        LazyValidator.getConfigurer(project).configureLazily(task, new Runnable() {
             public void run() {
                 task.setGitHubLabelMapping(ext.getMap(ReleaseToolsProperties.releaseNotes_labelMapping)); //TODO make it optional
                 task.setReleaseNotesFile(project.file(ext.getReleaseNotesFile())); //TODO add sensible default

@@ -7,9 +7,9 @@ import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Exec;
-import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.internal.gradle.util.ExtContainer;
-import org.mockito.release.internal.gradle.util.LazyConfigurer;
+import org.mockito.release.internal.gradle.util.LazyValidator;
+import org.mockito.release.internal.gradle.util.TaskMaker;
 
 import java.io.ByteArrayOutputStream;
 
@@ -63,7 +63,7 @@ public class GitPlugin implements Plugin<Project> {
                 t.setDescription("Pushes changes to remote repo.");
                 t.mustRunAfter(COMMIT_TASK, TAG_TASK);
 
-                LazyConfigurer.getConfigurer(project).configureLazily(t, new Runnable() {
+                LazyValidator.getConfigurer(project).configureLazily(t, new Runnable() {
                     public void run() {
                         t.commandLine(ext.getQuietGitPushArgs());
 
@@ -113,7 +113,7 @@ public class GitPlugin implements Plugin<Project> {
         TaskMaker.execTask(project, CHECKOUT_BRANCH_TASK, new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Checks out the branch that can be committed. CI systems often check out revision that is not committable.");
-                LazyConfigurer.getConfigurer(project).configureLazily(t, new Runnable() {
+                LazyValidator.getConfigurer(project).configureLazily(t, new Runnable() {
                     public void run() {
                         t.commandLine("git", "checkout", ext.getCurrentBranch());
                     }
@@ -124,7 +124,7 @@ public class GitPlugin implements Plugin<Project> {
         TaskMaker.execTask(project, SET_USER_TASK, new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Overwrites local git 'user.name' with a generic name. Intended for CI.");
-                //TODO replace all doFirst in this class with LazyConfigurer
+                //TODO replace all doFirst in this class with LazyValidator
                 t.doFirst(new Action<Task>() {
                     public void execute(Task task) {
                         //using doFirst() so that we request and validate presence of env var only during execution time
