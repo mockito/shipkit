@@ -12,9 +12,7 @@ import org.mockito.release.internal.gradle.util.LazyConfigurer;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 
 import java.io.File;
-import java.util.Collections;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
 /**
