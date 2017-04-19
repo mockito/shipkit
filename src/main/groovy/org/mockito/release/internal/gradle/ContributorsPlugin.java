@@ -3,7 +3,6 @@ package org.mockito.release.internal.gradle;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.mockito.release.internal.gradle.configuration.LazyValidator;
 import org.mockito.release.internal.gradle.util.ExtContainer;
 import org.mockito.release.internal.gradle.util.FileUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
@@ -11,6 +10,8 @@ import org.mockito.release.notes.Notes;
 import org.mockito.release.notes.contributors.Contributors;
 
 import java.io.File;
+
+import static org.mockito.release.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
 
 /**
  * Adds and configures tasks for getting contributor git user to GitHub user mappings.
@@ -33,7 +34,7 @@ public class ContributorsPlugin implements Plugin<Project> {
                 final String toRevision = "HEAD";
                 task.setToRevision(toRevision);
 
-                LazyValidator.getConfigurer(project).configureLazily(task, new Runnable() {
+                deferredConfiguration(project, new Runnable() {
                     public void run() {
                         String fromRevision = fromRevision(project, ext);
                         File contributorsFile = contributorsFile(project, fromRevision, toRevision);

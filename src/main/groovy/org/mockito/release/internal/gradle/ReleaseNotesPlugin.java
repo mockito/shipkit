@@ -7,13 +7,14 @@ import org.gradle.api.Task;
 import org.gradle.api.specs.Spec;
 import org.mockito.release.gradle.IncrementalReleaseNotes;
 import org.mockito.release.gradle.ReleaseToolsProperties;
-import org.mockito.release.internal.gradle.configuration.LazyValidator;
+import org.mockito.release.internal.gradle.configuration.DeferredConfiguration;
 import org.mockito.release.internal.gradle.util.ExtContainer;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 
 import java.io.File;
 
 import static java.util.Collections.singletonList;
+import static org.mockito.release.internal.gradle.configuration.LazyConfigurer.lazyConfiguration;
 
 /**
  * The plugin adds following tasks:
@@ -51,7 +52,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
                 final NotesGeneration gen = task.getNotesGeneration();
                 preconfigureNotableNotes(project, gen);
 
-                LazyValidator.getConfigurer(project).configureLazily(task, new Runnable() {
+                lazyConfiguration(task, new Runnable() {
                     public void run() {
                         configureNotableNotes(project, gen);
                     }
@@ -67,7 +68,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
 
                 task.dependsOn("fetchNotableReleaseNotes");
 
-                LazyValidator.getConfigurer(project).configureLazily(task, new Runnable() {
+                lazyConfiguration(task, new Runnable() {
                     public void run() {
                         configureNotableNotes(project, gen);
                     }
@@ -79,12 +80,13 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     private static void preconfigureIncrementalNotes(final IncrementalReleaseNotes task, final Project project) {
         task.dependsOn("fetchContributorsFromGitHub");
         final ExtContainer ext = new ExtContainer(project);
-        LazyValidator.getConfigurer(project).configureLazily(task, new Runnable() {
+        DeferredConfiguration.deferredConfiguration(project, new Runnable() {
             public void run() {
                 task.setGitHubLabelMapping(ext.getMap(ReleaseToolsProperties.releaseNotes_labelMapping)); //TODO make it optional
                 task.setReleaseNotesFile(project.file(ext.getReleaseNotesFile())); //TODO add sensible default
                 task.setGitHubReadOnlyAuthToken(ext.getGitHubReadOnlyAuthToken());
                 task.setGitHubRepository(ext.getString(ReleaseToolsProperties.gh_repository));
+                //TODO, do we need below force?
                 forceTaskToAlwaysGeneratePreview(task);
             }
         });

@@ -6,10 +6,9 @@ import org.gradle.api.logging.Logging;
 import org.gradle.api.plugins.ExtraPropertiesExtension;
 import org.mockito.release.gradle.ReleaseToolsProperties;
 
-import java.text.MessageFormat;
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
 
-import static java.util.Arrays.asList;
 import static org.mockito.release.gradle.ReleaseToolsProperties.gh_repository;
 
 //TODO add:
@@ -81,30 +80,6 @@ public class ExtContainer {
      */
     public String getTag() {
         return "v" + project.getVersion();
-    }
-
-    /**
-     * Quiet command line to be used to perform git push
-     */
-    public List<String> getQuietGitPushArgs() {
-        //TODO unit testable
-        //!!!Below command _MUST_ be quiet otherwise it exposes GitHub write token!!!
-        String mustBeQuiet = "-q";
-        String ghUser = getString("gh_user");
-        String ghWriteToken = EnvVariables.getEnv("GH_WRITE_TOKEN");
-        String ghRepo = getGitHubRepository();
-        String branch = getCurrentBranch();
-        String url = MessageFormat.format("https://{0}:[GH_WRITE_TOKEN]@github.com/{1}.git", ghUser, ghRepo);
-
-        ArrayList<String> args = new ArrayList<String>(asList("git", "push", url, branch, getTag(), mustBeQuiet));
-        if (isReleaseDryRun()) {
-            args.add("--dry-run");
-        }
-        LOG.lifecycle("  'git push' arguments:\n    {}", StringUtil.join(args, " "));
-        //!!! Setting the url after printing the command so that we don't expose the sensitive token!!!
-        String actualUrl = args.get(2).replace("[GH_WRITE_TOKEN]", ghWriteToken);
-        args.set(2, actualUrl);
-        return args;
     }
 
     /**

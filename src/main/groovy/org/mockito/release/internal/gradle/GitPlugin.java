@@ -7,12 +7,14 @@ import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Exec;
-import org.mockito.release.internal.gradle.configuration.LazyValidator;
+import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.internal.gradle.util.ExtContainer;
+import org.mockito.release.internal.gradle.util.GitUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 
 import java.io.ByteArrayOutputStream;
 
+import static org.mockito.release.internal.gradle.configuration.LazyConfigurer.lazyConfiguration;
 import static org.mockito.release.internal.gradle.util.StringUtil.join;
 
 /**
@@ -33,6 +35,11 @@ public class GitPlugin implements Plugin<Project> {
     static final String SET_EMAIL_TASK = "setGitUserEmail";
 
     public void apply(final Project project) {
+        //TODO below 2 lines are duplicated in a couple of places. Static method on ReleaseConfigurationPlugin?
+        project.getRootProject().getPlugins().apply(ReleaseConfigurationPlugin.class);
+        final ReleaseConfiguration conf = (ReleaseConfiguration) project.getRootProject().getExtensions()
+                .getByName(ReleaseConfigurationPlugin.EXTENSION_NAME);
+
         final ExtContainer ext = new ExtContainer(project);
 
         TaskMaker.execTask(project, COMMIT_TASK, new Action<Exec>() {
@@ -63,14 +70,14 @@ public class GitPlugin implements Plugin<Project> {
                 t.setDescription("Pushes changes to remote repo.");
                 t.mustRunAfter(COMMIT_TASK, TAG_TASK);
 
-                LazyValidator.getConfigurer(project).configureLazily(t, new Runnable() {
-                    public void run() {
-                        t.commandLine(ext.getQuietGitPushArgs());
+                //!!!We must capture and hide the output because when git push fails it can expose the token!
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                t.setStandardOutput(output);
+                t.setErrorOutput(output);
 
-                        //!!!We must capture and hide the output because when git push fails it can expose the token!
-                        ByteArrayOutputStream output = new ByteArrayOutputStream();
-                        t.setStandardOutput(output);
-                        t.setErrorOutput(output);
+                lazyConfiguration(t, new Runnable() {
+                    public void run() {
+                        t.commandLine(GitUtil.getQuietGitPushArgs(conf, ext));
                     }
                 });
             }
@@ -113,7 +120,7 @@ public class GitPlugin implements Plugin<Project> {
         TaskMaker.execTask(project, CHECKOUT_BRANCH_TASK, new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Checks out the branch that can be committed. CI systems often check out revision that is not committable.");
-                LazyValidator.getConfigurer(project).configureLazily(t, new Runnable() {
+                lazyConfiguration(t, new Runnable() {
                     public void run() {
                         t.commandLine("git", "checkout", ext.getCurrentBranch());
                     }
@@ -124,7 +131,7 @@ public class GitPlugin implements Plugin<Project> {
         TaskMaker.execTask(project, SET_USER_TASK, new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Overwrites local git 'user.name' with a generic name. Intended for CI.");
-                //TODO replace all doFirst in this class with LazyValidator
+                //TODO replace all doFirst in this class with LazyConfigurer
                 t.doFirst(new Action<Task>() {
                     public void execute(Task task) {
                         //using doFirst() so that we request and validate presence of env var only during execution time

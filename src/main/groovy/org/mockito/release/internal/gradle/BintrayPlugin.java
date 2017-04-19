@@ -10,12 +10,9 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.mockito.release.gradle.ReleaseConfiguration;
 
-import java.util.concurrent.Callable;
-
-import static org.mockito.release.internal.gradle.ReleaseConfigurationPlugin.BINTRAY_KEY_ENV;
 import static org.mockito.release.internal.gradle.configuration.BasicValidator.notNull;
 import static org.mockito.release.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
-import static org.mockito.release.internal.gradle.configuration.LazyValidator.lazyValidation;
+import static org.mockito.release.internal.gradle.configuration.LazyConfigurer.lazyConfiguration;
 
 /**
  * Applies and configures "com.jfrog.bintray" plugin based on sensible defaults
@@ -63,54 +60,49 @@ public class BintrayPlugin implements Plugin<Project> {
 
         final BintrayExtension.PackageConfig pkg = bintray.getPkg();
         pkg.setPublicDownloadNumbers(true);
-        pkg.getVersion().setVcsTag("v" + project.getVersion());
         pkg.getVersion().getGpg().setSign(true);
 
         //Defer configuration of other properties
-        deferredConfiguration(project, new Action<Project>() {
-            public void execute(Project project) {
+        deferredConfiguration(project, new Runnable() {
+            public void run() {
                 //workaround for https://github.com/bintray/gradle-bintray-plugin/issues/170
-                notNull(bintray.getUser(), "Bintray 'user' setting is required.\n" +
-                        "  Please configure Bintray extension ('bintray.user').");
+                notNull(bintray.getUser(), "Missing 'bintray.user' value.\n" +
+                        "  Please configure Bintray extension.");
 
+                //Below overwrites prior value in case the user configured dry run directly on the bintray extension.
+                //It should be ok.
                 bintray.setDryRun(conf.isDryRun());
-
-                if (bintray.getKey() == null) {
-                    bintray.setKey(conf.getBintray().getApiKey());
-                }
 
                 if (pkg.getDesc() == null) {
                     pkg.setDesc(project.getDescription());
                 }
 
+                if (pkg.getVersion().getVcsTag() == null) {
+                    pkg.getVersion().setVcsTag("v" + project.getVersion());
+                }
+
                 if (pkg.getWebsiteUrl() == null) {
-                    pkg.setWebsiteUrl("https://github.com/" + ghRepo());
+                    pkg.setWebsiteUrl("https://github.com/" + conf.getGitHub().getRepository());
                 }
 
                 if (pkg.getIssueTrackerUrl() == null) {
-                    pkg.setIssueTrackerUrl("https://github.com/" + ghRepo() + "/issues");
+                    pkg.setIssueTrackerUrl("https://github.com/" + conf.getGitHub().getRepository() + "/issues");
                 }
 
                 if (pkg.getVcsUrl() == null) {
-                    pkg.setVcsUrl("https://github.com/" + ghRepo() + ".git");
+                    pkg.setVcsUrl("https://github.com/" + conf.getGitHub().getRepository() + ".git");
                 }
-            }
-
-            private String ghRepo() {
-                return notNull(conf.getGitHub().getRepository(), "'releasing.gitHub.repository' setting is required.");
             }
         });
 
         //TODO unit test
-        lazyValidation(bintrayUpload)
-            .notNull("Bintray 'apiKey' setting is required.\n" +
-                            "  For safety, it's best to configure it using '" + BINTRAY_KEY_ENV + "' environment variable.\n" +
-                            "  You can also configure it on Bintray extension ('bintray.key') or releasing extension ('releasing.bintray.apiKey')",
-                    new Callable() {
-                        public Object call() throws Exception {
-                            return bintray.getKey();
-                        }
-                    });
+        lazyConfiguration(bintrayUpload, new Runnable() {
+            public void run() {
+                if (bintray.getKey() == null) {
+                    bintray.setKey(conf.getBintray().getApiKey());
+                }
+            }
+        });
     }
 
     static String uploadWelcomeMessage(BintrayUploadTask t) {

@@ -7,14 +7,16 @@ import org.gradle.api.logging.Logging;
 
 /**
  * Deferred configuration of Gradle objects (tasks, projects) so that they can reflect user-specified values.
- * See {@link #deferredConfiguration(Project, Action)}.
+ *
+ * See {@link #deferredConfiguration(Project, Runnable)}.
  */
 public class DeferredConfiguration {
 
-    private final static Logger LOGGER = Logging.getLogger(LazyValidator.class);
+    private final static Logger LOGGER = Logging.getLogger(DeferredConfiguration.class);
 
     /**
-     * Defers configuring the project and tasks, making use of user-defined settings in the build script.
+     * Defers configuring the project and tasks, making use of user-defined settings in the build.gradle.
+     * Use it for settings that should be configured in the build.gradle by the user.
      * It is needed every time we need to configure project / tasks
      * based on values specified by the user inside of the "build.gradle" file.
      * Example "build.gradle" file:
@@ -32,11 +34,11 @@ public class DeferredConfiguration {
      *     //the settings above need to be reflected in tasks added earlier by the plugin
      * </pre>
      */
-    public static void deferredConfiguration(Project project, final Action<Project> action) {
+    public static void deferredConfiguration(Project project, final Runnable runnable) {
         project.afterEvaluate(new Action<Project>() {
             public void execute(Project project) {
                 LOGGER.info("{} - executing deferred configuration using 'afterEvaluate'", project.getPath());
-                action.execute(project);
+                runnable.run();
             }
         });
     }

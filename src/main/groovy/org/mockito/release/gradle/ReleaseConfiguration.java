@@ -1,15 +1,18 @@
 package org.mockito.release.gradle;
 
+import org.gradle.api.GradleException;
+
 import java.io.File;
 import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * TODO javadoc
  */
 public class ReleaseConfiguration {
+
+    private final Map<String, String> configuration = new HashMap<String, String>();
 
     private final GitHub gitHub = new GitHub();
     private final ReleaseNotes releaseNotes = new ReleaseNotes();
@@ -47,127 +50,126 @@ public class ReleaseConfiguration {
         return bintray;
     }
 
-    public static class GitHub {
-
-        private String repository;
-        private String user;
-        private String readOnlyAuthToken;
+    public class GitHub {
 
         public String getRepository() {
-            return repository;
+            return getValue("gitHub.repository");
         }
 
         public void setRepository(String repository) {
-            this.repository = repository;
+            configuration.put("gitHub.repository", repository);
         }
 
         public String getUser() {
-            return user;
+            return null;
         }
 
         public void setUser(String user) {
-            this.user = user;
         }
 
         public String getReadOnlyAuthToken() {
-            return readOnlyAuthToken;
+            return null;
         }
 
         public void setReadOnlyAuthToken(String readOnlyAuthToken) {
-            this.readOnlyAuthToken = readOnlyAuthToken;
+
+        }
+
+        public String getWriteAuthToken() {
+            return getValue("gitHub.writeAuthToken");
+        }
+
+        public void setWriteAuthToken(String writeAuthToken) {
+            configuration.put("gitHub.writeAuthToken", writeAuthToken);
         }
     }
 
     public static class ReleaseNotes {
-        private File file;
-        private File notableFile;
-        private Map<String, String> labelMapping = new LinkedHashMap<String, String>();
-
         public File getFile() {
-            return file;
+            return null;
         }
 
         public void setFile(File file) {
-            this.file = file;
+
         }
 
         public File getNotableFile() {
-            return notableFile;
+            return null;
         }
 
         public void setNotableFile(File notableFile) {
-            this.notableFile = notableFile;
+
         }
 
         public Map<String, String> getLabelMapping() {
-            return labelMapping;
+            return null;
         }
 
         public void setLabelMapping(Map<String, String> labelMapping) {
-            this.labelMapping = labelMapping;
+
         }
     }
 
     public static class Git {
-        private String user;
-        private String email;
-        private String releasableBranchRegex;
 
         public String getUser() {
-            return user;
+            return null;
         }
 
         public void setUser(String user) {
-            this.user = user;
+
         }
 
         public String getEmail() {
-            return email;
+            return null;
         }
 
         public void setEmail(String email) {
-            this.email = email;
+
         }
 
         public String getReleasableBranchRegex() {
-            return releasableBranchRegex;
+            return null;
         }
 
         public void setReleasableBranchRegex(String releasableBranchRegex) {
-            this.releasableBranchRegex = releasableBranchRegex;
+
         }
     }
 
     public static class Library {
-        private Collection<String> developers = new LinkedList<String>();
-        private Collection<String> contributors = new LinkedList<String>();
-
         public Collection<String> getDevelopers() {
-            return developers;
+            return null;
         }
 
         public void setDevelopers(Collection<String> developers) {
-            this.developers = developers;
+
         }
 
         public Collection<String> getContributors() {
-            return contributors;
+            return null;
         }
 
         public void setContributors(Collection<String> contributors) {
-            this.contributors = contributors;
+
         }
     }
 
-    public static class Bintray {
-        private String apiKey;
-
+    public class Bintray {
         public String getApiKey() {
-            return apiKey;
+            return getValue("bintray.apiKey");
         }
 
         public void setApiKey(String apiKey) {
-            this.apiKey = apiKey;
+            configuration.put("bintray.apiKey", apiKey);
         }
+    }
+
+    private String getValue(String key) {
+        String value = configuration.get(key);
+        if (value == null) {
+            throw new GradleException("Please configure 'releasing." + key + "' value.");
+        }
+        return value;
     }
 }

@@ -4,8 +4,6 @@ import org.gradle.api.GradleException;
 
 /**
  * Validates the inputs provided by users.
- * Use it to validate settings that should be configured in the build.gradle by the user.
- * For settings that are relevant only to release builds (like GitHub and Bintray secret keys) use {@link LazyValidator} instead.
  */
 public class BasicValidator {
 
@@ -14,6 +12,7 @@ public class BasicValidator {
      * Returns the object if it is not not null.
      */
     public static <T> T notNull(T object, String message) {
+        //TODO unit test
         if (object == null) {
             throw new GradleException(message);
         }
