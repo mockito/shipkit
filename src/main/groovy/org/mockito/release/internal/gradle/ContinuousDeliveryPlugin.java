@@ -40,6 +40,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
     private static final Logger LOG = Logging.getLogger(ContinuousDeliveryPlugin.class);
 
     public void apply(final Project project) {
+        project.getPlugins().apply(ReleaseConfigurationPlugin.class);
         project.getPlugins().apply(ReleaseNotesPlugin.class);
         project.getPlugins().apply(VersioningPlugin.class);
         project.getPlugins().apply(GitPlugin.class);
