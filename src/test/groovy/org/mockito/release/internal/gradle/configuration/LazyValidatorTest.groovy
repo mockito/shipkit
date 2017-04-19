@@ -6,7 +6,7 @@ import spock.lang.Specification
 
 import static org.mockito.release.internal.gradle.configuration.LazyValidator.getConfigurer
 
-class LazyBasicValidatorTest extends Specification {
+class LazyValidatorTest extends Specification {
 
     def project1 = new ProjectBuilder().build()
     def project2 = new ProjectBuilder().withParent(project1).build()
