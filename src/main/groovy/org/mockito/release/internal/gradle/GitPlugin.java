@@ -7,8 +7,8 @@ import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Exec;
+import org.mockito.release.internal.gradle.configuration.LazyValidator;
 import org.mockito.release.internal.gradle.util.ExtContainer;
-import org.mockito.release.internal.gradle.util.LazyValidator;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 
 import java.io.ByteArrayOutputStream;

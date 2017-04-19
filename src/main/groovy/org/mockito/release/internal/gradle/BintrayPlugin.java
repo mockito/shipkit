@@ -13,9 +13,9 @@ import org.mockito.release.gradle.ReleaseConfiguration;
 import java.util.concurrent.Callable;
 
 import static org.mockito.release.internal.gradle.ReleaseConfigurationPlugin.BINTRAY_KEY_ENV;
-import static org.mockito.release.internal.gradle.util.BasicValidator.notNull;
-import static org.mockito.release.internal.gradle.util.DeferredConfiguration.deferredConfiguration;
-import static org.mockito.release.internal.gradle.util.LazyValidator.lazyValidation;
+import static org.mockito.release.internal.gradle.configuration.BasicValidator.notNull;
+import static org.mockito.release.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
+import static org.mockito.release.internal.gradle.configuration.LazyValidator.lazyValidation;
 
 /**
  * Applies and configures "com.jfrog.bintray" plugin based on sensible defaults

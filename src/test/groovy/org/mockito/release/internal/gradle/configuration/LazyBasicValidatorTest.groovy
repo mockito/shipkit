@@ -1,10 +1,10 @@
-package org.mockito.release.internal.gradle.util
+package org.mockito.release.internal.gradle.configuration
 
 import org.gradle.api.execution.TaskExecutionGraph
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
-import static LazyValidator.getConfigurer
+import static org.mockito.release.internal.gradle.configuration.LazyValidator.getConfigurer
 
 class LazyBasicValidatorTest extends Specification {
 

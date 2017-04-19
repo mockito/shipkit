@@ -7,8 +7,8 @@ import org.gradle.api.Task;
 import org.gradle.api.specs.Spec;
 import org.mockito.release.gradle.IncrementalReleaseNotes;
 import org.mockito.release.gradle.ReleaseToolsProperties;
+import org.mockito.release.internal.gradle.configuration.LazyValidator;
 import org.mockito.release.internal.gradle.util.ExtContainer;
-import org.mockito.release.internal.gradle.util.LazyValidator;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 
 import java.io.File;

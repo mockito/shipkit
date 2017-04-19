@@ -1,4 +1,4 @@
-package org.mockito.release.internal.gradle.util;
+package org.mockito.release.internal.gradle.configuration;
 
 import org.gradle.api.Action;
 import org.gradle.api.Project;
