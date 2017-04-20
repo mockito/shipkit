@@ -196,6 +196,9 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
             }
         });
 
+        //TODO delete this task, instead we can just print to the user:
+        // to test the release, run "./gradlew performRelease releaseCleanUp -PreleaseDryRun"
+        //forking off gradle process to run tasks, from inside gradle tasks is not a good idea.
         TaskMaker.task(project, "testRelease", new Action<Task>() {
             public void execute(Task t) {
                 t.setDescription("Tests the release, intended to be used locally by engineers");
