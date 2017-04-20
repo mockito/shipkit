@@ -92,7 +92,7 @@ public class ReleaseConfiguration {
         }
 
         public String getWriteAuthToken() {
-            return getValue("gitHub.writeAuthToken");
+            return getSensitiveValue("gitHub.writeAuthToken");
         }
 
         public void setWriteAuthToken(String writeAuthToken) {
@@ -188,7 +188,7 @@ public class ReleaseConfiguration {
 
     public class Bintray {
         public String getApiKey() {
-            return getValue("bintray.apiKey");
+            return getSensitiveValue("bintray.apiKey");
         }
 
         public void setApiKey(String apiKey) {
@@ -196,10 +196,23 @@ public class ReleaseConfiguration {
         }
     }
 
+    //TODO unit test message creation and error handling
     private String getValue(String key) {
+        return getValue(key, "Please configure 'releasing." + key + "' value.");
+    }
+
+    private String getSensitiveValue(String key) {
+        return getValue(key, "Please configure 'releasing." + key + "' value.\n" +
+                "  It is recommended to use env variable for sensitive information\n" +
+                "  and store secured value with your CI configuration.\n" +
+                "  Example 'build.gradle' file:\n" +
+                "    releasing." + key + " = System.getenv('SECRET')");
+    }
+
+    private String getValue(String key, String message) {
         String value = configuration.get(key);
         if (value == null) {
-            throw new GradleException("Please configure 'releasing." + key + "' value.");
+            throw new GradleException(message);
         }
         return value;
     }
