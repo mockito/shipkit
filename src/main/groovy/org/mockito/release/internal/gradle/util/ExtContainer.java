@@ -61,20 +61,6 @@ public class ExtContainer {
     }
 
     /**
-     * Generic git user to be used for commits, for example "mockito.release.tools"
-     */
-    public String getGitGenericUser() {
-        return getString("git_genericUser");
-    }
-
-    /**
-     * Generic git email to be used for commits, for example "mockito.release.tools@gmail.com"
-     */
-    public String getGitGenericEmail() {
-        return getString("git_genericEmail");
-    }
-
-    /**
      * Notable release notes file, for example "docs/notable-release-notes.md"
      */
     public String getNotableReleaseNotesFile() {

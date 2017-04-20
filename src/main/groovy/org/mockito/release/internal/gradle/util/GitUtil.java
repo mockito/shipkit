@@ -47,7 +47,7 @@ public class GitUtil {
      * Returns Git generic user notation based on settings, for example:
      * "Mockito Release Tools &lt;mockito.release.tools@gmail.com&gt;"
      */
-    public static Object getGitGenericUserNotation(ExtContainer ext) {
-        return ext.getGitGenericUser() + " <" + ext.getGitGenericEmail() + ">";
+    public static Object getGitGenericUserNotation(ReleaseConfiguration conf) {
+        return conf.getGit().getUser() + " <" + conf.getGit().getEmail() + ">";
     }
 }

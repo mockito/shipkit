@@ -46,7 +46,7 @@ public class GitPlugin implements Plugin<Project> {
                     public void execute(Task task) {
                         //doFirst (execution time) to pick up user-configured setting
                         t.commandLine("git", "commit", "--author",
-                                GitUtil.getGitGenericUserNotation(ext), "-m", commitMessage("Bumped version and updated release notes"));
+                                GitUtil.getGitGenericUserNotation(conf), "-m", commitMessage("Bumped version and updated release notes"));
                     }
                 });
             }
@@ -132,7 +132,7 @@ public class GitPlugin implements Plugin<Project> {
                 t.doFirst(new Action<Task>() {
                     public void execute(Task task) {
                         //using doFirst() so that we request and validate presence of env var only during execution time
-                        t.commandLine("git", "config", "--local", "user.name", ext.getGitGenericUser());
+                        t.commandLine("git", "config", "--local", "user.name", conf.getGit().getUser());
                     }
                 });
             }
@@ -145,7 +145,7 @@ public class GitPlugin implements Plugin<Project> {
                     public void execute(Task task) {
                         //using doFirst() so that we request and validate presence of env var only during execution time
                         //TODO consider adding 'lazyExec' task or method that automatically uses do first
-                        t.commandLine("git", "config", "--local", "user.email", ext.getGitGenericEmail());
+                        t.commandLine("git", "config", "--local", "user.email", conf.getGit().getEmail());
                     }
                 });
             }

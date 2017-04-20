@@ -130,20 +130,36 @@ public class ReleaseConfiguration {
 
     public class Git {
 
+        /**
+         * Git user to be used for automated commits made by release automation
+         * (version bumps, release notes commits, etc.).
+         * For example: "mockito.release.tools"
+         */
         public String getUser() {
-            return null;
+            return configuration.get("git.user");
         }
 
+        /**
+         * See {@link #getUser()} ()}
+         */
         public void setUser(String user) {
-
+            configuration.put("git.user", user);
         }
 
+        /**
+         * Git email to be used for automated commits made by release automation
+         * (version bumps, release notes commits, etc.).
+         * For example "mockito.release.tools@gmail.com"
+         */
         public String getEmail() {
-            return null;
+            return configuration.get("git.email");
         }
 
+        /**
+         * See {@link #getEmail()}
+         */
         public void setEmail(String email) {
-
+            configuration.put("git.email", email);
         }
 
         /**
