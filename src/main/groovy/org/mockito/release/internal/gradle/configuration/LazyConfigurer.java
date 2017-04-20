@@ -7,8 +7,6 @@ import org.gradle.api.execution.TaskExecutionGraphListener;
 import org.mockito.release.internal.util.MultiMap;
 
 /**
- * TODO make it stop implementing TaskExecutionGraphListener
- *
  * Offers means to lazily validate user-specified settings that required for certain tasks
  * (like upload tasks require secret Bintray keys).
  * We don't want to validate the presence of those key is every regular build
@@ -16,19 +14,21 @@ import org.mockito.release.internal.util.MultiMap;
  *
  * We want to validate the settings before any task is executed so that no tasks run if all settings are not supplied.
  */
-public class LazyConfigurer implements TaskExecutionGraphListener {
+public class LazyConfigurer {
 
-    private MultiMap<Task, Runnable> actions = new MultiMap<Task, Runnable>();
+    private final MultiMap<Task, Runnable> actions = new MultiMap<Task, Runnable>();
 
-    public void graphPopulated(TaskExecutionGraph graph) {
-        for (Task key : actions.keySet()) {
-            if (graph.hasTask(key)) {
-                for (Runnable r : actions.get(key)) {
-                    r.run();
+    final TaskExecutionGraphListener listener = new TaskExecutionGraphListener() {
+        public void graphPopulated(TaskExecutionGraph graph) {
+            for (Task key : actions.keySet()) {
+                if (graph.hasTask(key)) {
+                    for (Runnable r : actions.get(key)) {
+                        r.run();
+                    }
                 }
             }
         }
-    }
+    };
 
     /**
      * Forces lazy configuration to be triggered for given task
@@ -47,17 +47,20 @@ public class LazyConfigurer implements TaskExecutionGraphListener {
         configurer.actions.put(task, configuration);
     }
 
+    /**
+     * Gets singleton configurer from the root project
+     */
     static LazyConfigurer getConfigurer(Project project) {
         Project rootProject = project.getRootProject();
         //single configurer for the entire build, hooked up to the root project, for simplicity and speed
         //we don't want too many listeners that introduce blocking callbacks to Gradle internals
 
-        LazyConfigurer validator = rootProject.getExtensions().findByType(LazyConfigurer.class);
-        if (validator == null) {
-            validator = new LazyConfigurer();
-            rootProject.getExtensions().add(LazyConfigurer.class.getName(), validator);
-            rootProject.getGradle().addListener(validator);
+        LazyConfigurer configurer = rootProject.getExtensions().findByType(LazyConfigurer.class);
+        if (configurer == null) {
+            configurer = new LazyConfigurer();
+            rootProject.getExtensions().add(LazyConfigurer.class.getName(), configurer);
+            rootProject.getGradle().addListener(configurer.listener);
         }
-        return validator;
+        return configurer;
     }
 }

@@ -1,9 +1,12 @@
 package org.mockito.release.internal.gradle.configuration
 
+import org.gradle.api.execution.TaskExecutionGraph
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
 import static LazyConfigurer.getConfigurer
+import static org.mockito.release.internal.gradle.configuration.LazyConfigurer.forceConfiguration
+import static org.mockito.release.internal.gradle.configuration.LazyConfigurer.lazyConfiguration
 
 class LazyConfigurerTest extends Specification {
 
@@ -13,5 +16,39 @@ class LazyConfigurerTest extends Specification {
     def "there is only one configurer"() {
         expect:
         getConfigurer(project1) == getConfigurer(project2)
+    }
+
+    def "configures lazily"() {
+        def foo = project1.task("foo")
+
+        when:
+        lazyConfiguration(foo, { foo.description = "foo" } as Runnable)
+
+        then:
+        foo.description == null
+
+        when:
+        forceConfiguration(foo)
+
+        then:
+        foo.description == "foo"
+    }
+
+    def "works with task graph"() {
+        def foo = project1.task("foo")
+        def bar = project1.task("bar")
+
+        lazyConfiguration(foo, { foo.description = "foo" } as Runnable)
+        lazyConfiguration(bar, { bar.description = "bar" } as Runnable)
+
+        when: //simulate task graph with foo but not bar task
+        getConfigurer(project1).listener.graphPopulated(Stub(TaskExecutionGraph) {
+            hasTask(foo) >> true
+            hasTask(bar) >> false
+        })
+
+        then:
+        foo.description == "foo"
+        bar.description == null
     }
 }
