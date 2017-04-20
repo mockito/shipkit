@@ -102,13 +102,20 @@ public class ReleaseConfiguration {
         }
     }
 
-    public static class ReleaseNotes {
-        public File getFile() {
-            return null;
+    public class ReleaseNotes {
+
+        /**
+         * Release notes file relative path, for example: "docs/release-notes.md"
+         */
+        public String getFile() {
+            return configuration.get("releaseNotes.file");
         }
 
-        public void setFile(File file) {
-
+        /**
+         * See {@link #getFile()}
+         */
+        public void setFile(String file) {
+            configuration.put("releaseNotes.file", file);
         }
 
         public File getNotableFile() {

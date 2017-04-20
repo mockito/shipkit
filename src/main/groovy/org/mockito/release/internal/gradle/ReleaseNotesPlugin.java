@@ -86,7 +86,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         DeferredConfiguration.deferredConfiguration(project, new Runnable() {
             public void run() {
                 task.setGitHubLabelMapping(ext.getMap(ReleaseToolsProperties.releaseNotes_labelMapping)); //TODO make it optional
-                task.setReleaseNotesFile(project.file(ext.getReleaseNotesFile())); //TODO add sensible default
+                task.setReleaseNotesFile(project.file(conf.getReleaseNotes().getFile())); //TODO add sensible default
                 task.setGitHubReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
                 task.setGitHubRepository(conf.getGitHub().getRepository());
                 //TODO, do we need below force?

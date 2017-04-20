@@ -6,11 +6,6 @@ package org.mockito.release.gradle;
 public enum ReleaseToolsProperties {
 
     /**
-     * Release notes file relative path, for example: "docs/release-notes.md"
-     */
-    releaseNotes_file,
-
-    /**
      * Issue tracker label mappings.
      * The mapping of "GitHub label" to human readable and presentable name.
      * The order of labels is important and will influence the order

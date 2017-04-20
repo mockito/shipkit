@@ -39,7 +39,7 @@ public class ContributorsPlugin implements Plugin<Project> {
 
                 deferredConfiguration(project, new Runnable() {
                     public void run() {
-                        String fromRevision = fromRevision(project, ext);
+                        String fromRevision = fromRevision(project, conf);
                         File contributorsFile = contributorsFile(project, fromRevision, toRevision);
 
                         task.setAuthToken(conf.getGitHub().getReadOnlyAuthToken());
@@ -53,9 +53,8 @@ public class ContributorsPlugin implements Plugin<Project> {
 
     }
 
-    private String fromRevision(Project project, ExtContainer ext) {
-        project.file(ext.getReleaseNotesFile());
-        String firstLine = FileUtil.firstLine(project.file(ext.getReleaseNotesFile()));
+    private String fromRevision(Project project, ReleaseConfiguration conf) {
+        String firstLine = FileUtil.firstLine(project.file(conf.getReleaseNotes().getFile()));
         return "v" + Notes.previousVersion(firstLine).getPreviousVersion();
     }
 

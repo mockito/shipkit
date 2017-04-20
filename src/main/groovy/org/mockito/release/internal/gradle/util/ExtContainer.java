@@ -47,13 +47,6 @@ public class ExtContainer {
     }
 
     /**
-     * Release notes file relative path, for example: "docs/release-notes.md"
-     */
-    public String getReleaseNotesFile() {
-        return getString(ReleaseToolsProperties.releaseNotes_file.toString());
-    }
-
-    /**
      * Tag name to be used, "v" + project.version
      */
     public String getTag() {
