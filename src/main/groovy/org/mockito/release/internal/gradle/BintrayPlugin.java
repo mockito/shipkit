@@ -34,9 +34,7 @@ public class BintrayPlugin implements Plugin<Project> {
     private final static Logger LOGGER = Logging.getLogger(BintrayPlugin.class);
 
     public void apply(final Project project) {
-        project.getRootProject().getPlugins().apply(ReleaseConfigurationPlugin.class);
-        final ReleaseConfiguration conf = (ReleaseConfiguration) project.getRootProject().getExtensions()
-                .getByName(ReleaseConfigurationPlugin.EXTENSION_NAME);
+        final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
 
         //TODO since this plugin depends on bintray,
         // we need to either shade bintray plugin or ship this Gradle plugin in a separate jar

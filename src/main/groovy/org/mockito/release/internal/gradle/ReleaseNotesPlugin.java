@@ -32,9 +32,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     private static final String TEMP_SERIALIZED_NOTES_FILE = "/notableReleaseNotes.ser";
 
     public void apply(final Project project) {
-        project.getPlugins().apply(ReleaseConfigurationPlugin.class);
-        final ReleaseConfiguration conf = (ReleaseConfiguration) project.getRootProject().getExtensions()
-                .getByName(ReleaseConfigurationPlugin.EXTENSION_NAME);
+        final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
 
         project.getPlugins().apply(ContributorsPlugin.class);
 

@@ -35,10 +35,7 @@ public class GitPlugin implements Plugin<Project> {
     static final String SET_EMAIL_TASK = "setGitUserEmail";
 
     public void apply(final Project project) {
-        //TODO below 2 lines are duplicated in a couple of places. Static method on ReleaseConfigurationPlugin?
-        project.getRootProject().getPlugins().apply(ReleaseConfigurationPlugin.class);
-        final ReleaseConfiguration conf = (ReleaseConfiguration) project.getRootProject().getExtensions()
-                .getByName(ReleaseConfigurationPlugin.EXTENSION_NAME);
+        final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
 
         final ExtContainer ext = new ExtContainer(project);
 

@@ -5,8 +5,9 @@ import org.gradle.api.Project;
 import org.mockito.release.gradle.ReleaseConfiguration;
 
 /**
- * Adds extension for configuring the release.
- * Intended to be used on the root project because the release is typically configured on the root project.
+ * Adds extension for configuring the release to the root project.
+ * Important: it will add to the root project because this is where the configuration belong to!
+ * <p>
  * Adds extensions:
  * <ul>
  *     <li>releasing - {@link ReleaseConfiguration}</li>
@@ -14,13 +15,22 @@ import org.mockito.release.gradle.ReleaseConfiguration;
  */
 public class ReleaseConfigurationPlugin implements Plugin<Project> {
 
-    public final static String EXTENSION_NAME = "releasing";
+    private ReleaseConfiguration configuration;
 
     public void apply(Project project) {
         //TODO unit test
-        ReleaseConfiguration conf = project.getExtensions().create(EXTENSION_NAME, ReleaseConfiguration.class);
+        configuration = project.getRootProject().getExtensions()
+                .create("releasing", ReleaseConfiguration.class);
+
         if (project.hasProperty("releaseDryRun")) {
-            conf.setDryRun(true);
+            configuration.setDryRun(true);
         }
+    }
+
+    /**
+     * Returns the release configuration instance that is hooked up to the root project
+     */
+    public ReleaseConfiguration getConfiguration() {
+        return configuration;
     }
 }
