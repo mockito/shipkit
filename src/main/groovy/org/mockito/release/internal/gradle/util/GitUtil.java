@@ -35,6 +35,7 @@ public class GitUtil {
         if (conf.isDryRun()) {
             args.add("--dry-run");
         }
+        //TODO git push arguments should be printed when task runs and not when the args are configured on the task
         LOG.lifecycle("  'git push' arguments:\n    {}", StringUtil.join(args, " "));
         //!!! Setting the url after printing the command so that we don't expose the sensitive token!!!
         String actualUrl = args.get(2).replace("[GH_WRITE_TOKEN]", ghWriteToken);
