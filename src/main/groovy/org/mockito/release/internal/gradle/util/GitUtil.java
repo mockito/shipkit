@@ -29,7 +29,7 @@ public class GitUtil {
         String ghWriteToken = conf.getGitHub().getWriteAuthToken();
         String ghRepo = conf.getGitHub().getRepository();
         String branch = conf.getGit().getBranch();
-        String url = MessageFormat.format("https://{0}:[GH_WRITE_TOKEN]@github.com/{1}.git", ghUser, ghRepo);
+        String url = MessageFormat.format("https://{0}:[SECRET]@github.com/{1}.git", ghUser, ghRepo);
 
         ArrayList<String> args = new ArrayList<String>(asList("git", "push", url, branch, ext.getTag(), mustBeQuiet));
         if (conf.isDryRun()) {
