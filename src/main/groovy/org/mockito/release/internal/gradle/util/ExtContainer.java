@@ -91,13 +91,6 @@ public class ExtContainer {
     }
 
     /**
-     * GitHub read only auth token
-     */
-    public String getGitHubReadOnlyAuthToken() {
-        return getString(ReleaseToolsProperties.gh_readOnlyAuthToken);
-    }
-
-    /**
      * Notable release notes file, for example "docs/notable-release-notes.md"
      */
     public String getNotableReleaseNotesFile() {

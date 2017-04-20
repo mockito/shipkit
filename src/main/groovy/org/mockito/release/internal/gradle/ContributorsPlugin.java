@@ -42,7 +42,7 @@ public class ContributorsPlugin implements Plugin<Project> {
                         String fromRevision = fromRevision(project, ext);
                         File contributorsFile = contributorsFile(project, fromRevision, toRevision);
 
-                        task.setAuthToken(ext.getGitHubReadOnlyAuthToken());
+                        task.setAuthToken(conf.getGitHub().getReadOnlyAuthToken());
                         task.setRepository(conf.getGitHub().getRepository());
                         task.setFromRevision(fromRevision);
                         task.setContributorsFile(contributorsFile);

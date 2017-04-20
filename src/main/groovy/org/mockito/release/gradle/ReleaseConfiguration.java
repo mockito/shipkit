@@ -78,12 +78,19 @@ public class ReleaseConfiguration {
             configuration.put("gitHub.writeAuthUser", user);
         }
 
+        /**
+         * GitHub read only auth token.
+         * Since the token is read-only it is ok to check that in to VCS.
+         */
         public String getReadOnlyAuthToken() {
-            return null;
+            return getValue("gitHub.readOnlyAuthToken");
         }
 
-        public void setReadOnlyAuthToken(String readOnlyAuthToken) {
-
+        /**
+         * See {@link #getReadOnlyAuthToken()}
+         */
+        public void setReadOnlyAuthToken(String token) {
+            configuration.put("gitHub.readOnlyAuthToken", token);
         }
 
         public String getWriteAuthToken() {

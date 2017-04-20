@@ -6,11 +6,6 @@ package org.mockito.release.gradle;
 public enum ReleaseToolsProperties {
 
     /**
-     * GitHub read only auth token
-     */
-    gh_readOnlyAuthToken,
-
-    /**
      * Release notes file relative path, for example: "docs/release-notes.md"
      */
     releaseNotes_file,

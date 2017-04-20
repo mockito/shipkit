@@ -87,7 +87,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
             public void run() {
                 task.setGitHubLabelMapping(ext.getMap(ReleaseToolsProperties.releaseNotes_labelMapping)); //TODO make it optional
                 task.setReleaseNotesFile(project.file(ext.getReleaseNotesFile())); //TODO add sensible default
-                task.setGitHubReadOnlyAuthToken(ext.getGitHubReadOnlyAuthToken());
+                task.setGitHubReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
                 task.setGitHubRepository(conf.getGitHub().getRepository());
                 //TODO, do we need below force?
                 forceTaskToAlwaysGeneratePreview(task);
@@ -106,7 +106,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
 
     private static void configureNotableNotes(Project project, NotesGeneration gen, ReleaseConfiguration conf) {
         ExtContainer ext = new ExtContainer(project);
-        gen.setGitHubReadOnlyAuthToken(ext.getGitHubReadOnlyAuthToken());
+        gen.setGitHubReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
         gen.setGitHubRepository(conf.getGitHub().getRepository());
         gen.setOutputFile(project.file(ext.getNotableReleaseNotesFile()));
         gen.setVcsCommitsLinkTemplate("https://github.com/" + conf.getGitHub().getRepository() + "/compare/{0}...{1}");
