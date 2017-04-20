@@ -9,7 +9,6 @@ class JavaLibraryPluginTest extends Specification {
 
     def "applies"() {
         project.ext.bintray_repo = "my-repo"
-        project.ext.gh_repository = "mockito/mockito"
         project.ext.bintray_pkg = "my-pkg"
 
         expect:

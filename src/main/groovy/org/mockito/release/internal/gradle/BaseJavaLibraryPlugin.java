@@ -11,6 +11,7 @@ import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.publish.PublicationContainer;
 import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.api.tasks.bundling.Jar;
+import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.internal.gradle.util.GradleDSLHelper;
 import org.mockito.release.internal.gradle.util.PomCustomizer;
 
@@ -41,6 +42,10 @@ public class BaseJavaLibraryPlugin implements Plugin<Project> {
     final static String PUBLICATION_NAME = "javaLibrary";
 
     public void apply(final Project project) {
+        project.getPlugins().apply(ReleaseConfigurationPlugin.class);
+        final ReleaseConfiguration conf = (ReleaseConfiguration) project.getRootProject().getExtensions()
+                .getByName(ReleaseConfigurationPlugin.EXTENSION_NAME);
+
         project.getPlugins().apply("java");
         project.getPlugins().apply("maven-publish");
 
@@ -81,7 +86,7 @@ public class BaseJavaLibraryPlugin implements Plugin<Project> {
                         publication.artifact(sourcesJar);
                         publication.artifact(javadocJar);
                         publication.setArtifactId(((Jar) project.getTasks().getByName("jar")).getBaseName());
-                        PomCustomizer.customizePom(project, publication);
+                        PomCustomizer.customizePom(project, conf, publication);
                     }
                 });
                 LOG.info("{} - configured '{}' publication", project.getPath(), p.getArtifactId());

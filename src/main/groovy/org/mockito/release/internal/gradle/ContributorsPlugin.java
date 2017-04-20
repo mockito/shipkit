@@ -3,6 +3,7 @@ package org.mockito.release.internal.gradle;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.internal.gradle.util.ExtContainer;
 import org.mockito.release.internal.gradle.util.FileUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
@@ -23,6 +24,10 @@ import static org.mockito.release.internal.gradle.configuration.DeferredConfigur
 public class ContributorsPlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
+        project.getPlugins().apply(ReleaseConfigurationPlugin.class);
+        final ReleaseConfiguration conf = (ReleaseConfiguration) project.getRootProject().getExtensions()
+                .getByName(ReleaseConfigurationPlugin.EXTENSION_NAME);
+
         final ExtContainer ext = new ExtContainer(project);
 
         project.getTasks().create("fetchContributorsFromGitHub", ContributorsFetcherTask.class, new Action<ContributorsFetcherTask>() {
@@ -40,7 +45,7 @@ public class ContributorsPlugin implements Plugin<Project> {
                         File contributorsFile = contributorsFile(project, fromRevision, toRevision);
 
                         task.setAuthToken(ext.getGitHubReadOnlyAuthToken());
-                        task.setRepository(ext.getGitHubRepository());
+                        task.setRepository(conf.getGitHub().getRepository());
                         task.setFromRevision(fromRevision);
                         task.setContributorsFile(contributorsFile);
                     }

@@ -7,8 +7,6 @@ import org.mockito.release.gradle.ReleaseToolsProperties;
 import java.util.Collection;
 import java.util.Map;
 
-import static org.mockito.release.gradle.ReleaseToolsProperties.gh_repository;
-
 //TODO add:
 // - documentation, unit tests
 // - validation of presence of value
@@ -46,13 +44,6 @@ public class ExtContainer {
      */
     public boolean isReleaseDryRun() {
         return ext.has(ReleaseToolsProperties.releaseDryRun.toString());
-    }
-
-    /**
-     * GitHub repository name, for example: "mockito/mockito"
-     */
-    public String getGitHubRepository() {
-        return getString(gh_repository.toString());
     }
 
     /**

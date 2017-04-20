@@ -52,10 +52,18 @@ public class ReleaseConfiguration {
 
     public class GitHub {
 
+        /**
+         * GitHub repository name, for example: "mockito/mockito"
+         */
         public String getRepository() {
             return getValue("gitHub.repository");
         }
 
+        /**
+         * See {@link #getRepository()}
+         *
+         * @param repository name of the repo, including user or organization section, for example: "mockito/mockito"
+         */
         public void setRepository(String repository) {
             configuration.put("gitHub.repository", repository);
         }

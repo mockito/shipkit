@@ -27,7 +27,7 @@ public class GitUtil {
         String mustBeQuiet = "-q";
         String ghUser = ext.getString("gh_user");
         String ghWriteToken = conf.getGitHub().getWriteAuthToken();
-        String ghRepo = ext.getGitHubRepository();
+        String ghRepo = conf.getGitHub().getRepository();
         String branch = conf.getGit().getBranch();
         String url = MessageFormat.format("https://{0}:[GH_WRITE_TOKEN]@github.com/{1}.git", ghUser, ghRepo);
 

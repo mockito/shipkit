@@ -41,14 +41,14 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         TaskMaker.task(project, "updateReleaseNotes", IncrementalReleaseNotes.UpdateTask.class, new Action<IncrementalReleaseNotes.UpdateTask>() {
             public void execute(final IncrementalReleaseNotes.UpdateTask t) {
                 t.setDescription("Updates release notes file.");
-                preconfigureIncrementalNotes(t, project);
+                preconfigureIncrementalNotes(t, project, conf);
             }
         });
 
         TaskMaker.task(project, "previewReleaseNotes", IncrementalReleaseNotes.PreviewTask.class, new Action<IncrementalReleaseNotes.PreviewTask>() {
             public void execute(final IncrementalReleaseNotes.PreviewTask t) {
                 t.setDescription("Shows new incremental content of release notes. Useful for previewing the release notes.");
-                preconfigureIncrementalNotes(t, project);
+                preconfigureIncrementalNotes(t, project, conf);
             }
         });
 
@@ -82,7 +82,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         });
     }
 
-    private static void preconfigureIncrementalNotes(final IncrementalReleaseNotes task, final Project project) {
+    private static void preconfigureIncrementalNotes(final IncrementalReleaseNotes task, final Project project, final ReleaseConfiguration conf) {
         task.dependsOn("fetchContributorsFromGitHub");
         final ExtContainer ext = new ExtContainer(project);
         DeferredConfiguration.deferredConfiguration(project, new Runnable() {
@@ -90,7 +90,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
                 task.setGitHubLabelMapping(ext.getMap(ReleaseToolsProperties.releaseNotes_labelMapping)); //TODO make it optional
                 task.setReleaseNotesFile(project.file(ext.getReleaseNotesFile())); //TODO add sensible default
                 task.setGitHubReadOnlyAuthToken(ext.getGitHubReadOnlyAuthToken());
-                task.setGitHubRepository(ext.getString(ReleaseToolsProperties.gh_repository));
+                task.setGitHubRepository(conf.getGitHub().getRepository());
                 //TODO, do we need below force?
                 forceTaskToAlwaysGeneratePreview(task);
             }
@@ -109,10 +109,10 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     private static void configureNotableNotes(Project project, NotesGeneration gen, ReleaseConfiguration conf) {
         ExtContainer ext = new ExtContainer(project);
         gen.setGitHubReadOnlyAuthToken(ext.getGitHubReadOnlyAuthToken());
-        gen.setGitHubRepository(ext.getGitHubRepository());
+        gen.setGitHubRepository(conf.getGitHub().getRepository());
         gen.setOutputFile(project.file(ext.getNotableReleaseNotesFile()));
-        gen.setVcsCommitsLinkTemplate("https://github.com/" + ext.getGitHubRepository() + "/compare/{0}...{1}");
-        gen.setDetailedReleaseNotesLink(ext.getGitHubRepository() + "/blob/" + conf.getGit().getBranch() + "/" + ext.getNotableReleaseNotesFile());
+        gen.setVcsCommitsLinkTemplate("https://github.com/" + conf.getGitHub().getRepository() + "/compare/{0}...{1}");
+        gen.setDetailedReleaseNotesLink(conf.getGitHub().getRepository() + "/blob/" + conf.getGit().getBranch() + "/" + ext.getNotableReleaseNotesFile());
     }
 
     private static File getTemporaryReleaseNotesFile(Project project){

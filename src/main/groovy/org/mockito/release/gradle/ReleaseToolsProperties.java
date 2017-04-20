@@ -11,11 +11,6 @@ public enum ReleaseToolsProperties {
     gh_readOnlyAuthToken,
 
     /**
-     * GitHub repository, for example: "mockito/mockito"
-     */
-    gh_repository,
-
-    /**
      * Release notes file relative path, for example: "docs/release-notes.md"
      */
     releaseNotes_file,
