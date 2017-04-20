@@ -14,7 +14,7 @@ import org.mockito.release.internal.gradle.util.TaskMaker;
 
 import java.io.ByteArrayOutputStream;
 
-import static org.mockito.release.internal.gradle.configuration.LazyConfigurer.lazyConfiguration;
+import static org.mockito.release.internal.gradle.configuration.LazyConfiguration.lazyConfiguration;
 import static org.mockito.release.internal.gradle.util.StringUtil.join;
 
 /**
@@ -131,7 +131,7 @@ public class GitPlugin implements Plugin<Project> {
         TaskMaker.execTask(project, SET_USER_TASK, new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Overwrites local git 'user.name' with a generic name. Intended for CI.");
-                //TODO replace all doFirst in this class with LazyConfigurer
+                //TODO replace all doFirst in this class with LazyConfiguration
                 t.doFirst(new Action<Task>() {
                     public void execute(Task task) {
                         //using doFirst() so that we request and validate presence of env var only during execution time

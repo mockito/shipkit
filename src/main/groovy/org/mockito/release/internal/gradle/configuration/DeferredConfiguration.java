@@ -9,6 +9,7 @@ import org.gradle.api.logging.Logging;
  * Deferred configuration of Gradle objects (tasks, projects) so that they can reflect user-specified values.
  *
  * See {@link #deferredConfiguration(Project, Runnable)}.
+ * See also {@link LazyConfiguration}
  */
 public class DeferredConfiguration {
 
@@ -17,7 +18,8 @@ public class DeferredConfiguration {
     /**
      * Defers configuring the project and tasks, making use of user-defined settings in the build.gradle.
      * Use it for settings that should be configured in the build.gradle by the user.
-     * It is needed every time we need to configure project / tasks
+     * For secret settings that are not required by regular developer builds, use {@link LazyConfiguration}.
+     * Deferred configuration is needed every time we need to configure project / tasks
      * based on values specified by the user inside of the "build.gradle" file.
      * Example "build.gradle" file:
      * <pre>

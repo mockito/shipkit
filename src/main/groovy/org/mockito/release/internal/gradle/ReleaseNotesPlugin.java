@@ -14,7 +14,7 @@ import org.mockito.release.internal.gradle.util.TaskMaker;
 import java.io.File;
 
 import static java.util.Collections.singletonList;
-import static org.mockito.release.internal.gradle.configuration.LazyConfigurer.lazyConfiguration;
+import static org.mockito.release.internal.gradle.configuration.LazyConfiguration.lazyConfiguration;
 
 /**
  * The plugin adds following tasks:

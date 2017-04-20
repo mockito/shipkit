@@ -4,11 +4,9 @@ import org.gradle.api.execution.TaskExecutionGraph
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
-import static LazyConfigurer.getConfigurer
-import static org.mockito.release.internal.gradle.configuration.LazyConfigurer.forceConfiguration
-import static org.mockito.release.internal.gradle.configuration.LazyConfigurer.lazyConfiguration
+import static LazyConfiguration.*
 
-class LazyConfigurerTest extends Specification {
+class LazyConfigurationTest extends Specification {
 
     def project1 = new ProjectBuilder().build()
     def project2 = new ProjectBuilder().withParent(project1).build()

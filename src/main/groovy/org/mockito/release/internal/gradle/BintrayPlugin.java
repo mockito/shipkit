@@ -12,7 +12,7 @@ import org.mockito.release.gradle.ReleaseConfiguration;
 
 import static org.mockito.release.internal.gradle.configuration.BasicValidator.notNull;
 import static org.mockito.release.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
-import static org.mockito.release.internal.gradle.configuration.LazyConfigurer.lazyConfiguration;
+import static org.mockito.release.internal.gradle.configuration.LazyConfiguration.lazyConfiguration;
 
 /**
  * Applies and configures "com.jfrog.bintray" plugin based on sensible defaults

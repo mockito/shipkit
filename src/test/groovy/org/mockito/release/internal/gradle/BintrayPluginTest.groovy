@@ -1,7 +1,7 @@
 package org.mockito.release.internal.gradle
 
 import org.gradle.testfixtures.ProjectBuilder
-import org.mockito.release.internal.gradle.configuration.LazyConfigurer
+import org.mockito.release.internal.gradle.configuration.LazyConfiguration
 import spock.lang.Specification
 
 class BintrayPluginTest extends Specification {
@@ -24,7 +24,7 @@ class BintrayPluginTest extends Specification {
 
         when:
         project.evaluate()
-        LazyConfigurer.forceConfiguration(project.tasks.bintrayUpload)
+        LazyConfiguration.forceConfiguration(project.tasks.bintrayUpload)
 
         then:
         project.bintray.pkg.version.vcsTag == "v1.0"
@@ -56,7 +56,7 @@ class BintrayPluginTest extends Specification {
 
         when:
         project.evaluate()
-        LazyConfigurer.forceConfiguration(project.tasks.bintrayUpload)
+        LazyConfiguration.forceConfiguration(project.tasks.bintrayUpload)
 
         then:
         project.bintray.dryRun == true
