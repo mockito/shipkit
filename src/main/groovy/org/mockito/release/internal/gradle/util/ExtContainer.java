@@ -54,15 +54,6 @@ public class ExtContainer {
     }
 
     /**
-     * Returns Git generic user notation based on settings, for example:
-     * "Mockito Release Tools &lt;mockito.release.tools@gmail.com&gt;"
-     */
-    public String getGitGenericUserNotation() {
-        //TODO unit testable
-        return getGitGenericUser() + " <" + getGitGenericEmail() + ">";
-    }
-
-    /**
      * Tag name to be used, "v" + project.version
      */
     public String getTag() {

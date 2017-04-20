@@ -46,7 +46,7 @@ public class GitPlugin implements Plugin<Project> {
                     public void execute(Task task) {
                         //doFirst (execution time) to pick up user-configured setting
                         t.commandLine("git", "commit", "--author",
-                                ext.getGitGenericUserNotation(), "-m", commitMessage("Bumped version and updated release notes"));
+                                GitUtil.getGitGenericUserNotation(ext), "-m", commitMessage("Bumped version and updated release notes"));
                     }
                 });
             }
