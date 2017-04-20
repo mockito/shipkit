@@ -68,11 +68,19 @@ public class ReleaseConfiguration {
             configuration.put("gitHub.repository", repository);
         }
 
-        public String getUser() {
-            return null;
+        /**
+         * GitHub user associated with the write auth token.
+         * Needed for the release process to push changes.
+         */
+        public String getWriteAuthUser() {
+            return configuration.get("gitHub.writeAuthUser");
         }
 
-        public void setUser(String user) {
+        /**
+         * See {@link #getWriteAuthUser()}
+         */
+        public void setWriteAuthUser(String user) {
+            configuration.put("gitHub.writeAuthUser", user);
         }
 
         public String getReadOnlyAuthToken() {

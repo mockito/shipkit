@@ -25,7 +25,7 @@ public class GitUtil {
         //TODO unit testable
         //!!!Below command _MUST_ be quiet otherwise it exposes GitHub write token!!!
         String mustBeQuiet = "-q";
-        String ghUser = ext.getString("gh_user");
+        String ghUser = conf.getGitHub().getWriteAuthUser();
         String ghWriteToken = conf.getGitHub().getWriteAuthToken();
         String ghRepo = conf.getGitHub().getRepository();
         String branch = conf.getGit().getBranch();
