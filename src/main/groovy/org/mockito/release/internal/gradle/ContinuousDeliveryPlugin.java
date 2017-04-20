@@ -93,6 +93,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                 t.mustRunAfter(GitPlugin.PUSH_TASK);
             }
         });
+        //TODO can we make git push and bintray upload tasks to be last (expensive, hard to reverse tasks should go last)
 
         project.allprojects(new Action<Project>() {
             public void execute(final Project project) {
