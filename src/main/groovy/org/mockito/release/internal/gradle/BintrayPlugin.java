@@ -93,7 +93,7 @@ public class BintrayPlugin implements Plugin<Project> {
             }
         });
 
-        //TODO unit test
+        //TODO unit test, create static wrapper over env variables that we use for testing
         lazyConfiguration(bintrayUpload, new Runnable() {
             public void run() {
                 String key = notNull(bintray.getKey(), "BINTRAY_API_KEY",
