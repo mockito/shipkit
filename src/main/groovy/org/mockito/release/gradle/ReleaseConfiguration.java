@@ -146,12 +146,18 @@ public class ReleaseConfiguration {
 
         }
 
+        /**
+         * Regex to be used to identify branches that entitled to be released, for example "master|release/.+"
+         */
         public String getReleasableBranchRegex() {
-            return null;
+            return configuration.get("git.releasableBranchRegex");
         }
 
+        /**
+         * See {@link #getReleasableBranchRegex()}
+         */
         public void setReleasableBranchRegex(String releasableBranchRegex) {
-
+            configuration.put("git.releasableBranchRegex", releasableBranchRegex);
         }
 
         /**

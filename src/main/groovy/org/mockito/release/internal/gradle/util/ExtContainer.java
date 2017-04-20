@@ -84,13 +84,6 @@ public class ExtContainer {
     }
 
     /**
-     * Regex to be used to identify branches that entitled to be released, for example "master|release/.+"
-     */
-    public String getReleasableBranchRegex() {
-        return getString("git_releasableBranchRegex");
-    }
-
-    /**
      * Notable release notes file, for example "docs/notable-release-notes.md"
      */
     public String getNotableReleaseNotesFile() {

@@ -11,6 +11,7 @@ import org.gradle.api.tasks.Exec;
 import org.gradle.process.ExecResult;
 import org.gradle.process.ExecSpec;
 import org.mockito.release.gradle.BumpVersionFileTask;
+import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.internal.gradle.util.ExtContainer;
 import org.mockito.release.internal.gradle.util.StringUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
@@ -40,7 +41,8 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
     private static final Logger LOG = Logging.getLogger(ContinuousDeliveryPlugin.class);
 
     public void apply(final Project project) {
-        project.getPlugins().apply(ReleaseConfigurationPlugin.class);
+        final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
+
         project.getPlugins().apply(ReleaseNotesPlugin.class);
         project.getPlugins().apply(VersioningPlugin.class);
         project.getPlugins().apply(GitPlugin.class);
@@ -150,7 +152,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
 
                         //TODO create task that reads the current branch in case TRAVIS_BRANCH env variable is not set
                         String branch = System.getenv("TRAVIS_BRANCH");
-                        boolean releasableBranch = branch != null && branch.matches(ext.getReleasableBranchRegex());
+                        boolean releasableBranch = branch != null && branch.matches(conf.getGit().getReleasableBranchRegex());
 
                         boolean notNeeded = skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
                         //TODO task type, otherwise 'needed' is just a String, no type safety
