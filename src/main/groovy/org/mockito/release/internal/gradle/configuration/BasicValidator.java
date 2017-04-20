@@ -1,11 +1,16 @@
 package org.mockito.release.internal.gradle.configuration;
 
 import org.gradle.api.GradleException;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 
 /**
  * Validates the inputs provided by users.
  */
 public class BasicValidator {
+
+    private final static Logger LOGGER = Logging.getLogger(BasicValidator.class);
+
     //TODO unit test
 
     /**
@@ -39,7 +44,10 @@ public class BasicValidator {
 
         String envValue = System.getenv(envVariable);
         if (envValue != null && !envValue.trim().isEmpty()) {
+            LOGGER.info("Environment variable '" + envVariable + "' is found and will be used.");
             return envValue;
+        } else {
+            LOGGER.info("Environment variable '" + envVariable + "' was not found.");
         }
 
         throw new GradleException(message);
