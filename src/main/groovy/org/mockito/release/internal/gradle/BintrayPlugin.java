@@ -96,9 +96,10 @@ public class BintrayPlugin implements Plugin<Project> {
         //TODO unit test
         lazyConfiguration(bintrayUpload, new Runnable() {
             public void run() {
-                if (bintray.getKey() == null) {
-                    bintray.setKey(conf.getBintray().getApiKey());
-                }
+                String key = notNull(bintray.getKey(), "BINTRAY_API_KEY",
+                        "Missing 'bintray.key' value.\n" +
+                        "  Please configure Bintray extension or export 'BINTRAY_API_KEY' env variable.");
+                bintray.setKey(key);
             }
         });
     }

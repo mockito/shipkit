@@ -18,18 +18,15 @@ class BintrayPluginTest extends Specification {
         project.plugins.apply("org.mockito.mockito-release-tools.bintray")
 
         project.releasing.dryRun = true
-        project.releasing.bintray.apiKey = '!@#'
         project.releasing.gitHub.repository = 'repo'
         project.bintray.user = 'szczepiq'
 
         when:
         project.evaluate()
-        LazyConfiguration.forceConfiguration(project.tasks.bintrayUpload)
 
         then:
         project.bintray.pkg.version.vcsTag == "v1.0"
         project.bintray.dryRun == true
-        project.bintray.key == '!@#'
         project.bintray.pkg.vcsUrl == "https://github.com/repo.git"
         project.bintray.pkg.issueTrackerUrl == "https://github.com/repo/issues"
         project.bintray.pkg.websiteUrl == "https://github.com/repo"
@@ -42,7 +39,6 @@ class BintrayPluginTest extends Specification {
         project.plugins.apply("org.mockito.mockito-release-tools.bintray")
 
         project.releasing.dryRun = true
-        project.releasing.bintray.apiKey = '!@#'
         project.releasing.gitHub.repository = 'repo'
 
         project.bintray.dryRun = false //this one is not honored at the moment, we're ok with this

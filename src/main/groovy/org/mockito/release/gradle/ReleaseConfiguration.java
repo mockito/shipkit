@@ -18,7 +18,6 @@ public class ReleaseConfiguration {
     private final ReleaseNotes releaseNotes = new ReleaseNotes();
     private final Git git = new Git();
     private final Library library = new Library();
-    private final Bintray bintray = new Bintray();
 
     private boolean dryRun;
 
@@ -44,10 +43,6 @@ public class ReleaseConfiguration {
 
     public Library getLibrary() {
         return library;
-    }
-
-    public Bintray getBintray() {
-        return bintray;
     }
 
     public class GitHub {
@@ -183,18 +178,6 @@ public class ReleaseConfiguration {
 
         public void setContributors(Collection<String> contributors) {
 
-        }
-    }
-
-    //TODO get rid of this part of the extension configuration, see the discussion at
-    // https://github.com/mockito/mockito-release-tools/issues/76#issuecomment-295590238
-    public class Bintray {
-        public String getApiKey() {
-            return getSensitiveValue("bintray.apiKey");
-        }
-
-        public void setApiKey(String apiKey) {
-            configuration.put("bintray.apiKey", apiKey);
         }
     }
 
