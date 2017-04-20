@@ -186,6 +186,8 @@ public class ReleaseConfiguration {
         }
     }
 
+    //TODO get rid of this part of the extension configuration, see the discussion at
+    // https://github.com/mockito/mockito-release-tools/issues/76#issuecomment-295590238
     public class Bintray {
         public String getApiKey() {
             return getSensitiveValue("bintray.apiKey");
