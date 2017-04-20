@@ -17,7 +17,7 @@ class PomCustomizerTest extends Specification {
         project.publishing.publications {
             mainJar(MavenPublication) {
                 from project.components.java
-                PomCustomizer.customizePom(project, it)
+                PomCustomizer.customizePom(project, null, it)
             }
         }
     }
