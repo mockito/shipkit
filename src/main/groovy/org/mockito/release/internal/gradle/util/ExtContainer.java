@@ -1,8 +1,6 @@
 package org.mockito.release.internal.gradle.util;
 
 import org.gradle.api.Project;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
 import org.gradle.api.plugins.ExtraPropertiesExtension;
 import org.mockito.release.gradle.ReleaseToolsProperties;
 
@@ -17,8 +15,6 @@ import static org.mockito.release.gradle.ReleaseToolsProperties.gh_repository;
 // - ability to be overridden by project parameters
 // rename to ReleaseToolsSettings, figure out the overlap with EnvVariables
 public class ExtContainer {
-
-    private final static Logger LOG = Logging.getLogger(ExtContainer.class);
 
     private final ExtraPropertiesExtension ext;
     private final Project project;
@@ -80,14 +76,6 @@ public class ExtContainer {
      */
     public String getTag() {
         return "v" + project.getVersion();
-    }
-
-    /**
-     * Returns the branch to work on by checking the env variable 'TRAVIS_BRANCH'
-     */
-    public String getCurrentBranch() {
-        //TODO if not set, we should just call 'git branch' and parse the output. This will make things easier for local testing.
-        return EnvVariables.getEnv("TRAVIS_BRANCH");
     }
 
     /**

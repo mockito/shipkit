@@ -6,6 +6,7 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.specs.Spec;
 import org.mockito.release.gradle.IncrementalReleaseNotes;
+import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.gradle.ReleaseToolsProperties;
 import org.mockito.release.internal.gradle.configuration.DeferredConfiguration;
 import org.mockito.release.internal.gradle.util.ExtContainer;
@@ -31,6 +32,10 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     private static final String TEMP_SERIALIZED_NOTES_FILE = "/notableReleaseNotes.ser";
 
     public void apply(final Project project) {
+        project.getPlugins().apply(ReleaseConfigurationPlugin.class);
+        final ReleaseConfiguration conf = (ReleaseConfiguration) project.getRootProject().getExtensions()
+                .getByName(ReleaseConfigurationPlugin.EXTENSION_NAME);
+
         project.getPlugins().apply(ContributorsPlugin.class);
 
         TaskMaker.task(project, "updateReleaseNotes", IncrementalReleaseNotes.UpdateTask.class, new Action<IncrementalReleaseNotes.UpdateTask>() {
@@ -54,7 +59,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
 
                 lazyConfiguration(task, new Runnable() {
                     public void run() {
-                        configureNotableNotes(project, gen);
+                        configureNotableNotes(project, gen, conf);
                     }
                 });
             }
@@ -70,7 +75,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
 
                 lazyConfiguration(task, new Runnable() {
                     public void run() {
-                        configureNotableNotes(project, gen);
+                        configureNotableNotes(project, gen, conf);
                     }
                 });
             }
@@ -101,13 +106,13 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         gen.setTemporarySerializedNotesFile(getTemporaryReleaseNotesFile(project));
     }
 
-    private static void configureNotableNotes(Project project, NotesGeneration gen) {
+    private static void configureNotableNotes(Project project, NotesGeneration gen, ReleaseConfiguration conf) {
         ExtContainer ext = new ExtContainer(project);
         gen.setGitHubReadOnlyAuthToken(ext.getGitHubReadOnlyAuthToken());
         gen.setGitHubRepository(ext.getGitHubRepository());
         gen.setOutputFile(project.file(ext.getNotableReleaseNotesFile()));
         gen.setVcsCommitsLinkTemplate("https://github.com/" + ext.getGitHubRepository() + "/compare/{0}...{1}");
-        gen.setDetailedReleaseNotesLink(ext.getGitHubRepository() + "/blob/" + ext.getCurrentBranch() + "/" + ext.getNotableReleaseNotesFile());
+        gen.setDetailedReleaseNotesLink(ext.getGitHubRepository() + "/blob/" + conf.getGit().getBranch() + "/" + ext.getNotableReleaseNotesFile());
     }
 
     private static File getTemporaryReleaseNotesFile(Project project){

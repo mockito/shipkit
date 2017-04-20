@@ -110,7 +110,7 @@ public class ReleaseConfiguration {
         }
     }
 
-    public static class Git {
+    public class Git {
 
         public String getUser() {
             return null;
@@ -134,6 +134,21 @@ public class ReleaseConfiguration {
 
         public void setReleasableBranchRegex(String releasableBranchRegex) {
 
+        }
+
+        /**
+         * See {@link #getBranch()}
+         */
+        public void setBranch(String branch) {
+            configuration.put("git.branch", branch);
+        }
+
+        /**
+         * Returns the branch the release process works on and commits code to.
+         * On Travis CI, we configure it to 'TRAVIS_BRANCH' env variable.
+         */
+        public String getBranch() {
+            return configuration.get("git.branch");
         }
     }
 
