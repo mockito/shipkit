@@ -2,7 +2,6 @@ package org.mockito.release.internal.gradle.util;
 
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtraPropertiesExtension;
-import org.mockito.release.gradle.ReleaseToolsProperties;
 
 import java.util.Collection;
 import java.util.Map;
@@ -37,13 +36,6 @@ public class ExtContainer {
 
     public Collection<String> getCollection(Object name) {
         return (Collection<String>) getValue(name);
-    }
-
-    /**
-     * If the release should be a dry run and avoid publishing to Bintray, GitHub, etc.
-     */
-    public boolean isReleaseDryRun() {
-        return ext.has(ReleaseToolsProperties.releaseDryRun.toString());
     }
 
     /**

@@ -31,9 +31,4 @@ public enum ReleaseToolsProperties {
      * See POM reference for <a href="https://maven.apache.org/pom.html#Contributors">Contributors</a>.
      */
     pom_contributors,
-
-    /**
-     * Dry run the release
-     */
-    releaseDryRun;
 }
