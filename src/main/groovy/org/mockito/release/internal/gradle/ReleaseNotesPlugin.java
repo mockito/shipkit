@@ -7,7 +7,6 @@ import org.gradle.api.Task;
 import org.gradle.api.specs.Spec;
 import org.mockito.release.gradle.IncrementalReleaseNotes;
 import org.mockito.release.gradle.ReleaseConfiguration;
-import org.mockito.release.gradle.ReleaseToolsProperties;
 import org.mockito.release.internal.gradle.configuration.DeferredConfiguration;
 import org.mockito.release.internal.gradle.util.ExtContainer;
 import org.mockito.release.internal.gradle.util.TaskMaker;
@@ -85,7 +84,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         final ExtContainer ext = new ExtContainer(project);
         DeferredConfiguration.deferredConfiguration(project, new Runnable() {
             public void run() {
-                task.setGitHubLabelMapping(ext.getMap(ReleaseToolsProperties.releaseNotes_labelMapping)); //TODO make it optional
+                task.setGitHubLabelMapping(conf.getReleaseNotes().getLabelMapping()); //TODO make it optional
                 task.setReleaseNotesFile(project.file(conf.getReleaseNotes().getFile())); //TODO add sensible default
                 task.setGitHubReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
                 task.setGitHubRepository(conf.getGitHub().getRepository());

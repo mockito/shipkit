@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class ReleaseConfiguration {
 
-    private final Map<String, String> configuration = new HashMap<String, String>();
+    private final Map<String, Object> configuration = new HashMap<String, Object>();
 
     private final GitHub gitHub = new GitHub();
     private final ReleaseNotes releaseNotes = new ReleaseNotes();
@@ -50,7 +50,7 @@ public class ReleaseConfiguration {
          * GitHub repository name, for example: "mockito/mockito"
          */
         public String getRepository() {
-            return getValue("gitHub.repository");
+            return getString("gitHub.repository");
         }
 
         /**
@@ -67,7 +67,7 @@ public class ReleaseConfiguration {
          * Needed for the release process to push changes.
          */
         public String getWriteAuthUser() {
-            return configuration.get("gitHub.writeAuthUser");
+            return getString("gitHub.writeAuthUser");
         }
 
         /**
@@ -82,7 +82,7 @@ public class ReleaseConfiguration {
          * Since the token is read-only it is ok to check that in to VCS.
          */
         public String getReadOnlyAuthToken() {
-            return getValue("gitHub.readOnlyAuthToken");
+            return getString("gitHub.readOnlyAuthToken");
         }
 
         /**
@@ -93,7 +93,7 @@ public class ReleaseConfiguration {
         }
 
         public String getWriteAuthToken() {
-            return getSensitiveValue("gitHub.writeAuthToken");
+            return getSensitiveString("gitHub.writeAuthToken");
         }
 
         public void setWriteAuthToken(String writeAuthToken) {
@@ -107,7 +107,7 @@ public class ReleaseConfiguration {
          * Release notes file relative path, for example: "docs/release-notes.md"
          */
         public String getFile() {
-            return configuration.get("releaseNotes.file");
+            return getString("releaseNotes.file");
         }
 
         /**
@@ -121,7 +121,7 @@ public class ReleaseConfiguration {
          * Notable release notes file, for example "docs/notable-release-notes.md"
          */
         public String getNotableFile() {
-            return getValue("releaseNotes.notableFile");
+            return getString("releaseNotes.notableFile");
         }
 
         /**
@@ -131,12 +131,22 @@ public class ReleaseConfiguration {
             configuration.put("releaseNotes.notableFile", notableFile);
         }
 
+        /**
+         * Issue tracker label mappings.
+         * The mapping of issue tracker labels (for example "GitHub label") to human readable and presentable name.
+         * The order of labels is important and will influence the order
+         * in which groups of issues are generated in release notes.
+         * Examples: ['java-9': 'Java 9 support', 'BDD': 'Behavior-Driven Development support']
+         */
         public Map<String, String> getLabelMapping() {
-            return null;
+            return getMap("releaseNotes.labelMapping");
         }
 
+        /**
+         * See {@link #getLabelMapping()}
+         */
         public void setLabelMapping(Map<String, String> labelMapping) {
-
+            configuration.put("releaseNotes.labelMapping", labelMapping);
         }
     }
 
@@ -148,7 +158,7 @@ public class ReleaseConfiguration {
          * For example: "mockito.release.tools"
          */
         public String getUser() {
-            return configuration.get("git.user");
+            return getString("git.user");
         }
 
         /**
@@ -164,7 +174,7 @@ public class ReleaseConfiguration {
          * For example "mockito.release.tools@gmail.com"
          */
         public String getEmail() {
-            return configuration.get("git.email");
+            return getString("git.email");
         }
 
         /**
@@ -178,7 +188,7 @@ public class ReleaseConfiguration {
          * Regex to be used to identify branches that entitled to be released, for example "master|release/.+"
          */
         public String getReleasableBranchRegex() {
-            return configuration.get("git.releasableBranchRegex");
+            return getString("git.releasableBranchRegex");
         }
 
         /**
@@ -200,7 +210,7 @@ public class ReleaseConfiguration {
          * On Travis CI, we configure it to 'TRAVIS_BRANCH' env variable.
          */
         public String getBranch() {
-            return configuration.get("git.branch");
+            return getString("git.branch");
         }
     }
 
@@ -223,20 +233,24 @@ public class ReleaseConfiguration {
     }
 
     //TODO unit test message creation and error handling
-    private String getValue(String key) {
-        return getValue(key, "Please configure 'releasing." + key + "' value.");
+    private String getString(String key) {
+        return (String) getValue(key, "Please configure 'releasing." + key + "' value.");
     }
 
-    private String getSensitiveValue(String key) {
-        return getValue(key, "Please configure 'releasing." + key + "' value.\n" +
+    private Map getMap(String key) {
+        return (Map) getValue(key, "Please configure 'releasing." + key + "' value.");
+    }
+
+    private String getSensitiveString(String key) {
+        return (String) getValue(key, "Please configure 'releasing." + key + "' value.\n" +
                 "  It is recommended to use env variable for sensitive information\n" +
                 "  and store secured value with your CI configuration.\n" +
                 "  Example 'build.gradle' file:\n" +
                 "    releasing." + key + " = System.getenv('SECRET')");
     }
 
-    private String getValue(String key, String message) {
-        String value = configuration.get(key);
+    private Object getValue(String key, String message) {
+        Object value = configuration.get(key);
         if (value == null) {
             throw new GradleException(message);
         }
