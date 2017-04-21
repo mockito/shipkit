@@ -8,27 +8,27 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-class DefaultContributorsSet implements ContributorsSet, Serializable{
+class DefaultContributorsSet<E extends Contributor> implements ContributorsSet<E>, Serializable {
 
-    private final Map<String, Contributor> map;
+    private final Map<String, E> map;
 
     DefaultContributorsSet() {
-        map = new HashMap<String, Contributor>();
+        map = new HashMap<String, E>();
     }
 
     @Override
-    public Contributor findByAuthorName(String authorName) {
+    public E findByAuthorName(String authorName) {
         return map.get(authorName);
     }
 
     @Override
-    public void addContributor(Contributor contributor) {
+    public void addContributor(E contributor) {
         map.put(contributor.getName(), contributor);
     }
 
     @Override
-    public void addAllContributors(Set<Contributor> contributors) {
-        for (Contributor contributor : contributors) {
+    public void addAllContributors(Set<E> contributors) {
+        for (E contributor : contributors) {
             map.put(contributor.getName(), contributor);
         }
     }
@@ -39,7 +39,7 @@ class DefaultContributorsSet implements ContributorsSet, Serializable{
     }
 
     @Override
-    public Collection<Contributor> getAllContributors() {
+    public Collection<E> getAllContributors() {
         return map.values();
     }
 

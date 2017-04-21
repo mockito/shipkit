@@ -79,7 +79,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     }
 
     private static void preconfigureIncrementalNotes(final IncrementalReleaseNotes task, final Project project, final ReleaseConfiguration conf) {
-        task.dependsOn("fetchContributorsFromGitHub");
+        task.dependsOn("fetchLastContributorsFromGitHub");
         DeferredConfiguration.deferredConfiguration(project, new Runnable() {
             public void run() {
                 task.setGitHubLabelMapping(conf.getReleaseNotes().getLabelMapping()); //TODO make it optional

@@ -3,7 +3,7 @@ package org.mockito.release.notes.improvements;
 import org.json.simple.DeserializationException;
 import org.json.simple.JsonObject;
 import org.mockito.release.notes.model.Improvement;
-import org.mockito.release.notes.util.GitHubFetcher;
+import org.mockito.release.notes.util.GitHubListFetcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,10 +92,10 @@ class GitHubTicketFetcher {
 
     private static class GitHubIssues {
 
-        private final GitHubFetcher fetcher;
+        private final GitHubListFetcher fetcher;
 
         private GitHubIssues(String nextPageUrl) {
-            fetcher = new GitHubFetcher(nextPageUrl);
+            fetcher = new GitHubListFetcher(nextPageUrl);
         }
 
         boolean hasNextPage() {

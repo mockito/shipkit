@@ -20,8 +20,7 @@ import org.mockito.release.notes.vcs.Vcs;
 import java.io.File;
 
 /**
- * Fetch info about contributors from GitHub and store it in file. It is used later in generation release notes and
- * adding contributors to pom.xml.
+ * Fetch info about contributors from GitHub and store it in file. It is used later in generation release notes.
  */
 public class ContributorsFetcherTask extends DefaultTask {
 
@@ -35,8 +34,8 @@ public class ContributorsFetcherTask extends DefaultTask {
     @OutputFile private File contributorsFile;
 
     @TaskAction
-    public void fetchContributorsFromGitHub() {
-        LOG.lifecycle("  Fetching contributor information between revisions {}..{}", fromRevision, toRevision);
+    public void fetchLastContributorsFromGitHub() {
+        LOG.lifecycle("  Fetching contributors information between revisions {}..{}", fromRevision, toRevision);
         ProcessRunner processRunner = Exec.getProcessRunner(getProject().getRootDir());
         ContributionsProvider contributionsProvider = Vcs.getContributionsProvider(processRunner);
         ContributionSet contributions = contributionsProvider.getContributionsBetween(fromRevision, toRevision);
@@ -47,7 +46,8 @@ public class ContributorsFetcherTask extends DefaultTask {
         GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContributorsProvider(repository, authToken);
         ContributorsSet contributors = contributorsProvider.mapContributorsToGitHubUser(contributions, fromRev, toRevision);
 
-        new ContributorsSerializer(contributorsFile).serialize(contributors);
+        ContributorsSerializer contributorsSerializer = Contributors.getLastContributorsSerializer(contributorsFile);
+        contributorsSerializer.serialize(contributors);
     }
 
     public void setRepository(String repository) {

@@ -12,7 +12,6 @@ apply plugin: 'maven'
 apply plugin: 'idea'
 apply plugin: 'groovy'
 apply plugin: 'com.gradle.plugin-publish'
-apply plugin: 'maven'
 apply plugin: 'checkstyle'
 apply plugin: 'codenarc'
 
