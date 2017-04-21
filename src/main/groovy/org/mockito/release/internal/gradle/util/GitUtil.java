@@ -1,5 +1,6 @@
 package org.mockito.release.internal.gradle.util;
 
+import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.mockito.release.gradle.ReleaseConfiguration;
@@ -21,7 +22,7 @@ public class GitUtil {
     /**
      * Quiet command line to be used to perform git push without exposing write token
      */
-    public static Collection<String> getQuietGitPushArgs(ReleaseConfiguration conf, ExtContainer ext) {
+    public static Collection<String> getQuietGitPushArgs(ReleaseConfiguration conf, Project project) {
         //TODO push everyting on conf object, get rid of ext
         //!!!Below command _MUST_ be quiet otherwise it exposes GitHub write token!!!
         String mustBeQuiet = "-q";
@@ -31,7 +32,7 @@ public class GitUtil {
         String branch = conf.getGit().getBranch();
         String url = MessageFormat.format("https://{0}:[SECRET]@github.com/{1}.git", ghUser, ghRepo);
 
-        ArrayList<String> args = new ArrayList<String>(asList("git", "push", url, branch, ext.getTag(), mustBeQuiet));
+        ArrayList<String> args = new ArrayList<String>(asList("git", "push", url, branch, getTag(conf, project), mustBeQuiet));
         if (conf.isDryRun()) {
             args.add("--dry-run");
         }
@@ -49,5 +50,12 @@ public class GitUtil {
      */
     public static Object getGitGenericUserNotation(ReleaseConfiguration conf) {
         return conf.getGit().getUser() + " <" + conf.getGit().getEmail() + ">";
+    }
+
+    /**
+     * Returns Git tag based on release configuration and project version
+     */
+    public static String getTag(ReleaseConfiguration conf, Project project) {
+        return conf.getGit().getTagPrefix() + project.getVersion();
     }
 }

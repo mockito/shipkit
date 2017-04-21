@@ -18,6 +18,11 @@ public class ReleaseConfiguration {
     private final Git git = new Git();
     private final Library library = new Library();
 
+    public ReleaseConfiguration() {
+        //Configure default values
+        this.git.setTagPrefix("v");
+    }
+
     private boolean dryRun;
 
     public void setDryRun(boolean dryRun) {
@@ -211,6 +216,22 @@ public class ReleaseConfiguration {
          */
         public String getBranch() {
             return getString("git.branch");
+        }
+
+        /**
+         * Prefix added to the version to create VCS-addressable tag,
+         * for example: "v".
+         * Empty string is ok and it means that there is not prefix.
+         */
+        public String getTagPrefix() {
+            return getString("git.tagPrefix");
+        }
+
+        /**
+         * See {@link #getTagPrefix()}
+         */
+        public void setTagPrefix(String tagPrefix) {
+            configuration.put("git.tagPrefix", tagPrefix);
         }
     }
 

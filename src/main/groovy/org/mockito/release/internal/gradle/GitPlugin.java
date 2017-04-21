@@ -15,6 +15,7 @@ import org.mockito.release.internal.gradle.util.TaskMaker;
 import java.io.ByteArrayOutputStream;
 
 import static org.mockito.release.internal.gradle.configuration.LazyConfiguration.lazyConfiguration;
+import static org.mockito.release.internal.gradle.util.GitUtil.getTag;
 import static org.mockito.release.internal.gradle.util.StringUtil.join;
 
 /**
@@ -74,7 +75,7 @@ public class GitPlugin implements Plugin<Project> {
 
                 lazyConfiguration(t, new Runnable() {
                     public void run() {
-                        t.commandLine(GitUtil.getQuietGitPushArgs(conf, ext));
+                        t.commandLine(GitUtil.getQuietGitPushArgs(conf, project));
                     }
                 });
             }
@@ -90,8 +91,8 @@ public class GitPlugin implements Plugin<Project> {
 
         TaskMaker.execTask(project, TAG_CLEANUP_TASK, new Action<Exec>() {
             public void execute(final Exec t) {
-                t.setDescription("Deletes version tag '" + ext.getTag() + "'");
-                t.commandLine("git", "tag", "-d", ext.getTag());
+                t.setDescription("Deletes version tag '" + getTag(conf, project) + "'");
+                t.commandLine("git", "tag", "-d", getTag(conf, project));
             }
         });
 
