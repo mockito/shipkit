@@ -12,7 +12,6 @@ import org.gradle.process.ExecResult;
 import org.gradle.process.ExecSpec;
 import org.mockito.release.gradle.BumpVersionFileTask;
 import org.mockito.release.gradle.ReleaseConfiguration;
-import org.mockito.release.internal.gradle.util.ExtContainer;
 import org.mockito.release.internal.gradle.util.StringUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.version.VersionInfo;
@@ -48,8 +47,6 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
         project.getPlugins().apply(GitPlugin.class);
 
         final boolean notableRelease = project.getExtensions().getByType(VersionInfo.class).isNotableRelease();
-
-        final ExtContainer ext = new ExtContainer(project);
 
         //TODO use constants for all task names
         ((BumpVersionFileTask) project.getTasks().getByName("bumpVersionFile"))

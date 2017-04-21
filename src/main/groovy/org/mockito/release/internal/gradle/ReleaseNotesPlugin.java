@@ -8,7 +8,6 @@ import org.gradle.api.specs.Spec;
 import org.mockito.release.gradle.IncrementalReleaseNotes;
 import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.internal.gradle.configuration.DeferredConfiguration;
-import org.mockito.release.internal.gradle.util.ExtContainer;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 
 import java.io.File;
@@ -81,7 +80,6 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
 
     private static void preconfigureIncrementalNotes(final IncrementalReleaseNotes task, final Project project, final ReleaseConfiguration conf) {
         task.dependsOn("fetchContributorsFromGitHub");
-        final ExtContainer ext = new ExtContainer(project);
         DeferredConfiguration.deferredConfiguration(project, new Runnable() {
             public void run() {
                 task.setGitHubLabelMapping(conf.getReleaseNotes().getLabelMapping()); //TODO make it optional
@@ -104,7 +102,6 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     }
 
     private static void configureNotableNotes(Project project, NotesGeneration gen, ReleaseConfiguration conf) {
-        ExtContainer ext = new ExtContainer(project);
         gen.setGitHubReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
         gen.setGitHubRepository(conf.getGitHub().getRepository());
         gen.setOutputFile(project.file(conf.getReleaseNotes().getNotableFile()));

@@ -5,7 +5,6 @@ import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 import org.gradle.api.publish.maven.MavenPublication
 import org.mockito.release.gradle.ReleaseConfiguration
-import org.mockito.release.gradle.ReleaseToolsProperties
 
 class PomCustomizer {
 
@@ -36,16 +35,13 @@ class PomCustomizer {
          *  - the list of core developers would be static, but the list of contributors would grow
          */
 
-        //TODO accessing 'ext' properties needs to be 'safe' and fail if the user have not provided stuff
-        //TODO relies on ext properties set on the root project. Seems not right
-        def ext = new ExtContainer(project.rootProject)
         publication.pom.withXml {
             LOG.info("""  Customizing pom for publication '$publication.name' in project '$project.path'
     - Module name (project.archivesBaseName): $project.archivesBaseName
     - Description (project.description): $project.description
     - GitHub repository (project.rootProject.releasing.gitHub.repository): ${conf.getGitHub().getRepository()}
-    - Developers (project.rootProject.ext.pom_developers): ${ext.getCollection(ReleaseToolsProperties.pom_developers).join(', ')}
-    - Contributors (project.rootProject.ext.pom_contributors): ${ext.getCollection(ReleaseToolsProperties.pom_contributors).join(', ')}""")
+    - Developers (project.rootProject.releasing.releaseNotes.pomDevelopers): ${conf.team.developers.join(', ')}
+    - Contributors (project.rootProject.releasing.releaseNotes.pomContributors): ${conf.team.contributors.join(', ')}""")
             
             def root = asNode()
             def rootProject = project.rootProject

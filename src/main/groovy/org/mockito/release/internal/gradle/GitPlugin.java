@@ -8,7 +8,6 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Exec;
 import org.mockito.release.gradle.ReleaseConfiguration;
-import org.mockito.release.internal.gradle.util.ExtContainer;
 import org.mockito.release.internal.gradle.util.GitUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 
@@ -37,8 +36,6 @@ public class GitPlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
-
-        final ExtContainer ext = new ExtContainer(project);
 
         TaskMaker.execTask(project, COMMIT_TASK, new Action<Exec>() {
             public void execute(final Exec t) {

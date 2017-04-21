@@ -16,7 +16,7 @@ public class ReleaseConfiguration {
     private final GitHub gitHub = new GitHub();
     private final ReleaseNotes releaseNotes = new ReleaseNotes();
     private final Git git = new Git();
-    private final Library library = new Library();
+    private final Team team = new Team();
 
     public ReleaseConfiguration() {
         //Configure default values
@@ -45,8 +45,8 @@ public class ReleaseConfiguration {
         return git;
     }
 
-    public Library getLibrary() {
-        return library;
+    public Team getTeam() {
+        return team;
     }
 
     public class GitHub {
@@ -235,31 +235,59 @@ public class ReleaseConfiguration {
         }
     }
 
-    public static class Library {
+    /**
+     * Team configuration
+     */
+    public class Team {
+
+        /**
+         * Developers to include in generated pom file.
+         * It should be a collection of elements like "GITHUB_USER:FULL_NAME", example:
+         * ['szczepiq:Szczepan Faber', 'mstachniuk:Marcin Stachniuk'].
+         * <p>
+         * See POM reference for <a href="https://maven.apache.org/pom.html#Developers">Developers</a>.
+         */
         public Collection<String> getDevelopers() {
-            return null;
+            return getCollection("team.developers");
         }
 
+        /**
+         * See {@link #getDevelopers()}
+         */
         public void setDevelopers(Collection<String> developers) {
-
+            configuration.put("team.developers", developers);
         }
 
+        /**
+         * Contributors to include in generated pom file.
+         * It should be a collection of elements like "GITHUB_USER:FULL_NAME", example:
+         * ['szczepiq:Szczepan Faber', 'mstachniuk:Marcin Stachniuk']
+         * <p>
+         * See POM reference for <a href="https://maven.apache.org/pom.html#Contributors">Contributors</a>.
+         */
         public Collection<String> getContributors() {
-            return null;
+            return getCollection("team.contributors");
         }
 
+        /**
+         * See {@link #getContributors()}
+         */
         public void setContributors(Collection<String> contributors) {
-
+            configuration.put("team.contributors", contributors);
         }
     }
 
     //TODO unit test message creation and error handling
     private String getString(String key) {
-        return (String) getValue(key, "Please configure 'releasing." + key + "' value.");
+        return (String) getValue(key, "Please configure 'releasing." + key + "' value (String).");
     }
 
     private Map getMap(String key) {
-        return (Map) getValue(key, "Please configure 'releasing." + key + "' value.");
+        return (Map) getValue(key, "Please configure 'releasing." + key + "' value (Map).");
+    }
+
+    private Collection<String> getCollection(String key) {
+        return (Collection) getValue(key, "Please configure 'releasing." + key + "' value (Collection).");
     }
 
     private String getSensitiveString(String key) {
