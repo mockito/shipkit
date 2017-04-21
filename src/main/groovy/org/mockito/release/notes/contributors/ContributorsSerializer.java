@@ -21,14 +21,14 @@ public class ContributorsSerializer {
         this.file = file;
     }
 
-    public void serialize(ContributorsSet<Contributor> contributorsSet) {
+    public void serialize(ContributorsSet contributorsSet) {
         Collection<Contributor> allContributors = contributorsSet.getAllContributors();
         String json = Jsoner.serialize(allContributors);
         LOG.info("Serialize contributors to: {}", json);
         IOUtil.writeFile(file, json);
     }
 
-    public ContributorsSet<Contributor> desrialize() {
+    public ContributorsSet desrialize() {
         String json = "";
         ContributorsSet set = new DefaultContributorsSet();
         try {

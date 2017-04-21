@@ -6,10 +6,7 @@ import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
-import org.mockito.release.notes.contributors.AllContributorsSerializer;
-import org.mockito.release.notes.contributors.Contributors;
-import org.mockito.release.notes.contributors.ContributorsSet;
-import org.mockito.release.notes.contributors.GitHubContributorsProvider;
+import org.mockito.release.notes.contributors.*;
 
 import java.io.File;
 
@@ -30,7 +27,7 @@ public class AllContributorsFetcherTask extends DefaultTask {
         LOG.lifecycle("  Fetching all contributors for project");
 
         GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContibutorsProvider(repository, authToken);
-        ContributorsSet allContributorsForProject = contributorsProvider.getAllContributorsForProject();
+        ProjectContributorsSet allContributorsForProject = contributorsProvider.getAllContributorsForProject();
 
         AllContributorsSerializer serializer = Contributors.getAllContributorsSerializer(contributorsFile);
         serializer.serialize(allContributorsForProject);

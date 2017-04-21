@@ -46,7 +46,7 @@ public class IOUtil {
     }
 
     private static String readNow(InputStream is) {
-        Scanner s = new Scanner(is).useDelimiter("\\A");
+        Scanner s = new Scanner(is, "UTF-8").useDelimiter("\\A");
         try {
             return s.hasNext() ? s.next() : "";
         } finally {
@@ -58,7 +58,7 @@ public class IOUtil {
         PrintWriter p = null;
         try {
             target.getParentFile().mkdirs();
-            p = new PrintWriter(new FileWriter(target));
+            p = new PrintWriter(new OutputStreamWriter(new FileOutputStream(target), "UTF-8"));
             p.write(content);
         } catch (Exception e) {
             throw new RuntimeException("Problems writing text to file: " + target);

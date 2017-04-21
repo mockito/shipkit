@@ -48,8 +48,7 @@ public class GitHubListFetcher {
         LOG.info("GitHub API querying page {}", queryParamValue(url, "page"));
         URLConnection urlConnection = url.openConnection();
 
-        Date resetInEpochSeconds = DateFormat.parseDateInEpochSeconds(urlConnection.getHeaderField("X-RateLimit-Reset"));
-        String resetInLocalTime = DateFormat.formatDateToLocalTime(resetInEpochSeconds);
+        String resetInLocalTime = resetLimitInLocalTimeOrEmpty(urlConnection);
 
         LOG.info("GitHub API rate info => Remaining : {}, Limit : {}, Reset at: {}",
                 urlConnection.getHeaderField("X-RateLimit-Remaining"),
@@ -58,6 +57,15 @@ public class GitHubListFetcher {
         nextPageUrl = extractRelativeLink(urlConnection.getHeaderField("Link"), "next");
 
         return parseJsonFrom(urlConnection);
+    }
+
+    private String resetLimitInLocalTimeOrEmpty(URLConnection urlConnection) {
+        String rateLimitReset = urlConnection.getHeaderField("X-RateLimit-Reset");
+        if(rateLimitReset == null) {
+            return "";
+        }
+        Date resetInEpochSeconds = DateFormat.parseDateInEpochSeconds(rateLimitReset);
+        return DateFormat.formatDateToLocalTime(resetInEpochSeconds);
     }
 
     private String queryParamValue(URL url, String page) {
