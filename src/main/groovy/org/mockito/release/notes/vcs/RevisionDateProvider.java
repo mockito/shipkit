@@ -27,7 +27,7 @@ class RevisionDateProvider {
     public Date getDate(String rev) {
         String gitOutput = runner.run("git", "log", "--pretty=%ad", "--date=iso", rev, "-n", "1");
         if(!REVISION_DATE_PATTERN.matcher(gitOutput).matches()){
-           throw new IllegalArgumentException("Can't get a proper date for revision number " + rev + ". Are you sure this revision exists?");
+           throw new IllegalArgumentException("Can't get a proper date for revision number " + rev + ". Are you sure this revision or tag exists?");
         }
 
         return parseDate(gitOutput.trim());
