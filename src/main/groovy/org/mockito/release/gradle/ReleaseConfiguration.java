@@ -2,7 +2,6 @@ package org.mockito.release.gradle;
 
 import org.gradle.api.GradleException;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -118,12 +117,18 @@ public class ReleaseConfiguration {
             configuration.put("releaseNotes.file", file);
         }
 
-        public File getNotableFile() {
-            return null;
+        /**
+         * Notable release notes file, for example "docs/notable-release-notes.md"
+         */
+        public String getNotableFile() {
+            return getValue("releaseNotes.notableFile");
         }
 
-        public void setNotableFile(File notableFile) {
-
+        /**
+         * See {@link #getNotableFile()}
+         */
+        public void setNotableFile(String notableFile) {
+            configuration.put("releaseNotes.notableFile", notableFile);
         }
 
         public Map<String, String> getLabelMapping() {

@@ -108,9 +108,9 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         ExtContainer ext = new ExtContainer(project);
         gen.setGitHubReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
         gen.setGitHubRepository(conf.getGitHub().getRepository());
-        gen.setOutputFile(project.file(ext.getNotableReleaseNotesFile()));
+        gen.setOutputFile(project.file(conf.getReleaseNotes().getNotableFile()));
         gen.setVcsCommitsLinkTemplate("https://github.com/" + conf.getGitHub().getRepository() + "/compare/{0}...{1}");
-        gen.setDetailedReleaseNotesLink(conf.getGitHub().getRepository() + "/blob/" + conf.getGit().getBranch() + "/" + ext.getNotableReleaseNotesFile());
+        gen.setDetailedReleaseNotesLink(conf.getGitHub().getRepository() + "/blob/" + conf.getGit().getBranch() + "/" + conf.getReleaseNotes().getNotableFile());
     }
 
     private static File getTemporaryReleaseNotesFile(Project project){

@@ -44,11 +44,4 @@ public class ExtContainer {
     public String getTag() {
         return "v" + project.getVersion();
     }
-
-    /**
-     * Notable release notes file, for example "docs/notable-release-notes.md"
-     */
-    public String getNotableReleaseNotesFile() {
-        return getString("releaseNotes_notableFile");
-    }
 }
