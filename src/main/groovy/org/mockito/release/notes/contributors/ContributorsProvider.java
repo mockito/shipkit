@@ -6,5 +6,5 @@ public interface ContributorsProvider {
 
     ContributorsSet mapContributorsToGitHubUser(ContributionSet contributions, String fromRevision, String toRevision);
 
-    ContributorsSet getAllContributorsForProject();
+    ProjectContributorsSet getAllContributorsForProject();
 }

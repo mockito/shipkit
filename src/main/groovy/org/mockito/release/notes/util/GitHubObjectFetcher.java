@@ -7,8 +7,7 @@ import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
 import org.mockito.release.notes.internal.DateFormat;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
@@ -35,8 +34,7 @@ public class GitHubObjectFetcher {
 
         URLConnection urlConnection = url.openConnection();
 
-        Date resetInEpochSeconds = DateFormat.parseDateInEpochSeconds(urlConnection.getHeaderField("X-RateLimit-Reset"));
-        String resetInLocalTime = DateFormat.formatDateToLocalTime(resetInEpochSeconds);
+        String resetInLocalTime = resetLimitInLocalTimeOrEmpty(urlConnection);
 
         LOG.info("GitHub API rate info => Remaining : {}, Limit : {}, Reset at: {}",
                 urlConnection.getHeaderField("X-RateLimit-Remaining"),
@@ -44,6 +42,15 @@ public class GitHubObjectFetcher {
                 resetInLocalTime);
 
         return parseJsonFrom(urlConnection);
+    }
+
+    private String resetLimitInLocalTimeOrEmpty(URLConnection urlConnection) {
+        String rateLimitReset = urlConnection.getHeaderField("X-RateLimit-Reset");
+        if(rateLimitReset == null) {
+            return "";
+        }
+        Date resetInEpochSeconds = DateFormat.parseDateInEpochSeconds(rateLimitReset);
+        return DateFormat.formatDateToLocalTime(resetInEpochSeconds);
     }
 
     private JsonObject parseJsonFrom(URLConnection urlConnection) throws IOException, DeserializationException {

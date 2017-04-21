@@ -4,7 +4,7 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.json.simple.DeserializationException;
 import org.json.simple.JsonObject;
-import org.mockito.release.notes.model.Contributor;
+import org.mockito.release.notes.model.ProjectContributor;
 import org.mockito.release.notes.util.GitHubListFetcher;
 import org.mockito.release.notes.util.GitHubObjectFetcher;
 
@@ -17,9 +17,9 @@ public class GitHubAllContributorsFetcher {
 
     private static final Logger LOG = Logging.getLogger(GitHubAllContributorsFetcher.class);
 
-    ContributorsSet fetchAllContributorsForProject(String repository, String authToken) {
+    ProjectContributorsSet fetchAllContributorsForProject(String repository, String authToken) {
         LOG.lifecycle("Querying GitHub API for all contributors for project");
-        ContributorsSet result = new DefaultContributorsSet();
+        ProjectContributorsSet result = new DefaultProjectContributorsSet();
 
         try {
             GitHubProjectContributors contributors =
@@ -35,8 +35,8 @@ public class GitHubAllContributorsFetcher {
         return result;
     }
 
-    private Set<Contributor> extractContributors(List<JsonObject> page, String authToken) throws IOException, DeserializationException {
-        Set<Contributor> result = new HashSet<Contributor>();
+    private Set<ProjectContributor> extractContributors(List<JsonObject> page, String authToken) throws IOException, DeserializationException {
+        Set<ProjectContributor> result = new HashSet<ProjectContributor>();
         for (JsonObject contributor : page) {
             String url = (String) contributor.get("url");
             GitHubObjectFetcher userFetcher = new GitHubObjectFetcher(url, authToken);

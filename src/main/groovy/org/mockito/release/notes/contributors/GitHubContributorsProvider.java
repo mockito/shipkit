@@ -23,7 +23,7 @@ public class GitHubContributorsProvider implements ContributorsProvider {
     }
 
     @Override
-    public ContributorsSet getAllContributorsForProject() {
+    public ProjectContributorsSet getAllContributorsForProject() {
         return new GitHubAllContributorsFetcher().fetchAllContributorsForProject(repository, authToken);
     }
 }

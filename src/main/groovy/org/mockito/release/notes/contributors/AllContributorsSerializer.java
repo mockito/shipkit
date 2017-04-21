@@ -22,16 +22,16 @@ public class AllContributorsSerializer {
         this.file = file;
     }
 
-    public void serialize(ContributorsSet<ProjectContributor> contributorsSet) {
+    public void serialize(ProjectContributorsSet contributorsSet) {
         Collection<ProjectContributor> allContributors = contributorsSet.getAllContributors();
         String json = Jsoner.serialize(allContributors);
         LOG.info("Serialize contributors to: {}", json);
         IOUtil.writeFile(file, json);
     }
 
-    public ContributorsSet<Contributor> desrialize() {
+    public ProjectContributorsSet desrialize() {
         String json = "";
-        ContributorsSet set = new DefaultContributorsSet();
+        ProjectContributorsSet set = new DefaultProjectContributorsSet();
         try {
             json = IOUtil.readFully(file);
             LOG.info("Deserialize project contributors from: {}", json);

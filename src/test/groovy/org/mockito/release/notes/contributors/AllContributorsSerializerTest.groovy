@@ -10,7 +10,7 @@ class AllContributorsSerializerTest extends Specification {
     @Subject serializer = new AllContributorsSerializer(tempFile)
 
     def "serialization and deserialization of one contributor"() {
-        def contributors = new DefaultContributorsSet<ProjectContributor>()
+        def contributors = new DefaultProjectContributorsSet()
         def contributor = new DefaultProjectContributor("myName", "myLogin", "myProfileUrl", 5)
         contributors.addContributor(contributor)
 
@@ -24,7 +24,7 @@ class AllContributorsSerializerTest extends Specification {
     }
 
     def "serialization and deserialization of zero contributor"() {
-        def contributors = new DefaultContributorsSet<ProjectContributor>()
+        def contributors = new DefaultProjectContributorsSet()
 
         when:
         serializer.serialize(contributors)
@@ -37,7 +37,7 @@ class AllContributorsSerializerTest extends Specification {
     }
 
     def "serialization and deserialization of two contributors"() {
-        def contributors = new DefaultContributorsSet<ProjectContributor>()
+        def contributors = new DefaultProjectContributorsSet()
         def contributor1 = new DefaultProjectContributor("myName 1", "myLogin 1", "myProfileUrl 1", 5)
         def contributor2 = new DefaultProjectContributor("myName 2", "myLogin 2", "myProfileUrl 2", 5)
         contributors.addContributor(contributor1)
@@ -53,7 +53,7 @@ class AllContributorsSerializerTest extends Specification {
     }
 
     def "serialization and deserialization of 5 contributors"() {
-        def contributors = new DefaultContributorsSet<ProjectContributor>()
+        def contributors = new DefaultProjectContributorsSet()
         def contributor1 = new DefaultProjectContributor("myName 1", "myLogin 1", "myProfileUrl 1", 5)
         def contributor2 = new DefaultProjectContributor("myName 2", "myLogin 2", "myProfileUrl 2", 6)
         def contributor3 = new DefaultProjectContributor("myName 3", "myLogin 3", "myProfileUrl 3", 7)
@@ -75,7 +75,7 @@ class AllContributorsSerializerTest extends Specification {
     }
 
     def "serialization and deserialization contributor with special characters"() {
-        def contributors = new DefaultContributorsSet<ProjectContributor>()
+        def contributors = new DefaultProjectContributorsSet()
         def contributor = new DefaultProjectContributor("my\"Na\\m\fe ", "my\rLo\bg\ni\tn", "\u0000myP\u001Fro\u007Ffi\u009FleUrl ", 5)
         contributors.addContributor(contributor)
 
@@ -89,7 +89,7 @@ class AllContributorsSerializerTest extends Specification {
     }
 
     def "serialization and deserialization contributor with emty name"() {
-        def contributors = new DefaultContributorsSet<ProjectContributor>()
+        def contributors = new DefaultProjectContributorsSet()
         def contributor = new DefaultProjectContributor("", "myLogin", "myProfileUrl", 5)
         contributors.addContributor(contributor)
 
@@ -103,7 +103,7 @@ class AllContributorsSerializerTest extends Specification {
     }
 
     def "serialization and deserialization contributor with zero contributions"() {
-        def contributors = new DefaultContributorsSet<ProjectContributor>()
+        def contributors = new DefaultProjectContributorsSet()
         def contributor = new DefaultProjectContributor("myName", "myLogin", "myProfileUrl", 0)
         contributors.addContributor(contributor)
 
