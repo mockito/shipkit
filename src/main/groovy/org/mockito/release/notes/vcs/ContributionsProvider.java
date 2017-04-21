@@ -8,7 +8,7 @@ import org.mockito.release.notes.model.ContributionSet;
 public interface ContributionsProvider {
 
     /**
-     * Provides contributions between specified versions
+     * Provides contributions between specified revisions
      */
     ContributionSet getContributionsBetween(String fromRev, String toRev);
 }

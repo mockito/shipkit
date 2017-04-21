@@ -5,15 +5,15 @@ import org.mockito.release.notes.model.Contributor;
 import java.util.Collection;
 import java.util.Set;
 
-public interface ContributorsSet {
+public interface ContributorsSet<T extends Contributor> {
 
-    Contributor findByAuthorName(String authorName);
+    T findByAuthorName(String authorName);
 
-    void addContributor(Contributor contributor);
+    void addContributor(T contributor);
 
-    void addAllContributors(Set<Contributor> contributors);
+    void addAllContributors(Set<T> contributors);
 
     int size();
 
-    Collection<Contributor> getAllContributors();
+    Collection<T> getAllContributors();
 }

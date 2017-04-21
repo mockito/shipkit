@@ -1,24 +1,24 @@
 package org.mockito.release.notes.contributors;
 
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.json.simple.DeserializationException;
 import org.json.simple.JsonObject;
 import org.mockito.release.notes.model.Commit;
 import org.mockito.release.notes.model.Contribution;
 import org.mockito.release.notes.model.Contributor;
-import org.mockito.release.notes.util.GitHubFetcher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mockito.release.notes.util.GitHubListFetcher;
 
 import java.io.IOException;
 import java.util.*;
 
-public class GitHubContributorsFetcher {
+public class GitHubLastContributorsFetcher {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GitHubContributorsFetcher.class);
+    private static final Logger LOG = Logging.getLogger(GitHubLastContributorsFetcher.class);
 
     ContributorsSet fetchContributors(String repository, String authToken, Collection<Contribution> contributions, String fromRevision, String toRevision) {
-        ContributorsSet result = new DefaultContributorsSet();
         LOG.info("Querying GitHub API for commits (for contributors)");
+        ContributorsSet result = new DefaultContributorsSet();
 
         Set<String> authors = getAuthors(contributions);
 
@@ -112,11 +112,11 @@ public class GitHubContributorsFetcher {
     private static class GitHubCommits {
 
         private final String fromRevision;
-        private final GitHubFetcher fetcher;
+        private final GitHubListFetcher fetcher;
         private List<JsonObject> lastFetchedPage;
 
         private GitHubCommits(String nextPageUrl, String fromRevision) {
-            fetcher = new GitHubFetcher(nextPageUrl);
+            fetcher = new GitHubListFetcher(nextPageUrl);
             this.fromRevision = fromRevision;
         }
 
