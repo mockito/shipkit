@@ -27,6 +27,10 @@ class RevisionDateProviderTest extends Specification {
         provider.getDate("v1.0.0")
 
         then:
-        thrown IllegalArgumentException
+        def ex = thrown(IllegalArgumentException)
+        ex.message == "Can't get a proper date for revision number v1.0.0." +
+                " Are you sure this revision or tag exists?" +
+                " Following output was returned by git:\n" +
+                "fatal: ambiguous argument 'v1.0.0'"
     }
 }
