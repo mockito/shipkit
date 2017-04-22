@@ -56,6 +56,12 @@ public class DefaultProcessRunner implements ProcessRunner {
         try {
             Process process = new ProcessBuilder(commandLine).directory(workDir).redirectErrorStream(true).start();
             String output = mask(readFully(new BufferedReader(new InputStreamReader(process.getInputStream()))));
+
+            //TODO add sanity timeout when we move to Java 1.7
+            // 1. we can do something like process.waitFor(15, TimeUnit.MINUTES)
+            // 2. first, we need to change the compatibility, push to Gradle 3.0, stop building with Java 1.6.
+            process.waitFor();
+
             result = new ProcessResult(output, process);
         } catch (Exception e) {
             throw new ReleaseNotesException("Problems executing command:\n  " + maskedCommandLine, e);
