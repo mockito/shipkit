@@ -6,16 +6,14 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.specs.Spec;
 import org.mockito.release.gradle.IncrementalReleaseNotes;
-import org.mockito.release.gradle.ReleaseToolsProperties;
-import org.mockito.release.internal.gradle.util.ExtContainer;
-import org.mockito.release.internal.gradle.util.LazyConfigurer;
+import org.mockito.release.gradle.ReleaseConfiguration;
+import org.mockito.release.internal.gradle.configuration.DeferredConfiguration;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 
 import java.io.File;
-import java.util.Collections;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static org.mockito.release.internal.gradle.configuration.LazyConfiguration.lazyConfiguration;
 
 /**
  * The plugin adds following tasks:
@@ -32,19 +30,21 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     private static final String TEMP_SERIALIZED_NOTES_FILE = "/notableReleaseNotes.ser";
 
     public void apply(final Project project) {
+        final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
+
         project.getPlugins().apply(ContributorsPlugin.class);
 
         TaskMaker.task(project, "updateReleaseNotes", IncrementalReleaseNotes.UpdateTask.class, new Action<IncrementalReleaseNotes.UpdateTask>() {
             public void execute(final IncrementalReleaseNotes.UpdateTask t) {
                 t.setDescription("Updates release notes file.");
-                preconfigureIncrementalNotes(t, project);
+                preconfigureIncrementalNotes(t, project, conf);
             }
         });
 
         TaskMaker.task(project, "previewReleaseNotes", IncrementalReleaseNotes.PreviewTask.class, new Action<IncrementalReleaseNotes.PreviewTask>() {
             public void execute(final IncrementalReleaseNotes.PreviewTask t) {
                 t.setDescription("Shows new incremental content of release notes. Useful for previewing the release notes.");
-                preconfigureIncrementalNotes(t, project);
+                preconfigureIncrementalNotes(t, project, conf);
             }
         });
 
@@ -53,9 +53,9 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
                 final NotesGeneration gen = task.getNotesGeneration();
                 preconfigureNotableNotes(project, gen);
 
-                LazyConfigurer.getConfigurer(project).configureLazily(task, new Runnable() {
+                lazyConfiguration(task, new Runnable() {
                     public void run() {
-                        configureNotableNotes(project, gen);
+                        configureNotableNotes(project, gen, conf);
                     }
                 });
             }
@@ -69,24 +69,24 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
 
                 task.dependsOn("fetchNotableReleaseNotes");
 
-                LazyConfigurer.getConfigurer(project).configureLazily(task, new Runnable() {
+                lazyConfiguration(task, new Runnable() {
                     public void run() {
-                        configureNotableNotes(project, gen);
+                        configureNotableNotes(project, gen, conf);
                     }
                 });
             }
         });
     }
 
-    private static void preconfigureIncrementalNotes(final IncrementalReleaseNotes task, final Project project) {
+    private static void preconfigureIncrementalNotes(final IncrementalReleaseNotes task, final Project project, final ReleaseConfiguration conf) {
         task.dependsOn("fetchContributorsFromGitHub");
-        final ExtContainer ext = new ExtContainer(project);
-        LazyConfigurer.getConfigurer(project).configureLazily(task, new Runnable() {
+        DeferredConfiguration.deferredConfiguration(project, new Runnable() {
             public void run() {
-                task.setGitHubLabelMapping(ext.getMap(ReleaseToolsProperties.releaseNotes_labelMapping)); //TODO make it optional
-                task.setReleaseNotesFile(project.file(ext.getReleaseNotesFile())); //TODO add sensible default
-                task.setGitHubReadOnlyAuthToken(ext.getGitHubReadOnlyAuthToken());
-                task.setGitHubRepository(ext.getString(ReleaseToolsProperties.gh_repository));
+                task.setGitHubLabelMapping(conf.getReleaseNotes().getLabelMapping()); //TODO make it optional
+                task.setReleaseNotesFile(project.file(conf.getReleaseNotes().getFile())); //TODO add sensible default
+                task.setGitHubReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
+                task.setGitHubRepository(conf.getGitHub().getRepository());
+                //TODO, do we need below force?
                 forceTaskToAlwaysGeneratePreview(task);
             }
         });
@@ -101,13 +101,12 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         gen.setTemporarySerializedNotesFile(getTemporaryReleaseNotesFile(project));
     }
 
-    private static void configureNotableNotes(Project project, NotesGeneration gen) {
-        ExtContainer ext = new ExtContainer(project);
-        gen.setGitHubReadOnlyAuthToken(ext.getGitHubReadOnlyAuthToken());
-        gen.setGitHubRepository(ext.getGitHubRepository());
-        gen.setOutputFile(project.file(ext.getNotableReleaseNotesFile()));
-        gen.setVcsCommitsLinkTemplate("https://github.com/" + ext.getGitHubRepository() + "/compare/{0}...{1}");
-        gen.setDetailedReleaseNotesLink(ext.getGitHubRepository() + "/blob/" + ext.getCurrentBranch() + "/" + ext.getNotableReleaseNotesFile());
+    private static void configureNotableNotes(Project project, NotesGeneration gen, ReleaseConfiguration conf) {
+        gen.setGitHubReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
+        gen.setGitHubRepository(conf.getGitHub().getRepository());
+        gen.setOutputFile(project.file(conf.getReleaseNotes().getNotableFile()));
+        gen.setVcsCommitsLinkTemplate("https://github.com/" + conf.getGitHub().getRepository() + "/compare/{0}...{1}");
+        gen.setDetailedReleaseNotesLink(conf.getGitHub().getRepository() + "/blob/" + conf.getGit().getBranch() + "/" + conf.getReleaseNotes().getNotableFile());
     }
 
     private static File getTemporaryReleaseNotesFile(Project project){

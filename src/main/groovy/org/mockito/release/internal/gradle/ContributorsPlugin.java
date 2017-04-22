@@ -3,14 +3,15 @@ package org.mockito.release.internal.gradle;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.mockito.release.internal.gradle.util.ExtContainer;
+import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.internal.gradle.util.FileUtil;
-import org.mockito.release.internal.gradle.util.LazyConfigurer;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.notes.Notes;
 import org.mockito.release.notes.contributors.Contributors;
 
 import java.io.File;
+
+import static org.mockito.release.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
 
 /**
  * Adds and configures tasks for getting contributor git user to GitHub user mappings.
@@ -22,7 +23,7 @@ import java.io.File;
 public class ContributorsPlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
-        final ExtContainer ext = new ExtContainer(project);
+        final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
 
         project.getTasks().create("fetchContributorsFromGitHub", ContributorsFetcherTask.class, new Action<ContributorsFetcherTask>() {
             @Override
@@ -33,13 +34,13 @@ public class ContributorsPlugin implements Plugin<Project> {
                 final String toRevision = "HEAD";
                 task.setToRevision(toRevision);
 
-                LazyConfigurer.getConfigurer(project).configureLazily(task, new Runnable() {
+                deferredConfiguration(project, new Runnable() {
                     public void run() {
-                        String fromRevision = fromRevision(project, ext);
+                        String fromRevision = fromRevision(project, conf);
                         File contributorsFile = contributorsFile(project, fromRevision, toRevision);
 
-                        task.setAuthToken(ext.getGitHubReadOnlyAuthToken());
-                        task.setRepository(ext.getGitHubRepository());
+                        task.setAuthToken(conf.getGitHub().getReadOnlyAuthToken());
+                        task.setRepository(conf.getGitHub().getRepository());
                         task.setFromRevision(fromRevision);
                         task.setContributorsFile(contributorsFile);
                     }
@@ -49,9 +50,8 @@ public class ContributorsPlugin implements Plugin<Project> {
 
     }
 
-    private String fromRevision(Project project, ExtContainer ext) {
-        project.file(ext.getReleaseNotesFile());
-        String firstLine = FileUtil.firstLine(project.file(ext.getReleaseNotesFile()));
+    private String fromRevision(Project project, ReleaseConfiguration conf) {
+        String firstLine = FileUtil.firstLine(project.file(conf.getReleaseNotes().getFile()));
         return "v" + Notes.previousVersion(firstLine).getPreviousVersion();
     }
 

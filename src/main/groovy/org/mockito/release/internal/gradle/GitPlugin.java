@@ -7,12 +7,14 @@ import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Exec;
+import org.mockito.release.gradle.ReleaseConfiguration;
+import org.mockito.release.internal.gradle.util.GitUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
-import org.mockito.release.internal.gradle.util.ExtContainer;
-import org.mockito.release.internal.gradle.util.LazyConfigurer;
 
 import java.io.ByteArrayOutputStream;
 
+import static org.mockito.release.internal.gradle.configuration.LazyConfiguration.lazyConfiguration;
+import static org.mockito.release.internal.gradle.util.GitUtil.getTag;
 import static org.mockito.release.internal.gradle.util.StringUtil.join;
 
 /**
@@ -33,7 +35,7 @@ public class GitPlugin implements Plugin<Project> {
     static final String SET_EMAIL_TASK = "setGitUserEmail";
 
     public void apply(final Project project) {
-        final ExtContainer ext = new ExtContainer(project);
+        final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
 
         TaskMaker.execTask(project, COMMIT_TASK, new Action<Exec>() {
             public void execute(final Exec t) {
@@ -42,7 +44,7 @@ public class GitPlugin implements Plugin<Project> {
                     public void execute(Task task) {
                         //doFirst (execution time) to pick up user-configured setting
                         t.commandLine("git", "commit", "--author",
-                                ext.getGitGenericUserNotation(), "-m", commitMessage("Bumped version and updated release notes"));
+                                GitUtil.getGitGenericUserNotation(conf), "-m", commitMessage("Bumped version and updated release notes"));
                     }
                 });
             }
@@ -63,14 +65,14 @@ public class GitPlugin implements Plugin<Project> {
                 t.setDescription("Pushes changes to remote repo.");
                 t.mustRunAfter(COMMIT_TASK, TAG_TASK);
 
-                LazyConfigurer.getConfigurer(project).configureLazily(t, new Runnable() {
-                    public void run() {
-                        t.commandLine(ext.getQuietGitPushArgs());
+                //!!!We must capture and hide the output because when git push fails it can expose the token!
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                t.setStandardOutput(output);
+                t.setErrorOutput(output);
 
-                        //!!!We must capture and hide the output because when git push fails it can expose the token!
-                        ByteArrayOutputStream output = new ByteArrayOutputStream();
-                        t.setStandardOutput(output);
-                        t.setErrorOutput(output);
+                lazyConfiguration(t, new Runnable() {
+                    public void run() {
+                        t.commandLine(GitUtil.getQuietGitPushArgs(conf, project));
                     }
                 });
             }
@@ -86,8 +88,8 @@ public class GitPlugin implements Plugin<Project> {
 
         TaskMaker.execTask(project, TAG_CLEANUP_TASK, new Action<Exec>() {
             public void execute(final Exec t) {
-                t.setDescription("Deletes version tag '" + ext.getTag() + "'");
-                t.commandLine("git", "tag", "-d", ext.getTag());
+                t.setDescription("Deletes version tag '" + getTag(conf, project) + "'");
+                t.commandLine("git", "tag", "-d", getTag(conf, project));
             }
         });
 
@@ -113,9 +115,9 @@ public class GitPlugin implements Plugin<Project> {
         TaskMaker.execTask(project, CHECKOUT_BRANCH_TASK, new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Checks out the branch that can be committed. CI systems often check out revision that is not committable.");
-                LazyConfigurer.getConfigurer(project).configureLazily(t, new Runnable() {
+                lazyConfiguration(t, new Runnable() {
                     public void run() {
-                        t.commandLine("git", "checkout", ext.getCurrentBranch());
+                        t.commandLine("git", "checkout", conf.getGit().getBranch());
                     }
                 });
             }
@@ -124,11 +126,11 @@ public class GitPlugin implements Plugin<Project> {
         TaskMaker.execTask(project, SET_USER_TASK, new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Overwrites local git 'user.name' with a generic name. Intended for CI.");
-                //TODO replace all doFirst in this class with LazyConfigurer
+                //TODO replace all doFirst in this class with LazyConfiguration
                 t.doFirst(new Action<Task>() {
                     public void execute(Task task) {
                         //using doFirst() so that we request and validate presence of env var only during execution time
-                        t.commandLine("git", "config", "--local", "user.name", ext.getGitGenericUser());
+                        t.commandLine("git", "config", "--local", "user.name", conf.getGit().getUser());
                     }
                 });
             }
@@ -141,7 +143,7 @@ public class GitPlugin implements Plugin<Project> {
                     public void execute(Task task) {
                         //using doFirst() so that we request and validate presence of env var only during execution time
                         //TODO consider adding 'lazyExec' task or method that automatically uses do first
-                        t.commandLine("git", "config", "--local", "user.email", ext.getGitGenericEmail());
+                        t.commandLine("git", "config", "--local", "user.email", conf.getGit().getEmail());
                     }
                 });
             }

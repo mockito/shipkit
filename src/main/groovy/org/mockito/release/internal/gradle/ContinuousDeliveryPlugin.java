@@ -11,7 +11,7 @@ import org.gradle.api.tasks.Exec;
 import org.gradle.process.ExecResult;
 import org.gradle.process.ExecSpec;
 import org.mockito.release.gradle.BumpVersionFileTask;
-import org.mockito.release.internal.gradle.util.ExtContainer;
+import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.internal.gradle.util.StringUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.version.VersionInfo;
@@ -40,13 +40,13 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
     private static final Logger LOG = Logging.getLogger(ContinuousDeliveryPlugin.class);
 
     public void apply(final Project project) {
+        final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
+
         project.getPlugins().apply(ReleaseNotesPlugin.class);
         project.getPlugins().apply(VersioningPlugin.class);
         project.getPlugins().apply(GitPlugin.class);
 
         final boolean notableRelease = project.getExtensions().getByType(VersionInfo.class).isNotableRelease();
-
-        final ExtContainer ext = new ExtContainer(project);
 
         //TODO use constants for all task names
         ((BumpVersionFileTask) project.getTasks().getByName("bumpVersionFile"))
@@ -76,7 +76,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                     public void execute(Task task) {
                         //doFirst (execution time)
                         // so that we can access user-configured properties
-                        t.commandLine("git", "add", ext.getReleaseNotesFile(), ext.getNotableReleaseNotesFile());
+                        t.commandLine("git", "add", conf.getReleaseNotes().getFile(), conf.getReleaseNotes().getNotableFile());
                     }
                 });
             }
@@ -90,6 +90,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                 t.mustRunAfter(GitPlugin.PUSH_TASK);
             }
         });
+        //TODO can we make git push and bintray upload tasks to be last (expensive, hard to reverse tasks should go last)
 
         project.allprojects(new Action<Project>() {
             public void execute(final Project project) {
@@ -149,7 +150,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
 
                         //TODO create task that reads the current branch in case TRAVIS_BRANCH env variable is not set
                         String branch = System.getenv("TRAVIS_BRANCH");
-                        boolean releasableBranch = branch != null && branch.matches(ext.getReleasableBranchRegex());
+                        boolean releasableBranch = branch != null && branch.matches(conf.getGit().getReleasableBranchRegex());
 
                         boolean notNeeded = skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
                         //TODO task type, otherwise 'needed' is just a String, no type safety
@@ -195,6 +196,9 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
             }
         });
 
+        //TODO delete this task, instead we can just print to the user:
+        // to test the release, run "./gradlew performRelease releaseCleanUp -PreleaseDryRun"
+        //forking off gradle process to run tasks, from inside gradle tasks is not a good idea.
         TaskMaker.task(project, "testRelease", new Action<Task>() {
             public void execute(Task t) {
                 t.setDescription("Tests the release, intended to be used locally by engineers");
