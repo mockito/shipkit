@@ -69,6 +69,8 @@ public class GitPlugin implements Plugin<Project> {
                 ByteArrayOutputStream output = new ByteArrayOutputStream();
                 t.setStandardOutput(output);
                 t.setErrorOutput(output);
+                //TODO instead of being quiet and not printing the output at all, we should instead print the output
+                //and replace the sensitive value with [SECRET]. This way, the task is neatly debuggable.
 
                 lazyConfiguration(t, new Runnable() {
                     public void run() {
