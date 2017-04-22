@@ -1,5 +1,7 @@
 package org.mockito.release.exec
 
+import org.gradle.api.GradleException
+import org.gradle.api.logging.Logger
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.IgnoreIf
@@ -24,5 +26,51 @@ class DefaultProcessRunnerTest extends Specification {
         then:
         output.contains("xyz.txt")
         output.contains("hey joe.jar")
+    }
+
+    def "shows output on failure"() {
+        File dir = tmp.newFolder()
+
+        when:
+        new DefaultProcessRunner(dir).run("ls", "foobar")
+
+        then:
+        def ex = thrown(GradleException)
+        ex.message == """Execution of command failed (exit code 1):
+  ls foobar
+Captured command output:
+ls: foobar: No such file or directory
+"""
+    }
+
+    def "shows masks secrets in failure message"() {
+        File dir = tmp.newFolder()
+
+        when:
+        new DefaultProcessRunner(dir)
+                .setSecretValue("foobar")
+                .run("ls", "foobar")
+
+        then:
+        def ex = thrown(GradleException)
+        ex.message == """Execution of command failed (exit code 1):
+  ls [SECRET]
+Captured command output:
+ls: [SECRET]: No such file or directory
+"""
+    }
+
+    def "masks secret value from logging"() {
+        File dir = tmp.newFolder()
+        new File(dir, "xyz.txt").createNewFile()
+        new File(dir, "hey joe.jar").createNewFile()
+        def log = Mock(Logger)
+
+        when:
+        new DefaultProcessRunner(dir).setSecretValue("foobar").run(log, ["ls", "foobar", "xx foobar yy"])
+
+        then:
+        thrown(GradleException)
+        log.lifecycle("ls [SECRET] xx [SECRET] yy")
     }
 }
