@@ -103,8 +103,20 @@ public class ReleaseConfiguration {
             configuration.put("gitHub.readOnlyAuthToken", token);
         }
 
+        /**
+         * GitHub write auth token to be used for pushing code to GitHub.
+         * Auth token is used with the user specified in {@link #getWriteAuthUser()}.
+         * <strong>WARNING:</strong> please don't commit the write auth token to VCS.
+         * Instead export "GH_WRITE_TOKEN" environment variable.
+         * The env variable value will be automatically returned by this method.
+         */
         public String getWriteAuthToken() {
-            return getSensitiveString("gitHub.writeAuthToken");
+            return (String) getValue("gitHub.writeAuthToken", "GH_WRITE_TOKEN",
+                    "Please configure 'releasing." + "gitHub.writeAuthToken" + "' value.\n" +
+                    "  It is highly recommended to use env variable for sensitive information\n" +
+                    "  and store secured value with your CI configuration.\n" +
+                    "  Example 'build.gradle' file:\n" +
+                    "    releasing." + "gitHub.writeAuthToken" + " = System.getenv('GH_WRITE_TOKEN')");
         }
 
         public void setWriteAuthToken(String writeAuthToken) {
@@ -218,10 +230,14 @@ public class ReleaseConfiguration {
 
         /**
          * Returns the branch the release process works on and commits code to.
-         * On Travis CI, we configure it to 'TRAVIS_BRANCH' env variable.
+         * If not specified, it will be loaded from "TRAVIS_BRANCH" environment variable.
          */
         public String getBranch() {
-            return getString("git.branch");
+            //TODO decouple from Travis. Suggested plan:
+            //1. We remove the 'branch' configuration from here completely
+            //2. We add a utility method that gives us current branch, it should trigger the "git call" only once.
+            //3. We call that utility method if we need branch
+            return getString("git.branch", "TRAVIS_BRANCH");
         }
 
         /**
@@ -283,32 +299,37 @@ public class ReleaseConfiguration {
         }
     }
 
-    //TODO unit test message creation and error handling
+    //TODO unit test message creation and error handling, suggested plan:
+    //1. Create wrapper type over 'configuration' map
+    //2. Move handling to this new object and make it testable, along with env variables
     private String getString(String key) {
-        return (String) getValue(key, "Please configure 'releasing." + key + "' value (String).");
+        return getString(key, null);
+    }
+
+    private String getString(String key, String envVarName) {
+        return (String) getValue(key, envVarName, "Please configure 'releasing." + key + "' value (String).");
     }
 
     private Map getMap(String key) {
-        return (Map) getValue(key, "Please configure 'releasing." + key + "' value (Map).");
+        return (Map) getValue(key, null,"Please configure 'releasing." + key + "' value (Map).");
     }
 
     private Collection<String> getCollection(String key) {
-        return (Collection) getValue(key, "Please configure 'releasing." + key + "' value (Collection).");
+        return (Collection) getValue(key, null, "Please configure 'releasing." + key + "' value (Collection).");
     }
 
-    private String getSensitiveString(String key) {
-        return (String) getValue(key, "Please configure 'releasing." + key + "' value.\n" +
-                "  It is recommended to use env variable for sensitive information\n" +
-                "  and store secured value with your CI configuration.\n" +
-                "  Example 'build.gradle' file:\n" +
-                "    releasing." + key + " = System.getenv('SECRET')");
-    }
-
-    private Object getValue(String key, String message) {
+    private Object getValue(String key, String envVarName, String message) {
         Object value = configuration.get(key);
-        if (value == null) {
-            throw new GradleException(message);
+        if (value != null) {
+            return value;
         }
-        return value;
+
+        if (envVarName != null) {
+            value = System.getenv(envVarName);
+            if (value != null) {
+                return value;
+            }
+        }
+        throw new GradleException(message);
     }
 }

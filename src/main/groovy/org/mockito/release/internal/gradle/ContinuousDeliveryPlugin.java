@@ -148,8 +148,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                         String pr = System.getenv("TRAVIS_PULL_REQUEST");
                         boolean pullRequest = pr != null && !pr.trim().isEmpty() && !pr.equals("false");
 
-                        //TODO create task that reads the current branch in case TRAVIS_BRANCH env variable is not set
-                        String branch = System.getenv("TRAVIS_BRANCH");
+                        String branch = conf.getGit().getBranch();
                         boolean releasableBranch = branch != null && branch.matches(conf.getGit().getReleasableBranchRegex());
 
                         boolean notNeeded = skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
@@ -191,7 +190,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                 });
 
                 //TODO I think we should consider deleting 'travisRelease' task. It could be repaced by something like:
-                //./gradlew assertReleaseNeeded && ./gradlew travisReleasePrepare && ./gradlew performRelease releaseCleanUp -PreleaseDryRun && ./gradlew performRelease
+                //./gradlew assertReleaseNeeded && ./gradlew travisReleasePrepare && ./gradlew performRelease releaseCleanUp && ./gradlew performRelease -PreleaseDryRun=false
                 //assertReleaseNeeded task would fail when release is not needed and would stop executing further commands.
             }
         });
