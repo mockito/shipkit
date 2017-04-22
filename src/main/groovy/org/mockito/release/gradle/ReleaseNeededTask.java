@@ -71,6 +71,9 @@ public class ReleaseNeededTask extends DefaultTask {
 
         boolean notNeeded = skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
 
+        //TODO add more color to the message
+        //add env variable names, what is the current branch, what is the regexp, etc.
+        //This way it is easier to understand how stuff works by reading the log
         String message = "  Release is needed: " + !notNeeded +
                 "\n    - skip by env variable: " + skipEnvVariable +
                 "\n    - skip by commit message: " + skippedByCommitMessage +
