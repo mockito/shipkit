@@ -12,6 +12,7 @@ import org.gradle.process.ExecSpec;
 import org.mockito.release.gradle.BumpVersionFileTask;
 import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.gradle.ReleaseNeededTask;
+import org.mockito.release.internal.gradle.configuration.LazyConfiguration;
 import org.mockito.release.internal.gradle.util.StringUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.version.VersionInfo;
@@ -135,10 +136,15 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
         });
 
         TaskMaker.task(project, "assertReleaseNeeded", ReleaseNeededTask.class, new Action<ReleaseNeededTask>() {
-            public void execute(ReleaseNeededTask t) {
+            public void execute(final ReleaseNeededTask t) {
                 t.setDescription("Asserts that criteria for the release are met and throws exception if release not needed.");
-                t.setBranch(conf.getGit().getBranch());
                 t.setReleasableBranchRegex(conf.getGit().getReleasableBranchRegex());
+
+                LazyConfiguration.lazyConfiguration(t, new Runnable() {
+                    public void run() {
+                        t.setBranch(conf.getGit().getBranch());
+                    }
+                });
             }
         });
 

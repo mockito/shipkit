@@ -26,7 +26,8 @@ public class ReleaseConfiguration {
 
     public ReleaseConfiguration() {
         //Configure default values
-        this.git.setTagPrefix("v");
+        this.git.setTagPrefix("v"); //so that tags are "v1.0", "v2.3.4"
+        this.git.setReleasableBranchRegex("master|release/.+");  // matches 'master', 'release/2.x', 'release/3.x', etc.
     }
 
     private boolean dryRun;
