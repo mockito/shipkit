@@ -113,11 +113,11 @@ public class ReleaseConfiguration {
          */
         public String getWriteAuthToken() {
             return (String) getValue("gitHub.writeAuthToken", "GH_WRITE_TOKEN",
-                    "Please configure 'releasing." + "gitHub.writeAuthToken" + "' value.\n" +
-                    "  It is highly recommended to use env variable for sensitive information\n" +
-                    "  and store secured value with your CI configuration.\n" +
-                    "  Example 'build.gradle' file:\n" +
-                    "    releasing." + "gitHub.writeAuthToken" + " = System.getenv('GH_WRITE_TOKEN')");
+                    "Please export 'GH_WRITE_TOKEN' env variable first!\n" +
+                    "  The value of that variable is automatically used for 'releasing.gitHub.writeAuthToken' setting.\n" +
+                    "  It is highly recommended to keep write token secure and store env variable with your CI configuration.\n" +
+                    "  Alternatively, you can configure the write token explicitly in the *.gradle file:\n" +
+                    "    releasing.gitHub.writeAuthToken = 'secret'");
         }
 
         public void setWriteAuthToken(String writeAuthToken) {
