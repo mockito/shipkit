@@ -69,7 +69,7 @@ class PomCustomizer {
             ci.appendNode('system', 'TravisCI')
 
             def developers = root.appendNode('developers')
-            rootProject.ext.pom_developers.each {
+            conf.team.developers.each {
                 def split = it.split(':')
                 assert split.length == 2
                 def d = developers.appendNode('developer')
@@ -80,7 +80,7 @@ class PomCustomizer {
             }
 
             def contributors = root.appendNode('contributors')
-            rootProject.ext.pom_contributors.each {
+            conf.team.contributors.each {
                 def split = it.split(':')
                 assert split.length == 2
                 def c = contributors.appendNode('contributor')
