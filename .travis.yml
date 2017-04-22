@@ -22,7 +22,7 @@ install:
  - true
 
 script:
-  - ./gradlew build -s
+  - ./gradlew build -s -i
 
 after_success:
   - ./gradlew travisRelease -s
