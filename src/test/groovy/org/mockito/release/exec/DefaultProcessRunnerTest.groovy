@@ -15,7 +15,7 @@ class DefaultProcessRunnerTest extends Specification {
 
     @Rule TemporaryFolder tmp = new TemporaryFolder()
 
-    def "runs processes"() {
+    def "runs processes and returns output"() {
         File dir = tmp.newFolder()
         new File(dir, "xyz.txt").createNewFile()
         new File(dir, "hey joe.jar").createNewFile()
@@ -28,42 +28,31 @@ class DefaultProcessRunnerTest extends Specification {
         output.contains("hey joe.jar")
     }
 
-    def "shows output on failure"() {
+    def "masks output"() {
         File dir = tmp.newFolder()
 
         when:
-        new DefaultProcessRunner(dir).run("ls", "foobar")
+        def out = new DefaultProcessRunner(dir).setSecretValue("foobar").run("echo", "a foobar b foobar c")
 
         then:
-        def ex = thrown(GradleException)
-        ex.message == """Execution of command failed (exit code 1):
-  ls foobar
-Captured command output:
-ls: foobar: No such file or directory
-"""
+        out.contains("a [SECRET] b [SECRET] c")
     }
 
-    def "shows masks secrets in failure message"() {
+    def "masks failure message"() {
         File dir = tmp.newFolder()
 
         when:
-        new DefaultProcessRunner(dir)
-                .setSecretValue("foobar")
-                .run("ls", "foobar")
+        new DefaultProcessRunner(dir).setSecretValue("foobar").run("ls", "foobar")
 
         then:
         def ex = thrown(GradleException)
-        ex.message == """Execution of command failed (exit code 1):
-  ls [SECRET]
-Captured command output:
-ls: [SECRET]: No such file or directory
-"""
+        ex.message.contains("Execution of command failed")
+        !ex.message.contains("foobar")
+        ex.message.contains("[SECRET]")
     }
 
-    def "masks secret value from logging"() {
+    def "masks logging"() {
         File dir = tmp.newFolder()
-        new File(dir, "xyz.txt").createNewFile()
-        new File(dir, "hey joe.jar").createNewFile()
         def log = Mock(Logger)
 
         when:
