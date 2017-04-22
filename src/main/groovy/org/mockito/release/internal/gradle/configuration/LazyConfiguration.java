@@ -28,6 +28,7 @@ public class LazyConfiguration {
             for (Task key : actions.keySet()) {
                 if (graph.hasTask(key)) {
                     for (Runnable r : actions.get(key)) {
+                        //TODO add 'info' level logging explaining what happens. Similar to how we do it in DeferredConfiguration
                         r.run();
                     }
                 }
