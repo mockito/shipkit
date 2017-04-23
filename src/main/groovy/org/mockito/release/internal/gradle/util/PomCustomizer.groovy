@@ -5,9 +5,8 @@ import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 import org.gradle.api.publish.maven.MavenPublication
 import org.mockito.release.gradle.ReleaseConfiguration
-import org.mockito.release.notes.contributors.AllProjectContributorsReader
-import org.mockito.release.notes.contributors.AllProjectsContributorsProvider
 import org.mockito.release.notes.contributors.Contributors
+import org.mockito.release.notes.contributors.ContributorsToPom
 
 class PomCustomizer {
 
@@ -84,13 +83,7 @@ class PomCustomizer {
 
             def contributorsNode = root.appendNode('contributors')
             def fileName = Contributors.getAllProjectContributorsFileName(project.getBuildDir())
-            AllProjectContributorsReader reader = AllProjectsContributorsProvider.allProjectContributorsReader()
-            def contributors = reader.loadAllContributors(fileName)
-            contributors.getAllContributors().each {
-                def c = contributorsNode.appendNode('contributor')
-                c.appendNode('name', it.name != "" ? it.name : it.login)
-                c.appendNode('url', it.profileUrl)
-            }
+            ContributorsToPom.include(contributorsNode, fileName, conf.team.contributors, conf.team.developers)
         }
     }
 }

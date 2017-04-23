@@ -97,6 +97,6 @@ public class BaseJavaLibraryPlugin implements Plugin<Project> {
         // TODO 1 is this dependency correct? Result of fetchAllProjectContributorsFromGitHub is needed in
         // TODO PomCustomizer.customizePom(project, publication);
         // TODO 2 Where define dependency to ContributorsPlugin?
-        project.getTasks().getByName("publishToMavenLocal").dependsOn("fetchAllProjectContributorsFromGitHub");
+//         project.getTasks().getByName("publishToMavenLocal").dependsOn("fetchAllProjectContributorsFromGitHub");
     }
 }

@@ -9,21 +9,21 @@ public class GitHubContributorsProvider implements ContributorsProvider {
     private static final Logger LOG = Logging.getLogger(GitHubContributorsProvider.class);
 
     private final String repository;
-    private final String authToken;
+    private final String readOnlyAuthToken;
 
-    GitHubContributorsProvider(String repository, String authToken) {
+    GitHubContributorsProvider(String repository, String readOnlyAuthToken) {
         this.repository = repository;
-        this.authToken = authToken;
+        this.readOnlyAuthToken = readOnlyAuthToken;
     }
 
     @Override
     public ContributorsSet mapContributorsToGitHubUser(ContributionSet contributions, String fromRevision, String toRevision) {
         LOG.info("Parsing {} commits with {} contributors", contributions.getAllCommits().size(), contributions.getAuthorCount());
-        return new GitHubLastContributorsFetcher().fetchContributors(repository, authToken, contributions.getContributions(), fromRevision, toRevision);
+        return new GitHubLastContributorsFetcher().fetchContributors(repository, readOnlyAuthToken, contributions.getContributions(), fromRevision, toRevision);
     }
 
     @Override
     public ProjectContributorsSet getAllContributorsForProject() {
-        return new GitHubAllContributorsFetcher().fetchAllContributorsForProject(repository, authToken);
+        return new GitHubAllContributorsFetcher().fetchAllContributorsForProject(repository, readOnlyAuthToken);
     }
 }

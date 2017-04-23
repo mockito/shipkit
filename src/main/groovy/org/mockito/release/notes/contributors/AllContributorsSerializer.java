@@ -29,7 +29,7 @@ public class AllContributorsSerializer {
         IOUtil.writeFile(file, json);
     }
 
-    public ProjectContributorsSet desrialize() {
+    public ProjectContributorsSet deserialize() {
         String json = "";
         ProjectContributorsSet set = new DefaultProjectContributorsSet();
         try {
