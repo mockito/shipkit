@@ -45,15 +45,16 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
         project.getPlugins().apply(ReleaseNotesPlugin.class);
         project.getPlugins().apply(VersioningPlugin.class);
         project.getPlugins().apply(GitPlugin.class);
+        project.getPlugins().apply(ContributorsPlugin.class);
 
         project.allprojects(new Action<Project>() {
             @Override
-            public void execute(final Project project) {
-                project.getPlugins().withType(JavaLibraryPlugin.class, new Action<JavaLibraryPlugin>() {
+            public void execute(final Project subproject) {
+                subproject.getPlugins().withType(JavaLibraryPlugin.class, new Action<JavaLibraryPlugin>() {
                     @Override
                     public void execute(JavaLibraryPlugin plugin) {
-                        project.getTasks().getByName("publishToMavenLocal")
-                                .dependsOn(":fetchAllProjectContributorsFromGitHub");
+                        subproject.getTasks().getByName("publishToMavenLocal")
+                                .dependsOn(ContributorsPlugin.FETCH_CONTRIBUTORS_TASK);
                     }
                 });
             }
