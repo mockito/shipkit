@@ -88,6 +88,16 @@ task travisRelease {
     }
 }
 
+task installGitPreCommitHook(type: Copy) {
+    from 'pre-commit'
+    into '.git/hooks'
+}
+
+task makeGitHooksExecutable { Task t ->
+    t.dependsOn(installGitPreCommitHook)
+    Runtime.getRuntime().exec("chmod -R +x .git/hooks/");
+}
+
 task fastInstall { Task t ->
     description = "Fast installation for quick local testing."
     t.dependsOn install
