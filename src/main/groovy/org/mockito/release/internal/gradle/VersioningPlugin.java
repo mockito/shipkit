@@ -39,7 +39,9 @@ public class VersioningPlugin implements Plugin<Project> {
 
     private static Logger LOG = Logging.getLogger(VersioningPlugin.class);
 
-    public final static String VERSION_FILE_NAME = "version.properties";
+    public static final String VERSION_FILE_NAME = "version.properties";
+    public static final String GRADLE_DEFAULT_VERSION = "unspecified";
+    public static final String FALLBACK_INITIAL_VERSION = "0.0.1";
 
     public void apply(Project project) {
         final File versionFile = project.file(VERSION_FILE_NAME);
@@ -71,11 +73,24 @@ public class VersioningPlugin implements Plugin<Project> {
 
     private void createVersionPropertiesFile(Project project, File versionFile) {
         LOG.lifecycle("  Required file version.properties doesn't exist. Creating it automatically. Remember about checking it into VCS!");
-        LOG.lifecycle("  Initial project version in version.properties set to {}", project.getVersion());
+        LOG.lifecycle("  You shouldn't configure project.version in build.gradle anymore. Version from version.properties will be used instead.");
+
+        String version = determineVersion(project);
+
         String versionFileContent = "#Version of the produced binaries. This file is intended to be checked-in.\n"
                 + "#It will be automatically bumped by release automation.\n"
-                + "version=" + project.getVersion() + "\n";
+                + "version=" + version + "\n";
 
         IOUtil.writeFile(versionFile, versionFileContent);
+    }
+
+    private String determineVersion(Project project){
+        if(GRADLE_DEFAULT_VERSION.equals(project.getVersion()) ){
+            LOG.lifecycle("  BEWARE! Project.version is unspecified. Version will be set to {}. You can change it manually in version.properties.", FALLBACK_INITIAL_VERSION);
+            return FALLBACK_INITIAL_VERSION;
+        } else{
+            LOG.lifecycle("  Initial project version in version.properties set to {} (taken from project.version property).", project.getVersion());
+            return project.getVersion().toString();
+        }
     }
 }
