@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-class DefaultContributorsSet implements ContributorsSet, Serializable{
+class DefaultContributorsSet implements ContributorsSet, Serializable {
 
     private final Map<String, Contributor> map;
 

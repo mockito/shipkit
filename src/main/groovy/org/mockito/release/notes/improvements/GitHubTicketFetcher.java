@@ -3,7 +3,7 @@ package org.mockito.release.notes.improvements;
 import org.json.simple.DeserializationException;
 import org.json.simple.JsonObject;
 import org.mockito.release.notes.model.Improvement;
-import org.mockito.release.notes.util.GitHubFetcher;
+import org.mockito.release.notes.util.GitHubListFetcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +15,7 @@ class GitHubTicketFetcher {
 
     private static final Logger LOG = LoggerFactory.getLogger(GitHubTicketFetcher.class);
 
-    Collection<Improvement> fetchTickets(String repository, String authToken, Collection<String> ticketIds, Collection<String> labels,
+    Collection<Improvement> fetchTickets(String repository, String readOnlyAuthToken, Collection<String> ticketIds, Collection<String> labels,
                                          boolean onlyPullRequests) {
         List<Improvement> out = new LinkedList<Improvement>();
         if (ticketIds.isEmpty()) {
@@ -26,7 +26,7 @@ class GitHubTicketFetcher {
         Queue<Long> tickets = queuedTicketNumbers(ticketIds);
 
         try {
-            GitHubIssues issues = GitHubIssues.forRepo(repository, authToken)
+            GitHubIssues issues = GitHubIssues.forRepo(repository, readOnlyAuthToken)
                     .state("closed")
                     .labels(CommaSeparated.commaSeparated(labels))
                     .filter("all")
@@ -92,10 +92,10 @@ class GitHubTicketFetcher {
 
     private static class GitHubIssues {
 
-        private final GitHubFetcher fetcher;
+        private final GitHubListFetcher fetcher;
 
         private GitHubIssues(String nextPageUrl) {
-            fetcher = new GitHubFetcher(nextPageUrl);
+            fetcher = new GitHubListFetcher(nextPageUrl);
         }
 
         boolean hasNextPage() {
@@ -106,21 +106,21 @@ class GitHubTicketFetcher {
             return fetcher.nextPage();
         }
 
-        static GitHubIssuesBuilder forRepo(String repository, String authToken) {
-            return new GitHubIssuesBuilder(repository, authToken);
+        static GitHubIssuesBuilder forRepo(String repository, String readOnlyAuthToken) {
+            return new GitHubIssuesBuilder(repository, readOnlyAuthToken);
         }
 
         private static class GitHubIssuesBuilder {
-            private final String authToken;
+            private final String readOnlyAuthToken;
             private final String repository;
             private String state;
             private String filter;
             private String direction;
             private String labels;
 
-            GitHubIssuesBuilder(String repository, String authToken) {
+            GitHubIssuesBuilder(String repository, String readOnlyAuthToken) {
                 this.repository = repository;
-                this.authToken = authToken;
+                this.readOnlyAuthToken = readOnlyAuthToken;
             }
 
             GitHubIssuesBuilder state(String state) {
@@ -151,7 +151,7 @@ class GitHubTicketFetcher {
                 // see API doc: https://developer.github.com/v3/issues/
                 String nextPageUrl = String.format("%s%s%s%s%s%s%s",
                         "https://api.github.com/repos/" + repository + "/issues",
-                        "?access_token=" + authToken,
+                        "?access_token=" + readOnlyAuthToken,
                         state == null ? "" : "&state=" + state,
                         filter == null ? "" : "&filter=" + filter,
                         "&labels=" + labels,

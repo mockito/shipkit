@@ -5,9 +5,9 @@ import org.mockito.release.notes.vcs.GitCommit
 import spock.lang.Specification
 import spock.lang.Subject
 
-class GitHubContributorsFetcherTest extends Specification {
+class GitHubLastContributorsFetcherTest extends Specification {
 
-    @Subject fetcher = new GitHubContributorsFetcher()
+    @Subject fetcher = new GitHubLastContributorsFetcher()
 
     def readOnlyToken = "a0a4c0f41c200f7c653323014d6a72a127764e17"
 

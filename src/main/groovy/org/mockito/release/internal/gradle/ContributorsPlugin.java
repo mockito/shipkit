@@ -17,7 +17,8 @@ import static org.mockito.release.internal.gradle.configuration.DeferredConfigur
  * Adds and configures tasks for getting contributor git user to GitHub user mappings.
  * Useful for release notes and pom.xml generation. Adds tasks:
  * <ul>
- *     <li>fetchContributorsFromGitHub - {@link ContributorsFetcherTask}</li>
+ *     <li>fetchLastContributorsFromGitHub - {@link ContributorsFetcherTask}</li>
+ *     <li>fetchAllProjectContributorsFromGitHub - {@link AllContributorsFetcherTask}</li>
  * </ul>
  */
 public class ContributorsPlugin implements Plugin<Project> {
@@ -25,7 +26,13 @@ public class ContributorsPlugin implements Plugin<Project> {
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
 
-        project.getTasks().create("fetchContributorsFromGitHub", ContributorsFetcherTask.class, new Action<ContributorsFetcherTask>() {
+        createTaskFetchLastContributorsFromGitHub(project, conf);
+
+        createTaskFetchAllProjectContributorsFromGitHub(project, conf);
+    }
+
+    private void createTaskFetchLastContributorsFromGitHub(final Project project, final ReleaseConfiguration conf) {
+        project.getTasks().create("fetchLastContributorsFromGitHub", ContributorsFetcherTask.class, new Action<ContributorsFetcherTask>() {
             @Override
             public void execute(final ContributorsFetcherTask task) {
                 task.setGroup(TaskMaker.TASK_GROUP);
@@ -37,9 +44,9 @@ public class ContributorsPlugin implements Plugin<Project> {
                 deferredConfiguration(project, new Runnable() {
                     public void run() {
                         String fromRevision = fromRevision(project, conf);
-                        File contributorsFile = contributorsFile(project, fromRevision, toRevision);
+                        File contributorsFile = lastContributorsFile(project, fromRevision, toRevision);
 
-                        task.setAuthToken(conf.getGitHub().getReadOnlyAuthToken());
+                        task.setReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
                         task.setRepository(conf.getGitHub().getRepository());
                         task.setFromRevision(fromRevision);
                         task.setContributorsFile(contributorsFile);
@@ -47,7 +54,26 @@ public class ContributorsPlugin implements Plugin<Project> {
                 });
             }
         });
+    }
 
+    private void createTaskFetchAllProjectContributorsFromGitHub(final Project project, final ReleaseConfiguration conf) {
+        project.getTasks().create("fetchAllProjectContributorsFromGitHub", AllContributorsFetcherTask.class, new Action<AllContributorsFetcherTask>() {
+            @Override
+            public void execute(final AllContributorsFetcherTask task) {
+                task.setGroup(TaskMaker.TASK_GROUP);
+                task.setDescription("Fetch info about all project contributors from GitHub and store it in file");
+
+                deferredConfiguration(project, new Runnable() {
+                    @Override
+                    public void run() {
+                        File contributorsFile = allProjectContributorsFile(project);
+                        task.setReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
+                        task.setRepository(conf.getGitHub().getRepository());
+                        task.setContributorsFile(contributorsFile);
+                    }
+                });
+            }
+        });
     }
 
     private String fromRevision(Project project, ReleaseConfiguration conf) {
@@ -55,10 +81,15 @@ public class ContributorsPlugin implements Plugin<Project> {
         return "v" + Notes.previousVersion(firstLine).getPreviousVersion();
     }
 
-    private File contributorsFile(Project project, String fromRevision, String toRevision) {
-        String contributorsFileName = Contributors.getContributorsFileName(
+    private File lastContributorsFile(Project project, String fromRevision, String toRevision) {
+        String contributorsFileName = Contributors.getLastContributorsFileName(
                 project.getBuildDir().getAbsolutePath(), fromRevision, toRevision);
         return new File(contributorsFileName);
+    }
+
+    private File allProjectContributorsFile(Project project) {
+        String fileName = Contributors.getAllProjectContributorsFileName(project.getBuildDir().getAbsolutePath());
+        return new File(fileName);
     }
 }
 

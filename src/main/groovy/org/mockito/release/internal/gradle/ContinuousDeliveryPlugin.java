@@ -46,6 +46,19 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
         project.getPlugins().apply(VersioningPlugin.class);
         project.getPlugins().apply(GitPlugin.class);
 
+        project.allprojects(new Action<Project>() {
+            @Override
+            public void execute(final Project project) {
+                project.getPlugins().withType(JavaLibraryPlugin.class, new Action<JavaLibraryPlugin>() {
+                    @Override
+                    public void execute(JavaLibraryPlugin plugin) {
+                        project.getTasks().getByName("publishToMavenLocal")
+                                .dependsOn(":fetchAllProjectContributorsFromGitHub");
+                    }
+                });
+            }
+        });
+
         final boolean notableRelease = project.getExtensions().getByType(VersionInfo.class).isNotableRelease();
 
         //TODO use constants for all task names

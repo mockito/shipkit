@@ -5,4 +5,6 @@ import org.mockito.release.notes.model.ContributionSet;
 public interface ContributorsProvider {
 
     ContributorsSet mapContributorsToGitHubUser(ContributionSet contributions, String fromRevision, String toRevision);
+
+    ProjectContributorsSet getAllContributorsForProject();
 }

@@ -31,7 +31,7 @@ class GitNotesBuilder implements NotesBuilder {
     private static final Logger LOG = Logging.getLogger(GitNotesBuilder.class);
 
     private final File workDir;
-    private final String authToken;
+    private final String readOnlyAuthToken;
     private final File buildDir;
     private final String repository;
 
@@ -39,13 +39,13 @@ class GitNotesBuilder implements NotesBuilder {
      * @param workDir the working directory for external processes execution (for example: git log)
      * @param buildDir build dir
      * @param repository GitHub repository, for example: "mockito/mockito"
-     * @param authToken the GitHub auth token
+     * @param readOnlyAuthToken the GitHub auth token
      */
-    GitNotesBuilder(File workDir, File buildDir, String repository, String authToken) {
+    GitNotesBuilder(File workDir, File buildDir, String repository, String readOnlyAuthToken) {
         this.workDir = workDir;
         this.buildDir = buildDir;
         this.repository = repository;
-        this.authToken = authToken;
+        this.readOnlyAuthToken = readOnlyAuthToken;
     }
 
     public String buildNotes(String version, String fromRevision, String toRevision, final Map<String, String> labels) {
@@ -59,10 +59,10 @@ class GitNotesBuilder implements NotesBuilder {
         String fromRev = revisionProvider.getRevisionForTagOrRevision(fromRevision);
 
         ContributorsReader contributorsReader = ContributorsLoader.getContributorsReader();
-        String contributorsFileName = Contributors.getContributorsFileName(buildDir.getAbsolutePath(), fromRevision, toRevision);
+        String contributorsFileName = Contributors.getLastContributorsFileName(buildDir.getAbsolutePath(), fromRevision, toRevision);
         ContributorsSet contributors = contributorsReader.loadContributors(contributorsFileName, fromRev, toRevision);
 
-        ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(repository, authToken);
+        ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(repository, readOnlyAuthToken);
         Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, Collections.<String>emptyList(), false);
 
         ReleaseNotesData data = new DefaultReleaseNotesData(version, new Date(), contributions, improvements, contributors, fromRevision, toRevision);

@@ -79,14 +79,14 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     }
 
     private static void preconfigureIncrementalNotes(final IncrementalReleaseNotes task, final Project project, final ReleaseConfiguration conf) {
-        task.dependsOn("fetchContributorsFromGitHub");
+        task.dependsOn("fetchLastContributorsFromGitHub");
         DeferredConfiguration.deferredConfiguration(project, new Runnable() {
             public void run() {
                 task.setGitHubLabelMapping(conf.getReleaseNotes().getLabelMapping()); //TODO make it optional
                 task.setReleaseNotesFile(project.file(conf.getReleaseNotes().getFile())); //TODO add sensible default
                 task.setGitHubReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
                 task.setGitHubRepository(conf.getGitHub().getRepository());
-                //TODO, do we need below force?
+                //TODO MS do we need below force?
                 forceTaskToAlwaysGeneratePreview(task);
             }
         });

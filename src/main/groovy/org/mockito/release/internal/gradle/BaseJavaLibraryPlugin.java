@@ -33,6 +33,7 @@ import org.mockito.release.internal.gradle.util.PomCustomizer;
  * <ul>
  *     <li>Automatically includes "LICENSE" file in all jars.</li>
  *     <li>Adds build.dependsOn "publishToMavenLocal" to flesh out publication issues during the build</li>
+ *     <li>Adds publishToMavenLocal.dependsOn "fetchAllProjectContributorsFromGitHub" to load all contributors from GitHub</li>
  * </ul>
  */
 public class BaseJavaLibraryPlugin implements Plugin<Project> {
@@ -93,5 +94,9 @@ public class BaseJavaLibraryPlugin implements Plugin<Project> {
 
         //so that we flesh out problems with maven publication during the build process
         project.getTasks().getByName("build").dependsOn("publishToMavenLocal");
+        // TODO 1 is this dependency correct? Result of fetchAllProjectContributorsFromGitHub is needed in
+        // TODO PomCustomizer.customizePom(project, publication);
+        // TODO 2 Where define dependency to ContributorsPlugin?
+//         project.getTasks().getByName("publishToMavenLocal").dependsOn("fetchAllProjectContributorsFromGitHub");
     }
 }
