@@ -28,7 +28,7 @@ public class ContributorsSerializer {
         IOUtil.writeFile(file, json);
     }
 
-    public ContributorsSet desrialize() {
+    public ContributorsSet deserialize() {
         String json = "";
         ContributorsSet set = new DefaultContributorsSet();
         try {

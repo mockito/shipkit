@@ -17,17 +17,17 @@ public class GitHubAllContributorsFetcher {
 
     private static final Logger LOG = Logging.getLogger(GitHubAllContributorsFetcher.class);
 
-    ProjectContributorsSet fetchAllContributorsForProject(String repository, String authToken) {
+    ProjectContributorsSet fetchAllContributorsForProject(String repository, String readOnlyAuthToken) {
         LOG.lifecycle("Querying GitHub API for all contributors for project");
         ProjectContributorsSet result = new DefaultProjectContributorsSet();
 
         try {
             GitHubProjectContributors contributors =
-                    GitHubProjectContributors.authenticatingWith(repository, authToken).build();
+                    GitHubProjectContributors.authenticatingWith(repository, readOnlyAuthToken).build();
 
             while(contributors.hasNextPage()) {
                 List<JsonObject> page = contributors.nextPage();
-                result.addAllContributors(extractContributors(page, authToken));
+                result.addAllContributors(extractContributors(page, readOnlyAuthToken));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -35,11 +35,11 @@ public class GitHubAllContributorsFetcher {
         return result;
     }
 
-    private Set<ProjectContributor> extractContributors(List<JsonObject> page, String authToken) throws IOException, DeserializationException {
+    private Set<ProjectContributor> extractContributors(List<JsonObject> page, String readOnlyAuthToken) throws IOException, DeserializationException {
         Set<ProjectContributor> result = new HashSet<ProjectContributor>();
         for (JsonObject contributor : page) {
             String url = (String) contributor.get("url");
-            GitHubObjectFetcher userFetcher = new GitHubObjectFetcher(url, authToken);
+            GitHubObjectFetcher userFetcher = new GitHubObjectFetcher(url, readOnlyAuthToken);
             JsonObject user = userFetcher.getPage();
             result.add(GitHubAllContributorsJson.toContributor(contributor, user));
         }
@@ -50,8 +50,8 @@ public class GitHubAllContributorsFetcher {
         private final GitHubListFetcher fetcher;
         private List<JsonObject> lastFetchedPage;
 
-        static GitHubProjectContributorsBuilder authenticatingWith(String repository, String authToken) {
-            return new GitHubProjectContributorsBuilder(repository, authToken);
+        static GitHubProjectContributorsBuilder authenticatingWith(String repository, String readOnlyAuthToken) {
+            return new GitHubProjectContributorsBuilder(repository, readOnlyAuthToken);
         }
 
         private GitHubProjectContributors(String nextPageUrl) {
@@ -71,18 +71,18 @@ public class GitHubAllContributorsFetcher {
     private static class GitHubProjectContributorsBuilder {
 
         private final String repository;
-        private final String authToken;
+        private final String readOnlyAuthToken;
 
-        public GitHubProjectContributorsBuilder(String repository, String authToken) {
+        public GitHubProjectContributorsBuilder(String repository, String readOnlyAuthToken) {
             this.repository = repository;
-            this.authToken = authToken;
+            this.readOnlyAuthToken = readOnlyAuthToken;
         }
 
         GitHubProjectContributors build() {
             // see API doc: https://developer.github.com/v3/repos/#list-contributors
             String nextPageUrl = String.format("%s%s",
                     "https://api.github.com/repos/" + repository + "/contributors",
-                    "?access_token=" + authToken);
+                    "?access_token=" + readOnlyAuthToken);
             return new GitHubProjectContributors(nextPageUrl);
         }
     }

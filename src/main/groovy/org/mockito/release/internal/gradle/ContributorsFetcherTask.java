@@ -27,7 +27,7 @@ public class ContributorsFetcherTask extends DefaultTask {
     private static final Logger LOG = Logging.getLogger(ContributorsFetcherTask.class);
 
     @Input private String repository;
-    @Input private String authToken;
+    @Input private String readOnlyAuthToken;
     @Input private String fromRevision;
     @Input private String toRevision;
 
@@ -43,7 +43,7 @@ public class ContributorsFetcherTask extends DefaultTask {
         RevisionProvider revisionProvider = Vcs.getRevisionProvider(processRunner);
         String fromRev = revisionProvider.getRevisionForTagOrRevision(fromRevision);
 
-        GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContributorsProvider(repository, authToken);
+        GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContributorsProvider(repository, readOnlyAuthToken);
         ContributorsSet contributors = contributorsProvider.mapContributorsToGitHubUser(contributions, fromRev, toRevision);
 
         ContributorsSerializer contributorsSerializer = Contributors.getLastContributorsSerializer(contributorsFile);
@@ -54,8 +54,8 @@ public class ContributorsFetcherTask extends DefaultTask {
         this.repository = repository;
     }
 
-    public void setAuthToken(String authToken) {
-        this.authToken = authToken;
+    public void setReadOnlyAuthToken(String readOnlyAuthToken) {
+        this.readOnlyAuthToken = readOnlyAuthToken;
     }
 
     public void setToRevision(String toRevision) {

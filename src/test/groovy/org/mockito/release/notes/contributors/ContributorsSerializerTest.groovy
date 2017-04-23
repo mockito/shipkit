@@ -55,29 +55,6 @@ class ContributorsSerializerTest extends Specification {
         contributors.getAllContributors().containsAll(actual.getAllContributors())
     }
 
-    def "serialization and deserialization of 5 contributors"() {
-        given:
-        def contributors = new DefaultContributorsSet<Contributor>()
-        def contributor1 = new DefaultContributor("myName 1", "myLogin 1", "myProfileUrl 1")
-        def contributor2 = new DefaultContributor("myName 2", "myLogin 2", "myProfileUrl 2")
-        def contributor3 = new DefaultContributor("myName 3", "myLogin 3", "myProfileUrl 3")
-        def contributor4 = new DefaultContributor("myName 4", "myLogin 4", "myProfileUrl 4")
-        def contributor5 = new DefaultContributor("myName 5", "myLogin 5", "myProfileUrl 5")
-        contributors.addContributor(contributor1)
-        contributors.addContributor(contributor2)
-        contributors.addContributor(contributor3)
-        contributors.addContributor(contributor4)
-        contributors.addContributor(contributor5)
-
-        when:
-        serializer.serialize(contributors)
-        def actual = serializer.deserialize()
-
-        then:
-        actual.getAllContributors().containsAll(contributors.getAllContributors())
-        contributors.getAllContributors().containsAll(actual.getAllContributors())
-    }
-
     def "serialization and deserialization contributors with special characters"() {
         given:
         def contributors = new DefaultContributorsSet<Contributor>()

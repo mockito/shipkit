@@ -18,7 +18,7 @@ public class AllContributorsFetcherTask extends DefaultTask {
     private static final Logger LOG = Logging.getLogger(AllContributorsFetcherTask.class);
 
     @Input private String repository;
-    @Input private String authToken;
+    @Input private String readOnlyAuthToken;
 
     @OutputFile private File contributorsFile;
 
@@ -26,7 +26,7 @@ public class AllContributorsFetcherTask extends DefaultTask {
     public void fetchAllProjectContributorsFromGitHub() {
         LOG.lifecycle("  Fetching all contributors for project");
 
-        GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContibutorsProvider(repository, authToken);
+        GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContibutorsProvider(repository, readOnlyAuthToken);
         ProjectContributorsSet allContributorsForProject = contributorsProvider.getAllContributorsForProject();
 
         AllContributorsSerializer serializer = Contributors.getAllContributorsSerializer(contributorsFile);
@@ -37,8 +37,8 @@ public class AllContributorsFetcherTask extends DefaultTask {
         this.repository = repository;
     }
 
-    public void setAuthToken(String authToken) {
-        this.authToken = authToken;
+    public void setReadOnlyAuthToken(String readOnlyAuthToken) {
+        this.readOnlyAuthToken = readOnlyAuthToken;
     }
 
     public void setContributorsFile(File contributorsFile) {

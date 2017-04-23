@@ -46,7 +46,7 @@ public class ContributorsPlugin implements Plugin<Project> {
                         String fromRevision = fromRevision(project, conf);
                         File contributorsFile = lastContributorsFile(project, fromRevision, toRevision);
 
-                        task.setAuthToken(conf.getGitHub().getReadOnlyAuthToken());
+                        task.setReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
                         task.setRepository(conf.getGitHub().getRepository());
                         task.setFromRevision(fromRevision);
                         task.setContributorsFile(contributorsFile);
@@ -67,7 +67,7 @@ public class ContributorsPlugin implements Plugin<Project> {
                     @Override
                     public void run() {
                         File contributorsFile = allProjectContributorsFile(project);
-                        task.setAuthToken(conf.getGitHub().getReadOnlyAuthToken());
+                        task.setReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
                         task.setRepository(conf.getGitHub().getRepository());
                         task.setContributorsFile(contributorsFile);
                     }

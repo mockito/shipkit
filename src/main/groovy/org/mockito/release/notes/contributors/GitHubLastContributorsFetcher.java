@@ -16,14 +16,14 @@ public class GitHubLastContributorsFetcher {
 
     private static final Logger LOG = Logging.getLogger(GitHubLastContributorsFetcher.class);
 
-    ContributorsSet fetchContributors(String repository, String authToken, Collection<Contribution> contributions, String fromRevision, String toRevision) {
+    ContributorsSet fetchContributors(String repository, String readOnlyAuthToken, Collection<Contribution> contributions, String fromRevision, String toRevision) {
         LOG.info("Querying GitHub API for commits (for contributors)");
         ContributorsSet result = new DefaultContributorsSet();
 
         Set<String> authors = getAuthors(contributions);
 
         try {
-            GitHubCommits commits = GitHubCommits.authenticatingWith(repository, authToken)
+            GitHubCommits commits = GitHubCommits.authenticatingWith(repository, readOnlyAuthToken)
                     .fromRevision(fromRevision)
                     .toRevision(toRevision)
                     .build();
@@ -141,19 +141,19 @@ public class GitHubLastContributorsFetcher {
             return lastFetchedPage;
         }
 
-        static GitHubCommitsBuilder authenticatingWith(String repository, String authToken) {
-            return new GitHubCommitsBuilder(repository, authToken);
+        static GitHubCommitsBuilder authenticatingWith(String repository, String readOnlyAuthToken) {
+            return new GitHubCommitsBuilder(repository, readOnlyAuthToken);
         }
 
         private static class GitHubCommitsBuilder {
             private final String repository;
-            private final String authToken;
+            private final String readOnlyAuthToken;
             private String fromRevision;
             private String toRevision;
 
-            private GitHubCommitsBuilder(String repository, String authToken) {
+            private GitHubCommitsBuilder(String repository, String readOnlyAuthToken) {
                 this.repository = repository;
-                this.authToken = authToken;
+                this.readOnlyAuthToken = readOnlyAuthToken;
             }
 
             GitHubCommitsBuilder fromRevision(String fromRevision) {
@@ -170,7 +170,7 @@ public class GitHubLastContributorsFetcher {
                 // see API doc: https://developer.github.com/v3/repos/commits/#list-commits-on-a-repository
                 String nextPageUrl = String.format("%s%s%s%s",
                         "https://api.github.com/repos/" + repository + "/commits",
-                        "?access_token=" + authToken,
+                        "?access_token=" + readOnlyAuthToken,
                         max(toRevision),
                         "&page=1");
                 return new GitHubCommits(nextPageUrl, fromRevision);

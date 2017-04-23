@@ -6,7 +6,7 @@ public class DefaultAllProjectContributorsReader implements AllProjectContributo
 
     @Override
     public ProjectContributorsSet loadAllContributors(String filePath) {
-        return new AllContributorsSerializer(new File(filePath)).desrialize();
+        return new AllContributorsSerializer(new File(filePath)).deserialize();
     }
 
 }
