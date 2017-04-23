@@ -8,10 +8,9 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Exec;
 import org.mockito.release.gradle.ReleaseConfiguration;
+import org.mockito.release.gradle.SecureExecTask;
 import org.mockito.release.internal.gradle.util.GitUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
-
-import java.io.ByteArrayOutputStream;
 
 import static org.mockito.release.internal.gradle.configuration.LazyConfiguration.lazyConfiguration;
 import static org.mockito.release.internal.gradle.util.GitUtil.getTag;
@@ -59,20 +58,15 @@ public class GitPlugin implements Plugin<Project> {
             }
         });
 
-        boolean mustBeQuiet = true; //so that we don't expose the token
-        TaskMaker.execTask(project, PUSH_TASK, mustBeQuiet, new Action<Exec>() {
-            public void execute(final Exec t) {
+        TaskMaker.task(project, PUSH_TASK, SecureExecTask.class, new Action<SecureExecTask>() {
+            public void execute(final SecureExecTask t) {
                 t.setDescription("Pushes changes to remote repo.");
                 t.mustRunAfter(COMMIT_TASK, TAG_TASK);
 
-                //!!!We must capture and hide the output because when git push fails it can expose the token!
-                ByteArrayOutputStream output = new ByteArrayOutputStream();
-                t.setStandardOutput(output);
-                t.setErrorOutput(output);
-
                 lazyConfiguration(t, new Runnable() {
                     public void run() {
-                        t.commandLine(GitUtil.getQuietGitPushArgs(conf, project));
+                        t.setCommandLine(GitUtil.getGitPushArgs(conf, project));
+                        t.setSecretValue(conf.getGitHub().getWriteAuthToken());
                     }
                 });
             }

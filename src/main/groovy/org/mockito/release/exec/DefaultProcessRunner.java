@@ -1,30 +1,79 @@
 package org.mockito.release.exec;
 
+import org.gradle.api.GradleException;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.mockito.release.notes.util.ReleaseNotesException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.util.Arrays;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.List;
 
-class DefaultProcessRunner implements ProcessRunner {
+import static java.util.Arrays.asList;
+import static org.mockito.release.internal.gradle.util.StringUtil.join;
 
-    private static final Logger LOG = LoggerFactory.getLogger(DefaultProcessRunner.class);
+//TODO since this class is already public, probably it's best if we keep things simple and remove it from the public API
+//1. Remove the ProcessRunner interface and Exec class
+//2. Move the runner to the internal package
+public class DefaultProcessRunner implements ProcessRunner {
+
+    private static final Logger LOG = Logging.getLogger(DefaultProcessRunner.class);
     private final File workDir;
+    private String secretValue;
 
-    DefaultProcessRunner(File workDir) {
+    public DefaultProcessRunner(File workDir) {
         this.workDir = workDir;
     }
 
     public String run(String... commandLine) {
-        LOG.info("Executing command: {}", (Object) commandLine);
+        return run(asList(commandLine));
+    }
 
+    public String run(List<String> commandLine) {
+        return run(LOG, commandLine);
+    }
+
+    String run(Logger log, List<String> commandLine) {
+        // WARNING!!! ensure that masked command line is used for all logging!!!
+        String maskedCommandLine = mask(join(commandLine, " "));
+        log.lifecycle("  Executing:\n    " + maskedCommandLine);
+
+        ProcessResult result = executeProcess(commandLine, maskedCommandLine);
+
+        if (result.getExitValue() != 0) {
+            throw new GradleException("Execution of command failed (exit code " + result.getExitValue() + "):\n" +
+                    "  " + maskedCommandLine + "\n" +
+                    "Captured command output:\n" + result.getOutput());
+        } else {
+            return result.getOutput();
+        }
+    }
+
+    private ProcessResult executeProcess(List<String> commandLine, String maskedCommandLine) {
+        ProcessResult result;
         try {
             Process process = new ProcessBuilder(commandLine).directory(workDir).redirectErrorStream(true).start();
-            return readFully(new BufferedReader(new InputStreamReader(process.getInputStream())));
+            String output = mask(readFully(new BufferedReader(new InputStreamReader(process.getInputStream()))));
+
+            //TODO add sanity timeout when we move to Java 1.7
+            // 1. we can do something like process.waitFor(15, TimeUnit.MINUTES)
+            // 2. first, we need to change the compatibility, push to Gradle 3.0, stop building with Java 1.6.
+            process.waitFor();
+
+            result = new ProcessResult(output, process);
         } catch (Exception e) {
-            throw new ReleaseNotesException("Problems executing command: " + Arrays.toString(commandLine), e);
+            throw new ReleaseNotesException("Problems executing command:\n  " + maskedCommandLine, e);
         }
+        return result;
+    }
+
+    private String mask(String text) {
+        if (secretValue == null) {
+            return text;
+        }
+        return text.replace(secretValue, "[SECRET]");
     }
 
     private static String readFully(BufferedReader reader) throws IOException {
@@ -37,6 +86,33 @@ class DefaultProcessRunner implements ProcessRunner {
             return sb.toString();
         } finally {
             reader.close();
+        }
+    }
+
+    /**
+     * @param secretValue to be masked from the output and logging
+     * @return this runner
+     */
+    public DefaultProcessRunner setSecretValue(String secretValue) {
+        this.secretValue = secretValue;
+        return this;
+    }
+
+    private static class ProcessResult {
+        private final String output;
+        private final Process process;
+
+        public ProcessResult(String output, Process process) {
+            this.output = output;
+            this.process = process;
+        }
+
+        public String getOutput() {
+            return output;
+        }
+
+        public int getExitValue() {
+            return process.exitValue();
         }
     }
 }

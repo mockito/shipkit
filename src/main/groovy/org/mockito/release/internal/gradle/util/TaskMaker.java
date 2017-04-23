@@ -26,20 +26,10 @@ public class TaskMaker {
      * Creates exec task with preconfigured defaults
      */
     public static Exec execTask(Project project, String name, Action<Exec> configure) {
-        return execTask(project, name, false, configure);
-    }
-
-    /**
-     * Creates exec task with preconfigured defaults
-     */
-    public static Exec execTask(Project project, String name, final boolean quiet, Action<Exec> configure) {
-        //TODO unit testable
         final Exec exec = project.getTasks().create(name, Exec.class);
         exec.doFirst(new Action<Task>() {
             public void execute(Task task) {
-                if (!quiet) {
-                    LOG.lifecycle("  Running:\n    {}", join(exec.getCommandLine(), " "));
-                }
+                LOG.lifecycle("  Running:\n    {}", join(exec.getCommandLine(), " "));
             }
         });
         return configure(configure, exec);

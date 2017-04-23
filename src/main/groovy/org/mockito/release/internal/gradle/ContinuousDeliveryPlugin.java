@@ -6,12 +6,13 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.Exec;
 import org.gradle.process.ExecResult;
 import org.gradle.process.ExecSpec;
 import org.mockito.release.gradle.BumpVersionFileTask;
 import org.mockito.release.gradle.ReleaseConfiguration;
+import org.mockito.release.gradle.ReleaseNeededTask;
+import org.mockito.release.internal.gradle.configuration.LazyConfiguration;
 import org.mockito.release.internal.gradle.util.StringUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.version.VersionInfo;
@@ -134,65 +135,16 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
             }
         });
 
-        final Task releaseNeededTask = TaskMaker.task(project, "releaseNeeded", new Action<Task>() {
-            public void execute(final Task t) {
-                t.setDescription("Checks if the criteria for the release are met.");
-                t.doLast(new Action<Task>() {
-                    public void execute(Task task) {
-                        //TODO hardcoded literals
-                        boolean skipEnvVariable = System.getenv("SKIP_RELEASE") != null;
-                        String commitMessage = System.getenv("TRAVIS_COMMIT_MESSAGE");
-                        boolean skippedByCommitMessage = commitMessage != null && commitMessage.contains("[ci skip-release]");
+        TaskMaker.task(project, "assertReleaseNeeded", ReleaseNeededTask.class, new Action<ReleaseNeededTask>() {
+            public void execute(final ReleaseNeededTask t) {
+                t.setDescription("Asserts that criteria for the release are met and throws exception if release not needed.");
+                t.setReleasableBranchRegex(conf.getGit().getReleasableBranchRegex());
 
-                        //returns true only if pull request env variable points to PR number
-                        String pr = System.getenv("TRAVIS_PULL_REQUEST");
-                        boolean pullRequest = pr != null && !pr.trim().isEmpty() && !pr.equals("false");
-
-                        //TODO create task that reads the current branch in case TRAVIS_BRANCH env variable is not set
-                        String branch = System.getenv("TRAVIS_BRANCH");
-                        boolean releasableBranch = branch != null && branch.matches(conf.getGit().getReleasableBranchRegex());
-
-                        boolean notNeeded = skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
-                        //TODO task type, otherwise 'needed' is just a String, no type safety
-                        t.getExtensions().getExtraProperties().set("needed", !notNeeded);
-
-                        LOG.lifecycle("  Release is needed: " + !notNeeded +
-                                "\n    - skip by env variable: " + skipEnvVariable +
-                                "\n    - skip by commit message: " + skippedByCommitMessage +
-                                "\n    - is pull request build:  " + pullRequest +
-                                "\n    - is releasable branch:  " + releasableBranch);
+                LazyConfiguration.lazyConfiguration(t, new Runnable() {
+                    public void run() {
+                        t.setBranch(conf.getGit().getBranch());
                     }
                 });
-            }
-        });
-
-        TaskMaker.task(project, "travisRelease", new Action<Task>() {
-            public void execute(final Task t) {
-                t.setDescription("Performs the release if release criteria are met, intended to be used by Travis CI job");
-                t.dependsOn("releaseNeeded");
-                t.onlyIf(new Spec<Task>() {
-                    public boolean isSatisfiedBy(Task task) {
-                        //also checking didWork so that we can "-x releaseNeeded" to force the release without criteria check
-                        return releaseNeededTask.getDidWork()
-                                //TODO below is awkward, we need a new task type
-                                && (Boolean) releaseNeededTask.getExtensions().getExtraProperties().get("needed");
-                    }
-                });
-                t.doLast(new Action<Task>() {
-                    public void execute(Task task) {
-                        LOG.lifecycle("  Performing release of version '{}' (notable version: {})", project.getVersion(), notableRelease);
-                        //first, we need to prepare Travis working copy
-                        exec(project, "./gradlew", "travisReleasePrepare");
-                        //then, we will do the full release with dry run to flesh out any issues
-                        performReleaseTest(project);
-                        //finally, let's make the release!
-                        exec(project, "./gradlew", "performRelease");
-                    }
-                });
-
-                //TODO I think we should consider deleting 'travisRelease' task. It could be repaced by something like:
-                //./gradlew assertReleaseNeeded && ./gradlew travisReleasePrepare && ./gradlew performRelease releaseCleanUp -PreleaseDryRun && ./gradlew performRelease
-                //assertReleaseNeeded task would fail when release is not needed and would stop executing further commands.
             }
         });
 
