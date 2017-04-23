@@ -4,7 +4,9 @@ import org.gradle.api.execution.TaskExecutionGraph
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
-import static LazyConfiguration.*
+import static LazyConfiguration.forceConfiguration
+import static LazyConfiguration.getConfigurer
+import static LazyConfiguration.lazyConfiguration
 
 class LazyConfigurationTest extends Specification {
 

@@ -69,9 +69,10 @@ class DefaultVersionInfo implements VersionInfo {
             if (notableVersions.size() == 1) {
                 //when no prior notable versions, we just add new entry
                 content += "\n" + asString;
-            } else
+            } else {
                 //update existing entry
                 content = content.replaceAll("(?m)^notableVersions=(.*?)\n", asString);
+            }
         }
 
         String newVersion = new VersionBumper().incrementVersion(this.version);

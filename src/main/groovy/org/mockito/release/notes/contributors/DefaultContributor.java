@@ -8,7 +8,7 @@ import java.io.Writer;
 
 public class DefaultContributor implements Contributor {
 
-    private static final String jsonFormat = "{ \"name\": \"%s\", \"login\": \"%s\", \"profileUrl\": \"%s\" }";
+    private static final String JSON_FORMAT = "{ \"name\": \"%s\", \"login\": \"%s\", \"profileUrl\": \"%s\" }";
 
     private final String name;
     private final String login;
@@ -37,7 +37,7 @@ public class DefaultContributor implements Contributor {
 
     @Override
     public String toJson() {
-        return String.format(jsonFormat, Jsoner.escape(name), Jsoner.escape(login), Jsoner.escape(profileUrl));
+        return String.format(JSON_FORMAT, Jsoner.escape(name), Jsoner.escape(login), Jsoner.escape(profileUrl));
     }
 
     @Override
@@ -47,13 +47,21 @@ public class DefaultContributor implements Contributor {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         DefaultContributor that = (DefaultContributor) o;
 
-        if (!name.equals(that.name)) return false;
-        if (!login.equals(that.login)) return false;
+        if (!name.equals(that.name)) {
+            return false;
+        }
+        if (!login.equals(that.login)) {
+            return false;
+        }
         return profileUrl.equals(that.profileUrl);
     }
 

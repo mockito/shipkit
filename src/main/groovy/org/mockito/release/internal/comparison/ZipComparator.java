@@ -32,9 +32,15 @@ class ZipComparator {
         final boolean equals = zipCompare.compareZips(file1.getAbsolutePath(), file2.getAbsolutePath());
 
         return new Result() {
-            public boolean areEqual() { return equals; }
-            public File getFile1() { return file1; }
-            public File getFile2() { return file2; }
+            public boolean areEqual() {
+                return equals;
+            }
+            public File getFile1() {
+                return file1;
+            }
+            public File getFile2() {
+                return file2;
+            }
         };
     }
 

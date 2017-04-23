@@ -44,7 +44,6 @@ class PomCustomizer {
     - Contributors (project.rootProject.releasing.releaseNotes.pomContributors): ${conf.team.contributors.join(', ')}""")
             
             def root = asNode()
-            def rootProject = project.rootProject
 
             //Assumes project has java plugin applied. Pretty safe assumption
             root.appendNode('name', project.archivesBaseName)

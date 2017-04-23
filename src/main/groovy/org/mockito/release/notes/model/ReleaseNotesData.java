@@ -1,6 +1,5 @@
 package org.mockito.release.notes.model;
 
-import org.json.simple.Jsonable;
 import org.mockito.release.notes.contributors.ContributorsSet;
 
 import java.io.Serializable;
