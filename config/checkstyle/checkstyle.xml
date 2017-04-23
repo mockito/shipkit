@@ -21,8 +21,43 @@
     </module>
 
     <module name="TreeWalker">
+        <!-- Braces -->
+        <module name="LeftCurly"/>
+        <module name="RightCurly"/>
+        <module name="NeedBraces"/>
+
+        <!-- Coding -->
+        <module name="CovariantEquals"/>
+        <module name="DefaultComesLast"/>
+        <module name="EmptyStatement"/>
+        <module name="EqualsHashCode"/>
+        <module name="ExplicitInitialization"/>
+        <module name="MultipleVariableDeclarations"/>
+        <module name="NoClone"/>
+        <module name="NoFinalizer"/>
+        <module name="SimplifyBooleanExpression"/>
+        <module name="SimplifyBooleanReturn"/>
+        <module name="StringLiteralEquality"/>
+        <module name="UnnecessaryParentheses"/>
+
+        <!-- Design -->
+        <module name="InterfaceIsType"/>
+
         <!-- Imports -->
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
+
+        <!-- Naming -->
+        <module name="ConstantName"/>
+        <module name="LocalFinalVariableName"/>
+        <module name="LocalVariableName"/>
+
+        <!-- Whitespace -->
+        <module name="GenericWhitespace"/>
+        <module name="EmptyForInitializerPad"/>
+        <module name="EmptyForIteratorPad"/>
+        <module name="MethodParamPad"/>
+        <module name="NoWhitespaceBefore"/>
+        <module name="NoWhitespaceAfter"/>
     </module>
 </module>

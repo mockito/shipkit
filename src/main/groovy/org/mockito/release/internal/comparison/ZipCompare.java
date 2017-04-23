@@ -40,12 +40,14 @@ class ZipCompare {
         LOG.info("Comparing " + filePath1 + " with " + filePath2);
 
         Set<String> set1 = new LinkedHashSet<String>();
-        for (Enumeration e = file1.entries(); e.hasMoreElements(); )
+        for (Enumeration e = file1.entries(); e.hasMoreElements();) {
             set1.add(((ZipEntry) e.nextElement()).getName());
+        }
 
         Set<String> set2 = new LinkedHashSet<String>();
-        for (Enumeration e = file2.entries(); e.hasMoreElements(); )
+        for (Enumeration e = file2.entries(); e.hasMoreElements();) {
             set2.add(((ZipEntry) e.nextElement()).getName());
+        }
 
         int errcount = 0;
         int filecount = 0;
@@ -107,11 +109,13 @@ class ZipCompare {
                     }
                     off2 += count;
                 }
-                if (off1 != off2 || done1 != done2)
+                if (off1 != off2 || done1 != done2) {
                     return false;
+                }
                 for (int i = 0; i < off1; i++) {
-                    if (buf1[i] != buf2[i])
+                    if (buf1[i] != buf2[i]) {
                         return false;
+                    }
                 }
             }
             return true;
