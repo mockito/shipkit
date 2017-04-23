@@ -86,7 +86,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
                 task.setReleaseNotesFile(project.file(conf.getReleaseNotes().getFile())); //TODO add sensible default
                 task.setGitHubReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
                 task.setGitHubRepository(conf.getGitHub().getRepository());
-                //TODO, do we need below force?
+                //TODO MS do we need below force?
                 forceTaskToAlwaysGeneratePreview(task);
             }
         });

@@ -23,7 +23,7 @@ public class AllContributorsFetcherTask extends DefaultTask {
     @OutputFile private File contributorsFile;
 
     @TaskAction
-    public void fetchAllContributorsFromGitHub() {
+    public void fetchAllProjectContributorsFromGitHub() {
         LOG.lifecycle("  Fetching all contributors for project");
 
         GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContibutorsProvider(repository, authToken);

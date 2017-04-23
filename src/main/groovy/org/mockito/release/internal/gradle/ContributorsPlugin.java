@@ -26,12 +26,12 @@ public class ContributorsPlugin implements Plugin<Project> {
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
 
-        createTaskFetchLastContributorsFromGitHub(project, ext);
+        createTaskFetchLastContributorsFromGitHub(project, conf);
 
-        createTaskFetchAllProjectContributorsFromGitHub(project, ext);
+        createTaskFetchAllProjectContributorsFromGitHub(project, conf);
     }
 
-    private void createTaskFetchLastContributorsFromGitHub(final Project project, final ExtContainer ext) {
+    private void createTaskFetchLastContributorsFromGitHub(final Project project, final ReleaseConfiguration conf) {
         project.getTasks().create("fetchLastContributorsFromGitHub", ContributorsFetcherTask.class, new Action<ContributorsFetcherTask>() {
             @Override
             public void execute(final ContributorsFetcherTask task) {
@@ -56,19 +56,19 @@ public class ContributorsPlugin implements Plugin<Project> {
         });
     }
 
-    private void createTaskFetchAllProjectContributorsFromGitHub(final Project project, final ExtContainer ext) {
+    private void createTaskFetchAllProjectContributorsFromGitHub(final Project project, final ReleaseConfiguration conf) {
         project.getTasks().create("fetchAllProjectContributorsFromGitHub", AllContributorsFetcherTask.class, new Action<AllContributorsFetcherTask>() {
             @Override
             public void execute(final AllContributorsFetcherTask task) {
                 task.setGroup(TaskMaker.TASK_GROUP);
                 task.setDescription("Fetch info about all project contributors from GitHub and store it in file");
 
-                LazyConfigurer.getConfigurer(project).configureLazily(task, new Runnable() {
+                deferredConfiguration(project, new Runnable() {
                     @Override
                     public void run() {
                         File contributorsFile = allProjectContributorsFile(project);
-                        task.setAuthToken(ext.getGitHubReadOnlyAuthToken());
-                        task.setRepository(ext.getGitHubRepository());
+                        task.setAuthToken(conf.getGitHub().getReadOnlyAuthToken());
+                        task.setRepository(conf.getGitHub().getRepository());
                         task.setContributorsFile(contributorsFile);
                     }
                 });
