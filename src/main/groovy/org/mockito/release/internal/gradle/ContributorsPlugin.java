@@ -23,6 +23,8 @@ import static org.mockito.release.internal.gradle.configuration.DeferredConfigur
  */
 public class ContributorsPlugin implements Plugin<Project> {
 
+    public final static String FETCH_CONTRIBUTORS_TASK = "fetchAllProjectContributorsFromGitHub";
+
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
 
@@ -57,7 +59,7 @@ public class ContributorsPlugin implements Plugin<Project> {
     }
 
     private void createTaskFetchAllProjectContributorsFromGitHub(final Project project, final ReleaseConfiguration conf) {
-        project.getTasks().create("fetchAllProjectContributorsFromGitHub", AllContributorsFetcherTask.class, new Action<AllContributorsFetcherTask>() {
+        project.getTasks().create(FETCH_CONTRIBUTORS_TASK, AllContributorsFetcherTask.class, new Action<AllContributorsFetcherTask>() {
             @Override
             public void execute(final AllContributorsFetcherTask task) {
                 task.setGroup(TaskMaker.TASK_GROUP);
