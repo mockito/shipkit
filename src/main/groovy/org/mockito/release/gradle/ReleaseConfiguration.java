@@ -30,7 +30,7 @@ public class ReleaseConfiguration {
         this.git.setReleasableBranchRegex("master|release/.+");  // matches 'master', 'release/2.x', 'release/3.x', etc.
     }
 
-    private boolean dryRun;
+    private boolean dryRun = true;
 
     public void setDryRun(boolean dryRun) {
         this.dryRun = dryRun;

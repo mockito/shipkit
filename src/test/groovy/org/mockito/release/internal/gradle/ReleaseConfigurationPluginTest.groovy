@@ -2,6 +2,7 @@ package org.mockito.release.internal.gradle
 
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
+import spock.lang.Unroll
 
 class ReleaseConfigurationPluginTest extends Specification {
 
@@ -18,14 +19,24 @@ class ReleaseConfigurationPluginTest extends Specification {
         subproject.plugins.apply(ReleaseConfigurationPlugin).configuration == root.plugins.apply(ReleaseConfigurationPlugin).configuration
     }
 
-    def "dry run off by default"() {
-        expect:
-        !root.plugins.apply(ReleaseConfigurationPlugin).configuration.dryRun
-    }
-
-    def "configures dry run by project property"() {
-        root.ext.releaseDryRun = ""
+    def "dry run on by default"() {
         expect:
         root.plugins.apply(ReleaseConfigurationPlugin).configuration.dryRun
+    }
+
+    @Unroll
+    def "configures dry run to #setting when project property is #property"() {
+        when:
+        root.ext.'releasing.dryRun' = property
+
+        then:
+        root.plugins.apply(ReleaseConfigurationPlugin).configuration.dryRun == setting
+
+        where:
+        property | setting
+        "false"  | false
+        "true"   | true
+        ""       | true
+        null     | true
     }
 }
