@@ -28,6 +28,7 @@ public class ReleaseConfiguration {
         //Configure default values
         this.git.setTagPrefix("v"); //so that tags are "v1.0", "v2.3.4"
         this.git.setReleasableBranchRegex("master|release/.+");  // matches 'master', 'release/2.x', 'release/3.x', etc.
+        this.git.setCommitMessagePostfix(" [ci skip]");
     }
 
     private boolean dryRun = true;
@@ -255,6 +256,21 @@ public class ReleaseConfiguration {
          */
         public void setTagPrefix(String tagPrefix) {
             configuration.put("git.tagPrefix", tagPrefix);
+        }
+
+
+        /**
+         * Postfix which will be added to the commit message.
+         */
+        public String getCommitMessagePostfix() {
+            return getString("git.commitMessagePostfix");
+        }
+
+        /**
+         * See {@link #getCommitMessagePostfix()}
+         */
+        public void setCommitMessagePostfix(String commitMessagePostfix) {
+            configuration.put("git.commitMessagePostfix", commitMessagePostfix);
         }
     }
 
