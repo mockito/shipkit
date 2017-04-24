@@ -54,7 +54,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                     @Override
                     public void execute(JavaLibraryPlugin plugin) {
                         subproject.getTasks().getByName("publishToMavenLocal")
-                                .dependsOn(ContributorsPlugin.FETCH_CONTRIBUTORS_TASK);
+                                .dependsOn(":" + ContributorsPlugin.FETCH_CONTRIBUTORS_TASK);
                     }
                 });
             }
