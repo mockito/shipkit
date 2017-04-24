@@ -16,6 +16,8 @@ apply plugin: 'maven'
 apply plugin: 'checkstyle'
 apply plugin: 'codenarc'
 
+apply from: 'gradle/precommit.gradle'
+
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 
@@ -86,16 +88,6 @@ task travisRelease {
                     "-Pgradle.publish.secret=${System.getenv('GRADLE_PUBLISH_SECRET')}"
         }
     }
-}
-
-task installGitPreCommitHook(type: Copy) {
-    from 'pre-commit'
-    into '.git/hooks'
-}
-
-task makeGitHooksExecutable { Task t ->
-    t.dependsOn(installGitPreCommitHook)
-    Runtime.getRuntime().exec("chmod -R +x .git/hooks/");
 }
 
 task fastInstall { Task t ->
