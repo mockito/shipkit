@@ -16,7 +16,7 @@ class ContributorsSerializerTest extends Specification {
 
         when:
         serializer.serialize(contributors)
-        def actual = serializer.desrialize()
+        def actual = serializer.deserialize()
 
         then:
         actual.getAllContributors().containsAll(contributors.getAllContributors())
@@ -29,7 +29,7 @@ class ContributorsSerializerTest extends Specification {
 
         when:
         serializer.serialize(contributors)
-        def actual = serializer.desrialize()
+        def actual = serializer.deserialize()
 
         then:
         actual.getAllContributors().containsAll(contributors.getAllContributors())
@@ -46,7 +46,7 @@ class ContributorsSerializerTest extends Specification {
 
         when:
         serializer.serialize(contributors)
-        def actual = serializer.desrialize()
+        def actual = serializer.deserialize()
 
         then:
         actual.getAllContributors().containsAll(contributors.getAllContributors())
@@ -69,7 +69,7 @@ class ContributorsSerializerTest extends Specification {
 
         when:
         serializer.serialize(contributors)
-        def actual = serializer.desrialize()
+        def actual = serializer.deserialize()
 
         then:
         actual.getAllContributors().containsAll(contributors.getAllContributors())
@@ -84,7 +84,7 @@ class ContributorsSerializerTest extends Specification {
 
         when:
         serializer.serialize(contributors)
-        def actual = serializer.desrialize()
+        def actual = serializer.deserialize()
 
         then:
         actual.getAllContributors().containsAll(contributors.getAllContributors())
