@@ -7,17 +7,12 @@ import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Exec;
-import org.gradle.process.ExecResult;
-import org.gradle.process.ExecSpec;
 import org.mockito.release.gradle.BumpVersionFileTask;
 import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.gradle.ReleaseNeededTask;
 import org.mockito.release.internal.gradle.configuration.LazyConfiguration;
-import org.mockito.release.internal.gradle.util.StringUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.version.VersionInfo;
-
-import static java.util.Arrays.asList;
 
 /**
  * Opinionated continuous delivery plugin.
@@ -106,7 +101,9 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
 
         TaskMaker.task(project, "performRelease", new Action<Task>() {
             public void execute(final Task t) {
-                t.setDescription("Performs release. To test release use './gradlew testRelease'");
+                t.setDescription("Performs release. " +
+                        "Ship with: './gradlew performRelease -Preleasing.dryRun=false'. " +
+                        "Test with: './gradlew performRelease'");
 
                 t.dependsOn("bumpVersionFile", "updateReleaseNotes", "updateNotableReleaseNotes");
                 t.dependsOn("gitAddBumpVersion", "gitAddReleaseNotes", GitPlugin.COMMIT_TASK, GitPlugin.TAG_TASK);
@@ -147,20 +144,6 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                 });
             }
         });
-
-        //TODO delete this task, instead we can just print to the user:
-        // to test the release, run "./gradlew performRelease releaseCleanUp -PreleaseDryRun"
-        //forking off gradle process to run tasks, from inside gradle tasks is not a good idea.
-        TaskMaker.task(project, "testRelease", new Action<Task>() {
-            public void execute(Task t) {
-                t.setDescription("Tests the release, intended to be used locally by engineers");
-                t.doLast(new Action<Task>() {
-                    public void execute(Task task) {
-                        performReleaseTest(project);
-                    }
-                });
-            }
-        });
     }
 
     private static void configureNotableReleaseNotes(Project project, boolean notableRelease) {
@@ -175,18 +158,5 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
             generatorTask.getNotesGeneration().setHeadVersion(project.getVersion().toString());
             fetcherTask.getNotesGeneration().setHeadVersion(project.getVersion().toString());
         }
-    }
-
-    private static void performReleaseTest(Project project) {
-        exec(project, "./gradlew", "performRelease", "releaseCleanUp", "-PreleaseDryRun");
-    }
-
-    private static ExecResult exec(Project project, final String... commandLine) {
-        LOG.lifecycle("  Running:\n    " + StringUtil.join(asList(commandLine), " ") );
-        return project.exec(new Action<ExecSpec>() {
-            public void execute(ExecSpec e) {
-                e.commandLine(commandLine);
-            }
-        });
     }
 }

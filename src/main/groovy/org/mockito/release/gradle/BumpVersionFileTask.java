@@ -59,11 +59,13 @@ public class BumpVersionFileTask extends DefaultTask {
     @TaskAction public void bumpVersionFile() {
         VersionInfo versionInfo = Version.versionInfo(this.versionFile);
         VersionInfo newVersion = versionInfo.bumpVersion(updateNotableVersions);
+        //TODO add unit test for the message.
+        // We already had a bug related to printing VersionInfo toString() instead of neat string version.
         LOG.lifecycle("{} - updated version file '{}'\n" +
                 "  - new version: {}\n" +
                 "  - notable versions updated: {}\n" +
                 "  - notable versions: {}",
-                getPath(), getProject().relativePath(this.versionFile), newVersion, updateNotableVersions,
+                getPath(), getProject().relativePath(this.versionFile), newVersion.getVersion(), updateNotableVersions,
                 StringUtil.join(versionInfo.getNotableVersions(), ", "));
     }
 }

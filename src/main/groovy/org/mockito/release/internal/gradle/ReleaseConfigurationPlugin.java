@@ -23,11 +23,11 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
             configuration = project.getRootProject().getExtensions()
                     .create("releasing", ReleaseConfiguration.class);
 
-            if (project.hasProperty("releaseDryRun")) {
-                //TODO rename to releasing.dryRun for consistency
+            if (project.hasProperty("releasing.dryRun")) {
+                Object value = project.getProperties().get("releasing.dryRun");
+                configuration.setDryRun(!"false".equals(value));
                 //TODO we can actually implement it so that we automatically preconfigure everything by command line parameters
                 //e.g. releasing.gitHub.repository is also a property
-                configuration.setDryRun(true);
             }
         } else {
             //not root project, get extension from root project
