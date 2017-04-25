@@ -98,6 +98,7 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
      * The target repository where the publications / binaries are published to.
      * Shown in the release notes.
      */
+    @Input
     public String getPublicationRepository() {
         return publicationRepository;
     }
