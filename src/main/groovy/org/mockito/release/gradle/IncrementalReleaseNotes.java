@@ -151,7 +151,7 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
         String current = "HEAD";
         LOG.lifecycle("  Generating release note for revisions: {} -> {}", prev, current);
         String v = this.getProject().getVersion().toString();
-        String newContent = builder.buildNotes(v, prev, current, gitHubLabelMapping);
+        String newContent = builder.buildNotes(v, prev, current, gitHubLabelMapping, publicationRepository);
         return newContent;
     }
 
