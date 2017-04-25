@@ -18,11 +18,9 @@ class GitPluginTest extends Specification {
     }
 
     def "custom commitMessagePostfix"() {
-        def buildNo = 1234
-        project.releasing.git.commitMessagePostfix = buildNo? " by CI build $buildNo [ci skip-release]" : " [ci skip-release]"
+        project.releasing.git.commitMessagePostfix = " by CI build 1234 [ci skip-release]"
 
         expect:
-        project.releasing.dryRun == true
         project.releasing.git.commitMessagePostfix ==  " by CI build 1234 [ci skip-release]"
     }
 }

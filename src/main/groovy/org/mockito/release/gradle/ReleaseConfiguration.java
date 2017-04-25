@@ -260,7 +260,8 @@ public class ReleaseConfiguration {
 
 
         /**
-         * Postfix which will be added to the commit message.
+         * Text which will be included in the commit message for all commits automatically created by the release
+         * automation.
          */
         public String getCommitMessagePostfix() {
             return getString("git.commitMessagePostfix");

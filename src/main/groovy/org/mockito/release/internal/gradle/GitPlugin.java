@@ -13,6 +13,7 @@ import org.mockito.release.internal.gradle.util.GitUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 
 import static org.mockito.release.internal.gradle.configuration.LazyConfiguration.lazyConfiguration;
+import static org.mockito.release.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
 import static org.mockito.release.internal.gradle.util.GitUtil.getTag;
 import static org.mockito.release.internal.gradle.util.StringUtil.join;
 
@@ -39,7 +40,7 @@ public class GitPlugin implements Plugin<Project> {
         TaskMaker.execTask(project, COMMIT_TASK, new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Commits staged changes using generic --author");
-                lazyConfiguration(t, new Runnable() {
+                deferredConfiguration(project, new Runnable() {
                     @Override
                     public void run() {
                         t.commandLine("git", "commit", "--author",
@@ -55,7 +56,7 @@ public class GitPlugin implements Plugin<Project> {
                 t.mustRunAfter(COMMIT_TASK);
                 final String tag = "v" + project.getVersion();
                 t.setDescription("Creates new version tag '" + tag + "'");
-                lazyConfiguration(t, new Runnable() {
+                deferredConfiguration(project, new Runnable() {
                     @Override
                     public void run() {
                         t.commandLine("git", "tag", "-a", tag, "-m",
