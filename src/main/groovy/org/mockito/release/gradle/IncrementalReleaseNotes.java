@@ -25,6 +25,7 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
     private String gitHubReadOnlyAuthToken;
     private String gitHubRepository;
     private Map<String, String> gitHubLabelMapping = new LinkedHashMap<String, String>();
+    private String publicationRepository;
 
     /**
      * Release notes file this task operates on.
@@ -91,6 +92,21 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
      */
     public void setGitHubLabelMapping(Map<String, String> gitHubLabelMapping) {
         this.gitHubLabelMapping = gitHubLabelMapping;
+    }
+
+    /**
+     * The target repository where the publications / binaries are published to.
+     * Shown in the release notes.
+     */
+    public String getPublicationRepository() {
+        return publicationRepository;
+    }
+
+    /**
+     * See {@link #getPublicationRepository()}
+     */
+    public void setPublicationRepository(String publicationRepository) {
+        this.publicationRepository = publicationRepository;
     }
 
     private void assertConfigured() {
