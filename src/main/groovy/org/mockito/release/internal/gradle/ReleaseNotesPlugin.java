@@ -3,8 +3,6 @@ package org.mockito.release.internal.gradle;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
-import org.gradle.api.specs.Spec;
 import org.mockito.release.gradle.IncrementalReleaseNotes;
 import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.internal.gradle.configuration.DeferredConfiguration;
@@ -86,8 +84,6 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
                 task.setReleaseNotesFile(project.file(conf.getReleaseNotes().getFile())); //TODO add sensible default
                 task.setGitHubReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
                 task.setGitHubRepository(conf.getGitHub().getRepository());
-                //TODO MS do we need below force?
-                forceTaskToAlwaysGeneratePreview(task);
             }
         });
     }
@@ -112,14 +108,5 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     private static File getTemporaryReleaseNotesFile(Project project){
         String path = project.getBuildDir()  + TEMP_SERIALIZED_NOTES_FILE;
         return project.file(path);
-    }
-
-    private static void forceTaskToAlwaysGeneratePreview(IncrementalReleaseNotes task) {
-        task.getOutputs().upToDateWhen(new Spec<Task>() {
-            @Override
-            public boolean isSatisfiedBy(Task element) {
-                return false;
-            }
-        });
     }
 }
