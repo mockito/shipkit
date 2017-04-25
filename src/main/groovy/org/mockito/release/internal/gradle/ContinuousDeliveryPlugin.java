@@ -61,8 +61,6 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
             }
         });
 
-        configureNotableReleaseNotes(project, notableRelease);
-
         TaskMaker.execTask(project, "gitAddReleaseNotes", new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Performs 'git add' for the release notes file");
@@ -144,19 +142,5 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                 });
             }
         });
-    }
-
-    private static void configureNotableReleaseNotes(Project project, boolean notableRelease) {
-        VersionInfo versionInfo = project.getExtensions().getByType(VersionInfo.class);
-        NotableReleaseNotesGeneratorTask generatorTask = (NotableReleaseNotesGeneratorTask) project.getTasks().getByName("updateNotableReleaseNotes");
-        NotableReleaseNotesFetcherTask fetcherTask = (NotableReleaseNotesFetcherTask) project.getTasks().getByName("fetchNotableReleaseNotes");
-
-        generatorTask.getNotesGeneration().setTargetVersions(versionInfo.getNotableVersions());
-        fetcherTask.getNotesGeneration().setTargetVersions(versionInfo.getNotableVersions());
-
-        if (notableRelease) {
-            generatorTask.getNotesGeneration().setHeadVersion(project.getVersion().toString());
-            fetcherTask.getNotesGeneration().setHeadVersion(project.getVersion().toString());
-        }
     }
 }
