@@ -44,7 +44,7 @@ public class ContributorsFetcherTask extends DefaultTask {
         RevisionProvider revisionProvider = Vcs.getRevisionProvider(processRunner);
         String fromRev = revisionProvider.getRevisionForTagOrRevision(fromRevision);
 
-        GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContibutorsProvider(repository, authToken);
+        GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContributorsProvider(repository, authToken);
         ContributorsSet contributors = contributorsProvider.mapContributorsToGitHubUser(contributions, fromRev, toRevision);
 
         new ContributorsSerializer(contributorsFile).serialize(contributors);
