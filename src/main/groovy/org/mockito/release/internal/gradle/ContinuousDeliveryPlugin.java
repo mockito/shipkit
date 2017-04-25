@@ -156,14 +156,14 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
         });
     }
 
-    private void configurePublicationRepo(Project project, String bintrayRepo) {
+    private static void configurePublicationRepo(Project project, String bintrayRepo) {
         //not using 'getTasks().withType()' because I don't want to create too many task configuration rules
         //TODO add information about it in the development guide
         for (Task t : project.getTasks()) {
             if (t instanceof IncrementalReleaseNotes) {
-                LOG.info("Configuring publication repository: {} on task: {}", bintrayRepo, t.getPath());
                 IncrementalReleaseNotes task = (IncrementalReleaseNotes) t;
-                if (task.getPublicationRepository() != null) {
+                if (task.getPublicationRepository() == null) {
+                    LOG.info("Configuring publication repository '{}' on task: {}", bintrayRepo, t.getPath());
                     task.setPublicationRepository(bintrayRepo);
                 }
             }
