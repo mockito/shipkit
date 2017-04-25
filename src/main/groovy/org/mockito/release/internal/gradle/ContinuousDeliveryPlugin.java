@@ -17,6 +17,7 @@ import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.version.VersionInfo;
 
 import static java.util.Arrays.asList;
+import static org.mockito.release.internal.gradle.BaseJavaLibraryPlugin.POM_TASK;
 
 /**
  * Opinionated continuous delivery plugin.
@@ -50,11 +51,11 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
         project.allprojects(new Action<Project>() {
             @Override
             public void execute(final Project subproject) {
-                subproject.getPlugins().withType(JavaLibraryPlugin.class, new Action<JavaLibraryPlugin>() {
+                subproject.getPlugins().withType(BaseJavaLibraryPlugin.class, new Action<BaseJavaLibraryPlugin>() {
                     @Override
-                    public void execute(JavaLibraryPlugin plugin) {
+                    public void execute(BaseJavaLibraryPlugin p) {
                         Task fetcher = project.getTasks().getByName(ContributorsPlugin.FETCH_CONTRIBUTORS_TASK);
-                        subproject.getTasks().getByName("publishToMavenLocal").dependsOn(fetcher);
+                        subproject.getTasks().getByName(POM_TASK).dependsOn(fetcher);
                     }
                 });
             }
