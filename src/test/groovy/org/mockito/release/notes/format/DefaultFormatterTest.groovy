@@ -83,8 +83,7 @@ class DefaultFormatterTest extends Specification {
         def contributors = new DefaultContributorsSet()
 
         expect:
-        f.format(contributions, contributors) == """* Authors: 2
-* Commits: 3
+        f.format(contributions, contributors) == """* Authors: 2, commits: 3, published to: someRepo
   * 2: CD Drone
   * 1: Monalisa Octocat"""
     }
@@ -101,8 +100,7 @@ class DefaultFormatterTest extends Specification {
         contributors.addContributor(new DefaultContributor("CD Drone", "cddrone", "http://gh.com/cddrone"))
 
         expect:
-        f.format(contributions, contributors) == """* Authors: 2
-* Commits: 3
+        f.format(contributions, contributors) == """* Authors: 2, commits: 3, published to: someRepo
   * 2: [CD Drone](http://gh.com/cddrone)
   * 1: [Monalisa Octocat](http://gh.com/octocat)"""
     }
@@ -112,7 +110,7 @@ class DefaultFormatterTest extends Specification {
         def contributors = new DefaultContributorsSet()
 
         expect:
-        f.format(contributions, contributors) == "* Authors: 0\n* Commits: 0"
+        f.format(contributions, contributors) == "* Authors: 0, commits: 0, published to: someRepo"
     }
 
     def "contributions by same author with different email, no profile URLs"() {
@@ -126,8 +124,7 @@ class DefaultFormatterTest extends Specification {
         def contributors = new DefaultContributorsSet()
 
         expect:
-        f.format(contributions, contributors) == """* Authors: 2
-* Commits: 4
+        f.format(contributions, contributors) == """* Authors: 2, commits: 4, published to: someRepo
   * 3: john
   * 1: x"""
     }
@@ -145,8 +142,7 @@ class DefaultFormatterTest extends Specification {
         contributors.addContributor(new DefaultContributor("x", "x", "gh/x"))
 
         expect:
-        f.format(contributions, contributors) == """* Authors: 2
-* Commits: 4
+        f.format(contributions, contributors) == """* Authors: 2, commits: 4, published to: someRepo
   * 3: [john](gh/johnx)
   * 1: [x](gh/x)"""
     }
@@ -163,8 +159,7 @@ class DefaultFormatterTest extends Specification {
         def contributors = new DefaultContributorsSet()
 
         expect:
-        f.format(contributions, contributors) == """* Authors: 4
-* Commits: 5
+        f.format(contributions, contributors) == """* Authors: 4, commits: 5, published to: someRepo
   * 2: d
   * 1: a
   * 1: B
@@ -187,8 +182,7 @@ class DefaultFormatterTest extends Specification {
         contributors.addContributor(new DefaultContributor("a", "aa", "gh/aa"))
 
         expect:
-        f.format(contributions, contributors) == """* Authors: 4
-* Commits: 5
+        f.format(contributions, contributors) == """* Authors: 4, commits: 5, published to: someRepo
   * 2: [d](gh/dd)
   * 1: [a](gh/aa)
   * 1: [B](gh/BB)
@@ -205,8 +199,7 @@ class DefaultFormatterTest extends Specification {
 
         then: notes == """### 2.0.1 (2017-01-04)
 
-* Authors: 1
-* Commits: 1
+* Authors: 1, commits: 1, published to: someRepo
   * 1: a
 * Improvements: 1
   * Fix bug x [(#100)](http://issues/100)

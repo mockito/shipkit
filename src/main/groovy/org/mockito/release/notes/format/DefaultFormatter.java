@@ -83,8 +83,10 @@ class DefaultFormatter implements SingleReleaseNotesFormatter {
     private String format(ContributionSet contributions, ContributorsSet contributorsSet) {
         StringBuilder sb = new StringBuilder("* Authors: ")
                 .append(contributions.getContributions().size())
-                .append("\n* Commits: ")
-                .append(contributions.getAllCommits().size());
+                .append(", commits: ")
+                .append(contributions.getAllCommits().size())
+                .append(", published to: ")
+                .append(publicationRepository);
 
         for (Contribution c : contributions.getContributions()) {
             Contributor contributor = contributorsSet.findByAuthorName(c.getAuthorName());
