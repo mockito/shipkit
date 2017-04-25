@@ -2,17 +2,17 @@ package org.mockito.release.notes.format
 
 import org.mockito.release.notes.contributors.DefaultContributor
 import org.mockito.release.notes.contributors.DefaultContributorsSet
-import org.mockito.release.notes.internal.DefaultReleaseNotesData
 import org.mockito.release.notes.internal.DefaultImprovement
-import org.mockito.release.notes.util.Predicate
+import org.mockito.release.notes.internal.DefaultReleaseNotesData
 import org.mockito.release.notes.model.ContributionSet
+import org.mockito.release.notes.util.Predicate
 import org.mockito.release.notes.vcs.DefaultContributionSet
 import org.mockito.release.notes.vcs.GitCommit
 import spock.lang.Specification
 
 class DefaultFormatterTest extends Specification {
 
-    DefaultFormatter f = new DefaultFormatter([:])
+    DefaultFormatter f = new DefaultFormatter([:], "someRepo")
 
     def "empty improvements"() {
         expect:

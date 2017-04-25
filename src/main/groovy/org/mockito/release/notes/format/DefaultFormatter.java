@@ -16,9 +16,11 @@ import java.util.Set;
 class DefaultFormatter implements SingleReleaseNotesFormatter {
 
     private final Map<String, String> labelMapping;
+    private final String publicationRepository;
 
-    DefaultFormatter(Map<String, String> labelMapping) {
+    DefaultFormatter(Map<String, String> labelMapping, String publicationRepository) {
         this.labelMapping = labelMapping;
+        this.publicationRepository = publicationRepository;
     }
 
     String format(Map<String, String> labels, Collection<Improvement> improvements) {

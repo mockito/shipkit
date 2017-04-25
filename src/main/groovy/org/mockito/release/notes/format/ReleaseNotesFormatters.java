@@ -19,7 +19,7 @@ public class ReleaseNotesFormatters {
      * @param publicationRepository where the binaries were published to
      */
     public static SingleReleaseNotesFormatter defaultFormatter(Map<String, String> labelMapping, String publicationRepository) {
-        return new DefaultFormatter(labelMapping);
+        return new DefaultFormatter(labelMapping, publicationRepository);
     }
 
     /**
