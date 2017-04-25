@@ -67,7 +67,7 @@ class GitNotesBuilder implements NotesBuilder {
         Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, Collections.<String>emptyList(), false);
 
         ReleaseNotesData data = new DefaultReleaseNotesData(version, new Date(), contributions, improvements, contributors, fromRevision, toRevision);
-        SingleReleaseNotesFormatter formatter = ReleaseNotesFormatters.defaultFormatter(labels);
+        SingleReleaseNotesFormatter formatter = ReleaseNotesFormatters.defaultFormatter(labels, publicationRepository);
 
         return formatter.formatVersion(data);
     }

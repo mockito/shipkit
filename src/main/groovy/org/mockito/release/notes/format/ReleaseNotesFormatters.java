@@ -16,8 +16,9 @@ public class ReleaseNotesFormatters {
      * In final release notes we want descriptive sections of improvements.
      * Mappings also allow controlling priority in presenting improvements -
      *  the formatter can use the order of label mappings. For example, 'noteworthy' labelled improvements on top.
+     * @param publicationRepository where the binaries were published to
      */
-    public static SingleReleaseNotesFormatter defaultFormatter(Map<String, String> labelMapping) {
+    public static SingleReleaseNotesFormatter defaultFormatter(Map<String, String> labelMapping, String publicationRepository) {
         return new DefaultFormatter(labelMapping);
     }
 
