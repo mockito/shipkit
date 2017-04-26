@@ -112,7 +112,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         String path = project.getBuildDir()  + TEMP_SERIALIZED_NOTES_FILE;
         return project.file(path);
     }
-    }
+
 
     private static void configureNotableReleaseNotes(Project project) {
         //TODO when we make notable release notes optional, we can push that to a separate plugin
@@ -130,4 +130,5 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
             generatorTask.getNotesGeneration().setHeadVersion(project.getVersion().toString());
             fetcherTask.getNotesGeneration().setHeadVersion(project.getVersion().toString());
         }
+    }
 }

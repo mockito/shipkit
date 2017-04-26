@@ -17,6 +17,7 @@ import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.version.VersionInfo;
 
 import static org.mockito.release.internal.gradle.BaseJavaLibraryPlugin.POM_TASK;
+import static org.mockito.release.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
 import static org.mockito.release.internal.gradle.util.Specs.withName;
 /**
  * Opinionated continuous delivery plugin.
