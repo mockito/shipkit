@@ -35,7 +35,7 @@ import static org.mockito.release.internal.gradle.util.StringUtil.capitalize;
  * <ul>
  *     <li>Automatically includes "LICENSE" file in all jars.</li>
  *     <li>Adds build.dependsOn "publishToMavenLocal" to flesh out publication issues during the build</li>
- *     <li>Adds publishToMavenLocal.dependsOn "fetchAllProjectContributorsFromGitHub" to load all contributors from GitHub</li>
+ *     <li>Makes pom-generating task depend on "fetchAllProjectContributorsFromGitHub" to load all contributors from GitHub</li>
  * </ul>
  */
 public class BaseJavaLibraryPlugin implements Plugin<Project> {
