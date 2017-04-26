@@ -39,7 +39,7 @@ public class AllContributorsFetcherTask extends DefaultTask {
 
         LOG.lifecycle("  Fetching all contributors for project");
 
-        GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContibutorsProvider(repository, readOnlyAuthToken);
+        GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContributorsProvider(repository, readOnlyAuthToken);
         ProjectContributorsSet allContributorsForProject = contributorsProvider.getAllContributorsForProject();
 
         AllContributorsSerializer serializer = Contributors.getAllContributorsSerializer(contributorsFile);
