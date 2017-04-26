@@ -5,7 +5,6 @@ import org.gradle.api.logging.Logging;
 import org.json.simple.JsonArray;
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
-import org.mockito.release.notes.model.Contributor;
 import org.mockito.release.notes.model.ProjectContributor;
 import org.mockito.release.notes.util.IOUtil;
 

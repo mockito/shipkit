@@ -8,7 +8,7 @@ import java.io.Writer;
 
 public class DefaultProjectContributor implements ProjectContributor {
 
-    private static final String jsonFormat = "{ \"name\": \"%s\", \"login\": \"%s\", \"profileUrl\": \"%s\", " +
+    private static final String JSON_FORMAT = "{ \"name\": \"%s\", \"login\": \"%s\", \"profileUrl\": \"%s\", " +
             "\"numberOfContributions\": \"%s\" }";
 
     private final String name;
@@ -45,7 +45,7 @@ public class DefaultProjectContributor implements ProjectContributor {
 
     @Override
     public String toJson() {
-        return String.format(jsonFormat,
+        return String.format(JSON_FORMAT,
                 escapeOrEmpty(name),
                 escape(login),
                 escape(profileUrl),
@@ -67,14 +67,24 @@ public class DefaultProjectContributor implements ProjectContributor {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         DefaultProjectContributor that = (DefaultProjectContributor) o;
 
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (!login.equals(that.login)) return false;
-        if (!profileUrl.equals(that.profileUrl)) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) {
+            return false;
+        }
+        if (!login.equals(that.login)) {
+            return false;
+        }
+        if (!profileUrl.equals(that.profileUrl)) {
+            return false;
+        }
         return numberOfContributions.equals(that.numberOfContributions);
     }
 
