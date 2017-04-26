@@ -81,20 +81,22 @@ public class BaseJavaLibraryPlugin implements Plugin<Project> {
             public void execute(final PublicationsComparatorTask t) {
                 t.setDescription("Compares artifacts and poms between last version and the currently built one to see if there are any differences");
                 t.dependsOn("publishToMavenLocal");
-                t.dependsOn(project.getRootProject().getTasks().getByPath("bumpVersionFile"));
+                Task bumpVersionFileTask = project.getRootProject().getTasks().findByPath("bumpVersionFile");
+                if(bumpVersionFileTask != null) {
+                    t.dependsOn(bumpVersionFileTask);
+                    t.doFirst(new Action<Task>() {
+                        @Override
+                        public void execute(Task task) {
+                            VersionInfo versionInfo = project.getRootProject().getExtensions().getByType(VersionInfo.class);
+
+                            t.setCurrentVersion(versionInfo.getVersion());
+                            t.setPreviousVersion(versionInfo.getPreviousVersion());
+                        }
+                    });
+                }
                 t.setProjectGroup(project.getGroup().toString());
                 t.setProjectName(project.getName());
                 t.setLocalRepository(project.getRepositories().mavenLocal().getUrl().getPath());
-                t.doFirst(new Action<Task>() {
-                    @Override
-                    public void execute(Task task) {
-                        VersionInfo versionInfo = project.getRootProject().getExtensions().getByType(VersionInfo.class);
-
-                        t.setCurrentVersion(versionInfo.getVersion());
-                        t.setPreviousVersion(versionInfo.getPreviousVersion());
-                    }
-                });
-
             }
         });
 
