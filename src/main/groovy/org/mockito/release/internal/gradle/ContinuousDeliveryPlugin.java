@@ -1,5 +1,6 @@
 package org.mockito.release.internal.gradle;
 
+import com.jfrog.bintray.gradle.BintrayExtension;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -8,6 +9,7 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Exec;
 import org.mockito.release.gradle.BumpVersionFileTask;
+import org.mockito.release.gradle.IncrementalReleaseNotes;
 import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.gradle.ReleaseNeededTask;
 import org.mockito.release.internal.gradle.configuration.LazyConfiguration;
@@ -83,8 +85,6 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
             }
         });
 
-        configureNotableReleaseNotes(project, notableRelease);
-
         TaskMaker.execTask(project, "gitAddReleaseNotes", new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Performs 'git add' for the release notes file");
@@ -111,11 +111,19 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
         //TODO can we make git push and bintray upload tasks to be last (expensive, hard to reverse tasks should go last)
 
         project.allprojects(new Action<Project>() {
-            public void execute(final Project project) {
-                project.getPlugins().withType(BintrayPlugin.class, new Action<BintrayPlugin>() {
+            public void execute(final Project p) {
+                p.getPlugins().withType(BintrayPlugin.class, new Action<BintrayPlugin>() {
                     public void execute(BintrayPlugin bintrayPlugin) {
-                        Task bintrayUpload = project.getTasks().getByName(BintrayPlugin.BINTRAY_UPLOAD_TASK);
+                        Task bintrayUpload = p.getTasks().getByName(BintrayPlugin.BINTRAY_UPLOAD_TASK);
                         bintrayUploadAll.dependsOn(bintrayUpload);
+                        final BintrayExtension bintray = p.getExtensions().getByType(BintrayExtension.class);
+
+                        deferredConfiguration(p, new Runnable() {
+                            public void run() {
+                                final String bintrayRepo = bintray.getPkg().getRepo();
+                                configurePublicationRepo(project, bintrayRepo);
+                            }
+                        });
                     }
                 });
             }
@@ -168,17 +176,18 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
         });
     }
 
-    private static void configureNotableReleaseNotes(Project project, boolean notableRelease) {
-        VersionInfo versionInfo = project.getExtensions().getByType(VersionInfo.class);
-        NotableReleaseNotesGeneratorTask generatorTask = (NotableReleaseNotesGeneratorTask) project.getTasks().getByName("updateNotableReleaseNotes");
-        NotableReleaseNotesFetcherTask fetcherTask = (NotableReleaseNotesFetcherTask) project.getTasks().getByName("fetchNotableReleaseNotes");
-
-        generatorTask.getNotesGeneration().setTargetVersions(versionInfo.getNotableVersions());
-        fetcherTask.getNotesGeneration().setTargetVersions(versionInfo.getNotableVersions());
-
-        if (notableRelease) {
-            generatorTask.getNotesGeneration().setHeadVersion(project.getVersion().toString());
-            fetcherTask.getNotesGeneration().setHeadVersion(project.getVersion().toString());
+    private static void configurePublicationRepo(Project project, String bintrayRepo) {
+        //not using 'getTasks().withType()' because I don't want to create too many task configuration rules
+        //TODO add information about it in the development guide
+        for (Task t : project.getTasks()) {
+            if (t instanceof IncrementalReleaseNotes) {
+                IncrementalReleaseNotes task = (IncrementalReleaseNotes) t;
+                if (task.getPublicationRepository() == null) {
+                    LOG.info("Configuring publication repository '{}' on task: {}", bintrayRepo, t.getPath());
+                    task.setPublicationRepository(bintrayRepo);
+                }
+            }
         }
+        //TODO unit test coverage
     }
 }
