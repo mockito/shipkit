@@ -29,6 +29,7 @@ public class ReleaseNeededTask extends DefaultTask {
 
     private String branch;
     private String releasableBranchRegex;
+    private boolean allPublicationsEqual;
 
     /**
      * The branch we currently operate on
@@ -51,6 +52,14 @@ public class ReleaseNeededTask extends DefaultTask {
         return releasableBranchRegex;
     }
 
+    public boolean isAllPublicationsEqual() {
+        return allPublicationsEqual;
+    }
+
+    public void setAllPublicationsEqual(boolean allPublicationsEqual) {
+        this.allPublicationsEqual = allPublicationsEqual;
+    }
+
     /**
      * See {@link #getReleasableBranchRegex()}
      */
@@ -69,7 +78,7 @@ public class ReleaseNeededTask extends DefaultTask {
 
         boolean releasableBranch = branch != null && branch.matches(releasableBranchRegex);
 
-        boolean notNeeded = skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
+        boolean notNeeded = allPublicationsEqual || skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
 
         //TODO add more color to the message
         //add env variable names, what is the current branch, what is the regexp, etc.
@@ -78,7 +87,8 @@ public class ReleaseNeededTask extends DefaultTask {
                 "\n    - skip by env variable: " + skipEnvVariable +
                 "\n    - skip by commit message: " + skippedByCommitMessage +
                 "\n    - is pull request build:  " + pullRequest +
-                "\n    - is releasable branch:  " + releasableBranch;
+                "\n    - is releasable branch:  " + releasableBranch +
+                "\n    - anything changed in publications since the last release:  " + allPublicationsEqual;
 
         if (notNeeded) {
             throw new GradleException(message);

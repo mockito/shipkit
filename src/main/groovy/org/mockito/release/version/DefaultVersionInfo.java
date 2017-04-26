@@ -14,11 +14,13 @@ class DefaultVersionInfo implements VersionInfo {
     private final File versionFile;
     private final LinkedList<String> notableVersions;
     private final String version;
+    private final String previousVersion;
 
-    DefaultVersionInfo(File versionFile, String version, LinkedList<String> notableVersions) {
+    DefaultVersionInfo(File versionFile, String version, LinkedList<String> notableVersions, String previousVersion) {
         this.versionFile = versionFile;
         this.version = version;
         this.notableVersions = notableVersions;
+        this.previousVersion = previousVersion;
     }
 
     static DefaultVersionInfo fromFile(File versionFile) {
@@ -27,8 +29,9 @@ class DefaultVersionInfo implements VersionInfo {
         if (version == null) {
             throw new IllegalArgumentException("Missing 'version=' properties in file: " + versionFile);
         }
+        String previousVersion = properties.getProperty("previousVersion");
         LinkedList<String> notableVersions = parseNotableVersions(properties);
-        return new DefaultVersionInfo(versionFile, version, notableVersions);
+        return new DefaultVersionInfo(versionFile, version, notableVersions, previousVersion);
     }
 
     private static LinkedList<String> parseNotableVersions(Properties properties) {
@@ -61,6 +64,11 @@ class DefaultVersionInfo implements VersionInfo {
         return version;
     }
 
+    @Override
+    public String getPreviousVersion() {
+        return previousVersion;
+    }
+
     public DefaultVersionInfo bumpVersion(boolean updateNotable) {
         String content = IOUtil.readFully(versionFile);
         if (updateNotable) {
@@ -75,16 +83,23 @@ class DefaultVersionInfo implements VersionInfo {
             }
         }
 
+        String previousVersion = this.version;
         String newVersion = new VersionBumper().incrementVersion(this.version);
         if (!content.endsWith("\n")) {
             //This makes the regex simpler. Add arbitrary end of line at the end of file should not bother anyone.
             //See also unit tests for this class
             content += "\n";
         }
-        String updated = content.replaceAll("(?m)^version=(.*?)\n", "version=" + newVersion + "\n");
+        String updated = content
+                .replaceAll("(?m)^version=(.*?)\n", "version=" + newVersion + "\n")
+                .replaceAll("(?m)^previousVersion=(.*?)\n", "previousVersion=" + previousVersion + "\n");
+
+        if(!updated.contains("previousVersion")){
+            updated += "previousVersion=" + previousVersion + "\n";
+        }
 
         IOUtil.writeFile(versionFile, updated);
-        return new DefaultVersionInfo(versionFile, newVersion, notableVersions);
+        return new DefaultVersionInfo(versionFile, newVersion, notableVersions, previousVersion);
     }
 
     public Collection<String> getNotableVersions() {

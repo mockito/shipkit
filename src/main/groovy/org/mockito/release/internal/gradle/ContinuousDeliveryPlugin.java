@@ -10,6 +10,7 @@ import org.gradle.api.tasks.Exec;
 import org.mockito.release.gradle.BumpVersionFileTask;
 import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.gradle.ReleaseNeededTask;
+import org.mockito.release.internal.comparison.PublicationsComparatorTask;
 import org.mockito.release.internal.gradle.configuration.LazyConfiguration;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.version.VersionInfo;
@@ -84,6 +85,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                 //It is safer to run bintray upload after git push (hard to reverse operation)
                 //This way, when git push fails we don't publish jars to bintray
                 t.mustRunAfter(GitPlugin.PUSH_TASK);
+                t.dependsOn("assertReleaseNeeded");
             }
         });
         //TODO can we make git push and bintray upload tasks to be last (expensive, hard to reverse tasks should go last)
@@ -136,6 +138,38 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
             public void execute(final ReleaseNeededTask t) {
                 t.setDescription("Asserts that criteria for the release are met and throws exception if release not needed.");
                 t.setReleasableBranchRegex(conf.getGit().getReleasableBranchRegex());
+
+
+                project.allprojects(new Action<Project>() {
+                    public void execute(final Project project) {
+                        project.getPlugins().withType(BaseJavaLibraryPlugin.class, new Action<BaseJavaLibraryPlugin>() {
+                            public void execute(BaseJavaLibraryPlugin baseJavaLibraryPlugin) {
+                                // make this task depend on all comparePublications tasks
+                                Task task = project.getTasks().getByName(BaseJavaLibraryPlugin.COMPARE_PUBLICATIONS_TASK);
+                                t.dependsOn(task);
+                            }
+                        });
+                    }
+                });
+
+                t.doFirst(new Action<Task>() {
+                    @Override
+                    public void execute(Task task) {
+                        // set allPublicationsEqual basing on results of comparisons from all projects that publish artifacts
+                        t.setAllPublicationsEqual(true);
+                        project.allprojects(new Action<Project>() {
+                            public void execute(final Project project) {
+                                project.getPlugins().withType(BaseJavaLibraryPlugin.class, new Action<BaseJavaLibraryPlugin>() {
+                                    public void execute(BaseJavaLibraryPlugin baseJavaLibraryPlugin) {
+                                        PublicationsComparatorTask task = (PublicationsComparatorTask) project.getTasks().getByName(BaseJavaLibraryPlugin.COMPARE_PUBLICATIONS_TASK);
+                                        boolean allPublicationsEqual = t.isAllPublicationsEqual() && task.isPublicationsEqual();
+                                        t.setAllPublicationsEqual(allPublicationsEqual);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
 
                 LazyConfiguration.lazyConfiguration(t, new Runnable() {
                     public void run() {

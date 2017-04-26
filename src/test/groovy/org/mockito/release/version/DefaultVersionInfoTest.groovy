@@ -43,6 +43,7 @@ foo=bar
 version=2.0.1
 #version=3.0.0
 x
+previousVersion=2.0.0
 """
         v.version == "2.0.0"
         v2.version == "2.0.1"
@@ -55,7 +56,7 @@ x
         DefaultVersionInfo.fromFile(f).bumpVersion(false)
 
         then:
-        f.text == "foo=bar\nversion=2.0.1\n"
+        f.text == "foo=bar\nversion=2.0.1\npreviousVersion=2.0.0\n"
     }
 
     def "knows notable versions"() {
@@ -84,6 +85,7 @@ notableVersions=1.0.0
         f.text == """
 version=2.0.1
 notableVersions=2.0.0, 1.0.0
+previousVersion=2.0.0
 """
         v.notableVersions.toString() == ["2.0.0", "1.0.0"].toString()
     }
@@ -98,6 +100,7 @@ notableVersions=2.0.0, 1.0.0
         then:
         f.text == """version=1.0.1
 notableVersions=1.0.0
+previousVersion=1.0.0
 """
         v.notableVersions.toString() == ["1.0.0"].toString()
     }
@@ -112,7 +115,45 @@ notableVersions=1.0.0
         then:
         f.text == """version=1.0.1
 notableVersions=1.0.0
+previousVersion=1.0.0
 """
         v.notableVersions.toString() == ["1.0.0"].toString()
+    }
+
+    def "bumps previous version"() {
+        def f = dir.newFile() << """
+version=2.0.0
+previousVersion=1.0.1
+"""
+
+        when:
+        def beforeBump = DefaultVersionInfo.fromFile(f)
+        def afterBump = beforeBump.bumpVersion(false)
+
+        then:
+        f.text == """
+version=2.0.1
+previousVersion=2.0.0
+"""
+        beforeBump.previousVersion == "1.0.1"
+        afterBump.previousVersion == "2.0.0"
+    }
+
+    def "when bumping version sets previousVersion if it was null before"() {
+        def f = dir.newFile() << """
+version=1.0.0
+"""
+
+        when:
+        def beforeBump = DefaultVersionInfo.fromFile(f)
+        def afterBump = beforeBump.bumpVersion(false)
+
+        then:
+        f.text == """
+version=1.0.1
+previousVersion=1.0.0
+"""
+        beforeBump.previousVersion == null
+        afterBump.previousVersion == "1.0.0"
     }
 }

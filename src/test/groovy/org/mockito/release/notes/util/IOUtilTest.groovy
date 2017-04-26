@@ -32,4 +32,14 @@ class IOUtilTest extends Specification {
         expect:
         readFully(f) == "ala\nma"
     }
+
+    def "creates parent directories"() {
+        when:
+        IOUtil.createParentDirectory(new File(tmp.root.absolutePath + "/a/b/c"))
+        IOUtil.createParentDirectory(new File(tmp.root.absolutePath + "/b"))
+        then:
+        new File(tmp.root.absolutePath + "/a/b").exists()
+        !new File(tmp.root.absolutePath + "/a/b/c").exists()
+        !new File(tmp.root.absolutePath + "/b").exists()
+    }
 }

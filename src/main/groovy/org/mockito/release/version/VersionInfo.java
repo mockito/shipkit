@@ -13,6 +13,11 @@ public interface VersionInfo {
     String getVersion();
 
     /**
+     * Number of last released version
+     */
+    String getPreviousVersion();
+
+    /**
      * Increments version number in the backing object (typically a file)
      * and returns incremented version info instance.
      *

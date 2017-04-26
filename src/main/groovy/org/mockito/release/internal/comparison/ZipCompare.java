@@ -23,19 +23,8 @@ class ZipCompare {
     private final static Logger LOG = LoggerFactory.getLogger(ZipCompare.class);
 
     boolean compareZips(String filePath1, String filePath2) {
-        ZipFile file1;
-        try {
-            file1 = new ZipFile(filePath1);
-        } catch (IOException e) {
-            throw new ZipCompareException("Could not open zip file " + filePath1, e);
-        }
-
-        ZipFile file2;
-        try {
-            file2 = new ZipFile(filePath2);
-        } catch (IOException e) {
-            throw new ZipCompareException("Could not open zip file " + filePath1, e);
-        }
+        ZipFile file1 = openZipFile(filePath1);
+        ZipFile file2 = openZipFile(filePath2);
 
         LOG.info("Comparing " + filePath1 + " with " + filePath2);
 
@@ -80,6 +69,14 @@ class ZipCompare {
             return false;
         }
         return true;
+    }
+
+    private ZipFile openZipFile(String filePath) {
+        try {
+            return new ZipFile(filePath);
+        } catch (IOException e) {
+            throw new ZipCompareException("Could not open zip file " + filePath, e);
+        }
     }
 
     static boolean streamsEqual(InputStream stream1, InputStream stream2) throws IOException {

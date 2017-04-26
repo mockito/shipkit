@@ -45,6 +45,17 @@ public class IOUtil {
         }
     }
 
+    public static void createParentDirectory(File file){
+        createDirectory(file.getParentFile());
+    }
+
+    public static void createDirectory(File file) {
+        if(!file.exists()){
+            createDirectory(file.getParentFile());
+            file.mkdir();
+        }
+    }
+
     private static String readNow(InputStream is) {
         Scanner s = new Scanner(is).useDelimiter("\\A");
         try {

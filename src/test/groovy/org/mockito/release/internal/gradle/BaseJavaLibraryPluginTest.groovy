@@ -5,9 +5,12 @@ import spock.lang.Specification
 
 class BaseJavaLibraryPluginTest extends Specification {
 
-    def project = new ProjectBuilder().build()
+    def root = new ProjectBuilder().build()
+    def project = new ProjectBuilder().withParent(root).build()
 
     def "applies"() {
+        root.plugins.apply("org.mockito.mockito-release-tools.continuous-delivery")
+
         expect:
         project.plugins.apply("org.mockito.mockito-release-tools.base-java-library")
     }
