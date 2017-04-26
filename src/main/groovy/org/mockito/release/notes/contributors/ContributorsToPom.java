@@ -21,10 +21,21 @@ public class ContributorsToPom {
      * @param contributorsStringList list of contributors in format: login:name_surname
      * @param developers             list of developers in format: login:name_surname
      */
-    public static void include(Node contributorsNode, String fileName, List<String> contributorsStringList, List<String> developers) {
-        AllProjectContributorsReader reader = AllProjectsContributorsProvider.getAllProjectContributorsReader();
-        ProjectContributorsSet contributorsSet = reader.loadAllContributors(fileName);
+    public static void include(Node contributorsNode,
+                               String fileName,
+                               List<String> contributorsStringList,
+                               List<String> developers,
+                               boolean addContributorsToPomFromGitHub) {
+        ProjectContributorsSet contributorsSet = loadContributorsSet(fileName, addContributorsToPomFromGitHub);
         new ContributorsToPom().include(contributorsNode, contributorsSet.getAllContributors(), contributorsStringList, developers);
+    }
+
+    private static ProjectContributorsSet loadContributorsSet(String fileName, boolean addContributorsToPomFromGitHub) {
+        if(addContributorsToPomFromGitHub) {
+            AllProjectContributorsReader reader = AllProjectsContributorsProvider.getAllProjectContributorsReader();
+            return reader.loadAllContributors(fileName);
+        }
+        return new DefaultProjectContributorsSet();
     }
 
     /**
