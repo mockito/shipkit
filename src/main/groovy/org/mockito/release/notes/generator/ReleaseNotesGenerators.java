@@ -16,12 +16,12 @@ public class ReleaseNotesGenerators {
 
     //TODO move entire "org.mockito.release.notes" -> "org.mockito.release.internal.notes"
 
-    public static ReleaseNotesGenerator releaseNotesGenerator(File workDir, String repository, String authToken) {
+    public static ReleaseNotesGenerator releaseNotesGenerator(File workDir, String repository, String readOnlyAuthToken) {
         ProcessRunner processRunner = Exec.getProcessRunner(workDir);
         ContributionsProvider contributionsProvider = Vcs.getContributionsProvider(processRunner);
-        ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(repository, authToken);
+        ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(repository, readOnlyAuthToken);
         ReleasedVersionsProvider releasedVersionsProvider = Vcs.getReleaseDateProvider(processRunner);
-        GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContributorsProvider(repository, authToken);
+        GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContributorsProvider(repository, readOnlyAuthToken);
         return new DefaultReleaseNotesGenerator(contributionsProvider, improvementsProvider, releasedVersionsProvider,
                 contributorsProvider);
     }

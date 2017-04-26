@@ -5,6 +5,8 @@ import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 import org.gradle.api.publish.maven.MavenPublication
 import org.mockito.release.gradle.ReleaseConfiguration
+import org.mockito.release.notes.contributors.Contributors
+import org.mockito.release.notes.contributors.ContributorsToPom
 
 class PomCustomizer {
 
@@ -78,14 +80,14 @@ class PomCustomizer {
                 d.appendNode('url', "https://github.com/${split[0]}")
             }
 
-            def contributors = root.appendNode('contributors')
-            conf.team.contributors.each {
-                def split = it.split(':')
-                assert split.length == 2
-                def c = contributors.appendNode('contributor')
-                c.appendNode('name', split[1])
-                c.appendNode('url', "https://github.com/${split[0]}")
-            }
+            def contributorsNode = root.appendNode('contributors')
+            def rootBuildDir = project.getRootProject().getBuildDir().getAbsolutePath()
+            def contributorsPath = Contributors.getAllProjectContributorsFileName(rootBuildDir)
+            ContributorsToPom.include(contributorsNode,
+                    contributorsPath,
+                    conf.team.contributors,
+                    conf.team.developers,
+                    conf.team.addContributorsToPomFromGitHub)
         }
     }
 }

@@ -12,7 +12,6 @@ apply plugin: 'maven'
 apply plugin: 'idea'
 apply plugin: 'groovy'
 apply plugin: 'com.gradle.plugin-publish'
-apply plugin: 'maven'
 apply plugin: 'checkstyle'
 apply plugin: 'codenarc'
 
@@ -23,7 +22,7 @@ targetCompatibility = 1.6
 
 repositories { jcenter() }
 
-version = '0.7.2'
+version = '0.7.5'
 
 println "  Version: $version"
 group = 'gradle.plugin.org.mockito'

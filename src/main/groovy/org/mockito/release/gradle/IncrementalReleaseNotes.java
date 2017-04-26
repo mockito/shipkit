@@ -31,7 +31,6 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
      * Release notes file this task operates on.
      */
     @InputFile
-    @OutputFile
     public File getReleaseNotesFile() {
         return releaseNotesFile;
     }
@@ -161,6 +160,16 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
      * and appends it to the top of the release notes file.
      */
     public static class UpdateTask extends IncrementalReleaseNotes {
+
+        /**
+         * Delegates to {@link IncrementalReleaseNotes#getReleaseNotesFile()}.
+         * Configured here only to specify Gradle's output file and make the task incremental.
+         */
+        @OutputFile
+        public File getReleaseNotesFile() {
+            return super.getReleaseNotesFile();
+        }
+
         @TaskAction public void updateReleaseNotes() {
             String newContent = super.getNewContent();
             FileUtil.appendToTop(newContent, getReleaseNotesFile());

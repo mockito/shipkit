@@ -3,8 +3,6 @@ package org.mockito.release.internal.gradle;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
-import org.gradle.api.specs.Spec;
 import org.mockito.release.gradle.IncrementalReleaseNotes;
 import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.internal.gradle.util.TaskMaker;
@@ -82,15 +80,13 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     }
 
     private static void preconfigureIncrementalNotes(final IncrementalReleaseNotes task, final Project project, final ReleaseConfiguration conf) {
-        task.dependsOn("fetchContributorsFromGitHub");
+        task.dependsOn("fetchLastContributorsFromGitHub");
         deferredConfiguration(project, new Runnable() {
             public void run() {
                 task.setGitHubLabelMapping(conf.getReleaseNotes().getLabelMapping()); //TODO make it optional
                 task.setReleaseNotesFile(project.file(conf.getReleaseNotes().getFile())); //TODO add sensible default
                 task.setGitHubReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
                 task.setGitHubRepository(conf.getGitHub().getRepository());
-                //TODO, do we need below force?
-                forceTaskToAlwaysGeneratePreview(task);
             }
         });
     }
@@ -117,14 +113,6 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         return project.file(path);
     }
 
-    private static void forceTaskToAlwaysGeneratePreview(IncrementalReleaseNotes task) {
-        task.getOutputs().upToDateWhen(new Spec<Task>() {
-            @Override
-            public boolean isSatisfiedBy(Task element) {
-                return false;
-            }
-        });
-    }
 
     private static void configureNotableReleaseNotes(Project project) {
         //TODO when we make notable release notes optional, we can push that to a separate plugin
