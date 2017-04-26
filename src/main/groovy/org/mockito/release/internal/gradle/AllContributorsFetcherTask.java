@@ -26,9 +26,17 @@ public class AllContributorsFetcherTask extends DefaultTask {
     @TaskAction
     public void fetchAllProjectContributorsFromGitHub() {
         if(skipTaskExecution) {
-            LOG.lifecycle("  Fetching all contributors for project SKIPPED");
+            LOG.lifecycle("  Fetching all contributors for project SKIPPED (disabled in configuration)");
             return;
         }
+
+        // Fetching info about all contributors is expensive.
+        // Task execution is skipped when output file exist for speed up local builds.
+        if(contributorsFile.exists()) {
+            LOG.lifecycle("  Fetching all contributors for project SKIPPED (output file exist)");
+            return;
+        }
+
         LOG.lifecycle("  Fetching all contributors for project");
 
         GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContibutorsProvider(repository, readOnlyAuthToken);
