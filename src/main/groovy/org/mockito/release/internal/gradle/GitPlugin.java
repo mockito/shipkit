@@ -54,7 +54,7 @@ public class GitPlugin implements Plugin<Project> {
         TaskMaker.execTask(project, TAG_TASK, new Action<Exec>() {
             public void execute(final Exec t) {
                 t.mustRunAfter(COMMIT_TASK);
-                final String tag = "v" + project.getVersion();
+                final String tag = GitUtil.getTag(conf, project);
                 t.setDescription("Creates new version tag '" + tag + "'");
                 deferredConfiguration(project, new Runnable() {
                     @Override
