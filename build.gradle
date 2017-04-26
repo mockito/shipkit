@@ -16,6 +16,8 @@ apply plugin: 'maven'
 apply plugin: 'checkstyle'
 apply plugin: 'codenarc'
 
+apply from: 'gradle/precommit.gradle'
+
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 

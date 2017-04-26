@@ -1,0 +1,16 @@
+task copyPreCommit(type: Copy) {
+    from "pre-commit"
+    into ".git/hooks"
+}
+
+task installPrecommit(type: Exec, dependsOn: "copyPreCommit") {
+    description = "Install git pre-commit hook. It will run './gradlew check test' before every commit you make."
+
+    commandLine "chmod", "-R", "+x", ".git/hooks/"
+}
+
+task uninstallPrecommit(type: Exec){
+    description = "Uninstall git pre-commit hook."
+
+    commandLine "rm", ".git/hooks/pre-commit"
+}
