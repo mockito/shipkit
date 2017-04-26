@@ -25,12 +25,12 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
     private String gitHubReadOnlyAuthToken;
     private String gitHubRepository;
     private Map<String, String> gitHubLabelMapping = new LinkedHashMap<String, String>();
+    private String publicationRepository;
 
     /**
      * Release notes file this task operates on.
      */
     @InputFile
-    @OutputFile
     public File getReleaseNotesFile() {
         return releaseNotesFile;
     }
@@ -93,6 +93,22 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
         this.gitHubLabelMapping = gitHubLabelMapping;
     }
 
+    /**
+     * The target repository where the publications / binaries are published to.
+     * Shown in the release notes.
+     */
+    @Input
+    public String getPublicationRepository() {
+        return publicationRepository;
+    }
+
+    /**
+     * See {@link #getPublicationRepository()}
+     */
+    public void setPublicationRepository(String publicationRepository) {
+        this.publicationRepository = publicationRepository;
+    }
+
     private void assertConfigured() {
         //TODO SF unit test coverage
         if (releaseNotesFile == null || !releaseNotesFile.isFile()) {
@@ -135,7 +151,7 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
         String current = "HEAD";
         LOG.lifecycle("  Generating release note for revisions: {} -> {}", prev, current);
         String v = this.getProject().getVersion().toString();
-        String newContent = builder.buildNotes(v, prev, current, gitHubLabelMapping);
+        String newContent = builder.buildNotes(v, prev, current, gitHubLabelMapping, publicationRepository);
         return newContent;
     }
 
@@ -144,6 +160,16 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
      * and appends it to the top of the release notes file.
      */
     public static class UpdateTask extends IncrementalReleaseNotes {
+
+        /**
+         * Delegates to {@link IncrementalReleaseNotes#getReleaseNotesFile()}.
+         * Configured here only to specify Gradle's output file and make the task incremental.
+         */
+        @OutputFile
+        public File getReleaseNotesFile() {
+            return super.getReleaseNotesFile();
+        }
+
         @TaskAction public void updateReleaseNotes() {
             String newContent = super.getNewContent();
             FileUtil.appendToTop(newContent, getReleaseNotesFile());

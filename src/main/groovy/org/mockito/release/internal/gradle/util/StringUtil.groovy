@@ -16,4 +16,11 @@ class StringUtil {
     static String join(Collection<String> collection, String separator) {
         return collection.join(separator)
     }
+
+    /**
+     * Capitalizes string
+     */
+    static String capitalize(String input) {
+        return input.capitalize();
+    }
 }

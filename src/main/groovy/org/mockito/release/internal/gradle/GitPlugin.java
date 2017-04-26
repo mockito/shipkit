@@ -13,6 +13,7 @@ import org.mockito.release.internal.gradle.util.GitUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 
 import static org.mockito.release.internal.gradle.configuration.LazyConfiguration.lazyConfiguration;
+import static org.mockito.release.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
 import static org.mockito.release.internal.gradle.util.GitUtil.getTag;
 import static org.mockito.release.internal.gradle.util.StringUtil.join;
 
@@ -39,22 +40,29 @@ public class GitPlugin implements Plugin<Project> {
         TaskMaker.execTask(project, COMMIT_TASK, new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Commits staged changes using generic --author");
-                t.doFirst(new Action<Task>() {
-                    public void execute(Task task) {
-                        //doFirst (execution time) to pick up user-configured setting
+                deferredConfiguration(project, new Runnable() {
+                    @Override
+                    public void run() {
                         t.commandLine("git", "commit", "--author",
-                                GitUtil.getGitGenericUserNotation(conf), "-m", commitMessage("Bumped version and updated release notes"));
+                                GitUtil.getGitGenericUserNotation(conf), "-m",
+                                GitUtil.getCommitMessage(conf, "Bumped version and updated release notes"));
                     }
                 });
             }
         });
 
         TaskMaker.execTask(project, TAG_TASK, new Action<Exec>() {
-            public void execute(Exec t) {
+            public void execute(final Exec t) {
                 t.mustRunAfter(COMMIT_TASK);
-                String tag = "v" + project.getVersion();
+                final String tag = GitUtil.getTag(conf, project);
                 t.setDescription("Creates new version tag '" + tag + "'");
-                t.commandLine("git", "tag", "-a", tag, "-m", commitMessage("Created new tag " + tag));
+                deferredConfiguration(project, new Runnable() {
+                    @Override
+                    public void run() {
+                        t.commandLine("git", "tag", "-a", tag, "-m",
+                        GitUtil.getCommitMessage(conf, "Created new tag " + tag));
+                    }
+                });
             }
         });
 
@@ -144,15 +152,4 @@ public class GitPlugin implements Plugin<Project> {
         });
     }
 
-    private static String commitMessage(String message) {
-        //TODO it is awkward to couple the git plugin with travis here
-        //Example solution: we could create CommitMessage interface that needs to have the implementation supplied
-        //The implementation will have to be set on the ext and git plugin by anyone who applies git plugin
-        String buildNo = System.getenv("TRAVIS_BUILD_NUMBER");
-        if (buildNo != null) {
-            return message + " by Travis CI build " + buildNo + " [ci skip]";
-        } else {
-            return message + " [ci skip]";
-        }
-    }
 }

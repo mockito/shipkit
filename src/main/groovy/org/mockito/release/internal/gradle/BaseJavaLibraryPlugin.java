@@ -18,6 +18,8 @@ import org.mockito.release.internal.gradle.util.PomCustomizer;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.version.VersionInfo;
 
+import static org.mockito.release.internal.gradle.util.StringUtil.capitalize;
+
 /**
  * Intended to be applied in individual Java submodule. Applies following plugins and tasks and configures them:
  *
@@ -36,6 +38,7 @@ import org.mockito.release.version.VersionInfo;
  * <ul>
  *     <li>Automatically includes "LICENSE" file in all jars.</li>
  *     <li>Adds build.dependsOn "publishToMavenLocal" to flesh out publication issues during the build</li>
+ *     <li>Makes pom-generating task depend on "fetchAllProjectContributorsFromGitHub" to load all contributors from GitHub</li>
  * </ul>
  */
 public class BaseJavaLibraryPlugin implements Plugin<Project> {
@@ -44,6 +47,8 @@ public class BaseJavaLibraryPlugin implements Plugin<Project> {
 
     final static String PUBLICATION_NAME = "javaLibrary";
     final static String COMPARE_PUBLICATIONS_TASK = "comparePublications";
+    final static String POM_TASK = "generatePomFileFor" + capitalize(PUBLICATION_NAME) + "Publication";
+
 
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();

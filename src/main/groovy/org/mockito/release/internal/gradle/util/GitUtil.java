@@ -46,4 +46,11 @@ public class GitUtil {
     public static String getTag(ReleaseConfiguration conf, Project project) {
         return conf.getGit().getTagPrefix() + project.getVersion();
     }
+
+    /**
+     * Returns Git commit message based on release configuration and the given message
+     */
+    public static String getCommitMessage(ReleaseConfiguration conf, String message) {
+        return message + conf.getGit().getCommitMessagePostfix();
+    }
 }

@@ -102,7 +102,7 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
             }
         }
 
-        //Step 2, add remaining improvments
+        //Step 2, add remaining improvements
         for (Improvement i : remainingImprovements) {
             byLabel.put(NO_LABEL, i);
         }

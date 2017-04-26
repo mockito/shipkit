@@ -1,11 +1,12 @@
 package org.mockito.release.notes.util;
 
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.json.simple.DeserializationException;
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
 import org.mockito.release.notes.internal.DateFormat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,19 +18,19 @@ import java.util.List;
 /**
  * This class contains standard operations for skim over GitHub API responses.
  */
-public class GitHubFetcher {
+public class GitHubListFetcher {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GitHubFetcher.class);
+    private static final Logger LOG = Logging.getLogger(GitHubListFetcher.class);
 
     private static final String RELATIVE_LINK_NOT_FOUND = "none";
     private String nextPageUrl;
 
-    public GitHubFetcher(String nextPageUrl) {
+    public GitHubListFetcher(String nextPageUrl) {
         this.nextPageUrl = nextPageUrl;
     }
 
     //TODO SF is this method needed? It's never used
-    public GitHubFetcher init() throws IOException {
+    public GitHubListFetcher init() throws IOException {
         URLConnection urlConnection = new URL(nextPageUrl).openConnection();
         nextPageUrl = extractRelativeLink(urlConnection.getHeaderField("Link"), "next");
         return this;
@@ -44,20 +45,27 @@ public class GitHubFetcher {
             throw new IllegalStateException("GitHub API no more issues to fetch");
         }
         URL url = new URL(nextPageUrl);
-        LOG.info("GitHub API querying issue page {}", queryParamValue(url, "page"));
+        LOG.info("GitHub API querying page {}", queryParamValue(url, "page"));
         URLConnection urlConnection = url.openConnection();
 
-        Date resetInEpochSeconds = DateFormat.parseDateInEpochSeconds(urlConnection.getHeaderField("X-RateLimit-Reset"));
-        String resetInLocalTime = DateFormat.formatDateToLocalTime(resetInEpochSeconds);
+        String resetInLocalTime = resetLimitInLocalTimeOrEmpty(urlConnection);
 
         LOG.info("GitHub API rate info => Remaining : {}, Limit : {}, Reset at: {}",
                 urlConnection.getHeaderField("X-RateLimit-Remaining"),
                 urlConnection.getHeaderField("X-RateLimit-Limit"),
-                resetInLocalTime
-        );
+                resetInLocalTime);
         nextPageUrl = extractRelativeLink(urlConnection.getHeaderField("Link"), "next");
 
         return parseJsonFrom(urlConnection);
+    }
+
+    private String resetLimitInLocalTimeOrEmpty(URLConnection urlConnection) {
+        String rateLimitReset = urlConnection.getHeaderField("X-RateLimit-Reset");
+        if(rateLimitReset == null) {
+            return "";
+        }
+        Date resetInEpochSeconds = DateFormat.parseDateInEpochSeconds(rateLimitReset);
+        return DateFormat.formatDateToLocalTime(resetInEpochSeconds);
     }
 
     private String queryParamValue(URL url, String page) {
@@ -77,7 +85,7 @@ public class GitHubFetcher {
         LOG.info("GitHub API responded successfully.");
         @SuppressWarnings("unchecked")
         List<JsonObject> issues = (List<JsonObject>) Jsoner.deserialize(content);
-        LOG.info("GitHub API returned {} issues.", issues.size());
+        LOG.info("GitHub API returned {} Json objects.", issues.size());
         return issues;
     }
 

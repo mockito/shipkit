@@ -10,16 +10,16 @@ import java.util.Collection;
 class GitHubImprovementsProvider implements ImprovementsProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(GitHubImprovementsProvider.class);
-    private final String authToken;
+    private final String readOnlyAuthToken;
     private final String repository;
 
-    GitHubImprovementsProvider(String repository, String authToken) {
+    GitHubImprovementsProvider(String repository, String readOnlyAuthToken) {
         this.repository = repository;
-        this.authToken = authToken;
+        this.readOnlyAuthToken = readOnlyAuthToken;
     }
 
     public Collection<Improvement> getImprovements(ContributionSet contributions, Collection<String> labels, boolean onlyPullRequests) {
         LOG.info("Parsing {} commits with {} tickets", contributions.getAllCommits().size(), contributions.getAllTickets().size());
-        return new GitHubTicketFetcher().fetchTickets(repository, authToken, contributions.getAllTickets(), labels, onlyPullRequests);
+        return new GitHubTicketFetcher().fetchTickets(repository, readOnlyAuthToken, contributions.getAllTickets(), labels, onlyPullRequests);
     }
 }

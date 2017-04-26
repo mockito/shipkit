@@ -1,0 +1,17 @@
+# pre-commit.sh
+# based on: https://gist.github.com/KenVanHoeylandt/c7a928426bce83ffab400ab1fd99054a
+# and on: http://codeinthehole.com/tips/tips-for-using-a-git-pre-commit-hook/
+
+git stash -q --keep-index
+
+echo "Running git pre-commit hook"
+
+./gradlew check test
+
+RESULT=$?
+
+git stash pop -q
+
+# return 1 exit code if running checks fails
+[ $RESULT -ne 0 ] && exit 1
+exit 0

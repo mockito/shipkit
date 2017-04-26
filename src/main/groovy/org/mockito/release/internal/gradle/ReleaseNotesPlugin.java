@@ -3,16 +3,15 @@ package org.mockito.release.internal.gradle;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
-import org.gradle.api.specs.Spec;
 import org.mockito.release.gradle.IncrementalReleaseNotes;
 import org.mockito.release.gradle.ReleaseConfiguration;
-import org.mockito.release.internal.gradle.configuration.DeferredConfiguration;
 import org.mockito.release.internal.gradle.util.TaskMaker;
+import org.mockito.release.version.VersionInfo;
 
 import java.io.File;
 
 import static java.util.Collections.singletonList;
+import static org.mockito.release.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
 import static org.mockito.release.internal.gradle.configuration.LazyConfiguration.lazyConfiguration;
 
 /**
@@ -31,7 +30,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
-
+        project.getPlugins().apply(VersioningPlugin.class);
         project.getPlugins().apply(ContributorsPlugin.class);
 
         TaskMaker.task(project, "updateReleaseNotes", IncrementalReleaseNotes.UpdateTask.class, new Action<IncrementalReleaseNotes.UpdateTask>() {
@@ -76,18 +75,18 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
                 });
             }
         });
+
+        configureNotableReleaseNotes(project);
     }
 
     private static void preconfigureIncrementalNotes(final IncrementalReleaseNotes task, final Project project, final ReleaseConfiguration conf) {
-        task.dependsOn("fetchContributorsFromGitHub");
-        DeferredConfiguration.deferredConfiguration(project, new Runnable() {
+        task.dependsOn("fetchLastContributorsFromGitHub");
+        deferredConfiguration(project, new Runnable() {
             public void run() {
                 task.setGitHubLabelMapping(conf.getReleaseNotes().getLabelMapping()); //TODO make it optional
                 task.setReleaseNotesFile(project.file(conf.getReleaseNotes().getFile())); //TODO add sensible default
                 task.setGitHubReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
                 task.setGitHubRepository(conf.getGitHub().getRepository());
-                //TODO, do we need below force?
-                forceTaskToAlwaysGeneratePreview(task);
             }
         });
     }
@@ -114,12 +113,22 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         return project.file(path);
     }
 
-    private static void forceTaskToAlwaysGeneratePreview(IncrementalReleaseNotes task) {
-        task.getOutputs().upToDateWhen(new Spec<Task>() {
-            @Override
-            public boolean isSatisfiedBy(Task element) {
-                return false;
-            }
-        });
+
+    private static void configureNotableReleaseNotes(Project project) {
+        //TODO when we make notable release notes optional, we can push that to a separate plugin
+        //like notable-release-notes plugin or something like that
+        //this way, the normal detailed release notes do not depend on versioning plugin
+        //and our plugins are more flexible
+        VersionInfo versionInfo = project.getExtensions().getByType(VersionInfo.class);
+        NotableReleaseNotesGeneratorTask generatorTask = (NotableReleaseNotesGeneratorTask) project.getTasks().getByName("updateNotableReleaseNotes");
+        NotableReleaseNotesFetcherTask fetcherTask = (NotableReleaseNotesFetcherTask) project.getTasks().getByName("fetchNotableReleaseNotes");
+
+        generatorTask.getNotesGeneration().setTargetVersions(versionInfo.getNotableVersions());
+        fetcherTask.getNotesGeneration().setTargetVersions(versionInfo.getNotableVersions());
+
+        if (versionInfo.isNotableRelease()) {
+            generatorTask.getNotesGeneration().setHeadVersion(project.getVersion().toString());
+            fetcherTask.getNotesGeneration().setHeadVersion(project.getVersion().toString());
+        }
     }
 }
