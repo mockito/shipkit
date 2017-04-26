@@ -262,6 +262,7 @@ public class ReleaseConfiguration {
         /**
          * Text which will be included in the commit message for all commits automatically created by the release
          * automation.
+         * By default it is configured to append "[ci skip]" keyword which will prevent CI builds on Travis CI.
          */
         public String getCommitMessagePostfix() {
             return getString("git.commitMessagePostfix");
