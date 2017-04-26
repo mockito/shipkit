@@ -48,7 +48,8 @@ class GitNotesBuilder implements NotesBuilder {
         this.authToken = authToken;
     }
 
-    public String buildNotes(String version, String fromRevision, String toRevision, final Map<String, String> labels) {
+    public String buildNotes(String version, String fromRevision, String toRevision, final Map<String, String> labels,
+                             String publicationRepository) {
         LOG.info("Getting release notes between {} and {}", fromRevision, toRevision);
 
         ProcessRunner processRunner = Exec.getProcessRunner(workDir);
@@ -66,7 +67,7 @@ class GitNotesBuilder implements NotesBuilder {
         Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, Collections.<String>emptyList(), false);
 
         ReleaseNotesData data = new DefaultReleaseNotesData(version, new Date(), contributions, improvements, contributors, fromRevision, toRevision);
-        SingleReleaseNotesFormatter formatter = ReleaseNotesFormatters.defaultFormatter(labels);
+        SingleReleaseNotesFormatter formatter = ReleaseNotesFormatters.defaultFormatter(labels, publicationRepository);
 
         return formatter.formatVersion(data);
     }

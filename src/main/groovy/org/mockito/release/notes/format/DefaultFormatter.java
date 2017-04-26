@@ -16,9 +16,11 @@ import java.util.Set;
 class DefaultFormatter implements SingleReleaseNotesFormatter {
 
     private final Map<String, String> labelMapping;
+    private final String publicationRepository;
 
-    DefaultFormatter(Map<String, String> labelMapping) {
+    DefaultFormatter(Map<String, String> labelMapping, String publicationRepository) {
         this.labelMapping = labelMapping;
+        this.publicationRepository = publicationRepository;
     }
 
     String format(Map<String, String> labels, Collection<Improvement> improvements) {
@@ -81,8 +83,10 @@ class DefaultFormatter implements SingleReleaseNotesFormatter {
     private String format(ContributionSet contributions, ContributorsSet contributorsSet) {
         StringBuilder sb = new StringBuilder("* Authors: ")
                 .append(contributions.getContributions().size())
-                .append("\n* Commits: ")
-                .append(contributions.getAllCommits().size());
+                .append(", commits: ")
+                .append(contributions.getAllCommits().size())
+                .append(", published to: ")
+                .append(publicationRepository);
 
         for (Contribution c : contributions.getContributions()) {
             Contributor contributor = contributorsSet.findByAuthorName(c.getAuthorName());
