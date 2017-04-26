@@ -6,7 +6,6 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.gradle.api.publish.maven.tasks.GenerateMavenPom;
 import org.gradle.api.tasks.Exec;
 import org.mockito.release.gradle.BumpVersionFileTask;
 import org.mockito.release.gradle.ReleaseConfiguration;
@@ -15,6 +14,8 @@ import org.mockito.release.internal.gradle.configuration.LazyConfiguration;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.version.VersionInfo;
 
+import static org.mockito.release.internal.gradle.BaseJavaLibraryPlugin.POM_TASK;
+import static org.mockito.release.internal.gradle.util.Specs.withName;
 /**
  * Opinionated continuous delivery plugin.
  * Applies following plugins and preconfigures tasks provided by those plugins:
@@ -51,10 +52,11 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                     @Override
                     public void execute(BaseJavaLibraryPlugin p) {
                         final Task fetcher = project.getTasks().getByName(ContributorsPlugin.FETCH_CONTRIBUTORS_TASK);
-                        subproject.getTasks().withType(GenerateMavenPom.class, new Action<GenerateMavenPom>() {
-                            @Override
-                            public void execute(GenerateMavenPom generateMavenPom) {
-                                generateMavenPom.dependsOn(fetcher);
+                        //Because maven-publish plugin uses new configuration model, we cannot get the task directly
+                        //So we use 'matching' technique
+                        subproject.getTasks().matching(withName(POM_TASK)).all(new Action<Task>() {
+                            public void execute(Task t) {
+                                t.dependsOn(fetcher);
                             }
                         });
                     }

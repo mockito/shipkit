@@ -15,6 +15,8 @@ import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.internal.gradle.util.GradleDSLHelper;
 import org.mockito.release.internal.gradle.util.PomCustomizer;
 
+import static org.mockito.release.internal.gradle.util.StringUtil.capitalize;
+
 /**
  * Intended to be applied in individual Java submodule. Applies following plugins and tasks and configures them:
  *
@@ -41,7 +43,7 @@ public class BaseJavaLibraryPlugin implements Plugin<Project> {
     private final static Logger LOG = Logging.getLogger(BaseJavaLibraryPlugin.class);
 
     final static String PUBLICATION_NAME = "javaLibrary";
-    final static String POM_TASK = "generatePomFileFor" + PUBLICATION_NAME + "Publication";
+    final static String POM_TASK = "generatePomFileFor" + capitalize(PUBLICATION_NAME) + "Publication";
 
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
