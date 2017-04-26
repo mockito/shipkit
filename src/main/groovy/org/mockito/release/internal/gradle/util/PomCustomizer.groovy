@@ -84,7 +84,11 @@ class PomCustomizer {
             def contributorsNode = root.appendNode('contributors')
             def rootBuildDir = project.getRootProject().getBuildDir().getAbsolutePath()
             def contributorsPath = Contributors.getAllProjectContributorsFileName(rootBuildDir)
-            ContributorsToPom.include(contributorsNode, contributorsPath, conf.team.contributors, conf.team.developers)
+            ContributorsToPom.include(contributorsNode,
+                    contributorsPath,
+                    conf.team.contributors,
+                    conf.team.developers,
+                    conf.team.addContributorsToPomFromGitHub)
         }
     }
 }
