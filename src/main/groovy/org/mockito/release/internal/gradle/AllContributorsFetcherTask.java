@@ -19,11 +19,16 @@ public class AllContributorsFetcherTask extends DefaultTask {
 
     @Input private String repository;
     @Input private String readOnlyAuthToken;
+    @Input private boolean skipTaskExecution;
 
     @OutputFile private File contributorsFile;
 
     @TaskAction
     public void fetchAllProjectContributorsFromGitHub() {
+        if(skipTaskExecution) {
+            LOG.lifecycle("  Fetching all contributors for project SKIPPED");
+            return;
+        }
         LOG.lifecycle("  Fetching all contributors for project");
 
         GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContibutorsProvider(repository, readOnlyAuthToken);
@@ -39,6 +44,10 @@ public class AllContributorsFetcherTask extends DefaultTask {
 
     public void setReadOnlyAuthToken(String readOnlyAuthToken) {
         this.readOnlyAuthToken = readOnlyAuthToken;
+    }
+
+    public void setSkipTaskExecution(boolean skipTaskExecution) {
+        this.skipTaskExecution = skipTaskExecution;
     }
 
     public void setContributorsFile(File contributorsFile) {

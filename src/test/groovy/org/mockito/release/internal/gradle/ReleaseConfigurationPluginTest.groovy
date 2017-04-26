@@ -28,4 +28,20 @@ class ReleaseConfigurationPluginTest extends Specification {
         expect:
         root.plugins.apply(ReleaseConfigurationPlugin).configuration.dryRun
     }
+
+    def "should set team.addContributorsToPomFromGitHub to true by default"() {
+        expect:
+        root.plugins.apply(ReleaseConfigurationPlugin).configuration.team.addContributorsToPomFromGitHub == true
+    }
+
+    def "should team.addContributorsToPomFromGitHub be false when set to false"() {
+        when:
+        def configuration = root.plugins.apply(ReleaseConfigurationPlugin).configuration
+        configuration.team.addContributorsToPomFromGitHub = false
+
+        then:
+        configuration.team.addContributorsToPomFromGitHub == false
+    }
+
+
 }

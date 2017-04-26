@@ -26,7 +26,8 @@ public class ReleaseConfiguration {
 
     public ReleaseConfiguration() {
         //Configure default values
-        this.git.setTagPrefix("v");
+        git.setTagPrefix("v");
+        team.setAddContributorsToPomFromGitHub(true);
     }
 
     private boolean dryRun;
@@ -281,11 +282,33 @@ public class ReleaseConfiguration {
         public void setContributors(Collection<String> contributors) {
             configuration.put("team.contributors", contributors);
         }
+
+        /**
+         * A boolean flag for fetch all contributors from GitHub to include them in generated pom file.
+         * This is optional value, by default set to true.
+         * <p>
+         * See POM reference for <a href="https://maven.apache.org/pom.html#Contributors">Contributors</a>.
+         */
+        public boolean isAddContributorsToPomFromGitHub() {
+            return getBoolean("team.addContributorsToPomFromGitHub");
+        }
+
+        /**
+         * See {@link #isAddContributorsToPomFromGitHub()}
+         */
+        public void setAddContributorsToPomFromGitHub(Boolean addContributorsToPomFromGitHub) {
+            configuration.put("team.addContributorsToPomFromGitHub", addContributorsToPomFromGitHub);
+        }
     }
 
     //TODO unit test message creation and error handling
     private String getString(String key) {
         return (String) getValue(key, "Please configure 'releasing." + key + "' value (String).");
+    }
+
+    private Boolean getBoolean(String key) {
+        Object value = configuration.get(key);
+        return Boolean.parseBoolean(value.toString());
     }
 
     private Map getMap(String key) {

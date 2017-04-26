@@ -40,7 +40,7 @@ public class BaseJavaLibraryPlugin implements Plugin<Project> {
 
     private final static Logger LOG = Logging.getLogger(BaseJavaLibraryPlugin.class);
 
-    final static String PUBLICATION_NAME = "javaLibrary";
+    final static String PUBLICATION_NAME = "JavaLibrary";
     final static String POM_TASK = "generatePomFileFor" + PUBLICATION_NAME + "Publication";
 
     public void apply(final Project project) {

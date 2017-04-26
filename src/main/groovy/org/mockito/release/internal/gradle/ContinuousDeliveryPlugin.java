@@ -6,7 +6,6 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.gradle.api.publish.maven.tasks.GenerateMavenPom;
 import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.Exec;
 import org.gradle.process.ExecResult;
@@ -47,24 +46,6 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
         project.getPlugins().apply(VersioningPlugin.class);
         project.getPlugins().apply(GitPlugin.class);
         project.getPlugins().apply(ContributorsPlugin.class);
-
-        project.allprojects(new Action<Project>() {
-            @Override
-            public void execute(final Project subproject) {
-                subproject.getPlugins().withType(BaseJavaLibraryPlugin.class, new Action<BaseJavaLibraryPlugin>() {
-                    @Override
-                    public void execute(BaseJavaLibraryPlugin p) {
-                        final Task fetcher = project.getTasks().getByName(ContributorsPlugin.FETCH_CONTRIBUTORS_TASK);
-                        subproject.getTasks().withType(GenerateMavenPom.class, new Action<GenerateMavenPom>() {
-                            @Override
-                            public void execute(GenerateMavenPom generateMavenPom) {
-                                generateMavenPom.dependsOn(fetcher);
-                            }
-                        });
-                    }
-                });
-            }
-        });
 
         final boolean notableRelease = project.getExtensions().getByType(VersionInfo.class).isNotableRelease();
 
