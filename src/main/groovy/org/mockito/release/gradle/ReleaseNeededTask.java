@@ -5,6 +5,10 @@ import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskAction;
+import org.mockito.release.internal.comparison.PublicationsComparatorTask;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Decides if the release is needed.
@@ -29,7 +33,7 @@ public class ReleaseNeededTask extends DefaultTask {
 
     private String branch;
     private String releasableBranchRegex;
-    private boolean allPublicationsEqual;
+    private final List<PublicationsComparatorTask> publicationsComparators = new LinkedList<PublicationsComparatorTask>();
 
     /**
      * The branch we currently operate on
@@ -52,14 +56,6 @@ public class ReleaseNeededTask extends DefaultTask {
         return releasableBranchRegex;
     }
 
-    public boolean isAllPublicationsEqual() {
-        return allPublicationsEqual;
-    }
-
-    public void setAllPublicationsEqual(boolean allPublicationsEqual) {
-        this.allPublicationsEqual = allPublicationsEqual;
-    }
-
     /**
      * See {@link #getReleasableBranchRegex()}
      */
@@ -78,6 +74,7 @@ public class ReleaseNeededTask extends DefaultTask {
 
         boolean releasableBranch = branch != null && branch.matches(releasableBranchRegex);
 
+        boolean allPublicationsEqual = true; //TODO we can get it from publicationsComparators
         boolean notNeeded = allPublicationsEqual || skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
 
         //TODO add more color to the message
@@ -95,5 +92,10 @@ public class ReleaseNeededTask extends DefaultTask {
         } else {
             LOG.lifecycle(message);
         }
+    }
+
+    public void addPublicationsComparator(PublicationsComparatorTask task) {
+        this.dependsOn(task);
+        publicationsComparators.add(task);
     }
 }

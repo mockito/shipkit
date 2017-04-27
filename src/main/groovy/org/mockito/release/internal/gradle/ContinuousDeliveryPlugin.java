@@ -172,31 +172,12 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
 
 
                 project.allprojects(new Action<Project>() {
-                    public void execute(final Project project) {
-                        project.getPlugins().withType(BaseJavaLibraryPlugin.class, new Action<BaseJavaLibraryPlugin>() {
-                            public void execute(BaseJavaLibraryPlugin baseJavaLibraryPlugin) {
+                    public void execute(final Project subproject) {
+                        subproject.getPlugins().withType(BaseJavaLibraryPlugin.class, new Action<BaseJavaLibraryPlugin>() {
+                            public void execute(BaseJavaLibraryPlugin p) {
                                 // make this task depend on all comparePublications tasks
-                                Task task = project.getTasks().getByName(BaseJavaLibraryPlugin.COMPARE_PUBLICATIONS_TASK);
-                                t.dependsOn(task);
-                            }
-                        });
-                    }
-                });
-
-                t.doFirst(new Action<Task>() {
-                    @Override
-                    public void execute(Task task) {
-                        // set allPublicationsEqual basing on results of comparisons from all projects that publish artifacts
-                        t.setAllPublicationsEqual(true);
-                        project.allprojects(new Action<Project>() {
-                            public void execute(final Project project) {
-                                project.getPlugins().withType(BaseJavaLibraryPlugin.class, new Action<BaseJavaLibraryPlugin>() {
-                                    public void execute(BaseJavaLibraryPlugin baseJavaLibraryPlugin) {
-                                        PublicationsComparatorTask task = (PublicationsComparatorTask) project.getTasks().getByName(BaseJavaLibraryPlugin.COMPARE_PUBLICATIONS_TASK);
-                                        boolean allPublicationsEqual = t.isAllPublicationsEqual() && task.isPublicationsEqual();
-                                        t.setAllPublicationsEqual(allPublicationsEqual);
-                                    }
-                                });
+                                Task task = subproject.getTasks().getByName(BaseJavaLibraryPlugin.COMPARE_PUBLICATIONS_TASK);
+                                t.addPublicationsComparator((PublicationsComparatorTask) task);
                             }
                         });
                     }
