@@ -27,6 +27,7 @@ public class ReleaseNeededTask extends DefaultTask {
     private String releasableBranchRegex;
     private String commitMessage;
     private boolean pullRequest;
+    private boolean explosive;
 
     /**
      * The branch we currently operate on
@@ -84,6 +85,21 @@ public class ReleaseNeededTask extends DefaultTask {
         this.pullRequest = pullRequest;
     }
 
+    /**
+     * If the exception should be thrown if the release is not needed.
+     */
+    public boolean isExplosive() {
+        return explosive;
+    }
+
+    /**
+     * See {@link #isExplosive()}
+     */
+    public ReleaseNeededTask setExplosive(boolean explosive) {
+        this.explosive = explosive;
+        return this;
+    }
+
     @TaskAction public void releaseNeeded() {
         boolean skipEnvVariable = System.getenv(SKIP_RELEASE_ENV) != null;
         boolean skippedByCommitMessage = commitMessage != null && commitMessage.contains(SKIP_RELEASE_KEYWORD);
@@ -99,7 +115,8 @@ public class ReleaseNeededTask extends DefaultTask {
                 "\n    - is pull request build:  " + pullRequest +
                 "\n    - is releasable branch:  " + releasableBranch;
 
-        if (notNeeded) {
+        //TODO SF worth unit testing in some way :)
+        if (notNeeded && explosive) {
             throw new GradleException(message);
         } else {
             LOG.lifecycle(message);

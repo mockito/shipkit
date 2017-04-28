@@ -138,7 +138,8 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
             public void execute(final Task t) {
                 t.setDescription("Tests the release procedure and cleans up. Safe to be invoked multiple times.");
                 //releaseCleanUp is already set up to run all his "subtasks" after performRelease is performed
-                t.dependsOn("performRelease", "releaseCleanUp");
+                //releaseNeeded is used here only to execute the code paths in the release needed task (extra testing)
+                t.dependsOn("releaseNeeded", "performRelease", "releaseCleanUp");
 
                 //Ensure that when 'testRelease' is invoked we must be using 'dryRun'
                 //This is to avoid unintentional releases during testing
@@ -180,10 +181,20 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
             }
         });
 
-        TaskMaker.task(project, "assertReleaseNeeded", ReleaseNeededTask.class, new Action<ReleaseNeededTask>() {
+        releaseNeededTask(project, "assertReleaseNeeded", conf)
+                .setExplosive(true)
+                .setDescription("Asserts that criteria for the release are met and throws exception if release is not needed.");
+        releaseNeededTask(project, "releaseNeeded", conf)
+                .setExplosive(false)
+                .setDescription("Checks and prints to the console if criteria for the release are met.");
+    }
+
+    private static ReleaseNeededTask releaseNeededTask(Project project, String taskName, final ReleaseConfiguration conf) {
+        return TaskMaker.task(project, taskName, ReleaseNeededTask.class, new Action<ReleaseNeededTask>() {
             public void execute(final ReleaseNeededTask t) {
                 t.setDescription("Asserts that criteria for the release are met and throws exception if release not needed.");
                 t.setReleasableBranchRegex(conf.getGit().getReleasableBranchRegex());
+                t.setExplosive(true);
 
                 lazyConfiguration(t, new Runnable() {
                     public void run() {
