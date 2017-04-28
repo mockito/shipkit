@@ -13,6 +13,7 @@ import org.mockito.release.gradle.IncrementalReleaseNotes;
 import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.gradle.ReleaseNeededTask;
 import org.mockito.release.internal.gradle.configuration.LazyConfiguration;
+import org.mockito.release.internal.gradle.util.BintrayUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.version.VersionInfo;
 
@@ -121,8 +122,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
 
                         deferredConfiguration(p, new Runnable() {
                             public void run() {
-                                final String bintrayRepo = bintray.getPkg().getRepo();
-                                configurePublicationRepo(project, bintrayRepo);
+                                configurePublicationRepo(project, BintrayUtil.getMarkdownRepoLink(bintray));
                             }
                         });
                     }
