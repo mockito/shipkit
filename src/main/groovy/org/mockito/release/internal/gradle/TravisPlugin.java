@@ -36,6 +36,12 @@ public class TravisPlugin implements Plugin<Project> {
 
         conf.getBuild().setCommitMessage(System.getenv("TRAVIS_COMMIT_MESSAGE"));
         conf.getBuild().setBranch(System.getenv("TRAVIS_BRANCH"));
+        //TODO until we implement logic that gets the current branch we require to set TRAVIS_BRANCH even for local testing
+        //This is very annoying.
+        //We should create a utilty class/method (GitUtil) that identifies the branch by forking off git process.
+        //This needs to be synchronized and needs to happen only once.
+        //The utility method should use the build.branch setting but if it is not provided, get it from git
+
         conf.getBuild().setPullRequest(isPullRequest);
 
         TaskMaker.task(project, "travisReleasePrepare", new Action<Task>() {
