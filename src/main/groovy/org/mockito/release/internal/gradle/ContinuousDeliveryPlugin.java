@@ -48,6 +48,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
         project.getPlugins().apply(VersioningPlugin.class);
         project.getPlugins().apply(GitPlugin.class);
         project.getPlugins().apply(ContributorsPlugin.class);
+        project.getPlugins().apply(TravisPlugin.class);
 
         project.allprojects(new Action<Project>() {
             @Override
@@ -153,13 +154,6 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                 //using finalizedBy so that all clean up tasks run, even if one of them fails
                 t.finalizedBy(GitPlugin.COMMIT_CLEANUP_TASK);
                 t.finalizedBy(GitPlugin.TAG_CLEANUP_TASK);
-            }
-        });
-
-        TaskMaker.task(project, "travisReleasePrepare", new Action<Task>() {
-            public void execute(Task t) {
-                t.setDescription("Prepares the working copy for releasing using Travis CI");
-                t.dependsOn(GitPlugin.UNSHALLOW_TASK, GitPlugin.CHECKOUT_BRANCH_TASK, GitPlugin.SET_USER_TASK, GitPlugin.SET_EMAIL_TASK);
             }
         });
 
