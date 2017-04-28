@@ -51,6 +51,10 @@ public class GitUtil {
      * Returns Git commit message based on release configuration and the given message
      */
     public static String getCommitMessage(ReleaseConfiguration conf, String message) {
-        return message + conf.getGit().getCommitMessagePostfix();
+        String postfix = conf.getGit().getCommitMessagePostfix();
+        if (postfix.isEmpty()) {
+            return message;
+        }
+        return message + " " + postfix;
     }
 }

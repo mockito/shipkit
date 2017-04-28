@@ -28,7 +28,7 @@ public class ReleaseConfiguration {
         //Configure default values
         git.setTagPrefix("v"); //so that tags are "v1.0", "v2.3.4"
         git.setReleasableBranchRegex("master|release/.+");  // matches 'master', 'release/2.x', 'release/3.x', etc.
-        git.setCommitMessagePostfix(" [ci skip]");
+        git.setCommitMessagePostfix("[ci skip]");
         team.setAddContributorsToPomFromGitHub(true);
     }
 
@@ -273,6 +273,7 @@ public class ReleaseConfiguration {
          * See {@link #getCommitMessagePostfix()}
          */
         public void setCommitMessagePostfix(String commitMessagePostfix) {
+            //TODO protect this setter and other relevant from invalid input (null value)
             configuration.put("git.commitMessagePostfix", commitMessagePostfix);
         }
     }
