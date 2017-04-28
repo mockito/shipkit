@@ -119,7 +119,7 @@ public class GitPlugin implements Plugin<Project> {
                 t.setDescription("Checks out the branch that can be committed. CI systems often check out revision that is not committable.");
                 lazyConfiguration(t, new Runnable() {
                     public void run() {
-                        t.commandLine("git", "checkout", conf.getGit().getBranch());
+                        t.commandLine("git", "checkout", conf.getBuild().getBranch());
                     }
                 });
             }

@@ -7,11 +7,6 @@ class ReleaseConfigurationTest extends Specification {
 
     def conf = new ReleaseConfiguration()
 
-    def "default commitMessagePostfix"() {
-        expect:
-        conf.git.commitMessagePostfix == "[ci skip]"
-    }
-
     def "custom commitMessagePostfix"() {
         //TODO figure out a test that would validate all properties with reflection
         //rather than implement individual unit test for each property (getter and setter)
@@ -19,5 +14,11 @@ class ReleaseConfigurationTest extends Specification {
 
         expect:
         conf.git.commitMessagePostfix ==  " by CI build 1234 [ci skip-release]"
+    }
+
+    def "empty build settings are ok"() {
+        expect:
+        conf.build.commitMessage == null
+        !conf.build.pullRequest
     }
 }

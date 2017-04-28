@@ -22,7 +22,7 @@ public class GitUtil {
         String ghUser = conf.getGitHub().getWriteAuthUser();
         String ghWriteToken = conf.getGitHub().getWriteAuthToken();
         String ghRepo = conf.getGitHub().getRepository();
-        String branch = conf.getGit().getBranch();
+        String branch = conf.getBuild().getBranch();
         String url = MessageFormat.format("https://{0}:{1}@github.com/{2}.git", ghUser, ghWriteToken, ghRepo);
 
         ArrayList<String> args = new ArrayList<String>(asList("git", "push", url, branch, getTag(conf, project)));

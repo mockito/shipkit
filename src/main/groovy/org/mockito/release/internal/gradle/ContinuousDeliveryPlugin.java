@@ -166,7 +166,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
 
                 LazyConfiguration.lazyConfiguration(t, new Runnable() {
                     public void run() {
-                        t.setBranch(conf.getGit().getBranch());
+                        t.setBranch(conf.getBuild().getBranch());
                     }
                 });
             }
