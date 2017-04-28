@@ -28,6 +28,8 @@ import static org.mockito.release.internal.gradle.util.Specs.withName;
  *     <li>{@link ReleaseNotesPlugin}</li>
  *     <li>{@link VersioningPlugin}</li>
  *     <li>{@link GitPlugin}</li>
+ *     <li>{@link ContributorsPlugin}</li>
+ *     <li>{@link TravisPlugin}</li>
  * </ul>
  *
  * Adds following tasks:
