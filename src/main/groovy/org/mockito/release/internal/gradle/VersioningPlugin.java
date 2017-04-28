@@ -24,8 +24,6 @@ import java.io.File;
  * The plugin adds following extensions:
  *
  * <ul>
- *     <li>'project.ext.release_notable' boolean property
- *     that contains information if the current version is a notable release</li>
  *     <li>project.extensions.'org.mockito.release.version.VersionInfo' property
  *     of type {@link VersionInfo} that contains version information</li>
  * </ul>
@@ -40,7 +38,7 @@ public class VersioningPlugin implements Plugin<Project> {
     private static Logger LOG = Logging.getLogger(VersioningPlugin.class);
 
     public static final String VERSION_FILE_NAME = "version.properties";
-    public static final String FALLBACK_INITIAL_VERSION = "0.0.1";
+    private static final String FALLBACK_INITIAL_VERSION = "0.0.1";
 
     public void apply(Project project) {
         final File versionFile = project.file(VERSION_FILE_NAME);
@@ -50,7 +48,6 @@ public class VersioningPlugin implements Plugin<Project> {
         VersionInfo versionInfo = Version.versionInfo(versionFile);
 
         project.getExtensions().add(VersionInfo.class.getName(), versionInfo);
-        project.getExtensions().getExtraProperties().set("release_notable", versionInfo.isNotableRelease());
 
         final String version = versionInfo.getVersion();
         LOG.lifecycle("  Building version '{}' (value loaded from '{}' file).", version, versionFile.getName());
