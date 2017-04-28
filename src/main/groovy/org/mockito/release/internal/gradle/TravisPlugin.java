@@ -19,9 +19,6 @@ import org.mockito.release.internal.gradle.util.TaskMaker;
  */
 public class TravisPlugin implements Plugin<Project> {
 
-    private final static String COMMIT_MESSAGE_ENV = "TRAVIS_COMMIT_MESSAGE";
-    private final static String PULL_REQUEST_ENV = "TRAVIS_PULL_REQUEST";
-
     @Override
     public void apply(Project project) {
         project.getPlugins().apply(GitPlugin.class);
@@ -34,10 +31,10 @@ public class TravisPlugin implements Plugin<Project> {
             conf.getGit().setCommitMessagePostfix("[ci skip]");
         }
 
-        String pr = System.getenv(PULL_REQUEST_ENV);
+        String pr = System.getenv("TRAVIS_PULL_REQUEST");
         boolean isPullRequest = pr != null && !pr.trim().isEmpty() && !pr.equals("false");
 
-        conf.getBuild().setCommitMessage(System.getenv(COMMIT_MESSAGE_ENV));
+        conf.getBuild().setCommitMessage(System.getenv("TRAVIS_COMMIT_MESSAGE"));
         conf.getBuild().setBranch(System.getenv("TRAVIS_BRANCH"));
         conf.getBuild().setPullRequest(isPullRequest);
 
