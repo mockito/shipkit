@@ -1,7 +1,6 @@
 package org.mockito.release.gradle;
 
 import org.gradle.api.GradleException;
-import org.mockito.release.version.VersionInfo;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -78,7 +77,7 @@ public class ReleaseConfiguration {
 
     /**
      * Informs if the release is considered 'notable' release.
-     * See {@link VersionInfo#isNotableRelease()}
+     * See {@link org.mockito.release.version.VersionInfo#isNotableRelease()}
      */
     public boolean isNotableRelease() {
         return notableRelease;
