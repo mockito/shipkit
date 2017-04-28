@@ -40,7 +40,6 @@ public class VersioningPlugin implements Plugin<Project> {
     private static Logger LOG = Logging.getLogger(VersioningPlugin.class);
 
     public static final String VERSION_FILE_NAME = "version.properties";
-    public static final String GRADLE_DEFAULT_VERSION = "unspecified";
     public static final String FALLBACK_INITIAL_VERSION = "0.0.1";
 
     public void apply(Project project) {
@@ -85,7 +84,7 @@ public class VersioningPlugin implements Plugin<Project> {
     }
 
     private String determineVersion(Project project){
-        if(GRADLE_DEFAULT_VERSION.equals(project.getVersion()) ){
+        if("unspecified".equals(project.getVersion()) ){
             LOG.lifecycle("  BEWARE! Project.version is unspecified. Version will be set to {}. You can change it manually in version.properties.", FALLBACK_INITIAL_VERSION);
             return FALLBACK_INITIAL_VERSION;
         } else{
