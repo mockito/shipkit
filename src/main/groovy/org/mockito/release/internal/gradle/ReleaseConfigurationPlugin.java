@@ -8,10 +8,11 @@ import org.mockito.release.version.VersionInfo;
 /**
  * Adds extension for configuring the release to the root project.
  * Important: it will add to the root project because this is where the configuration belong to!
- * <p>
- * Adds extensions:
+ * Adds following behavior:
  * <ul>
- *     <li>releasing - {@link ReleaseConfiguration}</li>
+ *     <li>Adds and preconfigures 'releasing' extension of type {@link ReleaseConfiguration}</li>
+ *     <li>Configures 'releasing.dryRun' setting based on 'releasing.dryRun' Gradle project property</li>
+ *     <li>Configures 'releasing.notableRelease' setting based on the version we are currently building</li>
  * </ul>
  */
 public class ReleaseConfigurationPlugin implements Plugin<Project> {
