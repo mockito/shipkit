@@ -34,10 +34,18 @@ public class ReleaseConfiguration {
 
     private boolean dryRun = true;
 
+    /**
+     * See {@link #isDryRun()}
+     */
     public void setDryRun(boolean dryRun) {
         this.dryRun = dryRun;
     }
 
+    /**
+     * If the release steps should be invoked in "dry run" mode.
+     * Relevant only to some kinds of release steps,
+     * such as bintray upload, git push.
+     */
     public boolean isDryRun() {
         return dryRun;
     }
