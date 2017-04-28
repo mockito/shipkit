@@ -3,6 +3,7 @@ package org.mockito.release.internal.gradle;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.mockito.release.gradle.ReleaseConfiguration;
+import org.mockito.release.version.VersionInfo;
 
 /**
  * Adds extension for configuring the release to the root project.
@@ -20,6 +21,9 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
     public void apply(Project project) {
         if (project.getParent() == null) {
             //root project, add the extension
+            project.getPlugins().apply(VersioningPlugin.class);
+            VersionInfo info = project.getExtensions().getByType(VersionInfo.class);
+
             configuration = project.getRootProject().getExtensions()
                     .create("releasing", ReleaseConfiguration.class);
 
@@ -29,6 +33,8 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
                 //TODO we can actually implement it so that we automatically preconfigure everything by command line parameters
                 //e.g. releasing.gitHub.repository is also a property
             }
+
+            configuration.setNotableRelease(info.isNotableRelease());
         } else {
             //not root project, get extension from root project
             configuration = project.getRootProject().getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();

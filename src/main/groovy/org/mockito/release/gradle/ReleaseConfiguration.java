@@ -1,6 +1,7 @@
 package org.mockito.release.gradle;
 
 import org.gradle.api.GradleException;
+import org.mockito.release.version.VersionInfo;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ public class ReleaseConfiguration {
     private final ReleaseNotes releaseNotes = new ReleaseNotes();
     private final Git git = new Git();
     private final Team team = new Team();
+    private boolean notableRelease;
 
     public ReleaseConfiguration() {
         //Configure default values
@@ -64,6 +66,21 @@ public class ReleaseConfiguration {
 
     public Team getTeam() {
         return team;
+    }
+
+    /**
+     * See {@link #isNotableRelease()}
+     */
+    public void setNotableRelease(boolean notableRelease) {
+        this.notableRelease = notableRelease;
+    }
+
+    /**
+     * Informs if the release is considered 'notable' release.
+     * See {@link VersionInfo#isNotableRelease()}
+     */
+    public boolean isNotableRelease() {
+        return notableRelease;
     }
 
     public class GitHub {
