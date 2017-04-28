@@ -181,9 +181,15 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
             }
         });
 
+        //Task that throws an exception when release is not needed is very useful for CI workflows
+        //Travis CI job will stop executing further commands if assertReleaseNeeded fails.
+        //See the example projects how we have set up the 'assertReleaseNeeded' task in CI pipeline.
         releaseNeededTask(project, "assertReleaseNeeded", conf)
                 .setExplosive(true)
                 .setDescription("Asserts that criteria for the release are met and throws exception if release is not needed.");
+
+        //Below task is useful for testing. It will not throw an exception but will run the code that check is release is needed
+        //and it will print the information to the console.
         releaseNeededTask(project, "releaseNeeded", conf)
                 .setExplosive(false)
                 .setDescription("Checks and prints to the console if criteria for the release are met.");
