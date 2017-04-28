@@ -1,10 +1,7 @@
 package org.mockito.release.internal.gradle;
 
 import com.jfrog.bintray.gradle.BintrayExtension;
-import org.gradle.api.Action;
-import org.gradle.api.Plugin;
-import org.gradle.api.Project;
-import org.gradle.api.Task;
+import org.gradle.api.*;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Exec;
@@ -12,13 +9,13 @@ import org.mockito.release.gradle.BumpVersionFileTask;
 import org.mockito.release.gradle.IncrementalReleaseNotes;
 import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.gradle.ReleaseNeededTask;
-import org.mockito.release.internal.gradle.configuration.LazyConfiguration;
 import org.mockito.release.internal.gradle.util.BintrayUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.version.VersionInfo;
 
 import static org.mockito.release.internal.gradle.BaseJavaLibraryPlugin.POM_TASK;
 import static org.mockito.release.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
+import static org.mockito.release.internal.gradle.configuration.LazyConfiguration.lazyConfiguration;
 import static org.mockito.release.internal.gradle.util.Specs.withName;
 /**
  * Opinionated continuous delivery plugin.
@@ -45,6 +42,9 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
+
+        //TODO ContinuousDeliveryPlugin should have no code but only apply other plugins
+        //This way it will be easy for others to put together setup for other tools / build systems
 
         project.getPlugins().apply(ReleaseNotesPlugin.class);
         project.getPlugins().apply(VersioningPlugin.class);
@@ -133,11 +133,32 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
             }
         });
 
+        TaskMaker.task(project, "testRelease", new Action<Task>() {
+            @Override
+            public void execute(final Task t) {
+                t.setDescription("Tests the release procedure and cleans up. Safe to be invoked multiple times.");
+                //releaseCleanUp is already set up to run all his "subtasks" after performRelease is performed
+                t.dependsOn("performRelease", "releaseCleanUp");
+
+                //Ensure that when 'testRelease' is invoked we must be using 'dryRun'
+                //This is to avoid unintentional releases during testing
+                lazyConfiguration(t, new Runnable() {
+                    public void run() {
+                        if (!conf.isDryRun()) {
+                            throw new GradleException("When '" + t.getName() + "' task is executed" +
+                                    " 'releasing.dryRun' must be set to 'true'.\n" +
+                                    "See Javadoc for ReleaseConfigurationPlugin.");
+                        }
+                    }
+                });
+            }
+        });
+
         TaskMaker.task(project, "performRelease", new Action<Task>() {
             public void execute(final Task t) {
                 t.setDescription("Performs release. " +
                         "Ship with: './gradlew performRelease -Preleasing.dryRun=false'. " +
-                        "Test with: './gradlew performRelease'");
+                        "Test with: './gradlew testRelease'");
 
                 t.dependsOn("bumpVersionFile", "updateReleaseNotes", "updateNotableReleaseNotes");
                 t.dependsOn("gitAddBumpVersion", "gitAddReleaseNotes", GitPlugin.COMMIT_TASK, GitPlugin.TAG_TASK);
@@ -164,7 +185,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                 t.setDescription("Asserts that criteria for the release are met and throws exception if release not needed.");
                 t.setReleasableBranchRegex(conf.getGit().getReleasableBranchRegex());
 
-                LazyConfiguration.lazyConfiguration(t, new Runnable() {
+                lazyConfiguration(t, new Runnable() {
                     public void run() {
                         t.setBranch(conf.getBuild().getBranch());
                     }
