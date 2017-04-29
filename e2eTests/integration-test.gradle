@@ -1,0 +1,13 @@
+task e2eTest {
+    doLast {
+        println "  TODO e2e tests for $project.name :)"
+    }
+}
+
+task check {
+    dependsOn e2eTest
+}
+
+task build {
+    dependsOn check
+}
