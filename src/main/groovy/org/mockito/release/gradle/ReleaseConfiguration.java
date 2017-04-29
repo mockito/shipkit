@@ -132,6 +132,8 @@ public class ReleaseConfiguration {
         /**
          * Get the Git branch this Travis job is building.
          * Will be used to commit / push code to.
+         *
+         * TODO remove and use {@link org.mockito.release.internal.gradle.GitPlugin.GitStatus}
          */
         public String getBranch() {
             return getString("build.branch");
@@ -139,6 +141,8 @@ public class ReleaseConfiguration {
 
         /**
          * See {@link #getBranch()}
+         *
+         * TODO remove and use {@link org.mockito.release.internal.gradle.GitPlugin.GitStatus}
          */
         public void setBranch(String branch) {
             configuration.put("build.branch", branch);

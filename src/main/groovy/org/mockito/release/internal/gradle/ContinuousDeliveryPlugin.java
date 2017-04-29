@@ -195,7 +195,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                 .setDescription("Checks and prints to the console if criteria for the release are met.");
     }
 
-    private static ReleaseNeededTask releaseNeededTask(Project project, String taskName, final ReleaseConfiguration conf) {
+    private static ReleaseNeededTask releaseNeededTask(final Project project, String taskName, final ReleaseConfiguration conf) {
         return TaskMaker.task(project, taskName, ReleaseNeededTask.class, new Action<ReleaseNeededTask>() {
             public void execute(final ReleaseNeededTask t) {
                 t.setDescription("Asserts that criteria for the release are met and throws exception if release not needed.");
@@ -204,7 +204,8 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
 
                 lazyConfiguration(t, new Runnable() {
                     public void run() {
-                        t.setBranch(conf.getBuild().getBranch());
+                        String branch = project.getExtensions().getByType(GitPlugin.GitStatus.class).getBranch();
+                        t.setBranch(branch);
                     }
                 });
             }
