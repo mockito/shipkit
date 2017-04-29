@@ -1,10 +1,7 @@
 package org.mockito.release.internal.gradle;
 
 import com.jfrog.bintray.gradle.BintrayExtension;
-import org.gradle.api.Action;
-import org.gradle.api.Plugin;
-import org.gradle.api.Project;
-import org.gradle.api.Task;
+import org.gradle.api.*;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Exec;
@@ -13,12 +10,13 @@ import org.mockito.release.gradle.IncrementalReleaseNotes;
 import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.gradle.ReleaseNeededTask;
 import org.mockito.release.internal.comparison.PublicationsComparatorTask;
-import org.mockito.release.internal.gradle.configuration.LazyConfiguration;
+import org.mockito.release.internal.gradle.util.BintrayUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.version.VersionInfo;
 
 import static org.mockito.release.internal.gradle.BaseJavaLibraryPlugin.POM_TASK;
 import static org.mockito.release.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
+import static org.mockito.release.internal.gradle.configuration.LazyConfiguration.lazyConfiguration;
 import static org.mockito.release.internal.gradle.util.Specs.withName;
 /**
  * Opinionated continuous delivery plugin.
@@ -28,6 +26,8 @@ import static org.mockito.release.internal.gradle.util.Specs.withName;
  *     <li>{@link ReleaseNotesPlugin}</li>
  *     <li>{@link VersioningPlugin}</li>
  *     <li>{@link GitPlugin}</li>
+ *     <li>{@link ContributorsPlugin}</li>
+ *     <li>{@link TravisPlugin}</li>
  * </ul>
  *
  * Adds following tasks:
@@ -44,10 +44,14 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
 
+        //TODO ContinuousDeliveryPlugin should have no code but only apply other plugins
+        //This way it will be easy for others to put together setup for other tools / build systems
+
         project.getPlugins().apply(ReleaseNotesPlugin.class);
         project.getPlugins().apply(VersioningPlugin.class);
         project.getPlugins().apply(GitPlugin.class);
         project.getPlugins().apply(ContributorsPlugin.class);
+        project.getPlugins().apply(TravisPlugin.class);
 
         project.allprojects(new Action<Project>() {
             @Override
@@ -123,10 +127,31 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
 
                         deferredConfiguration(p, new Runnable() {
                             public void run() {
-                                final String bintrayRepo = bintray.getPkg().getRepo();
-                                configurePublicationRepo(project, bintrayRepo);
+                                configurePublicationRepo(project, BintrayUtil.getMarkdownRepoLink(bintray));
                             }
                         });
+                    }
+                });
+            }
+        });
+
+        TaskMaker.task(project, "testRelease", new Action<Task>() {
+            @Override
+            public void execute(final Task t) {
+                t.setDescription("Tests the release procedure and cleans up. Safe to be invoked multiple times.");
+                //releaseCleanUp is already set up to run all his "subtasks" after performRelease is performed
+                //releaseNeeded is used here only to execute the code paths in the release needed task (extra testing)
+                t.dependsOn("releaseNeeded", "performRelease", "releaseCleanUp");
+
+                //Ensure that when 'testRelease' is invoked we must be using 'dryRun'
+                //This is to avoid unintentional releases during testing
+                lazyConfiguration(t, new Runnable() {
+                    public void run() {
+                        if (!conf.isDryRun()) {
+                            throw new GradleException("When '" + t.getName() + "' task is executed" +
+                                    " 'releasing.dryRun' must be set to 'true'.\n" +
+                                    "See Javadoc for ReleaseConfigurationPlugin.");
+                        }
                     }
                 });
             }
@@ -136,7 +161,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
             public void execute(final Task t) {
                 t.setDescription("Performs release. " +
                         "Ship with: './gradlew performRelease -Preleasing.dryRun=false'. " +
-                        "Test with: './gradlew performRelease'");
+                        "Test with: './gradlew testRelease'");
 
                 t.dependsOn("bumpVersionFile", "updateReleaseNotes", "updateNotableReleaseNotes");
                 t.dependsOn("gitAddBumpVersion", "gitAddReleaseNotes", GitPlugin.COMMIT_TASK, GitPlugin.TAG_TASK);
@@ -158,18 +183,27 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
             }
         });
 
-        TaskMaker.task(project, "travisReleasePrepare", new Action<Task>() {
-            public void execute(Task t) {
-                t.setDescription("Prepares the working copy for releasing using Travis CI");
-                t.dependsOn(GitPlugin.UNSHALLOW_TASK, GitPlugin.CHECKOUT_BRANCH_TASK, GitPlugin.SET_USER_TASK, GitPlugin.SET_EMAIL_TASK);
-            }
-        });
+        //Task that throws an exception when release is not needed is very useful for CI workflows
+        //Travis CI job will stop executing further commands if assertReleaseNeeded fails.
+        //See the example projects how we have set up the 'assertReleaseNeeded' task in CI pipeline.
+        releaseNeededTask(project, "assertReleaseNeeded", conf)
+                .setExplosive(true)
+                .setDescription("Asserts that criteria for the release are met and throws exception if release is not needed.");
 
-        TaskMaker.task(project, "assertReleaseNeeded", ReleaseNeededTask.class, new Action<ReleaseNeededTask>() {
+        //Below task is useful for testing. It will not throw an exception but will run the code that check is release is needed
+        //and it will print the information to the console.
+        releaseNeededTask(project, "releaseNeeded", conf)
+                .setExplosive(false)
+                .setDescription("Checks and prints to the console if criteria for the release are met.");
+    }
+
+
+    private static ReleaseNeededTask releaseNeededTask(final Project project, String taskName, final ReleaseConfiguration conf) {
+        return TaskMaker.task(project, taskName, ReleaseNeededTask.class, new Action<ReleaseNeededTask>() {
             public void execute(final ReleaseNeededTask t) {
                 t.setDescription("Asserts that criteria for the release are met and throws exception if release not needed.");
                 t.setReleasableBranchRegex(conf.getGit().getReleasableBranchRegex());
-
+                t.setExplosive(true);
 
                 project.allprojects(new Action<Project>() {
                     public void execute(final Project subproject) {
@@ -183,9 +217,9 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                     }
                 });
 
-                LazyConfiguration.lazyConfiguration(t, new Runnable() {
+                lazyConfiguration(t, new Runnable() {
                     public void run() {
-                        t.setBranch(conf.getGit().getBranch());
+                        t.setBranch(conf.getBuild().getBranch());
                     }
                 });
             }

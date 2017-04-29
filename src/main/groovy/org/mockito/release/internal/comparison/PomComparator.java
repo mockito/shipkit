@@ -1,27 +1,19 @@
 package org.mockito.release.internal.comparison;
 
-import groovy.lang.Closure;
-
 import static org.mockito.release.internal.util.ArgumentValidation.notNull;
 
 class PomComparator {
 
-    private Closure<String> left;
-    private Closure<String> right;
+    private final String left;
+    private final String right;
 
-    PomComparator setPair(Closure<String> left, Closure<String> right) {
+    PomComparator(String left, String right) {
         notNull(left, "pom content to compare", right, "pom content to compare");
         this.left = left;
         this.right = right;
-        return this;
     }
 
     boolean areEqual() {
-        String left = this.left.call();
-        String right = this.right.call();
-
-        notNull(left, "pom content to compare", right, "pom content to compare");
-
         return replaceVersion(left).equals(replaceVersion(right));
     }
 

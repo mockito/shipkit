@@ -22,7 +22,7 @@ public class GitUtil {
         String ghUser = conf.getGitHub().getWriteAuthUser();
         String ghWriteToken = conf.getGitHub().getWriteAuthToken();
         String ghRepo = conf.getGitHub().getRepository();
-        String branch = conf.getGit().getBranch();
+        String branch = conf.getBuild().getBranch();
         String url = MessageFormat.format("https://{0}:{1}@github.com/{2}.git", ghUser, ghWriteToken, ghRepo);
 
         ArrayList<String> args = new ArrayList<String>(asList("git", "push", url, branch, getTag(conf, project)));
@@ -51,6 +51,10 @@ public class GitUtil {
      * Returns Git commit message based on release configuration and the given message
      */
     public static String getCommitMessage(ReleaseConfiguration conf, String message) {
-        return message + conf.getGit().getCommitMessagePostfix();
+        String postfix = conf.getGit().getCommitMessagePostfix();
+        if (postfix.isEmpty()) {
+            return message;
+        }
+        return message + " " + postfix;
     }
 }

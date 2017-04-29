@@ -105,7 +105,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         gen.setGitHubRepository(conf.getGitHub().getRepository());
         gen.setOutputFile(project.file(conf.getReleaseNotes().getNotableFile()));
         gen.setVcsCommitsLinkTemplate("https://github.com/" + conf.getGitHub().getRepository() + "/compare/{0}...{1}");
-        gen.setDetailedReleaseNotesLink(conf.getGitHub().getRepository() + "/blob/" + conf.getGit().getBranch() + "/" + conf.getReleaseNotes().getNotableFile());
+        gen.setDetailedReleaseNotesLink(conf.getGitHub().getRepository() + "/blob/" + conf.getBuild().getBranch() + "/" + conf.getReleaseNotes().getNotableFile());
     }
 
     private static File getTemporaryReleaseNotesFile(Project project){

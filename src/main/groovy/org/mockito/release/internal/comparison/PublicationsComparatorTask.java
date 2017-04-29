@@ -6,12 +6,10 @@ import org.gradle.api.tasks.TaskAction;
 import org.mockito.release.notes.util.IOUtil;
 
 import java.io.*;
-import java.net.URL;
 
 public class PublicationsComparatorTask extends DefaultTask implements PublicationsComparator {
 
     private final ZipComparator zipComparator = new ZipComparator(new ZipCompare());
-    private final PomComparator pomComparator = new PomComparator();
     private Boolean publicationsEqual;
 
     private String projectGroup;
@@ -22,10 +20,6 @@ public class PublicationsComparatorTask extends DefaultTask implements Publicati
 
     public void compareBinaries(Closure<File> left, Closure<File> right) {
         zipComparator.setPair(left, right);
-    }
-
-    public void comparePoms(Closure<String> left, Closure<String> right) {
-        pomComparator.setPair(left, right);
     }
 
     public boolean isPublicationsEqual() {
@@ -43,25 +37,16 @@ public class PublicationsComparatorTask extends DefaultTask implements Publicati
                     getPath(), previousVersion, currentVersion);
         }
 
-        final String previousUrl = downloadArtifact(".pom");
-        final String currentUrl = getLocalArtifactUrl(getCurrentVersion(), ".pom");
+        String previousPomRemoteUrl = getRemoteUrl(".pom");
+        File previousPomLocalUrl = getLocalArtifactUrl(previousVersion, ".pom");
 
-        pomComparator.setPair(
-            new Closure<String>(null) {
-                @Override
-                public String call() {
-                    String content = IOUtil.readFully(new File(previousUrl));
-                    return content;
-                }
-            },
-            new Closure<String>(null) {
-                @Override
-                public String call() {
-                    String content = IOUtil.readFully(new File(currentUrl));
-                    return content;
-                }
-            });
-        boolean poms = pomComparator.areEqual();
+        IOUtil.downloadToFile(previousPomRemoteUrl, previousPomLocalUrl);
+
+        File currentPomUrl = getLocalArtifactUrl(getCurrentVersion(), ".pom");
+
+        String previousPomContent = IOUtil.readFully(previousPomLocalUrl);
+        String currentPomContent = IOUtil.readFully(currentPomUrl);
+        boolean poms = new PomComparator(previousPomContent, currentPomContent).areEqual();
         getLogger().lifecycle("{} - pom files equal: {}", getPath(), poms);
 
         //TODO compare artifacts too, not only poms
@@ -75,41 +60,6 @@ public class PublicationsComparatorTask extends DefaultTask implements Publicati
         this.publicationsEqual = jars && poms;
     }
 
-    private String downloadArtifact(String extension){
-        InputStream input = null;
-        FileOutputStream output = null;
-        try {
-            String url = getRemoteUrl(extension);
-            input = new BufferedInputStream(new URL(url).openStream());
-            String localUrl = getLocalArtifactUrl(getPreviousVersion(), extension);
-
-            IOUtil.createParentDirectory(new File(localUrl));
-
-
-            FileOutputStream fos = new FileOutputStream(localUrl);
-            byte[] buf = new byte[1024];
-            int n;
-            while ((n=input.read(buf)) != -1) {
-                fos.write(buf, 0, n);
-            }
-            return localUrl;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally{
-            try {
-                if (input != null) {
-                    input.close();
-                }
-                if (output != null) {
-                    output.close();
-                }
-            } catch(IOException e){
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-
     /**
      *
      * @param extension, suffix of artifact eg ".pom" or "-sources.jar"
@@ -121,8 +71,9 @@ public class PublicationsComparatorTask extends DefaultTask implements Publicati
                 + getArtifactUrl(previousVersion, extension);
     }
 
-    private String getLocalArtifactUrl(String version, String extension){
-        return getLocalRepository() + getArtifactUrl(version, extension);
+    private File getLocalArtifactUrl(String version, String extension){
+        String path = getLocalRepository() + getArtifactUrl(version, extension);
+        return new File(path);
     }
 
     private String getArtifactUrl(String version, String extension) {
