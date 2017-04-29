@@ -13,22 +13,21 @@ import org.gradle.api.tasks.TaskAction;
  *  - the commit message, loaded from 'TRAVIS_COMMIT_MESSAGE' env variable contains '[ci skip-release]' keyword
  *  - the env variable 'TRAVIS_PULL_REQUEST' is not empty, not an empty String and and not 'false'
  *  - the branch ({@link #getBranch()} does not match release-eligibility regex ({@link #getReleasableBranchRegex()}.
+ *
+ *  TODO update the javadoc
  */
 public class ReleaseNeededTask extends DefaultTask {
 
     private final static Logger LOG = Logging.getLogger(ReleaseNeededTask.class);
 
-    //TODO we should consider exposing the configuration below in the ReleaseConfiguration
-    //For example, 'releasing.git.commit.message', 'releasing.git.commit.skipReleaseKeyword', 'releasing.skip', 'releasing.git.pullRequest'
-    //Goal: have all configuration in the extension object, have all env variable handling there for centralized documentation
-
     private final static String SKIP_RELEASE_ENV = "SKIP_RELEASE";
-    private final static String COMMIT_MESSAGE_ENV = "TRAVIS_COMMIT_MESSAGE";
-    private final static String PULL_REQUEST_ENV = "TRAVIS_PULL_REQUEST";
     private final static String SKIP_RELEASE_KEYWORD = "[ci skip-release]";
 
     private String branch;
     private String releasableBranchRegex;
+    private String commitMessage;
+    private boolean pullRequest;
+    private boolean explosive;
 
     /**
      * The branch we currently operate on
@@ -58,17 +57,53 @@ public class ReleaseNeededTask extends DefaultTask {
         this.releasableBranchRegex = releasableBranchRegex;
     }
 
+    /**
+     * Commit message the build job was triggered with
+     */
+    public String getCommitMessage() {
+        return commitMessage;
+    }
+
+    /**
+     * See {@link #getCommitMessage()}
+     */
+    public void setCommitMessage(String commitMessage) {
+        this.commitMessage = commitMessage;
+    }
+
+    /**
+     * Pull request this job is building
+     */
+    public boolean isPullRequest() {
+        return pullRequest;
+    }
+
+    /**
+     * See {@link #isPullRequest()}
+     */
+    public void setPullRequest(boolean pullRequest) {
+        this.pullRequest = pullRequest;
+    }
+
+    /**
+     * If the exception should be thrown if the release is not needed.
+     */
+    public boolean isExplosive() {
+        return explosive;
+    }
+
+    /**
+     * See {@link #isExplosive()}
+     */
+    public ReleaseNeededTask setExplosive(boolean explosive) {
+        this.explosive = explosive;
+        return this;
+    }
+
     @TaskAction public void releaseNeeded() {
         boolean skipEnvVariable = System.getenv(SKIP_RELEASE_ENV) != null;
-        String commitMessage = System.getenv(COMMIT_MESSAGE_ENV);
         boolean skippedByCommitMessage = commitMessage != null && commitMessage.contains(SKIP_RELEASE_KEYWORD);
-
-        //returns true only if pull request env variable points to PR number
-        String pr = System.getenv(PULL_REQUEST_ENV);
-        boolean pullRequest = pr != null && !pr.trim().isEmpty() && !pr.equals("false");
-
         boolean releasableBranch = branch != null && branch.matches(releasableBranchRegex);
-
         boolean notNeeded = skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
 
         //TODO add more color to the message
@@ -80,7 +115,8 @@ public class ReleaseNeededTask extends DefaultTask {
                 "\n    - is pull request build:  " + pullRequest +
                 "\n    - is releasable branch:  " + releasableBranch;
 
-        if (notNeeded) {
+        //TODO SF worth unit testing in some way :)
+        if (notNeeded && explosive) {
             throw new GradleException(message);
         } else {
             LOG.lifecycle(message);

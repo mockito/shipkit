@@ -23,21 +23,33 @@ public class ReleaseConfiguration {
     private final ReleaseNotes releaseNotes = new ReleaseNotes();
     private final Git git = new Git();
     private final Team team = new Team();
+    private final Build build = new Build();
+
+    private boolean notableRelease;
 
     public ReleaseConfiguration() {
         //Configure default values
         git.setTagPrefix("v"); //so that tags are "v1.0", "v2.3.4"
         git.setReleasableBranchRegex("master|release/.+");  // matches 'master', 'release/2.x', 'release/3.x', etc.
-        git.setCommitMessagePostfix("[ci skip]");
         team.setAddContributorsToPomFromGitHub(true);
     }
 
+    //TODO currently it's not clear when to use class fields and when to use the 'configuration' map
+    //Let's make it clear in the docs
     private boolean dryRun = true;
 
+    /**
+     * See {@link #isDryRun()}
+     */
     public void setDryRun(boolean dryRun) {
         this.dryRun = dryRun;
     }
 
+    /**
+     * If the release steps should be invoked in "dry run" mode.
+     * Relevant only to some kinds of release steps,
+     * such as bintray upload, git push.
+     */
     public boolean isDryRun() {
         return dryRun;
     }
@@ -56,6 +68,81 @@ public class ReleaseConfiguration {
 
     public Team getTeam() {
         return team;
+    }
+
+    /**
+     * See {@link #isNotableRelease()}
+     */
+    public void setNotableRelease(boolean notableRelease) {
+        this.notableRelease = notableRelease;
+    }
+
+    /**
+     * Informs if the release is considered 'notable' release.
+     * See {@link org.mockito.release.version.VersionInfo#isNotableRelease()}
+     */
+    public boolean isNotableRelease() {
+        return notableRelease;
+    }
+
+    /**
+     * Settings of the current build job.
+     * Typically they are inferred from env variables
+     */
+    public Build getBuild() {
+        return build;
+    }
+
+    /**
+     * Settings for the current build job.
+     */
+    public class Build {
+
+        private String commitMessage;
+        private boolean pullRequest;
+
+        /**
+         * Commit message of the commit that triggered the job
+         */
+        public String getCommitMessage() {
+            return commitMessage;
+        }
+
+        /**
+         * See {@link #getCommitMessage()}
+         */
+        public void setCommitMessage(String commitMessage) {
+            this.commitMessage = commitMessage;
+        }
+
+        /**
+         * Whether this Travis job is a pull request build
+         */
+        public boolean isPullRequest() {
+            return pullRequest;
+        }
+
+        /**
+         * See {@link #isPullRequest()}
+         */
+        public void setPullRequest(boolean pullRequest) {
+            this.pullRequest = pullRequest;
+        }
+
+        /**
+         * Get the Git branch this Travis job is building.
+         * Will be used to commit / push code to.
+         */
+        public String getBranch() {
+            return getString("build.branch");
+        }
+
+        /**
+         * See {@link #getBranch()}
+         */
+        public void setBranch(String branch) {
+            configuration.put("build.branch", branch);
+        }
     }
 
     public class GitHub {
@@ -222,25 +309,6 @@ public class ReleaseConfiguration {
          */
         public void setReleasableBranchRegex(String releasableBranchRegex) {
             configuration.put("git.releasableBranchRegex", releasableBranchRegex);
-        }
-
-        /**
-         * See {@link #getBranch()}
-         */
-        public void setBranch(String branch) {
-            configuration.put("git.branch", branch);
-        }
-
-        /**
-         * Returns the branch the release process works on and commits code to.
-         * If not specified, it will be loaded from "TRAVIS_BRANCH" environment variable.
-         */
-        public String getBranch() {
-            //TODO decouple from Travis. Suggested plan:
-            //1. We remove the 'branch' configuration from here completely
-            //2. We add a utility method that gives us current branch, it should trigger the "git call" only once.
-            //3. We call that utility method if we need branch
-            return getString("git.branch", "TRAVIS_BRANCH");
         }
 
         /**
