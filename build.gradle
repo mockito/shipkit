@@ -22,7 +22,7 @@ targetCompatibility = 1.6
 
 repositories { jcenter() }
 
-version = '0.8.0'
+version = '0.8.1'
 
 println "  Version: $version"
 group = 'gradle.plugin.org.mockito'
