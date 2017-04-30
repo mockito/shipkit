@@ -201,6 +201,8 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                 t.setDescription("Asserts that criteria for the release are met and throws exception if release not needed.");
                 t.setReleasableBranchRegex(conf.getGit().getReleasableBranchRegex());
                 t.setExplosive(true);
+                t.setCommitMessage(conf.getBuild().getCommitMessage());
+                t.setPullRequest(conf.getBuild().isPullRequest());
 
                 lazyConfiguration(t, new Runnable() {
                     public void run() {
