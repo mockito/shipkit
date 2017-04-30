@@ -108,7 +108,6 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                 //It is safer to run bintray upload after git push (hard to reverse operation)
                 //This way, when git push fails we don't publish jars to bintray
                 t.mustRunAfter(GitPlugin.PUSH_TASK);
-                t.dependsOn("assertReleaseNeeded");
             }
         });
         //TODO can we make git push and bintray upload tasks to be last (expensive, hard to reverse tasks should go last)
