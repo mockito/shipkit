@@ -6,10 +6,10 @@ import org.gradle.api.tasks.TaskAction;
 import org.mockito.release.notes.util.IOUtil;
 
 import java.io.*;
+import java.util.Set;
 
 public class PublicationsComparatorTask extends DefaultTask implements PublicationsComparator {
 
-    private final ZipComparator zipComparator = new ZipComparator(new ZipCompare());
     private Boolean publicationsEqual;
 
     private String projectGroup;
@@ -17,10 +17,7 @@ public class PublicationsComparatorTask extends DefaultTask implements Publicati
     private String currentVersion;
     private String previousVersion;
     private String localRepository;
-
-    public void compareBinaries(Closure<File> left, Closure<File> right) {
-        zipComparator.setPair(left, right);
-    }
+    private Set<BaseProjectProperties> dependentSiblingProjects;
 
     public boolean isPublicationsEqual() {
         assert publicationsEqual != null : "Comparison task was not executed yet, the 'publicationsEqual' information not available.";
@@ -32,32 +29,45 @@ public class PublicationsComparatorTask extends DefaultTask implements Publicati
             getLogger().lifecycle("{} - previousVersion is not set, nothing to compare", getPath());
             publicationsEqual = false;
             return;
-        } else{
-            getLogger().lifecycle("{} - about to compare publications, for versions {} and {}",
-                    getPath(), previousVersion, currentVersion);
         }
+        getLogger().lifecycle("{} - about to compare publications, for versions {} and {}",
+                    getPath(), previousVersion, currentVersion);
 
-        String previousPomRemoteUrl = getRemoteUrl(".pom");
-        File previousPomLocalUrl = getLocalArtifactUrl(previousVersion, ".pom");
+        boolean poms = comparePoms();
+        getLogger().lifecycle("{} - pom files equal: {}", getPath(), poms);
+
+        boolean jars = compareJars();
+        getLogger().lifecycle("{} - source jars equal: {}", getPath(), jars);
+
+        this.publicationsEqual = jars && poms;
+    }
+
+    private boolean compareJars() {
+        String extension = "-sources.jar";
+        String previousSourcesRemoteUrl = getRemoteUrl(extension);
+        File previousSourcesLocalUrl = getLocalArtifactUrl(previousVersion, extension);
+
+        IOUtil.downloadToFile(previousSourcesRemoteUrl, previousSourcesLocalUrl);
+
+        File currentSourcesLocalUrl = getLocalArtifactUrl(getCurrentVersion(), extension);
+
+        getLogger().info("{} - compared binaries: '{}' and '{}'", getPath(), previousSourcesRemoteUrl, currentSourcesLocalUrl);
+
+        return new ZipComparator().compareFiles(previousSourcesLocalUrl, currentSourcesLocalUrl);
+    }
+
+    private boolean comparePoms() {
+        String extension = ".pom";
+        String previousPomRemoteUrl = getRemoteUrl(extension);
+        File previousPomLocalUrl = getLocalArtifactUrl(previousVersion, extension);
 
         IOUtil.downloadToFile(previousPomRemoteUrl, previousPomLocalUrl);
 
-        File currentPomUrl = getLocalArtifactUrl(getCurrentVersion(), ".pom");
+        File currentPomUrl = getLocalArtifactUrl(getCurrentVersion(), extension);
 
         String previousPomContent = IOUtil.readFully(previousPomLocalUrl);
         String currentPomContent = IOUtil.readFully(currentPomUrl);
-        boolean poms = new PomComparator(previousPomContent, currentPomContent).areEqual();
-        getLogger().lifecycle("{} - pom files equal: {}", getPath(), poms);
-
-        //TODO compare artifacts too, not only poms
-//        ZipComparator.Result result = zipComparator.compareFiles();
-//        getLogger().info("{} - compared binaries: '{}' and '{}'", getPath(), result.getFile1(), result.getFile2());
-//        boolean jars = result.areEqual();
-//        getLogger().lifecycle("{} - source jars equal: {}", getPath(), jars);
-
-        boolean jars = true;
-
-        this.publicationsEqual = jars && poms;
+        return new PomComparator(previousPomContent, currentPomContent, dependentSiblingProjects).areEqual();
     }
 
     /**
@@ -122,5 +132,13 @@ public class PublicationsComparatorTask extends DefaultTask implements Publicati
 
     public void setLocalRepository(String localRepository) {
         this.localRepository = localRepository;
+    }
+
+    public Set<BaseProjectProperties> getDependentSiblingProjects() {
+        return dependentSiblingProjects;
+    }
+
+    public void setDependentSiblingProjects(Set<BaseProjectProperties> dependentSiblingProjects) {
+        this.dependentSiblingProjects = dependentSiblingProjects;
     }
 }

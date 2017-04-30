@@ -111,7 +111,7 @@ public class ReleaseNeededTask extends DefaultTask {
         boolean releasableBranch = branch != null && branch.matches(releasableBranchRegex);
 
         boolean allPublicationsEqual = true; //TODO we can get it from publicationsComparators
-        boolean notNeeded = allPublicationsEqual || skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
+        boolean notNeeded = !allPublicationsEqual || skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
 
         //TODO add more color to the message
         //add env variable names, what is the current branch, what is the regexp, etc.
