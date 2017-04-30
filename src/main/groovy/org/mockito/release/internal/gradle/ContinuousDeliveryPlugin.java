@@ -196,7 +196,6 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                 .setDescription("Checks and prints to the console if criteria for the release are met.");
     }
 
-
     private static ReleaseNeededTask releaseNeededTask(final Project project, String taskName, final ReleaseConfiguration conf) {
         return TaskMaker.task(project, taskName, ReleaseNeededTask.class, new Action<ReleaseNeededTask>() {
             public void execute(final ReleaseNeededTask t) {

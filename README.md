@@ -73,3 +73,15 @@ tbd
 ### Integration testing
 
 tbd
+
+## Project Execution
+
+This section describes how we roll the project.
+
+### Getting contributions
+
+Contributions are super important to build lively community and excite other engineers around the project vision. In "mockito-release-tools" we use ["please contribute!"](https://github.com/mockito/mockito-release-tools/issues?q=is%3Aissue+is%3Aopen+label%3A%22please+contribute%21%22) label on tickets to attract contributors. Before the ticket can be labeled with "please contribute!" it should:
+ - sell the feature. If the value of the ticket is not clear, why would a contributor bother to invest his free time?
+ - describe high level design. Otherwise it's hard to come up with the implementation. More over, lack of guiding high level design leads to more rework and ping-pong pull requests, with multiple pr->feedback->fixes cycles.
+ - give a starting point, point to classes in question, suggest implementation, or even point to the branch that has some scaffolding prototype code. Example ["starting point" PR](https://github.com/mockito/mockito-release-tools/pull/100).
+ - be like [#101](https://github.com/mockito/mockito-release-tools/issues/101), [#84](https://github.com/mockito/mockito-release-tools/issues/84), or [epic #85](https://github.com/mockito/mockito-release-tools/issues/85)

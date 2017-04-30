@@ -109,7 +109,7 @@ public class ReleaseNeededTask extends DefaultTask {
         boolean skipEnvVariable = System.getenv(SKIP_RELEASE_ENV) != null;
         boolean skippedByCommitMessage = commitMessage != null && commitMessage.contains(SKIP_RELEASE_KEYWORD);
         boolean releasableBranch = branch != null && branch.matches(releasableBranchRegex);
-
+      
         boolean allPublicationsEqual = true; //TODO we can get it from publicationsComparators
         boolean notNeeded = !allPublicationsEqual || skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
 
