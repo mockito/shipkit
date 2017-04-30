@@ -2,7 +2,9 @@ package org.mockito.release.internal.comparison;
 
 import groovy.lang.Closure;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.publish.maven.tasks.GenerateMavenPom;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.api.tasks.bundling.Jar;
 import org.mockito.release.notes.util.IOUtil;
 
 import java.io.*;
@@ -18,6 +20,8 @@ public class PublicationsComparatorTask extends DefaultTask implements Publicati
     private String previousVersion;
     private String localRepository;
     private Set<BaseProjectProperties> dependentSiblingProjects;
+    private Jar sourcesJar;
+    private String pomTaskName;
 
     public boolean isPublicationsEqual() {
         assert publicationsEqual != null : "Comparison task was not executed yet, the 'publicationsEqual' information not available.";
@@ -25,6 +29,13 @@ public class PublicationsComparatorTask extends DefaultTask implements Publicati
     }
 
     @TaskAction public void comparePublications() {
+        GenerateMavenPom pomTask = (GenerateMavenPom) getProject().getTasks().getByName(pomTaskName);
+        assert pomTask.getDestination().isFile();
+        assert sourcesJar.getArchivePath().isFile();
+        System.out.println("Comparing stuff\n" +
+                "  - local pom file: " + pomTask.getDestination() + "\n" +
+                "  - local sources jar: " + sourcesJar.getArchivePath());
+
         if(previousVersion == null){
             getLogger().lifecycle("{} - previousVersion is not set, nothing to compare", getPath());
             publicationsEqual = false;
@@ -71,7 +82,6 @@ public class PublicationsComparatorTask extends DefaultTask implements Publicati
     }
 
     /**
-     *
      * @param extension, suffix of artifact eg ".pom" or "-sources.jar"
      * @return eg
      * https://bintray.com/shipkit/examples/download_file?file_path=/org/mockito/release-tools-example/api/0.15.1/api-0.15.1.pom";
@@ -140,5 +150,20 @@ public class PublicationsComparatorTask extends DefaultTask implements Publicati
 
     public void setDependentSiblingProjects(Set<BaseProjectProperties> dependentSiblingProjects) {
         this.dependentSiblingProjects = dependentSiblingProjects;
+    }
+
+    public void compareSourcesJar(Jar sourcesJar) {
+        //when we compare, we can get the sources jar file via sourcesJar.archivePath
+        this.sourcesJar = sourcesJar;
+
+        //so that when we compare jars, the local sources jar is already built.
+        this.dependsOn(sourcesJar);
+    }
+
+    public void comparePom(String pomTaskName) {
+        this.pomTaskName = pomTaskName;
+
+        //so that pom is created before we do comparison
+        this.dependsOn(pomTaskName);
     }
 }

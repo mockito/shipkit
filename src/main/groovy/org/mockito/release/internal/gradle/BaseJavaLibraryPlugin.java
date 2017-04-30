@@ -70,7 +70,7 @@ public class BaseJavaLibraryPlugin implements Plugin<Project> {
 
         final JavaPluginConvention java = project.getConvention().getPlugin(JavaPluginConvention.class);
 
-        final Task sourcesJar = project.getTasks().create("sourcesJar", Jar.class, new Action<Jar>() {
+        final Jar sourcesJar = project.getTasks().create("sourcesJar", Jar.class, new Action<Jar>() {
             public void execute(Jar jar) {
                 jar.from(java.getSourceSets().getByName("main").getAllSource());
                 jar.setClassifier("sources");
@@ -89,9 +89,6 @@ public class BaseJavaLibraryPlugin implements Plugin<Project> {
         TaskMaker.task(project, COMPARE_PUBLICATIONS_TASK, PublicationsComparatorTask.class, new Action<PublicationsComparatorTask>() {
             public void execute(final PublicationsComparatorTask t) {
                 t.setDescription("Compares artifacts and poms between last version and the currently built one to see if there are any differences");
-                t.dependsOn("publishToMavenLocal");
-
-
 
                 project.getRootProject().getPlugins().withType(
                         VersioningPlugin.class,
@@ -119,6 +116,13 @@ public class BaseJavaLibraryPlugin implements Plugin<Project> {
                         }
                 );
 
+
+                //Let's say that the initial implementation compares sources jar. We can this API method to the task:
+                t.compareSourcesJar(sourcesJar);
+                //Let's say we compare poms, we can add this API
+                //maven-publish plugin is messed up in Gradle API, we cannot really access generate pom task and we have to pass String
+                //The generate pom task is dynamically created by Gradle and we can only access it during execution
+                t.comparePom(POM_TASK);
 
                 t.setProjectGroup(project.getGroup().toString());
                 t.setProjectName(project.getName());
