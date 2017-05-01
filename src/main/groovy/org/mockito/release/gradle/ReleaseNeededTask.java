@@ -117,16 +117,12 @@ public class ReleaseNeededTask extends DefaultTask {
                 commitMessageEmpty? "<unknown commit message>" : "\n" + commitMessage);
 
         boolean releasableBranch = branch != null && branch.matches(releasableBranchRegex);
+        LOG.lifecycle("  Current branch '{}' matches '{}': {}", branch, releasableBranchRegex, releasableBranch);
 
         boolean allPublicationsEqual = areAllPublicationsEqual();
 
         // add unit tests for release not needed
         releaseNotNeeded = allPublicationsEqual || skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
-
-        //TODO add more color to the message
-        //add env variable names, what is the current branch, what is the regexp, etc.
-        //This way it is easier to understand how stuff works by reading the log
-        LOG.lifecycle("  Current branch '{}' matches '{}': {}", branch, releasableBranchRegex, releasableBranch);
 
         String message = "  Release is needed: " + !releaseNotNeeded +
                 "\n    - skip by env variable: " + skipEnvVariable +
