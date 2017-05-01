@@ -22,7 +22,7 @@ targetCompatibility = 1.6
 
 repositories { jcenter() }
 
-version = '0.8.1'
+version = '0.8.2'
 
 println "  Version: $version"
 group = 'gradle.plugin.org.mockito'
@@ -52,6 +52,12 @@ pluginBundle {
         releaseNotesPlugin {
             id = 'org.mockito.release-notes'
             displayName = 'Mockito automated release notes generation plugin'
+        }
+
+        versioningPlugin {
+            id = 'org.mockito.release-tools.versioning'
+            displayName = 'Mockito automated versioning plugin'
+            tags = ['mockito', 'continuous delivery', 'release', 'versioning', 'auto-versioning', 'semantic-versioning']
         }
     }
 
