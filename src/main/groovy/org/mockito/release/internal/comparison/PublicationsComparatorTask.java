@@ -18,6 +18,8 @@ public class PublicationsComparatorTask extends DefaultTask implements Publicati
     private Jar sourcesJar;
     private String pomTaskName;
     // default remote url resolver
+
+    //TODO WW, per discussion via email, we can simplify that by just offering String property for user-supplied url
     private RemoteUrlResolver remoteUrlResolver = new BintrayRemoteUrlResolver();
     private File tempStorageDirectory;
 
