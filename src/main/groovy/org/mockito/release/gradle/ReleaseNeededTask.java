@@ -133,7 +133,7 @@ public class ReleaseNeededTask extends DefaultTask {
                 "\n    - skip by commit message: " + skippedByCommitMessage +
                 "\n    - is pull request build:  " + pullRequest +
                 "\n    - is releasable branch:  " + releasableBranch +
-                "\n    - anything changed in publications since the last release:  " + !allPublicationsEqual;
+                "\n    - anything changed in publications since the previous release:  " + !allPublicationsEqual;
 
         if (releaseNotNeeded && explosive) {
             throw new GradleException(message);
