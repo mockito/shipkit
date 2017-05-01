@@ -108,7 +108,14 @@ public class ReleaseNeededTask extends DefaultTask {
 
     @TaskAction public void releaseNeeded() {
         boolean skipEnvVariable = System.getenv(SKIP_RELEASE_ENV) != null;
-        boolean skippedByCommitMessage = commitMessage != null && commitMessage.contains(SKIP_RELEASE_KEYWORD);
+        LOG.lifecycle("  Environment variable {} present: {}", SKIP_RELEASE_ENV, skipEnvVariable);
+
+        boolean commitMessageEmpty = commitMessage == null || commitMessage.trim().isEmpty();
+        boolean skippedByCommitMessage = !commitMessageEmpty && commitMessage.contains(SKIP_RELEASE_KEYWORD);
+        LOG.lifecycle("  Commit message to inspect for keyword '{}': {}",
+                SKIP_RELEASE_KEYWORD,
+                commitMessageEmpty? "<unknown commit message>" : "\n" + commitMessage);
+
         boolean releasableBranch = branch != null && branch.matches(releasableBranchRegex);
 
         boolean allPublicationsEqual = areAllPublicationsEqual();
@@ -119,6 +126,10 @@ public class ReleaseNeededTask extends DefaultTask {
         //TODO add more color to the message
         //add env variable names, what is the current branch, what is the regexp, etc.
         //This way it is easier to understand how stuff works by reading the log
+        LOG.lifecycle("  Current branch '{}' matches '{}': {}", branch, releasableBranchRegex, releasableBranch);
+
+        boolean notNeeded = skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
+
         String message = "  Release is needed: " + !releaseNotNeeded +
                 "\n    - skip by env variable: " + skipEnvVariable +
                 "\n    - skip by commit message: " + skippedByCommitMessage +
