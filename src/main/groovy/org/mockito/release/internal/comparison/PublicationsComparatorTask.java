@@ -1,14 +1,11 @@
 package org.mockito.release.internal.comparison;
 
-import groovy.lang.Closure;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.publish.maven.tasks.GenerateMavenPom;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.bundling.Jar;
-import org.mockito.release.notes.util.IOUtil;
 
 import java.io.*;
-import java.util.Set;
 
 public class PublicationsComparatorTask extends DefaultTask implements PublicationsComparator {
 
@@ -18,10 +15,11 @@ public class PublicationsComparatorTask extends DefaultTask implements Publicati
     private String projectName;
     private String currentVersion;
     private String previousVersion;
-    private String localRepository;
-    private Set<BaseProjectProperties> dependentSiblingProjects;
     private Jar sourcesJar;
     private String pomTaskName;
+    // default remote url resolver
+    private RemoteUrlResolver remoteUrlResolver = new BintrayRemoteUrlResolver();
+    private File tempStorageDirectory;
 
     public boolean isPublicationsEqual() {
         assert publicationsEqual != null : "Comparison task was not executed yet, the 'publicationsEqual' information not available.";
@@ -29,79 +27,66 @@ public class PublicationsComparatorTask extends DefaultTask implements Publicati
     }
 
     @TaskAction public void comparePublications() {
-        GenerateMavenPom pomTask = (GenerateMavenPom) getProject().getTasks().getByName(pomTaskName);
-        assert pomTask.getDestination().isFile();
-        assert sourcesJar.getArchivePath().isFile();
-        System.out.println("Comparing stuff\n" +
-                "  - local pom file: " + pomTask.getDestination() + "\n" +
-                "  - local sources jar: " + sourcesJar.getArchivePath());
-
         if(previousVersion == null){
             getLogger().lifecycle("{} - previousVersion is not set, nothing to compare", getPath());
             publicationsEqual = false;
             return;
         }
+
+        GenerateMavenPom pomTask = (GenerateMavenPom) getProject().getTasks().getByName(pomTaskName);
+
+        assert pomTask.getDestination().isFile();
+        assert sourcesJar.getArchivePath().isFile();
+
+        File currentVersionPomPath = pomTask.getDestination();
+        File currentVersionSourcesJarPath = sourcesJar.getArchivePath();
+
         getLogger().lifecycle("{} - about to compare publications, for versions {} and {}",
                     getPath(), previousVersion, currentVersion);
 
-        boolean poms = comparePoms();
+        tempStorageDirectory = extractTempStorageDirectoryFromPomPath(currentVersionPomPath);
+
+        PomComparator pomComparator = new PomComparator(projectGroup, previousVersion, currentVersion);
+        boolean poms = createVersionsComparator(pomComparator, ".pom", currentVersionPomPath).compare();
         getLogger().lifecycle("{} - pom files equal: {}", getPath(), poms);
 
-        boolean jars = compareJars();
+        ZipComparator sourcesJarComparator = new ZipComparator();
+        boolean jars = createVersionsComparator(sourcesJarComparator, "-sources.jar", currentVersionSourcesJarPath).compare();
         getLogger().lifecycle("{} - source jars equal: {}", getPath(), jars);
 
         this.publicationsEqual = jars && poms;
     }
 
-    private boolean compareJars() {
-        String extension = "-sources.jar";
-        String previousSourcesRemoteUrl = getRemoteUrl(extension);
-        File previousSourcesLocalUrl = getLocalArtifactUrl(previousVersion, extension);
+    public void compareSourcesJar(Jar sourcesJar) {
+        //when we compare, we can get the sources jar file via sourcesJar.archivePath
+        this.sourcesJar = sourcesJar;
 
-        IOUtil.downloadToFile(previousSourcesRemoteUrl, previousSourcesLocalUrl);
-
-        File currentSourcesLocalUrl = getLocalArtifactUrl(getCurrentVersion(), extension);
-
-        getLogger().info("{} - compared binaries: '{}' and '{}'", getPath(), previousSourcesRemoteUrl, currentSourcesLocalUrl);
-
-        return new ZipComparator().compareFiles(previousSourcesLocalUrl, currentSourcesLocalUrl);
+        //so that when we compare jars, the local sources jar is already built.
+        this.dependsOn(sourcesJar);
     }
 
-    private boolean comparePoms() {
-        String extension = ".pom";
-        String previousPomRemoteUrl = getRemoteUrl(extension);
-        File previousPomLocalUrl = getLocalArtifactUrl(previousVersion, extension);
+    public void comparePom(String pomTaskName) {
+        this.pomTaskName = pomTaskName;
 
-        IOUtil.downloadToFile(previousPomRemoteUrl, previousPomLocalUrl);
-
-        File currentPomUrl = getLocalArtifactUrl(getCurrentVersion(), extension);
-
-        String previousPomContent = IOUtil.readFully(previousPomLocalUrl);
-        String currentPomContent = IOUtil.readFully(currentPomUrl);
-        return new PomComparator(previousPomContent, currentPomContent, dependentSiblingProjects).areEqual();
+        //so that pom is created before we do comparison
+        this.dependsOn(pomTaskName);
     }
 
-    /**
-     * @param extension, suffix of artifact eg ".pom" or "-sources.jar"
-     * @return eg
-     * https://bintray.com/shipkit/examples/download_file?file_path=/org/mockito/release-tools-example/api/0.15.1/api-0.15.1.pom";
-     */
-    private String getRemoteUrl(String extension){
-        return "https://bintray.com/shipkit/examples/download_file?file_path="
-                + getArtifactUrl(previousVersion, extension);
+    private VersionsComparator createVersionsComparator(FileComparator fileComparator, String extension, File currentVersionFile) {
+        VersionsComparator comparator = new VersionsComparator();
+        comparator.setFileComparator(fileComparator);
+        comparator.setRemoteUrlResolver(remoteUrlResolver);
+        comparator.setProjectGroup(projectGroup);
+        comparator.setProjectName(projectName);
+        comparator.setPreviousVersion(previousVersion);
+        comparator.setExtension(extension);
+        comparator.setCurrentVersionFileLocalUrl(currentVersionFile);
+        comparator.setTempStorageDir(tempStorageDirectory);
+        return comparator;
     }
 
-    private File getLocalArtifactUrl(String version, String extension){
-        String path = getLocalRepository() + getArtifactUrl(version, extension);
-        return new File(path);
-    }
-
-    private String getArtifactUrl(String version, String extension) {
-        return getProjectGroup().replace(".", "/")
-                + "/" + getProjectName()
-                + "/" + version
-                + "/" + getProjectName()
-                + "-" + version + extension;
+    private File extractTempStorageDirectoryFromPomPath(File destination) {
+        return destination.getParentFile();
     }
 
     public String getProjectGroup() {
@@ -136,34 +121,12 @@ public class PublicationsComparatorTask extends DefaultTask implements Publicati
         this.previousVersion = previousVersion;
     }
 
-    public String getLocalRepository() {
-        return localRepository;
+    public RemoteUrlResolver getRemoteUrlResolver() {
+        return remoteUrlResolver;
     }
 
-    public void setLocalRepository(String localRepository) {
-        this.localRepository = localRepository;
+    public void setRemoteUrlResolver(RemoteUrlResolver remoteUrlResolver) {
+        this.remoteUrlResolver = remoteUrlResolver;
     }
 
-    public Set<BaseProjectProperties> getDependentSiblingProjects() {
-        return dependentSiblingProjects;
-    }
-
-    public void setDependentSiblingProjects(Set<BaseProjectProperties> dependentSiblingProjects) {
-        this.dependentSiblingProjects = dependentSiblingProjects;
-    }
-
-    public void compareSourcesJar(Jar sourcesJar) {
-        //when we compare, we can get the sources jar file via sourcesJar.archivePath
-        this.sourcesJar = sourcesJar;
-
-        //so that when we compare jars, the local sources jar is already built.
-        this.dependsOn(sourcesJar);
-    }
-
-    public void comparePom(String pomTaskName) {
-        this.pomTaskName = pomTaskName;
-
-        //so that pom is created before we do comparison
-        this.dependsOn(pomTaskName);
-    }
 }

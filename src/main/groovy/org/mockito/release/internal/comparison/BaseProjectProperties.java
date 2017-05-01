@@ -23,12 +23,18 @@ public class BaseProjectProperties {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         BaseProjectProperties that = (BaseProjectProperties) o;
 
-        if (!group.equals(that.group)) return false;
+        if (!group.equals(that.group)){
+            return false;
+        }
         return name.equals(that.name);
 
     }
@@ -38,13 +44,5 @@ public class BaseProjectProperties {
         int result = group.hashCode();
         result = 31 * result + name.hashCode();
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "BaseProjectProperties{" +
-                "group='" + group + '\'' +
-                ", name='" + name + '\'' +
-                '}';
     }
 }

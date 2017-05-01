@@ -15,14 +15,14 @@ import java.util.zip.ZipFile;
 import static java.lang.String.format;
 import static org.mockito.release.internal.util.ArgumentValidation.notNull;
 
-class ZipComparator {
+class ZipComparator implements FileComparator{
 
     private final static Logger LOG = LoggerFactory.getLogger(ZipComparator.class);
 
     ZipComparator() {
     }
 
-    boolean compareFiles(File file1, File file2) {
+    public boolean areEqual(File file1, File file2) {
         notNull(file1, "zip/jar file to compare", file2, "zip/jar file to compare");
         return compareZips(file1.getAbsolutePath(), file2.getAbsolutePath());
     }
@@ -31,15 +31,8 @@ class ZipComparator {
         ZipFile file1 = openZipFile(filePath1);
         ZipFile file2 = openZipFile(filePath2);
 
-        Set<String> set1 = new LinkedHashSet<String>();
-        for (Enumeration e = file1.entries(); e.hasMoreElements();) {
-            set1.add(((ZipEntry) e.nextElement()).getName());
-        }
-
-        Set<String> set2 = new LinkedHashSet<String>();
-        for (Enumeration e = file2.entries(); e.hasMoreElements();) {
-            set2.add(((ZipEntry) e.nextElement()).getName());
-        }
+        Set<String> set1 = extractEntries(file1);
+        Set<String> set2 = extractEntries(file2);
 
         int errcount = 0;
         int filecount = 0;
@@ -72,6 +65,14 @@ class ZipComparator {
             return false;
         }
         return true;
+    }
+
+    private Set<String> extractEntries(ZipFile file1) {
+        Set<String> set1 = new LinkedHashSet<String>();
+        for (Enumeration e = file1.entries(); e.hasMoreElements();) {
+            set1.add(((ZipEntry) e.nextElement()).getName());
+        }
+        return set1;
     }
 
     private ZipFile openZipFile(String filePath) {

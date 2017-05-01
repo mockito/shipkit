@@ -12,15 +12,11 @@ import org.gradle.api.publish.PublicationContainer;
 import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.api.tasks.bundling.Jar;
 import org.mockito.release.gradle.ReleaseConfiguration;
-import org.mockito.release.internal.comparison.BaseProjectProperties;
 import org.mockito.release.internal.comparison.PublicationsComparatorTask;
 import org.mockito.release.internal.gradle.util.GradleDSLHelper;
 import org.mockito.release.internal.gradle.util.PomCustomizer;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.version.VersionInfo;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import static org.mockito.release.internal.gradle.util.StringUtil.capitalize;
 
@@ -91,31 +87,17 @@ public class BaseJavaLibraryPlugin implements Plugin<Project> {
                 t.setDescription("Compares artifacts and poms between last version and the currently built one to see if there are any differences");
 
                 project.getRootProject().getPlugins().withType(
-                        VersioningPlugin.class,
-                        new Action<VersioningPlugin>() {
-                            @Override
-                            public void execute(VersioningPlugin versioningPlugin) {
-                                System.out.println("here");
-                                VersionInfo versionInfo = project.getRootProject().getExtensions().getByType(VersionInfo.class);
+                    VersioningPlugin.class,
+                    new Action<VersioningPlugin>() {
+                        @Override
+                        public void execute(VersioningPlugin versioningPlugin) {
+                        VersionInfo versionInfo = project.getRootProject().getExtensions().getByType(VersionInfo.class);
 
-                                t.setCurrentVersion(versionInfo.getVersion());
-                                t.setPreviousVersion(versionInfo.getPreviousVersion());
-//                                t.doFirst(new Action<Task>() {
-//                                    @Override
-//                                    public void execute(Task task) {
-//                                        VersionInfo versionInfo = project.getRootProject().getExtensions().getByType(VersionInfo.class);
-//
-//                                        t.setCurrentVersion(versionInfo.getVersion());
-//                                        t.setPreviousVersion(versionInfo.getPreviousVersion());
-//
-//                                        System.out.println("prev " + versionInfo.getPreviousVersion());
-//                                        System.out.println("current " + versionInfo.getVersion());
-//                                    }
-//                                });
-                            }
+                        t.setCurrentVersion(versionInfo.getVersion());
+                        t.setPreviousVersion(versionInfo.getPreviousVersion());
                         }
+                    }
                 );
-
 
                 //Let's say that the initial implementation compares sources jar. We can this API method to the task:
                 t.compareSourcesJar(sourcesJar);
@@ -126,18 +108,6 @@ public class BaseJavaLibraryPlugin implements Plugin<Project> {
 
                 t.setProjectGroup(project.getGroup().toString());
                 t.setProjectName(project.getName());
-
-                final Set<BaseProjectProperties> dependentSiblingProjects = new HashSet<BaseProjectProperties>();
-                project.getRootProject().allprojects(new Action<Project>() {
-                    @Override
-                    public void execute(Project subproject) {
-                        dependentSiblingProjects.add(
-                            new BaseProjectProperties(subproject.getGroup().toString(), subproject.getName()));
-                    }
-                });
-                t.setDependentSiblingProjects(dependentSiblingProjects);
-
-                t.setLocalRepository(project.getRepositories().mavenLocal().getUrl().getPath());
             }
         });
 

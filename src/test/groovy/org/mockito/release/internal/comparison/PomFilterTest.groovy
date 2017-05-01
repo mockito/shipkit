@@ -2,17 +2,17 @@ package org.mockito.release.internal.comparison
 
 import spock.lang.Specification
 
-class PomSiblingDependencyRemoverTest extends Specification {
+class PomFilterTest extends Specification {
 
     def input =
 """<?xml version="1.0" encoding="UTF-8"?>
 <project>
-  <version>0.3.3</version>
+  <version>0.2.2</version>
   <dependencies>
     <dependency>
       <groupId>org.assert</groupId>
       <artifactId>assertj-core</artifactId>
-      <version>0.2.1</version>
+      <version>1.3.4</version>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
@@ -22,63 +22,56 @@ class PomSiblingDependencyRemoverTest extends Specification {
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>api</artifactId>
-      <version>0.2.1</version>
+      <version>0.1.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>test</artifactId>
+      <version>0.2.2</version>
+      <classifier>test</classifier>
     </dependency>
   </dependencies>
 </project>"""
 
-    def withoutVersion =
+    def filteredOutput =
 """<project>
   <dependencies>
     <dependency>
       <groupId>org.assert</groupId>
       <artifactId>assertj-core</artifactId>
-      <version>0.2.1</version>
+      <version>1.3.4</version>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>core</artifactId>
-      <version>0.2.1</version>
+      <version>0.2.2</version>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>api</artifactId>
-      <version>0.2.1</version>
+      <version>0.1.5</version>
     </dependency>
-  </dependencies>
-</project>
-"""
-
-    def withoutVersionAndSiblingDependencies =
-"""<project>
-  <dependencies>
     <dependency>
-      <groupId>org.assert</groupId>
-      <artifactId>assertj-core</artifactId>
-      <version>0.2.1</version>
+      <groupId>org.mockito</groupId>
+      <artifactId>test</artifactId>
+      <version>0.2.2</version>
+      <classifier>test</classifier>
     </dependency>
   </dependencies>
 </project>
 """
 
+    def underTest = new PomFilter(
+            previousVersion: "0.2.1",
+            currentVersion: "0.2.2",
+            projectGroup: "org.mockito")
 
-    def "removes version and all dependencies on sibling projects"(){
+    def "removes version and sets all dependencies of the same projectGroup to the proper version"(){
         when:
-        def result = new PomSiblingDependencyRemover().removeSiblingDependencies(input,
-                [new BaseProjectProperties("org.mockito", "api"),
-                 new BaseProjectProperties("org.mockito", "core")] as Set)
+        def result = underTest.filter(input)
 
         then:
-        result == withoutVersionAndSiblingDependencies
-    }
-
-    def "ignores independent sibling projects"(){
-        when:
-        def result = new PomSiblingDependencyRemover().removeSiblingDependencies(input,
-                [new BaseProjectProperties("org.mockito", "independent")] as Set)
-
-        then:
-        result == withoutVersion
+        result == filteredOutput
     }
 
     def "parses correctly poms without dependencies tag"(){
@@ -88,8 +81,7 @@ class PomSiblingDependencyRemoverTest extends Specification {
                 "</project>"
 
         when:
-        def result = new PomSiblingDependencyRemover().removeSiblingDependencies(emptyPom,
-                [new BaseProjectProperties("org.mockito", "independent")] as Set)
+        def result = underTest.filter(emptyPom)
 
         then:
         result == "<project/>\n"
@@ -103,8 +95,7 @@ class PomSiblingDependencyRemoverTest extends Specification {
                 "</project>"
 
         when:
-        def result = new PomSiblingDependencyRemover().removeSiblingDependencies(emptyPom,
-                [new BaseProjectProperties("org.mockito", "independent")] as Set)
+        def result = underTest.filter(emptyPom)
 
         then:
         result == "<project>\n  <dependencies/>\n</project>\n"

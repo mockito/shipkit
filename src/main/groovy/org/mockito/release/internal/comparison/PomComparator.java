@@ -1,31 +1,33 @@
 package org.mockito.release.internal.comparison;
 
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
+import org.mockito.release.notes.util.IOUtil;
 
-import java.util.Set;
+import java.io.File;
 
 import static org.mockito.release.internal.util.ArgumentValidation.notNull;
 
-class PomComparator {
+class PomComparator implements FileComparator{
 
-    private static final Logger log = Logging.getLogger(PomComparator.class);
+    private final PomFilter pomFilter;
 
-    private final String left;
-    private final String right;
-    private final Set<BaseProjectProperties> dependentSiblingProjects;
-
-    PomComparator(String left, String right, Set<BaseProjectProperties> dependentSiblingProjects) {
-        notNull(left, "pom content to compare", right, "pom content to compare");
-        this.left = left;
-        this.right = right;
-        this.dependentSiblingProjects = dependentSiblingProjects;
+    PomComparator(String projectGroup, String previousVersion, String currentVersion) {
+        notNull(projectGroup, "project group", previousVersion, "previous version",
+                currentVersion, "current version");
+        this.pomFilter =
+                new PomFilter(projectGroup, previousVersion, currentVersion);
     }
 
-    boolean areEqual() {
-        PomSiblingDependencyRemover remover = new PomSiblingDependencyRemover();
-        String parsedLeft = remover.removeSiblingDependencies(left, dependentSiblingProjects);
-        String parsedRight = remover.removeSiblingDependencies(right, dependentSiblingProjects);
+    PomComparator(PomFilter pomFilter){
+        this.pomFilter = pomFilter;
+    }
+
+    public boolean areEqual(File leftFile, File rightFile) {
+        notNull(leftFile, "pom content to compare", rightFile, "pom content to compare");
+        String left = IOUtil.readFully(leftFile);
+        String right = IOUtil.readFully(rightFile);
+
+        String parsedLeft = pomFilter.filter(left);
+        String parsedRight = pomFilter.filter(right);
         return parsedLeft.equals(parsedRight);
     }
 }

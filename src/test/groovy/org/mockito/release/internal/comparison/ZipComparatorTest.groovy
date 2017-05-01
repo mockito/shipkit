@@ -27,14 +27,14 @@ class ZipComparatorTest extends Specification {
     }
 
     def "fails early when any of the zips cannot be opened"() {
-        when: new ZipComparator().compareFiles(new File("foox"), new File("bar"))
+        when: new ZipComparator().areEqual(new File("foox"), new File("bar"))
         then:
         def ex = thrown(ZipComparator.ZipCompareException)
         ex.message.contains("foox")
     }
 
     private static boolean eq(File z1, File z2) {
-        new ZipComparator().compareFiles(z1, z2) &&
-                new ZipComparator().compareFiles(z2, z1)
+        new ZipComparator().areEqual(z1, z2) &&
+                new ZipComparator().areEqual(z2, z1)
     }
 }
