@@ -82,6 +82,7 @@ public class BaseJavaLibraryPlugin implements Plugin<Project> {
             }
         });
 
+        //TODO (big one). Figure out how to make this task incremental and avoid downloads each time it runs
         TaskMaker.task(project, COMPARE_PUBLICATIONS_TASK, PublicationsComparatorTask.class, new Action<PublicationsComparatorTask>() {
             public void execute(final PublicationsComparatorTask t) {
                 t.setDescription("Compares artifacts and poms between last version and the currently built one to see if there are any differences");
