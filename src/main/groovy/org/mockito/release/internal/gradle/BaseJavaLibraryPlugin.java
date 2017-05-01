@@ -88,6 +88,11 @@ public class BaseJavaLibraryPlugin implements Plugin<Project> {
 
                 t.setCurrentVersion(project.getVersion().toString());
 
+                //TODO WW, let's replace below with conf.previousReleaseVersion
+                //For reference see how conf.notableRelease is implemented
+                //org.mockito.release.gradle.ReleaseConfiguration.isNotableRelease()
+                //This will greatly simplify the code below, we should be able to do just:
+                //  t.setPreviousVersion(conf.previousReleaseVersion);
                 project.getRootProject().getPlugins().withType(
                     VersioningPlugin.class,
                     new Action<VersioningPlugin>() {
