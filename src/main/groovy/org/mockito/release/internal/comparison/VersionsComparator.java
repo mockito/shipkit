@@ -38,7 +38,7 @@ class VersionsComparator {
         String previousFileRemoteUrl = getRemoteUrl(extension);
         File previousFileLocalUrl = getTempStorageUrl(previousVersion, extension);
 
-        LOG.info("Downloading remote artifact\n" +
+        LOG.lifecycle("Downloading remote artifact\n" +
                 "  - from {}\n" +
                 "  - and saving it to {}", previousFileRemoteUrl, previousFileLocalUrl);
 
