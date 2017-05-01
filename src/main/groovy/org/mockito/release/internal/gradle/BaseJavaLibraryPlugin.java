@@ -86,6 +86,8 @@ public class BaseJavaLibraryPlugin implements Plugin<Project> {
             public void execute(final PublicationsComparatorTask t) {
                 t.setDescription("Compares artifacts and poms between last version and the currently built one to see if there are any differences");
 
+                t.setCurrentVersion(project.getVersion().toString());
+
                 project.getRootProject().getPlugins().withType(
                     VersioningPlugin.class,
                     new Action<VersioningPlugin>() {
@@ -93,7 +95,7 @@ public class BaseJavaLibraryPlugin implements Plugin<Project> {
                         public void execute(VersioningPlugin versioningPlugin) {
                         VersionInfo versionInfo = project.getRootProject().getExtensions().getByType(VersionInfo.class);
 
-                        t.setCurrentVersion(versionInfo.getVersion());
+                        t.setCurrentVersion(project.getVersion().toString());
                         t.setPreviousVersion(versionInfo.getPreviousVersion());
                         }
                     }
