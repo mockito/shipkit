@@ -207,6 +207,12 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
 
                 project.allprojects(new Action<Project>() {
                     public void execute(final Project subproject) {
+                        //TODO WW, let's push out the complexity of comparing publications out of BaseJavaLibraryPlugin
+                        //into a separate plugin, something like 'PublicationsComparatorPlugin'
+                        //This way, we make the plugins smaller, more fine granular, easier to reuse and comprehend
+                        //The new plugin depends on sources jar and pom gen task so
+                        // 'PublicationsComparatorPlugin' task should first apply 'BaseJavaLibraryPlugin'
+                        //when we do that, the code below should use "withType(PublicationsComparatorPlugin.class)"
                         subproject.getPlugins().withType(BaseJavaLibraryPlugin.class, new Action<BaseJavaLibraryPlugin>() {
                             public void execute(BaseJavaLibraryPlugin p) {
                                 // make this task depend on all comparePublications tasks
