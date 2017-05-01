@@ -37,6 +37,7 @@ public class PublicationsComparatorTask extends DefaultTask implements Publicati
 
         GenerateMavenPom pomTask = (GenerateMavenPom) getProject().getTasks().getByName(pomTaskName);
 
+        //TODO let's add decent validation and descriptive error messages to the user
         assert pomTask.getDestination().isFile();
         assert sourcesJar.getArchivePath().isFile();
 
