@@ -217,7 +217,10 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                             public void execute(BaseJavaLibraryPlugin p) {
                                 // make this task depend on all comparePublications tasks
                                 Task task = subproject.getTasks().getByName(BaseJavaLibraryPlugin.COMPARE_PUBLICATIONS_TASK);
-                                t.addPublicationsComparator((PublicationsComparatorTask) task);
+
+                                //TODO WW, removing comparing publications from the workflow for now
+                                //by commenting out below code
+                                //t.addPublicationsComparator((PublicationsComparatorTask) task);
                             }
                         });
                     }
