@@ -34,20 +34,9 @@ public class GitPlugin implements Plugin<Project> {
     static final String SET_USER_TASK = "setGitUserName";
     static final String SET_EMAIL_TASK = "setGitUserEmail";
 
-    public static class GitStatus {
-        String getBranch() {
-            //TODO:
-            //1. probably a separate class to keep clean
-            //2. should exec out to git to get current branch
-            //3. should keep state and be synchronized and exec out only once
-            return "sf"; //the branch I usually work on :P
-        }
-    }
-
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
-
-        project.getExtensions().create(GitPlugin.class.getName(), GitStatus.class);
+        final GitStatusPlugin.GitStatus gitStatus = project.getPlugins().apply(GitStatusPlugin.class).getGitStatus();
 
         TaskMaker.execTask(project, COMMIT_TASK, new Action<Exec>() {
             public void execute(final Exec t) {
@@ -85,7 +74,7 @@ public class GitPlugin implements Plugin<Project> {
 
                 lazyConfiguration(t, new Runnable() {
                     public void run() {
-                        t.setCommandLine(GitUtil.getGitPushArgs(conf, project));
+                        t.setCommandLine(GitUtil.getGitPushArgs(conf, project, gitStatus.getBranch()));
                         t.setSecretValue(conf.getGitHub().getWriteAuthToken());
                     }
                 });
@@ -131,7 +120,7 @@ public class GitPlugin implements Plugin<Project> {
                 t.setDescription("Checks out the branch that can be committed. CI systems often check out revision that is not committable.");
                 lazyConfiguration(t, new Runnable() {
                     public void run() {
-                        t.commandLine("git", "checkout", conf.getBuild().getBranch());
+                        t.commandLine("git", "checkout", gitStatus.getBranch());
                     }
                 });
             }

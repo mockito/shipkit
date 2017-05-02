@@ -30,6 +30,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
+        final GitStatusPlugin.GitStatus gitStatus = project.getPlugins().apply(GitStatusPlugin.class).getGitStatus();
         project.getPlugins().apply(VersioningPlugin.class);
         project.getPlugins().apply(ContributorsPlugin.class);
 
@@ -54,7 +55,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
 
                 lazyConfiguration(task, new Runnable() {
                     public void run() {
-                        configureNotableNotes(project, gen, conf);
+                        configureNotableNotes(project, gen, conf, gitStatus);
                     }
                 });
             }
@@ -70,7 +71,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
 
                 lazyConfiguration(task, new Runnable() {
                     public void run() {
-                        configureNotableNotes(project, gen, conf);
+                        configureNotableNotes(project, gen, conf, gitStatus);
                     }
                 });
             }
@@ -100,12 +101,12 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         gen.setTemporarySerializedNotesFile(getTemporaryReleaseNotesFile(project));
     }
 
-    private static void configureNotableNotes(Project project, NotesGeneration gen, ReleaseConfiguration conf) {
+    private static void configureNotableNotes(Project project, NotesGeneration gen, ReleaseConfiguration conf, GitStatusPlugin.GitStatus gitStatus) {
         gen.setGitHubReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
         gen.setGitHubRepository(conf.getGitHub().getRepository());
         gen.setOutputFile(project.file(conf.getReleaseNotes().getNotableFile()));
         gen.setVcsCommitsLinkTemplate("https://github.com/" + conf.getGitHub().getRepository() + "/compare/{0}...{1}");
-        gen.setDetailedReleaseNotesLink(conf.getGitHub().getRepository() + "/blob/" + conf.getBuild().getBranch() + "/" + conf.getReleaseNotes().getNotableFile());
+        gen.setDetailedReleaseNotesLink(conf.getGitHub().getRepository() + "/blob/" + gitStatus.getBranch() + "/" + conf.getReleaseNotes().getNotableFile());
     }
 
     private static File getTemporaryReleaseNotesFile(Project project){

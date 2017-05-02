@@ -24,6 +24,8 @@ public class TravisPlugin implements Plugin<Project> {
         project.getPlugins().apply(GitPlugin.class);
         ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
 
+        final GitStatusPlugin.GitStatus gitStatus = project.getExtensions().getByType(GitStatusPlugin.GitStatus.class);
+
         String buildNo = System.getenv("TRAVIS_BUILD_NUMBER");
         if (buildNo != null) {
             conf.getGit().setCommitMessagePostfix("by Travis CI build " + buildNo + " [ci skip]");
@@ -35,7 +37,7 @@ public class TravisPlugin implements Plugin<Project> {
         boolean isPullRequest = pr != null && !pr.trim().isEmpty() && !pr.equals("false");
 
         conf.getBuild().setCommitMessage(System.getenv("TRAVIS_COMMIT_MESSAGE"));
-        conf.getBuild().setBranch(System.getenv("TRAVIS_BRANCH"));
+        gitStatus.setBranchName(System.getenv("TRAVIS_BRANCH"));
         //TODO until we implement logic that gets the current branch we require to set TRAVIS_BRANCH even for local testing
         //This is very annoying.
         //We should create a utilty class/method (GitUtil) that identifies the branch by forking off git process.
