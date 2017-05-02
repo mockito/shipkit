@@ -26,6 +26,7 @@ public class ReleaseConfiguration {
     private final Build build = new Build();
 
     private boolean notableRelease;
+    private String previousReleaseVersion;
 
     public ReleaseConfiguration() {
         //Configure default values
@@ -83,6 +84,21 @@ public class ReleaseConfiguration {
      */
     public boolean isNotableRelease() {
         return notableRelease;
+    }
+
+    /**
+     * See {@link #getPreviousReleaseVersion()}
+     */
+    public void setPreviousReleaseVersion(String previousReleaseVersion) {
+        this.previousReleaseVersion = previousReleaseVersion;
+    }
+
+    /**
+     * Return last previously released version number
+     * See {@link org.mockito.release.version.VersionInfo#getPreviousVersion()}
+     */
+    public String getPreviousReleaseVersion() {
+        return previousReleaseVersion;
     }
 
     /**

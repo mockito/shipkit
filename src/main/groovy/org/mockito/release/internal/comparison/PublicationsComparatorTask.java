@@ -17,10 +17,10 @@ public class PublicationsComparatorTask extends DefaultTask implements Publicati
     private String previousVersion;
     private Jar sourcesJar;
     private String pomTaskName;
-    // default remote url resolver
 
-    //TODO WW, per discussion via email, we can simplify that by just offering String property for user-supplied url
-    private RemoteUrlResolver remoteUrlResolver = new BintrayRemoteUrlResolver();
+    private String previousVersionPomUrl;
+    private String previousVersionSourcesJarUrl;
+
     private File tempStorageDirectory;
 
     public boolean isPublicationsEqual() {
@@ -44,17 +44,19 @@ public class PublicationsComparatorTask extends DefaultTask implements Publicati
         File currentVersionPomPath = pomTask.getDestination();
         File currentVersionSourcesJarPath = sourcesJar.getArchivePath();
 
+        projectName = sourcesJar.getBaseName();
+
         getLogger().lifecycle("{} - about to compare publications, for versions {} and {}",
                     getPath(), previousVersion, currentVersion);
 
         tempStorageDirectory = extractTempStorageDirectoryFromPomPath(currentVersionPomPath);
 
         PomComparator pomComparator = new PomComparator(projectGroup, previousVersion, currentVersion);
-        boolean poms = createVersionsComparator(pomComparator, ".pom", currentVersionPomPath).compare();
+        boolean poms = createVersionsComparator(pomComparator, ".pom", currentVersionPomPath, previousVersionPomUrl).compare();
         getLogger().lifecycle("{} - pom files equal: {}", getPath(), poms);
 
         ZipComparator sourcesJarComparator = new ZipComparator();
-        boolean jars = createVersionsComparator(sourcesJarComparator, "-sources.jar", currentVersionSourcesJarPath).compare();
+        boolean jars = createVersionsComparator(sourcesJarComparator, "-sources.jar", currentVersionSourcesJarPath, previousVersionSourcesJarUrl).compare();
         getLogger().lifecycle("{} - source jars equal: {}", getPath(), jars);
 
         this.publicationsEqual = jars && poms;
@@ -75,10 +77,10 @@ public class PublicationsComparatorTask extends DefaultTask implements Publicati
         this.dependsOn(pomTaskName);
     }
 
-    private VersionsComparator createVersionsComparator(FileComparator fileComparator, String extension, File currentVersionFile) {
+    private VersionsComparator createVersionsComparator(FileComparator fileComparator, String extension, File currentVersionFile, String previousVersionFileUrl) {
         VersionsComparator comparator = new VersionsComparator();
         comparator.setFileComparator(fileComparator);
-        comparator.setRemoteUrlResolver(remoteUrlResolver);
+        comparator.setPreviousVersionFileRemoteUrl(previousVersionFileUrl);
         comparator.setProjectGroup(projectGroup);
         comparator.setProjectName(projectName);
         comparator.setPreviousVersion(previousVersion);
@@ -124,12 +126,19 @@ public class PublicationsComparatorTask extends DefaultTask implements Publicati
         this.previousVersion = previousVersion;
     }
 
-    public RemoteUrlResolver getRemoteUrlResolver() {
-        return remoteUrlResolver;
+    public String getPreviousVersionPomUrl() {
+        return previousVersionPomUrl;
     }
 
-    public void setRemoteUrlResolver(RemoteUrlResolver remoteUrlResolver) {
-        this.remoteUrlResolver = remoteUrlResolver;
+    public void setPreviousVersionPomUrl(String previousVersionPomUrl) {
+        this.previousVersionPomUrl = previousVersionPomUrl;
     }
 
+    public String getPreviousVersionSourcesJarUrl() {
+        return previousVersionSourcesJarUrl;
+    }
+
+    public void setPreviousVersionSourcesJarUrl(String previousVersionSourcesJarUrl) {
+        this.previousVersionSourcesJarUrl = previousVersionSourcesJarUrl;
+    }
 }

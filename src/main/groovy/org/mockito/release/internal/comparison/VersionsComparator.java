@@ -11,16 +11,16 @@ class VersionsComparator {
     private static final Logger LOG = Logging.getLogger(VersionsComparator.class);
 
     private FileComparator fileComparator;
-    private RemoteUrlResolver remoteUrlResolver;
     private String projectGroup;
     private String projectName;
     private String previousVersion;
     private String extension;
     private File currentVersionFileLocalUrl;
     private File tempStorageDir;
+    private String previousVersionFileRemoteUrl;
 
     /**
-     * downloads remote artifact for {@link #previousVersion}, saves it to {@link #tempStorageDir}
+     * downloads remote artifact from {@link #previousVersionFileRemoteUrl}, saves it to {@link #tempStorageDir}
      * and compares it to the corresponding artifact for current version
      * @return result of comparison
      */
@@ -35,19 +35,14 @@ class VersionsComparator {
     }
 
     private File downloadRemoteFile(String extension) {
-        String previousFileRemoteUrl = getRemoteUrl(extension);
         File previousFileLocalUrl = getTempStorageUrl(previousVersion, extension);
 
         LOG.lifecycle("Downloading remote artifact\n" +
                 "  - from {}\n" +
-                "  - and saving it to {}", previousFileRemoteUrl, previousFileLocalUrl);
+                "  - and saving it to {}", previousVersionFileRemoteUrl, previousFileLocalUrl);
 
-        IOUtil.downloadToFile(previousFileRemoteUrl, previousFileLocalUrl);
+        IOUtil.downloadToFile(previousVersionFileRemoteUrl, previousFileLocalUrl);
         return previousFileLocalUrl;
-    }
-
-    private String getRemoteUrl(String extension){
-        return remoteUrlResolver.resolveUrl(projectGroup, projectName, previousVersion, extension);
     }
 
     private File getTempStorageUrl(String version, String extension){
@@ -62,14 +57,6 @@ class VersionsComparator {
 
     public void setFileComparator(FileComparator fileComparator) {
         this.fileComparator = fileComparator;
-    }
-
-    public RemoteUrlResolver getRemoteUrlResolver() {
-        return remoteUrlResolver;
-    }
-
-    public void setRemoteUrlResolver(RemoteUrlResolver remoteUrlResolver) {
-        this.remoteUrlResolver = remoteUrlResolver;
     }
 
     public String getProjectGroup() {
@@ -118,5 +105,13 @@ class VersionsComparator {
 
     public void setTempStorageDir(File tempStorageDir) {
         this.tempStorageDir = tempStorageDir;
+    }
+
+    public String getPreviousVersionFileRemoteUrl() {
+        return previousVersionFileRemoteUrl;
+    }
+
+    public void setPreviousVersionFileRemoteUrl(String previousVersionFileRemoteUrl) {
+        this.previousVersionFileRemoteUrl = previousVersionFileRemoteUrl;
     }
 }

@@ -36,6 +36,7 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
             }
 
             configuration.setNotableRelease(info.isNotableRelease());
+            configuration.setPreviousReleaseVersion(info.getPreviousVersion());
         } else {
             //not root project, get extension from root project
             configuration = project.getRootProject().getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
