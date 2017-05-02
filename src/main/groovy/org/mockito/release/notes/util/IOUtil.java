@@ -1,6 +1,7 @@
 package org.mockito.release.notes.util;
 
 import java.io.*;
+import java.net.URL;
 import java.util.Scanner;
 
 /**
@@ -41,6 +42,53 @@ public class IOUtil {
                 closeable.close();
             } catch (IOException e) {
                 throw new RuntimeException("Problems closing stream", e);
+            }
+        }
+    }
+
+    public static void createParentDirectory(File file){
+        createDirectory(file.getParentFile());
+    }
+
+    public static void createDirectory(File file) {
+        if(!file.exists()){
+            createDirectory(file.getParentFile());
+            file.mkdir();
+        }
+    }
+
+    /**
+     * Downloads resource and saves it to a given file
+     * @param url location of resource to download
+     * @param file destination file (not a directory!) where downloaded content will be stored
+     *             (file or its parent directories don't need to exist)
+     */
+    public static void downloadToFile(String url, File file){
+        InputStream input = null;
+        FileOutputStream output = null;
+        try {
+            input = new BufferedInputStream(new URL(url).openStream());
+
+            IOUtil.createParentDirectory(file);
+
+            FileOutputStream fos = new FileOutputStream(file);
+            byte[] buf = new byte[1024];
+            int n;
+            while ((n=input.read(buf)) != -1) {
+                fos.write(buf, 0, n);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally{
+            try {
+                if (input != null) {
+                    input.close();
+                }
+                if (output != null) {
+                    output.close();
+                }
+            } catch(IOException e){
+                throw new RuntimeException(e);
             }
         }
     }

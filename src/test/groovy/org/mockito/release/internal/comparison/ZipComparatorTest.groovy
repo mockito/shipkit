@@ -3,39 +3,38 @@ package org.mockito.release.internal.comparison
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
+import testutil.ZipMaker
 
 class ZipComparatorTest extends Specification {
 
     @Rule TemporaryFolder tmp = new TemporaryFolder()
-    def compare = Mock(ZipCompare)
 
-    def "compares files"() {
-        def f1 = tmp.newFile()
-        def f2 = tmp.newFile()
+    def "compares zips"() {
+        ZipMaker zip = new ZipMaker(tmp.newFolder())
 
-        when: def result = new ZipComparator(compare).setPair({ f1 }, { f2 }).compareFiles()
+        File zip1 =             zip.newZip("1.txt", "1", "x/2.txt", "2", "x/y/3.txt", "3", "x/y/4.txt", "4")
+        File zip2 =             zip.newZip("1.txt", "1", "x/2.txt", "2", "x/y/3.txt", "3", "x/y/4.txt", "4")
+        File differentContent = zip.newZip("1.txt", "1", "x/2.txt", "2", "x/y/3.txt", "3", "x/y/4.txt", "XX")
+        File missingFile      = zip.newZip("1.txt", "1", "x/2.txt", "2", "x/y/3.txt", "3")
+        File extraFile        = zip.newZip("1.txt", "1", "x/2.txt", "2", "x/y/3.txt", "3", "x/y/4.txt", "4", "x.txt", "")
 
-        then:
-        1 * compare.compareZips(f1.absolutePath, f2.absolutePath) >> true
-        0 * _
+        expect:
+        eq zip1, zip2
 
-        and:
-        result.areEqual()
+        !eq(zip1, differentContent)
+        !eq(zip1, missingFile)
+        !eq(zip1, extraFile)
     }
 
-    def "detects not equal zips"() {
-        def f1 = tmp.newFile() << "asdf"
-        def f2 = tmp.newFile() << "asdf\n"
-
-        when:
-        def result = new ZipComparator(compare).setPair({ f1 }, { f2 }).compareFiles()
-
+    def "fails early when any of the zips cannot be opened"() {
+        when: new ZipComparator().areEqual(new File("foox"), new File("bar"))
         then:
-        result.file1.absolutePath == f1.absolutePath
-        result.file2.absolutePath == f2.absolutePath
+        def ex = thrown(ZipComparator.ZipCompareException)
+        ex.message.contains("foox")
+    }
 
-        and:
-        1 * compare.compareZips(f1.absolutePath, f2.absolutePath) >> false
-        !result.areEqual()
+    private static boolean eq(File z1, File z2) {
+        new ZipComparator().areEqual(z1, z2) &&
+                new ZipComparator().areEqual(z2, z1)
     }
 }

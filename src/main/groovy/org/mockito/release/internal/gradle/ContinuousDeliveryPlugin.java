@@ -195,7 +195,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                 .setDescription("Checks and prints to the console if criteria for the release are met.");
     }
 
-    private static ReleaseNeededTask releaseNeededTask(Project project, String taskName, final ReleaseConfiguration conf) {
+    private static ReleaseNeededTask releaseNeededTask(final Project project, String taskName, final ReleaseConfiguration conf) {
         return TaskMaker.task(project, taskName, ReleaseNeededTask.class, new Action<ReleaseNeededTask>() {
             public void execute(final ReleaseNeededTask t) {
                 t.setDescription("Asserts that criteria for the release are met and throws exception if release not needed.");
@@ -203,6 +203,27 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                 t.setExplosive(true);
                 t.setCommitMessage(conf.getBuild().getCommitMessage());
                 t.setPullRequest(conf.getBuild().isPullRequest());
+
+                project.allprojects(new Action<Project>() {
+                    public void execute(final Project subproject) {
+                        //TODO WW, let's push out the complexity of comparing publications out of BaseJavaLibraryPlugin
+                        //into a separate plugin, something like 'PublicationsComparatorPlugin'
+                        //This way, we make the plugins smaller, more fine granular, easier to reuse and comprehend
+                        //The new plugin depends on sources jar and pom gen task so
+                        // 'PublicationsComparatorPlugin' task should first apply 'BaseJavaLibraryPlugin'
+                        //when we do that, the code below should use "withType(PublicationsComparatorPlugin.class)"
+                        subproject.getPlugins().withType(BaseJavaLibraryPlugin.class, new Action<BaseJavaLibraryPlugin>() {
+                            public void execute(BaseJavaLibraryPlugin p) {
+                                // make this task depend on all comparePublications tasks
+                                Task task = subproject.getTasks().getByName(BaseJavaLibraryPlugin.COMPARE_PUBLICATIONS_TASK);
+
+                                //TODO WW, removing comparing publications from the workflow for now
+                                //by commenting out below code
+                                //t.addPublicationsComparator((PublicationsComparatorTask) task);
+                            }
+                        });
+                    }
+                });
 
                 lazyConfiguration(t, new Runnable() {
                     public void run() {

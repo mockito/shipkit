@@ -1,67 +1,57 @@
 package org.mockito.release.internal.comparison
 
+import org.junit.Rule
+import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 
 class PomComparatorTest extends Specification {
 
-    def "compares poms"() {
-        def pom = """<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.mockito</groupId>
-  <artifactId>mockito-core</artifactId>
-  <version>1.10.11</version>
-  <dependencies>
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-core</artifactId>
-      <version>1.1</version>
-      <scope>runtime</scope>
-    </dependency>
-  </dependencies>
-</project>"""
+    @Rule
+    TemporaryFolder tmp = new TemporaryFolder()
 
-        def differentVersion = """<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.mockito</groupId>
-  <artifactId>mockito-core</artifactId>
-  <version>1.10.12</version>
-  <dependencies>
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-core</artifactId>
-      <version>1.1</version>
-      <scope>runtime</scope>
-    </dependency>
-  </dependencies>
-</project>"""
+    def "compares poms correctly"(String leftParsedContent, String rightParsedContent, boolean expectedResult) {
+        given:
+        PomFilter remover = Mock(PomFilter)
+        PomComparator pomComparator = new PomComparator(remover)
 
-        def differentDependencyVersion = """<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.mockito</groupId>
-  <artifactId>mockito-core</artifactId>
-  <version>1.10.12</version>
-  <dependencies>
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-core</artifactId>
-      <version>1.2</version>
-      <scope>runtime</scope>
-    </dependency>
-  </dependencies>
-</project>"""
+        def leftFile = tmp.newFile("left")
+        def rightFile = tmp.newFile("right")
+
+        def leftContent = "leftOriginalContent"
+        def rightContent = "rightOriginalContent"
+
+        leftFile << leftContent
+        rightFile << rightContent
+
+        remover.filter(leftContent) >> leftParsedContent
+        remover.filter(rightContent) >> rightParsedContent
 
         expect:
-        new PomComparator().setPair({pom}, {pom}).areEqual()
-        new PomComparator().setPair({pom}, {differentVersion}).areEqual()
-        !new PomComparator().setPair({pom}, {differentDependencyVersion}).areEqual()
+        pomComparator.areEqual(leftFile, rightFile) == expectedResult
+
+        where:
+        leftParsedContent | rightParsedContent    | expectedResult
+        "leftContent"     | "rightParsedContent"  | false
+        "sameContent"     | "sameContent"         | true
     }
 
-    def "does not allow null content"() {
+    def "does not allow null projectGroup"() {
         when:
-        new PomComparator().setPair({null}, {null}).areEqual()
+        new PomComparator(null, "0.1", "0.2").areEqual()
+        then:
+        thrown(IllegalArgumentException)
+    }
+
+    def "does not allow null previousVersion"() {
+        when:
+        new PomComparator("org.mockito", null, "0.2").areEqual()
+        then:
+        thrown(IllegalArgumentException)
+    }
+
+    def "does not allow null currentVersion"() {
+        when:
+        new PomComparator("org.mockito", "0.1", null).areEqual()
         then:
         thrown(IllegalArgumentException)
     }

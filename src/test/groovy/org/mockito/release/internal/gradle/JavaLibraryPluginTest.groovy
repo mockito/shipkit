@@ -5,7 +5,7 @@ import spock.lang.Specification
 
 class JavaLibraryPluginTest extends Specification {
 
-    def project = new ProjectBuilder().build()
+    def project = new ProjectBuilder().withParent().build()
 
     def "applies"() {
         project.ext.bintray_repo = "my-repo"

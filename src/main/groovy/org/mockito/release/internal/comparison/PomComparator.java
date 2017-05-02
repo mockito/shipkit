@@ -1,31 +1,33 @@
 package org.mockito.release.internal.comparison;
 
-import groovy.lang.Closure;
+import org.mockito.release.notes.util.IOUtil;
+
+import java.io.File;
 
 import static org.mockito.release.internal.util.ArgumentValidation.notNull;
 
-class PomComparator {
+class PomComparator implements FileComparator{
 
-    private Closure<String> left;
-    private Closure<String> right;
+    private final PomFilter pomFilter;
 
-    PomComparator setPair(Closure<String> left, Closure<String> right) {
-        notNull(left, "pom content to compare", right, "pom content to compare");
-        this.left = left;
-        this.right = right;
-        return this;
+    PomComparator(String projectGroup, String previousVersion, String currentVersion) {
+        notNull(projectGroup, "project group", previousVersion, "previous version",
+                currentVersion, "current version");
+        this.pomFilter =
+                new PomFilter(projectGroup, previousVersion, currentVersion);
     }
 
-    boolean areEqual() {
-        String left = this.left.call();
-        String right = this.right.call();
-
-        notNull(left, "pom content to compare", right, "pom content to compare");
-
-        return replaceVersion(left).equals(replaceVersion(right));
+    PomComparator(PomFilter pomFilter){
+        this.pomFilter = pomFilter;
     }
 
-    private String replaceVersion(String pom) {
-        return pom.replaceFirst("<version>(.*)</version>", "<version>foobar</version>");
+    public boolean areEqual(File leftFile, File rightFile) {
+        notNull(leftFile, "pom content to compare", rightFile, "pom content to compare");
+        String left = IOUtil.readFully(leftFile);
+        String right = IOUtil.readFully(rightFile);
+
+        String parsedLeft = pomFilter.filter(left);
+        String parsedRight = pomFilter.filter(right);
+        return parsedLeft.equals(parsedRight);
     }
 }

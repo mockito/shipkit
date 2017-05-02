@@ -5,6 +5,10 @@ import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskAction;
+import org.mockito.release.internal.comparison.PublicationsComparator;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Decides if the release is needed.
@@ -25,9 +29,11 @@ public class ReleaseNeededTask extends DefaultTask {
 
     private String branch;
     private String releasableBranchRegex;
+    private final List<PublicationsComparator> publicationsComparators = new LinkedList<PublicationsComparator>();
     private String commitMessage;
     private boolean pullRequest;
     private boolean explosive;
+    private boolean releaseNotNeeded;
 
     /**
      * The branch we currently operate on
@@ -113,19 +119,41 @@ public class ReleaseNeededTask extends DefaultTask {
         boolean releasableBranch = branch != null && branch.matches(releasableBranchRegex);
         LOG.lifecycle("  Current branch '{}' matches '{}': {}", branch, releasableBranchRegex, releasableBranch);
 
-        boolean notNeeded = skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
+        boolean allPublicationsEqual = areAllPublicationsEqual();
 
-        String message = "  Release is needed: " + !notNeeded +
+        // add unit tests for release not needed
+        releaseNotNeeded = allPublicationsEqual || skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
+
+        String message = "  Release is needed: " + !releaseNotNeeded +
                 "\n    - skip by env variable: " + skipEnvVariable +
                 "\n    - skip by commit message: " + skippedByCommitMessage +
                 "\n    - is pull request build:  " + pullRequest +
-                "\n    - is releasable branch:  " + releasableBranch;
+                "\n    - is releasable branch:  " + releasableBranch +
+                "\n    - anything changed in publications since the previous release:  " + !allPublicationsEqual;
 
-        //TODO SF worth unit testing in some way :)
-        if (notNeeded && explosive) {
+        if (releaseNotNeeded && explosive) {
             throw new GradleException(message);
         } else {
             LOG.lifecycle(message);
         }
+    }
+
+    public void addPublicationsComparator(PublicationsComparator task) {
+        this.dependsOn(task);
+        publicationsComparators.add(task);
+    }
+
+    boolean areAllPublicationsEqual(){
+        boolean allEqual = true;
+
+        for(PublicationsComparator comparator : publicationsComparators){
+            allEqual &= comparator.isPublicationsEqual();
+        }
+
+        return allEqual;
+    }
+
+    boolean isReleaseNotNeeded(){
+        return releaseNotNeeded;
     }
 }
