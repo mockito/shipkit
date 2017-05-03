@@ -12,8 +12,8 @@ import org.mockito.release.gradle.SecureExecTask;
 import org.mockito.release.internal.gradle.util.GitUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 
-import static org.mockito.release.internal.gradle.configuration.LazyConfiguration.lazyConfiguration;
 import static org.mockito.release.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
+import static org.mockito.release.internal.gradle.configuration.LazyConfiguration.lazyConfiguration;
 import static org.mockito.release.internal.gradle.util.GitUtil.getTag;
 import static org.mockito.release.internal.gradle.util.StringUtil.join;
 
@@ -36,6 +36,7 @@ public class GitPlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
+        final GitStatusPlugin.GitStatus gitStatus = project.getPlugins().apply(GitStatusPlugin.class).getGitStatus();
 
         TaskMaker.execTask(project, COMMIT_TASK, new Action<Exec>() {
             public void execute(final Exec t) {
@@ -73,7 +74,7 @@ public class GitPlugin implements Plugin<Project> {
 
                 lazyConfiguration(t, new Runnable() {
                     public void run() {
-                        t.setCommandLine(GitUtil.getGitPushArgs(conf, project));
+                        t.setCommandLine(GitUtil.getGitPushArgs(conf, project, gitStatus.getBranch()));
                         t.setSecretValue(conf.getGitHub().getWriteAuthToken());
                     }
                 });
@@ -119,7 +120,7 @@ public class GitPlugin implements Plugin<Project> {
                 t.setDescription("Checks out the branch that can be committed. CI systems often check out revision that is not committable.");
                 lazyConfiguration(t, new Runnable() {
                     public void run() {
-                        t.commandLine("git", "checkout", conf.getBuild().getBranch());
+                        t.commandLine("git", "checkout", gitStatus.getBranch());
                     }
                 });
             }
