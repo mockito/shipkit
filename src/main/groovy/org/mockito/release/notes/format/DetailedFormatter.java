@@ -17,11 +17,14 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
     private final String introductionText;
     private final Map<String, String> labelMapping;
     private final String vcsCommitsLinkTemplate;
+    private final String publicationRepository;
 
-    DetailedFormatter(String introductionText, Map<String, String> labelMapping, String vcsCommitsLinkTemplate) {
+    DetailedFormatter(String introductionText, Map<String, String> labelMapping, String vcsCommitsLinkTemplate,
+                      String publicationRepository) {
         this.introductionText = introductionText;
         this.labelMapping = labelMapping;
         this.vcsCommitsLinkTemplate = vcsCommitsLinkTemplate;
+        this.publicationRepository = publicationRepository;
     }
 
     @Override
@@ -35,7 +38,7 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         for (ReleaseNotesData d : data) {
             sb.append("**").append(d.getVersion()).append("** - ");
             String vcsCommitsLink = MessageFormat.format(vcsCommitsLinkTemplate, d.getPreviousVersionVcsTag(), d.getVcsTag());
-            sb.append(releaseSummary(d.getDate(), d.getContributions(), vcsCommitsLink));
+            sb.append(releaseSummary(d.getDate(), d.getContributions(), vcsCommitsLink, publicationRepository));
 
             if (!d.getContributions().getContributions().isEmpty()) {
                 //no point printing any improvements information if there are no code changes
@@ -48,9 +51,9 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         return sb.toString().trim();
     }
 
-    static String releaseSummary(Date date, ContributionSet contributions, String vcsCommitsLink) {
+    static String releaseSummary(Date date, ContributionSet contributions, String vcsCommitsLink, String publicationRepository) {
         return authorsSummary(contributions, vcsCommitsLink) +
-                " - *" + DateFormat.formatDate(date) + "*\n" +
+                " - *" + DateFormat.formatDate(date) + "*" + " - published to " + publicationRepository + "\n" +
                 authorsSummaryAppendix(contributions);
     }
 

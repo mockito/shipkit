@@ -161,7 +161,7 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
         String vcsCommitTemplate = "https://github.com/" + gitHubRepository + "/compare/"
                 + tagPrefix + previousVersion + "..." + tagPrefix + version;
         String notes = ReleaseNotesFormatters.detailedFormatter(
-                "", gitHubLabelMapping, vcsCommitTemplate)
+                "", gitHubLabelMapping, vcsCommitTemplate, publicationRepository)
                 .formatReleaseNotes(data);
 
         return notes + "\n\n";
