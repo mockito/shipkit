@@ -17,7 +17,7 @@ public class DeferredConfiguration {
 
     private final static Logger LOGGER = Logging.getLogger(DeferredConfiguration.class);
 
-    private static final MultiMap<Project, Runnable> actionsByProject = new MultiMap<Project, Runnable>();
+    private static final MultiMap<Project, Runnable> ACTIONS_BY_PROJECT = new MultiMap<Project, Runnable>();
 
     /**
      * Defers configuring the project and tasks, making use of user-defined settings in the build.gradle.
@@ -41,7 +41,7 @@ public class DeferredConfiguration {
      * </pre>
      */
     public static void deferredConfiguration(Project project, final Runnable runnable) {
-        actionsByProject.put(project, runnable);
+        ACTIONS_BY_PROJECT.put(project, runnable);
         project.afterEvaluate(new Action<Project>() {
             public void execute(Project project) {
                 LOGGER.info("{} - executing deferred configuration using 'afterEvaluate'", project.getPath());
@@ -52,7 +52,7 @@ public class DeferredConfiguration {
 
     @ExposedForTesting
     public static void forceConfiguration(Project project){
-        for(Runnable action : actionsByProject.get(project)){
+        for(Runnable action : ACTIONS_BY_PROJECT.get(project)){
             action.run();
         }
     }
