@@ -4,10 +4,9 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.mockito.release.gradle.ReleaseConfiguration;
-import org.mockito.release.internal.gradle.util.FileUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
-import org.mockito.release.notes.Notes;
 import org.mockito.release.notes.contributors.Contributors;
+import org.mockito.release.version.VersionInfo;
 
 import java.io.File;
 
@@ -45,7 +44,9 @@ public class ContributorsPlugin implements Plugin<Project> {
 
                 deferredConfiguration(project, new Runnable() {
                     public void run() {
-                        String fromRevision = fromRevision(project, conf);
+                        //TODO more and more tasks and plugins depend on VersionInfo.
+                        //we should consider making it a part of release configuration in similar way we do 'releasing.notableRepo'
+                        String fromRevision = "v" + project.getExtensions().getByType(VersionInfo.class).getPreviousVersion();
                         File contributorsFile = lastContributorsFile(project, fromRevision, toRevision);
 
                         task.setReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
@@ -77,11 +78,6 @@ public class ContributorsPlugin implements Plugin<Project> {
                 });
             }
         });
-    }
-
-    private String fromRevision(Project project, ReleaseConfiguration conf) {
-        String firstLine = FileUtil.firstLine(project.file(conf.getReleaseNotes().getFile()));
-        return "v" + Notes.previousVersion(firstLine).getPreviousVersion();
     }
 
     private File lastContributorsFile(Project project, String fromRevision, String toRevision) {
