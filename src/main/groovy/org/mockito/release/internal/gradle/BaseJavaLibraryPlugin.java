@@ -13,7 +13,7 @@ import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.api.tasks.bundling.Jar;
 import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.internal.comparison.PublicationsComparatorTask;
-import org.mockito.release.internal.gradle.configuration.LazyConfiguration;
+import org.mockito.release.internal.gradle.configuration.DeferredConfiguration;
 import org.mockito.release.internal.gradle.util.GradleDSLHelper;
 import org.mockito.release.internal.gradle.util.PomCustomizer;
 import org.mockito.release.internal.gradle.util.TaskMaker;
@@ -97,7 +97,7 @@ public class BaseJavaLibraryPlugin implements Plugin<Project> {
                 //The generate pom task is dynamically created by Gradle and we can only access it during execution
                 t.comparePom(POM_TASK);
 
-                LazyConfiguration.lazyConfiguration(t, new Runnable() {
+                DeferredConfiguration.deferredConfiguration(project, new Runnable() {
                     @Override
                     public void run() {
                         t.setProjectGroup(project.getGroup().toString());

@@ -12,7 +12,7 @@ public class PublicationsComparatorTask extends DefaultTask implements Publicati
     private Boolean publicationsEqual;
 
     private String projectGroup;
-    private String projectName;
+    private String artifactName;
     private String currentVersion;
     private String previousVersion;
     private Jar sourcesJar;
@@ -44,7 +44,7 @@ public class PublicationsComparatorTask extends DefaultTask implements Publicati
         File currentVersionPomPath = pomTask.getDestination();
         File currentVersionSourcesJarPath = sourcesJar.getArchivePath();
 
-        projectName = sourcesJar.getBaseName();
+        artifactName = sourcesJar.getBaseName();
 
         getLogger().lifecycle("{} - about to compare publications, for versions {} and {}",
                     getPath(), previousVersion, currentVersion);
@@ -82,7 +82,7 @@ public class PublicationsComparatorTask extends DefaultTask implements Publicati
         comparator.setFileComparator(fileComparator);
         comparator.setPreviousVersionFileRemoteUrl(previousVersionFileUrl);
         comparator.setProjectGroup(projectGroup);
-        comparator.setProjectName(projectName);
+        comparator.setProjectName(artifactName);
         comparator.setPreviousVersion(previousVersion);
         comparator.setExtension(extension);
         comparator.setCurrentVersionFileLocalUrl(currentVersionFile);
@@ -102,12 +102,12 @@ public class PublicationsComparatorTask extends DefaultTask implements Publicati
         this.projectGroup = projectGroup;
     }
 
-    public String getProjectName() {
-        return projectName;
+    public String getArtifactName() {
+        return artifactName;
     }
 
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
+    public void setArtifactName(String artifactName) {
+        this.artifactName = artifactName;
     }
 
     public String getCurrentVersion() {

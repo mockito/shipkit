@@ -4,7 +4,7 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import org.mockito.release.internal.comparison.PublicationsComparatorTask
-import org.mockito.release.internal.gradle.configuration.LazyConfiguration
+import org.mockito.release.internal.gradle.configuration.DeferredConfiguration
 import spock.lang.Specification
 
 class BaseJavaLibraryPluginTest extends Specification {
@@ -29,12 +29,11 @@ class BaseJavaLibraryPluginTest extends Specification {
 
         when:
         child.plugins.apply("org.mockito.mockito-release-tools.base-java-library")
-        def task = (PublicationsComparatorTask) child.getTasks()
-                .getByName(BaseJavaLibraryPlugin.COMPARE_PUBLICATIONS_TASK)
-        //force lazy configuration so that properties are set
-        LazyConfiguration.forceConfiguration(task)
+        DeferredConfiguration.forceConfiguration(child)
 
         then:
+        def task = (PublicationsComparatorTask) child.getTasks()
+                .getByName(BaseJavaLibraryPlugin.COMPARE_PUBLICATIONS_TASK)
         task.getProjectGroup() == "org.group"
     }
 

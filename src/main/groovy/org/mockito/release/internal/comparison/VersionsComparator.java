@@ -31,7 +31,7 @@ class VersionsComparator {
                 "  - {}\n" +
                 "  - and {}", previousVersionFileLocalUrl, currentVersionFileLocalUrl);
 
-        return fileComparator.areEqual(currentVersionFileLocalUrl, previousVersionFileLocalUrl);
+        return fileComparator.areEqual(previousVersionFileLocalUrl, currentVersionFileLocalUrl);
     }
 
     private File downloadRemoteFile(String extension) {

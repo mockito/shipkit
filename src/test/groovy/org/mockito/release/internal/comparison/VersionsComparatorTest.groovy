@@ -33,7 +33,7 @@ class VersionsComparatorTest extends Specification {
         when:
         def result = underTest.compare()
         then:
-        1 * fileComparator.areEqual(underTest.currentVersionFileLocalUrl, expectedPreviousLocalUrl) >> true
+        1 * fileComparator.areEqual(expectedPreviousLocalUrl, underTest.currentVersionFileLocalUrl) >> true
 
         assert result
 

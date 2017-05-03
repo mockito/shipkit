@@ -1,7 +1,7 @@
 package org.mockito.release.internal.comparison;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +17,7 @@ import static org.mockito.release.internal.util.ArgumentValidation.notNull;
 
 class ZipComparator implements FileComparator{
 
-    private final static Logger LOG = LoggerFactory.getLogger(ZipComparator.class);
+    private final static Logger LOG = Logging.getLogger(ZipComparator.class);
 
     ZipComparator() {
     }

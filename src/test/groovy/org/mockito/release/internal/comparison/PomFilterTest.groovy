@@ -100,4 +100,48 @@ class PomFilterTest extends Specification {
         then:
         result == "<project>\n  <dependencies/>\n</project>\n"
     }
+
+    def "removes contributors"(){
+        given:
+        def emptyPom = "<project>" +
+                "<version>0.1.2</version>" +
+                "<dependencies></dependencies>" +
+                "<contributors>" +
+                "   <contributor>" +
+                "       <name>Wojtek Wilk</name>"+
+                "       <url>https://github.com/wwilk</url>"+
+                "   </contributor>" +
+                "</contributors>" +
+                "</project>"
+
+        when:
+        def result = underTest.filter(emptyPom)
+
+        then:
+        result == "<project>\n  <dependencies/>\n</project>\n"
+    }
+
+    def "removes developers"(){
+        given:
+        def emptyPom = "<project>" +
+                "<version>0.1.2</version>" +
+                "<dependencies></dependencies>" +
+                "<developers>" +
+                "   <developer>" +
+                "      <id>wwilk</id>" +
+                "      <name>Wojtek Wilk</name>" +
+                "      <roles>" +
+                "        <role>Core developer</role>" +
+                "      </roles>" +
+                "      <url>https://github.com/wwilk</url>" +
+                "    </developer>" +
+                "</developers>" +
+                "</project>"
+
+        when:
+        def result = underTest.filter(emptyPom)
+
+        then:
+        result == "<project>\n  <dependencies/>\n</project>\n"
+    }
 }
