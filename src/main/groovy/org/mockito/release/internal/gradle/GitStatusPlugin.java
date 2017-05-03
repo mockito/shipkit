@@ -15,7 +15,7 @@ public class GitStatusPlugin implements Plugin<Project> {
         if (project.getParent() == null) {
             gitStatus = project.getExtensions().create(GitPlugin.class.getName(), GitStatus.class, project);
         } else {
-            gitStatus = project.getRootProject().getExtensions().create(GitPlugin.class.getName(), GitStatus.class, project);
+            gitStatus = project.getRootProject().getPlugins().apply(GitStatusPlugin.class).getGitStatus();
         }
     }
 
