@@ -87,6 +87,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
                 task.setReleaseNotesFile(project.file(conf.getReleaseNotes().getFile())); //TODO add sensible default
                 task.setGitHubReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
                 task.setGitHubRepository(conf.getGitHub().getRepository());
+                task.setPreviousVersion(project.getExtensions().getByType(VersionInfo.class).getPreviousVersion());
             }
         });
     }

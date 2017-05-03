@@ -6,12 +6,18 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.*;
 import org.mockito.release.internal.gradle.util.FileUtil;
-import org.mockito.release.notes.Notes;
-import org.mockito.release.notes.NotesBuilder;
+import org.mockito.release.notes.format.ReleaseNotesFormatters;
+import org.mockito.release.notes.generator.ReleaseNotesGenerator;
+import org.mockito.release.notes.generator.ReleaseNotesGenerators;
+import org.mockito.release.notes.model.ReleaseNotesData;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static java.util.Arrays.asList;
 
 /**
  * Generates incremental, detailed release notes text.
@@ -21,6 +27,7 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
 
     private static final Logger LOG = Logging.getLogger(IncrementalReleaseNotes.class);
 
+    private String previousVersion;
     private File releaseNotesFile;
     private String gitHubReadOnlyAuthToken;
     private String gitHubRepository;
@@ -109,6 +116,21 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
         this.publicationRepository = publicationRepository;
     }
 
+    /**
+     * Previous released version we generate the release notes from.
+     */
+    @Input
+    public String getPreviousVersion() {
+        return previousVersion;
+    }
+
+    /**
+     * See {@link #getPreviousVersion()}
+     */
+    public void setPreviousVersion(String previousVersion) {
+        this.previousVersion = previousVersion;
+    }
+
     private void assertConfigured() {
         //TODO SF unit test coverage
         if (releaseNotesFile == null || !releaseNotesFile.isFile()) {
@@ -125,34 +147,24 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
     }
 
     /**
-     * Returns previous version based on the release notes file.
-     * It parses the first line of the release notes file to identify previously released version.
-     */
-    private String getPreviousVersion() {
-        //TODO this is really awkward method.
-        // We should not be reading previous version from release notes file
-        // We should either not read it at all (e.g. write the impl so that it does not require the previous version)
-        // or store previous release version in the 'version.properties' file.
-        assertConfigured();
-        String firstLine = FileUtil.firstLine(releaseNotesFile);
-        return Notes.previousVersion(firstLine).getPreviousVersion();
-    }
-
-    /**
      * Generates new incremental content of the release notes.
      */
     protected String getNewContent() {
         assertConfigured();
         LOG.lifecycle("  Building new release notes based on {}", releaseNotesFile);
-        NotesBuilder builder = Notes.gitHubNotesBuilder(
-                this.getProject().getProjectDir(), this.getProject().getBuildDir(),
-                gitHubRepository, gitHubReadOnlyAuthToken);
-        String prev = "v" + getPreviousVersion();
-        String current = "HEAD";
-        LOG.lifecycle("  Generating release note for revisions: {} -> {}", prev, current);
-        String v = this.getProject().getVersion().toString();
-        String newContent = builder.buildNotes(v, prev, current, gitHubLabelMapping, publicationRepository);
-        return newContent;
+
+        ReleaseNotesGenerator generator = ReleaseNotesGenerators.releaseNotesGenerator(getProject().getRootDir(), gitHubRepository, gitHubReadOnlyAuthToken);
+        String version = getProject().getVersion().toString();
+        String tagPrefix = "v";
+        Collection<ReleaseNotesData> data = generator.generateReleaseNotesData(
+                version, asList(previousVersion), tagPrefix, Collections.<String>emptyList(), false);
+        String vcsCommitTemplate = "https://github.com/" + gitHubRepository + "/compare/"
+                + tagPrefix + previousVersion + "..." + tagPrefix + version;
+        String notes = ReleaseNotesFormatters.detailedFormatter(
+                "", gitHubLabelMapping, vcsCommitTemplate)
+                .formatReleaseNotes(data);
+
+        return notes + "\n\n";
     }
 
     /**
