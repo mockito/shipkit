@@ -5,6 +5,7 @@ buildscript {
     }
     dependencies {
         classpath "com.gradle.publish:plugin-publish-plugin:0.9.6"
+        classpath "gradle.plugin.org.mockito:mockito-release-tools:0.8.2"
     }
 }
 
@@ -14,15 +15,15 @@ apply plugin: 'groovy'
 apply plugin: 'com.gradle.plugin-publish'
 apply plugin: 'checkstyle'
 apply plugin: 'codenarc'
+apply plugin: 'org.mockito.release-tools.versioning'
 
 apply from: 'gradle/precommit.gradle'
+//apply from: 'gradle/versioning.gradle'
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 
 repositories { jcenter() }
-
-version = '0.8.4'
 
 println "  Version: $version"
 group = 'gradle.plugin.org.mockito'
@@ -54,8 +55,8 @@ pluginBundle {
             displayName = 'Mockito automated release notes generation plugin'
         }
 
-        versioningPlugin {
-            id = 'org.mockito.release-tools.versioning'
+        autoVersioningPlugin {
+            id = 'org.mockito.release-tools.auto-versioning'
             displayName = 'Mockito automated versioning plugin'
             tags = ['mockito', 'continuous delivery', 'release', 'versioning', 'auto-versioning', 'semantic-versioning']
         }

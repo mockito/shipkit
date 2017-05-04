@@ -1,0 +1,17 @@
+releasing {
+    gitHub.repository = "mockito/mockito-release-tools"
+    gitHub.writeAuthUser = "szczepiq"
+    gitHub.writeAuthToken = System.getenv("GH_WRITE_TOKEN")
+    gitHub.readOnlyAuthToken = "e7fe8fcdd6ffed5c38498c4c79b2a68e6f6ed1bb"
+
+    git.user = "Mockito Release Tools"
+    git.email = "<mockito.release.tools@gmail.com>"
+
+    git.releasableBranchRegex = "master|release/.+" // matches 'master', 'release/2.x', 'release/3.x', etc.
+
+    build.branch = System.getenv("TRAVIS_BRANCH")
+
+    def buildNo = System.getenv("TRAVIS_BUILD_NUMBER")
+    git.commitMessagePostfix = buildNo? " by CI build $buildNo [ci skip-release]" : " [ci skip-release]"
+
+}
