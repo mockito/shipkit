@@ -1,5 +1,7 @@
 package org.mockito.release.internal.comparison;
 
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.mockito.release.notes.util.IOUtil;
 
 import java.io.File;
@@ -7,6 +9,8 @@ import java.io.File;
 import static org.mockito.release.internal.util.ArgumentValidation.notNull;
 
 class PomComparator implements FileComparator{
+
+    private static final Logger LOG = Logging.getLogger(PomComparator.class);
 
     private final PomFilter pomFilter;
 
@@ -21,13 +25,21 @@ class PomComparator implements FileComparator{
         this.pomFilter = pomFilter;
     }
 
-    public boolean areEqual(File leftFile, File rightFile) {
-        notNull(leftFile, "pom content to compare", rightFile, "pom content to compare");
-        String left = IOUtil.readFully(leftFile);
-        String right = IOUtil.readFully(rightFile);
+    public boolean areEqual(File previousFile, File currentFile) {
+        notNull(previousFile, "previous pom to compare", currentFile, "current pom to compare");
+        String previousContent = IOUtil.readFully(previousFile);
+        String currentContent = IOUtil.readFully(currentFile);
 
-        String parsedLeft = pomFilter.filter(left);
-        String parsedRight = pomFilter.filter(right);
-        return parsedLeft.equals(parsedRight);
+        String filteredPreviousContent = pomFilter.filter(previousContent);
+        String filteredCurrentContent = pomFilter.filter(currentContent);
+
+        // TODO make this log stmt debug when ComparePublicationsTask is more stable
+        LOG.lifecycle("Content of pom comparison:\n\n"  +
+            "  -- previousVersionFile: \n{} \n\n" +
+            "  -- currentVersionFile: \n{} \n",
+            filteredPreviousContent, filteredCurrentContent
+        );
+
+        return filteredPreviousContent.equals(filteredCurrentContent);
     }
 }

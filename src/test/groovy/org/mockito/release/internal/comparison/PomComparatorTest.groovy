@@ -37,21 +37,21 @@ class PomComparatorTest extends Specification {
 
     def "does not allow null projectGroup"() {
         when:
-        new PomComparator(null, "0.1", "0.2").areEqual()
+        new PomComparator(null, "0.1", "0.2")
         then:
         thrown(IllegalArgumentException)
     }
 
     def "does not allow null previousVersion"() {
         when:
-        new PomComparator("org.mockito", null, "0.2").areEqual()
+        new PomComparator("org.mockito", null, "0.2")
         then:
         thrown(IllegalArgumentException)
     }
 
     def "does not allow null currentVersion"() {
         when:
-        new PomComparator("org.mockito", "0.1", null).areEqual()
+        new PomComparator("org.mockito", "0.1", null)
         then:
         thrown(IllegalArgumentException)
     }

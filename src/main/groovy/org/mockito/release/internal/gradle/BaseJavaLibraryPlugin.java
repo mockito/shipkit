@@ -13,10 +13,10 @@ import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.api.tasks.bundling.Jar;
 import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.internal.comparison.PublicationsComparatorTask;
+import org.mockito.release.internal.gradle.configuration.DeferredConfiguration;
 import org.mockito.release.internal.gradle.util.GradleDSLHelper;
 import org.mockito.release.internal.gradle.util.PomCustomizer;
 import org.mockito.release.internal.gradle.util.TaskMaker;
-import org.mockito.release.version.VersionInfo;
 
 import static org.mockito.release.internal.gradle.util.StringUtil.capitalize;
 
@@ -88,24 +88,7 @@ public class BaseJavaLibraryPlugin implements Plugin<Project> {
                 t.setDescription("Compares artifacts and poms between last version and the currently built one to see if there are any differences");
 
                 t.setCurrentVersion(project.getVersion().toString());
-
-                //TODO WW, let's replace below with conf.previousReleaseVersion
-                //For reference see how conf.notableRelease is implemented
-                //org.mockito.release.gradle.ReleaseConfiguration.isNotableRelease()
-                //This will greatly simplify the code below, we should be able to do just:
-                //  t.setPreviousVersion(conf.previousReleaseVersion);
-                project.getRootProject().getPlugins().withType(
-                    VersioningPlugin.class,
-                    new Action<VersioningPlugin>() {
-                        @Override
-                        public void execute(VersioningPlugin versioningPlugin) {
-                        VersionInfo versionInfo = project.getRootProject().getExtensions().getByType(VersionInfo.class);
-
-                        t.setCurrentVersion(project.getVersion().toString());
-                        t.setPreviousVersion(versionInfo.getPreviousVersion());
-                        }
-                    }
-                );
+                t.setPreviousVersion(conf.getPreviousReleaseVersion());
 
                 //Let's say that the initial implementation compares sources jar. We can this API method to the task:
                 t.compareSourcesJar(sourcesJar);
@@ -114,8 +97,12 @@ public class BaseJavaLibraryPlugin implements Plugin<Project> {
                 //The generate pom task is dynamically created by Gradle and we can only access it during execution
                 t.comparePom(POM_TASK);
 
-                t.setProjectGroup(project.getGroup().toString());
-                t.setProjectName(project.getName());
+                DeferredConfiguration.deferredConfiguration(project, new Runnable() {
+                    @Override
+                    public void run() {
+                        t.setProjectGroup(project.getGroup().toString());
+                    }
+                });
             }
         });
 

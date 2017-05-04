@@ -11,7 +11,7 @@ class VersionsComparatorTest extends Specification {
 
     VersionsComparator underTest = new VersionsComparator()
 
-    def "test"() {
+    def "downloads previousVersionFile, saves it locally and compares to currentVersionFile"() {
         given:
         underTest.projectGroup = "org.mockito"
         underTest.projectName = "api"
@@ -21,14 +21,11 @@ class VersionsComparatorTest extends Specification {
         underTest.extension = ".pom"
 
         def fileComparator = Mock(FileComparator)
-        def remoteUrlResolver = Mock(RemoteUrlResolver)
 
         def remoteFile = tmp.newFile("remote")
         remoteFile << "fileContent"
 
-        remoteUrlResolver.resolveUrl(_,_,_,_) >> "file://" + remoteFile.absolutePath
-
-        underTest.remoteUrlResolver = remoteUrlResolver
+        underTest.previousVersionFileRemoteUrl = "file://" + remoteFile.absolutePath
         underTest.fileComparator = fileComparator
 
         def expectedPreviousLocalUrl = tmp.newFile("api-0.1.0.pom")
@@ -36,7 +33,7 @@ class VersionsComparatorTest extends Specification {
         when:
         def result = underTest.compare()
         then:
-        1 * fileComparator.areEqual(underTest.currentVersionFileLocalUrl, expectedPreviousLocalUrl) >> true
+        1 * fileComparator.areEqual(expectedPreviousLocalUrl, underTest.currentVersionFileLocalUrl) >> true
 
         assert result
 
