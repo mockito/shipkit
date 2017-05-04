@@ -18,11 +18,10 @@ public class GitUtil {
     /**
      * Quiet command line to be used to perform git push without exposing write token
      */
-    public static List<String> getGitPushArgs(ReleaseConfiguration conf, Project project) {
+    public static List<String> getGitPushArgs(ReleaseConfiguration conf, Project project, String branch) {
         String ghUser = conf.getGitHub().getWriteAuthUser();
         String ghWriteToken = conf.getGitHub().getWriteAuthToken();
         String ghRepo = conf.getGitHub().getRepository();
-        String branch = conf.getBuild().getBranch();
         String url = MessageFormat.format("https://{0}:{1}@github.com/{2}.git", ghUser, ghWriteToken, ghRepo);
 
         ArrayList<String> args = new ArrayList<String>(asList("git", "push", url, branch, getTag(conf, project)));
