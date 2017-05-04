@@ -115,12 +115,12 @@ public class GitPlugin implements Plugin<Project> {
             }
         });
 
-        TaskMaker.execTask(project, CHECKOUT_BRANCH_TASK, new Action<Exec>() {
-            public void execute(final Exec t) {
+        TaskMaker.task(project, CHECKOUT_BRANCH_TASK, GitCheckOutTask.class, new Action<GitCheckOutTask>() {
+            public void execute(final GitCheckOutTask t) {
                 t.setDescription("Checks out the branch that can be committed. CI systems often check out revision that is not committable.");
                 lazyConfiguration(t, new Runnable() {
                     public void run() {
-                        t.commandLine("git", "checkout", gitStatus.getBranch());
+                        t.setRev(gitStatus.getBranch());
                     }
                 });
             }

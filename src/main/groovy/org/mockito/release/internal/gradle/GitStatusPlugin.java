@@ -33,12 +33,6 @@ public class GitStatusPlugin implements Plugin<Project> {
              processRunner = Exec.getProcessRunner(project.getRootDir());
         }
 
-        public void setBranchName(String branchName) {
-            synchronized (SYNC) {
-                this.branchName = branchName;
-            }
-        }
-
         public String getBranch() {
             if (branchName == null || branchName.isEmpty()) {
                 synchronized (SYNC) {
