@@ -6,6 +6,9 @@ import org.gradle.api.Project;
 import org.mockito.release.exec.Exec;
 import org.mockito.release.exec.ProcessRunner;
 
+/**
+ * Adds extension for configuring the {@link GitStatus} to the root project.
+ */
 public class GitStatusPlugin implements Plugin<Project> {
 
     private GitStatus gitStatus;
