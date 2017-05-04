@@ -10,7 +10,8 @@ import spock.lang.Specification
 
 class DetailedFormatterTest extends Specification {
 
-    def f = new DetailedFormatter("Release notes:\n\n", ["noteworthy": "Noteworthy", "bug": "Bugfixes"], "http://commits/{0}...{1}")
+    def f = new DetailedFormatter("Release notes:\n\n", ["noteworthy": "Noteworthy", "bug": "Bugfixes"],
+            "http://commits/{0}...{1}", "Bintray")
 
     def "no releases"() {
         expect:
@@ -26,9 +27,9 @@ No release information."""
         expect:
         f.formatReleaseNotes([d1, d2]) == """Release notes:
 
-**2.0.0** - no code changes (no commits) - *2017-01-04*
+**2.0.0** - no code changes (no commits) - *2017-01-04* - published to Bintray
 
-**1.9.0** - no code changes (no commits) - *2016-12-30*"""
+**1.9.0** - no code changes (no commits) - *2016-12-30* - published to Bintray"""
     }
 
     def "no improvements"() {
@@ -43,7 +44,7 @@ No release information."""
         expect:
         f.formatReleaseNotes([d]) == """Release notes:
 
-**2.0.0** - [1 commit](http://commits/v1.9.0...v2.0.0) by Szczepan Faber - *2017-01-04*
+**2.0.0** - [1 commit](http://commits/v1.9.0...v2.0.0) by Szczepan Faber - *2017-01-04* - published to Bintray
 :cocktail: No pull requests referenced in commit messages."""
     }
 
@@ -133,8 +134,11 @@ No release information."""
                                     c("Tim van der Lippe", 10)]
         }
 
+        def summary = DetailedFormatter.releaseSummary(new Date(1483500000000), c, "link",
+                "Bintray repo")
+
         expect:
-        DetailedFormatter.releaseSummary(new Date(1483500000000), c, "link") == """[100 commits](link) by 4 authors - *2017-01-04*
+        summary == """[100 commits](link) by 4 authors - *2017-01-04* - published to Bintray repo
 :cocktail: Commits: Szczepan Faber (40), Brice Dutheil (30), Rafael Winterhalter (20), Tim van der Lippe (10)"""
     }
 

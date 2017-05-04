@@ -16,12 +16,17 @@ public class ReleaseNotesGenerators {
 
     //TODO move entire "org.mockito.release.notes" -> "org.mockito.release.internal.notes"
 
-    public static ReleaseNotesGenerator releaseNotesGenerator(File workDir, String repository, String readOnlyAuthToken) {
+    /**
+     * @param workDir the working directory where 'git' operations will be executed
+     * @param gitHubRepository GitHub gitHubRepository in format USER|COMPANY/REPO_NAME, for example: mockito/mockito
+     * @param readOnlyAuthToken read only auth token used to communicate with GitHub
+     */
+    public static ReleaseNotesGenerator releaseNotesGenerator(File workDir, String gitHubRepository, String readOnlyAuthToken) {
         ProcessRunner processRunner = Exec.getProcessRunner(workDir);
         ContributionsProvider contributionsProvider = Vcs.getContributionsProvider(processRunner);
-        ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(repository, readOnlyAuthToken);
+        ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(gitHubRepository, readOnlyAuthToken);
         ReleasedVersionsProvider releasedVersionsProvider = Vcs.getReleaseDateProvider(processRunner);
-        GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContributorsProvider(repository, readOnlyAuthToken);
+        GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContributorsProvider(gitHubRepository, readOnlyAuthToken);
         return new DefaultReleaseNotesGenerator(contributionsProvider, improvementsProvider, releasedVersionsProvider,
                 contributorsProvider);
     }
