@@ -28,19 +28,23 @@ public class GitStatusPlugin implements Plugin<Project> {
 
     public static class GitStatus {
 
-        private final ProcessRunner processRunner;
+        private final ProcessRunner runner;
         private volatile String branchName;
         private static final Object SYNC = new Object();
 
         public GitStatus(Project project) {
-             processRunner = Exec.getProcessRunner(project.getRootDir());
+             this(Exec.getProcessRunner(project.getRootDir()));
+        }
+
+        public GitStatus(ProcessRunner runner) {
+            this.runner = runner;
         }
 
         public String getBranch() {
             if (branchName == null || branchName.isEmpty()) {
                 synchronized (SYNC) {
                     if (branchName == null || branchName.isEmpty()) {
-                        branchName = processRunner.run("git", "rev-parse", "--abbrev-ref", "HEAD").trim();
+                        branchName = runner.run("git", "rev-parse", "--abbrev-ref", "HEAD").trim();
                     }
                 }
             }
