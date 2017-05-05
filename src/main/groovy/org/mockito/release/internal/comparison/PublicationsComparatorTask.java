@@ -8,6 +8,7 @@ import org.mockito.release.internal.util.ExposedForTesting;
 
 import java.io.*;
 
+//TODO ww - can you add javadoc?
 public class PublicationsComparatorTask extends DefaultTask {
 
     private Boolean publicationsEqual;
