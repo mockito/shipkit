@@ -7,7 +7,8 @@ import org.mockito.release.exec.Exec;
 import org.mockito.release.exec.ProcessRunner;
 
 /**
- * Adds extension for configuring the {@link GitStatus} to the root project.
+ * Adds extension {@link GitStatus} to the root project.
+ * The extension contains information about the working copy.
  */
 public class GitStatusPlugin implements Plugin<Project> {
 
@@ -26,6 +27,9 @@ public class GitStatusPlugin implements Plugin<Project> {
         return gitStatus;
     }
 
+    /**
+     * The Git status of the working copy
+     */
     public static class GitStatus {
 
         private final ProcessRunner runner;
@@ -40,6 +44,9 @@ public class GitStatusPlugin implements Plugin<Project> {
             this.runner = runner;
         }
 
+        /**
+         * Current git branch of the working copy
+         */
         public String getBranch() {
             if (branchName == null || branchName.isEmpty()) {
                 synchronized (SYNC) {
