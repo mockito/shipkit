@@ -24,14 +24,13 @@ class GitUtilTest extends Specification {
         given:
         def conf = new ReleaseConfiguration()
 
-        conf.build.setBranch("master")
         conf.gitHub.setWriteAuthUser("wwilk")
         conf.gitHub.setWriteAuthToken("token")
         conf.gitHub.setRepository("mockito-release-tools")
         conf.setDryRun(false)
 
         when:
-        def result = GitUtil.getGitPushArgs(conf)
+        def result = GitUtil.getGitPushArgs(conf, "master")
 
         then:
         result == ["git", "push", "https://wwilk:token@github.com/mockito-release-tools.git", "master"]
@@ -41,14 +40,13 @@ class GitUtilTest extends Specification {
         given:
         def conf = new ReleaseConfiguration()
 
-        conf.build.setBranch("master")
         conf.gitHub.setWriteAuthUser("wwilk")
         conf.gitHub.setWriteAuthToken("token")
         conf.gitHub.setRepository("mockito-release-tools")
         conf.setDryRun(false)
 
         when:
-        def result = GitUtil.getGitPushArgs(conf)
+        def result = GitUtil.getGitPushArgs(conf, "master")
 
         then:
         result == ["git", "push", "https://wwilk:token@github.com/mockito-release-tools.git", "master"]
@@ -59,7 +57,6 @@ class GitUtilTest extends Specification {
         def conf = new ReleaseConfiguration()
         def project = Mock(Project)
 
-        conf.build.setBranch("master")
         conf.gitHub.setWriteAuthUser("wwilk")
         conf.gitHub.setWriteAuthToken("token")
         conf.gitHub.setRepository("mockito-release-tools")
@@ -67,7 +64,7 @@ class GitUtilTest extends Specification {
         project.getVersion() >> "0.0.1"
 
         when:
-        def result = GitUtil.getGitPushArgsWithTag(conf, project)
+        def result = GitUtil.getGitPushArgsWithTag(conf, project, "master")
 
         then:
         result == ["git", "push", "https://wwilk:token@github.com/mockito-release-tools.git", "master", "v0.0.1"]
