@@ -38,7 +38,7 @@ public class AutoVersioningPlugin implements Plugin<Project> {
 
     static final String BUMP_VERSION_AND_PUSH_TASK = "bumpVersionAndPush";
     static final String ADD_BUMP_VERSION_TASK = "gitAddBumpVersion";
-    static final String PUSH_WITHOUT_TAG_TASK = "gitPushBumpVersion";
+    static final String PUSH_BUMP_VERSION_TASK = "gitPushBumpVersion";
     static final String VERSION_BUMP_COMMIT_TASK = "gitCommitBumpVersion";
 
     public void apply(final Project project) {
@@ -69,7 +69,7 @@ public class AutoVersioningPlugin implements Plugin<Project> {
             }
         });
 
-        TaskMaker.task(project, PUSH_WITHOUT_TAG_TASK, SecureExecTask.class, new Action<SecureExecTask>() {
+        TaskMaker.task(project, PUSH_BUMP_VERSION_TASK, SecureExecTask.class, new Action<SecureExecTask>() {
             public void execute(final SecureExecTask t) {
                 t.setDescription("Pushes bumped version to remote repo.");
                 t.mustRunAfter(VERSION_BUMP_COMMIT_TASK);
@@ -87,7 +87,7 @@ public class AutoVersioningPlugin implements Plugin<Project> {
             public void execute(Task t) {
                 t.setDescription("Increments version number, commits and pushes changes to Git repository");
                 t.dependsOn(VersioningPlugin.BUMP_VERSION_FILE_TASK, ADD_BUMP_VERSION_TASK);
-                t.dependsOn(VERSION_BUMP_COMMIT_TASK, PUSH_WITHOUT_TAG_TASK);
+                t.dependsOn(VERSION_BUMP_COMMIT_TASK, PUSH_BUMP_VERSION_TASK);
             }
         });
     }
