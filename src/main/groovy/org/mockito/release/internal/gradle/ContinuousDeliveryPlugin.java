@@ -32,7 +32,6 @@ import static org.mockito.release.internal.gradle.util.Specs.withName;
  * Adds following tasks:
  *
  * <ul>
- *     <li>gitAddBumpVersion</li>
  *     <li>TODO document all</li>
  * </ul>
  */
@@ -47,7 +46,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
         //This way it will be easy for others to put together setup for other tools / build systems
 
         project.getPlugins().apply(ReleaseNotesPlugin.class);
-        project.getPlugins().apply(VersioningPlugin.class);
+        project.getPlugins().apply(AutoVersioningPlugin.class);
         project.getPlugins().apply(GitPlugin.class);
         project.getPlugins().apply(ContributorsPlugin.class);
         project.getPlugins().apply(TravisPlugin.class);
@@ -74,21 +73,11 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
         final boolean notableRelease = project.getExtensions().getByType(VersionInfo.class).isNotableRelease();
 
         //TODO use constants for all task names
-        ((BumpVersionFileTask) project.getTasks().getByName("bumpVersionFile"))
+        ((BumpVersionFileTask) project.getTasks().getByName(VersioningPlugin.BUMP_VERSION_FILE_TASK))
                 .setUpdateNotableVersions(notableRelease);
 
         //TODO we should have tasks from the same plugin to have the same group
         //let's have a task maker instance in a plugin that has sets the group accordingly
-        TaskMaker.execTask(project, "gitAddBumpVersion", new Action<Exec>() {
-            public void execute(Exec t) {
-                t.setDescription("Performs 'git add' for the version properties file");
-
-                //TODO dependency/assumptions on versioning plugin (move to git plugin this and other tasks?):
-                t.mustRunAfter("bumpVersionFile");
-                t.commandLine("git", "add", VersioningPlugin.VERSION_FILE_NAME);
-                project.getTasks().getByName(GitPlugin.COMMIT_TASK).mustRunAfter(t);
-            }
-        });
 
         TaskMaker.execTask(project, "gitAddReleaseNotes", new Action<Exec>() {
             public void execute(final Exec t) {
@@ -161,7 +150,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                         "Ship with: './gradlew performRelease -Preleasing.dryRun=false'. " +
                         "Test with: './gradlew testRelease'");
 
-                t.dependsOn("bumpVersionFile", "updateReleaseNotes", "updateNotableReleaseNotes");
+                t.dependsOn(VersioningPlugin.BUMP_VERSION_FILE_TASK, "updateReleaseNotes", "updateNotableReleaseNotes");
                 t.dependsOn("gitAddBumpVersion", "gitAddReleaseNotes", GitPlugin.COMMIT_TASK, GitPlugin.TAG_TASK);
                 t.dependsOn(GitPlugin.PUSH_TASK);
                 t.dependsOn("bintrayUploadAll");

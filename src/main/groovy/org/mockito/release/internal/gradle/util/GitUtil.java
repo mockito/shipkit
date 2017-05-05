@@ -18,17 +18,38 @@ public class GitUtil {
     /**
      * Quiet command line to be used to perform git push without exposing write token
      */
-    public static List<String> getGitPushArgs(ReleaseConfiguration conf, Project project, String branch) {
-        String ghUser = conf.getGitHub().getWriteAuthUser();
-        String ghWriteToken = conf.getGitHub().getWriteAuthToken();
-        String ghRepo = conf.getGitHub().getRepository();
-        String url = MessageFormat.format("https://{0}:{1}@github.com/{2}.git", ghUser, ghWriteToken, ghRepo);
+    public static List<String> getGitPushArgsWithTag(ReleaseConfiguration conf, Project project, String branch) {
+        ArrayList<String> args = getBaseGitPushArgs(conf, branch);
 
-        ArrayList<String> args = new ArrayList<String>(asList("git", "push", url, branch, getTag(conf, project)));
+        args.add(getTag(conf, project));
+
+        addDryRunIfNeeded(conf, args);
+        return args;
+    }
+
+    public static List<String> getGitPushArgs(ReleaseConfiguration conf, String branch) {
+        ArrayList<String> args = getBaseGitPushArgs(conf, branch);
+        addDryRunIfNeeded(conf, args);
+        return args;
+    }
+
+    private static ArrayList<String> getBaseGitPushArgs(ReleaseConfiguration conf, String branch) {
+        String url = getRepoUrl(conf);
+
+        return new ArrayList<String>(asList("git", "push", url, branch));
+    }
+
+    private static void addDryRunIfNeeded(ReleaseConfiguration conf, ArrayList<String> args) {
         if (conf.isDryRun()) {
             args.add("--dry-run");
         }
-        return args;
+    }
+
+    private static String getRepoUrl(ReleaseConfiguration conf) {
+        String ghUser = conf.getGitHub().getWriteAuthUser();
+        String ghWriteToken = conf.getGitHub().getWriteAuthToken();
+        String ghRepo = conf.getGitHub().getRepository();
+        return MessageFormat.format("https://{0}:{1}@github.com/{2}.git", ghUser, ghWriteToken, ghRepo);
     }
 
     /**

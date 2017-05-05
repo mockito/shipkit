@@ -40,7 +40,9 @@ public class VersioningPlugin implements Plugin<Project> {
     public static final String VERSION_FILE_NAME = "version.properties";
     private static final String FALLBACK_INITIAL_VERSION = "0.0.1";
 
-    public void apply(Project project) {
+    static final String BUMP_VERSION_FILE_TASK = "bumpVersionFile";
+
+    public void apply(final Project project) {
         final File versionFile = project.file(VERSION_FILE_NAME);
         if(!versionFile.exists()){
             createVersionPropertiesFile(project, versionFile);
@@ -59,7 +61,7 @@ public class VersioningPlugin implements Plugin<Project> {
             }
         });
 
-        TaskMaker.task(project, "bumpVersionFile", BumpVersionFileTask.class, new Action<BumpVersionFileTask>() {
+        TaskMaker.task(project, BUMP_VERSION_FILE_TASK, BumpVersionFileTask.class, new Action<BumpVersionFileTask>() {
             public void execute(BumpVersionFileTask t) {
                 t.setVersionFile(versionFile);
                 t.setDescription("Increments version number in " + versionFile.getName());
