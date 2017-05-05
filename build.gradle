@@ -18,7 +18,6 @@ apply plugin: 'codenarc'
 apply plugin: 'org.mockito.release-tools.versioning'
 
 apply from: 'gradle/precommit.gradle'
-//apply from: 'gradle/versioning.gradle'
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
