@@ -16,17 +16,37 @@ import static org.mockito.release.internal.gradle.util.StringUtil.join;
 /**
  * Plugin that adds Git tasks commonly used for setting up
  * working copy when running build on CI environment.
- * <p>
- * This plugin can be reused when we integrate other CI servers with our plugins.
+ * Adds following tasks:
+ * <ul>
+ *     <li>
+ *         'gitUnshallow' - performs 'git unshallow' to get sufficient amount of commits,
+ *         useful for release notes automation</li>
+ *     <li>
+ *         'checkOutBranch' - checks out specific branch,
+ *         useful when CI server checks out a rev hash that is not any committable branch</li>
+ *     <li>
+ *         'setGitUserName' - sets generic user name so that CI server can commit code as neatly described robot,
+ *         uses value from {@link ReleaseConfiguration.Git#getUser()}
+ *     </li>
+ *     <li>
+ *         'setGitUserEmail' - sets generic user email so that CI server can commit code as neatly described robot,
+ *         uses value from {@link ReleaseConfiguration.Git#getEmail()}
+ *     </li>
+ *     <li>
+ *         'ciReleasePrepare' - prepares for release from CI,
+ *         depends on unshallow, set branch, set generic git user and email.
+ *     </li>
+ * </ul>
  */
 public class GitSetupPlugin implements Plugin<Project> {
 
     private static final Logger LOG = Logging.getLogger(GitSetupPlugin.class);
 
-    static final String UNSHALLOW_TASK = "gitUnshallow";
+    private static final String UNSHALLOW_TASK = "gitUnshallow";
     static final String CHECKOUT_BRANCH_TASK = "checkOutBranch";
-    static final String SET_USER_TASK = "setGitUserName";
-    static final String SET_EMAIL_TASK = "setGitUserEmail";
+    private static final String SET_USER_TASK = "setGitUserName";
+    private static final String SET_EMAIL_TASK = "setGitUserEmail";
+    private static final String CI_RELEASE_PREPARE_TASK = "ciReleasePrepare";
 
     @Override
     public void apply(Project project) {
@@ -88,7 +108,7 @@ public class GitSetupPlugin implements Plugin<Project> {
             }
         });
 
-        TaskMaker.task(project, "ciReleasePrepare", new Action<Task>() {
+        TaskMaker.task(project, CI_RELEASE_PREPARE_TASK, new Action<Task>() {
             public void execute(Task t) {
                 t.setDescription("Prepares the working copy for releasing from CI build");
                 t.dependsOn(UNSHALLOW_TASK, CHECKOUT_BRANCH_TASK, SET_USER_TASK, SET_EMAIL_TASK);

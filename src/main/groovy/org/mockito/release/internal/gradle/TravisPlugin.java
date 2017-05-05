@@ -8,12 +8,9 @@ import static org.mockito.release.internal.gradle.GitSetupPlugin.CHECKOUT_BRANCH
 
 /**
  * Configures the release automation to be used with Travis CI.
- * Preconfigures "releasing.build.*" settings based on Travis env variables.
- * <p>
- * Adds tasks:
- *
  * <ul>
- *     <li>'travisReleasePrepare' - Prepares the working copy for releasing using Travis CI</li>
+ *  <li>Preconfigures "releasing.build.*" settings based on Travis env variables.</li>
+ *  <li>Configures {@link GitSetupPlugin#CHECKOUT_BRANCH_TASK} task with value from Travis env variable.</li>
  * </ul>
  */
 public class TravisPlugin implements Plugin<Project> {
