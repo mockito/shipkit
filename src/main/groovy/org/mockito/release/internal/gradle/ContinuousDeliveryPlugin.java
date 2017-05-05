@@ -225,9 +225,10 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                     }
                 });
 
+                final GitStatusPlugin.GitStatus gitStatus = project.getPlugins().apply(GitStatusPlugin.class).getGitStatus();
                 lazyConfiguration(t, new Runnable() {
                     public void run() {
-                        String branch = project.getPlugins().apply(GitStatusPlugin.class).getGitStatus().getBranch();
+                        String branch = gitStatus.getBranch();
                         t.setBranch(branch);
                     }
                 });
