@@ -143,7 +143,11 @@ public class ReleaseNeededTask extends DefaultTask {
         publicationsComparators.add(task);
     }
 
-    boolean areAllPublicationsEqual(){
+    boolean areAllPublicationsEqual() {
+        if (publicationsComparators.isEmpty()) {
+            return false;
+        }
+
         boolean allEqual = true;
 
         for(PublicationsComparator comparator : publicationsComparators){
