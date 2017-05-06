@@ -5,7 +5,7 @@ import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskAction;
-import org.mockito.release.internal.comparison.PublicationsComparator;
+import org.mockito.release.internal.comparison.PublicationsComparatorTask;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -29,7 +29,7 @@ public class ReleaseNeededTask extends DefaultTask {
 
     private String branch;
     private String releasableBranchRegex;
-    private final List<PublicationsComparator> publicationsComparators = new LinkedList<PublicationsComparator>();
+    private final List<PublicationsComparatorTask> publicationsComparators = new LinkedList<PublicationsComparatorTask>();
     private String commitMessage;
     private boolean pullRequest;
     private boolean explosive;
@@ -138,7 +138,7 @@ public class ReleaseNeededTask extends DefaultTask {
         }
     }
 
-    public void addPublicationsComparator(PublicationsComparator task) {
+    public void addPublicationsComparator(PublicationsComparatorTask task) {
         this.dependsOn(task);
         publicationsComparators.add(task);
     }
@@ -150,7 +150,7 @@ public class ReleaseNeededTask extends DefaultTask {
 
         boolean allEqual = true;
 
-        for(PublicationsComparator comparator : publicationsComparators){
+        for(PublicationsComparatorTask comparator : publicationsComparators){
             allEqual &= comparator.isPublicationsEqual();
         }
 

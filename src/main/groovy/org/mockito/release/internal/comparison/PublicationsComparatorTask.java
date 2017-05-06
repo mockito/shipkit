@@ -4,10 +4,12 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.publish.maven.tasks.GenerateMavenPom;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.bundling.Jar;
+import org.mockito.release.internal.util.ExposedForTesting;
 
 import java.io.*;
 
-public class PublicationsComparatorTask extends DefaultTask implements PublicationsComparator {
+//TODO ww - can you add javadoc?
+public class PublicationsComparatorTask extends DefaultTask {
 
     private Boolean publicationsEqual;
 
@@ -140,5 +142,13 @@ public class PublicationsComparatorTask extends DefaultTask implements Publicati
 
     public void setPreviousVersionSourcesJarUrl(String previousVersionSourcesJarUrl) {
         this.previousVersionSourcesJarUrl = previousVersionSourcesJarUrl;
+    }
+
+    /**
+     * only use for test purposes!
+     */
+    @ExposedForTesting
+    public void setPublicationsEqual(boolean publicationsEqual){
+        this.publicationsEqual = publicationsEqual;
     }
 }
