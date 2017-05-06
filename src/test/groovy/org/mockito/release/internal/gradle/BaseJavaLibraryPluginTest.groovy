@@ -4,14 +4,12 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import org.mockito.release.internal.comparison.PublicationsComparatorTask
-import org.mockito.release.internal.gradle.configuration.DeferredConfiguration
 import spock.lang.Specification
 
 class BaseJavaLibraryPluginTest extends Specification {
 
-    def project = new ProjectBuilder().withParent().build()
-    @Rule
-    def TemporaryFolder tmp = new TemporaryFolder()
+    def project = new ProjectBuilder().build()
+    @Rule TemporaryFolder tmp = new TemporaryFolder()
 
     def "applies"() {
         expect:
@@ -29,7 +27,7 @@ class BaseJavaLibraryPluginTest extends Specification {
 
         when:
         child.plugins.apply("org.mockito.mockito-release-tools.base-java-library")
-        DeferredConfiguration.forceConfiguration(child)
+        child.evaluate()
 
         then:
         def task = (PublicationsComparatorTask) child.getTasks()

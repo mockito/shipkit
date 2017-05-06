@@ -30,6 +30,8 @@ public class GitHubAllContributorsFetcher {
                 result.addAllContributors(extractContributors(page, readOnlyAuthToken));
             }
         } catch (Exception e) {
+            //TODO we need to eliminate below from the codebase here and everywhere, else to
+            //Let's throw an exception!!!
             e.printStackTrace();
         }
         return result;
@@ -80,9 +82,9 @@ public class GitHubAllContributorsFetcher {
 
         GitHubProjectContributors build() {
             // see API doc: https://developer.github.com/v3/repos/#list-contributors
-            String nextPageUrl = String.format("%s%s",
-                    "https://api.github.com/repos/" + repository + "/contributors",
-                    "?access_token=" + readOnlyAuthToken);
+            String nextPageUrl = "https://api.github.com/repos/" + repository + "/contributors" +
+                    "?access_token=" + readOnlyAuthToken +
+                    "&per_page=100";
             return new GitHubProjectContributors(nextPageUrl);
         }
     }
