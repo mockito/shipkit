@@ -1,0 +1,31 @@
+def e2eProjects = ["mockito-release-tools-example": "https://github.com/mockito/mockito-release-tools-example"]
+
+task e2eTest {
+    doFirst {
+        e2eProjects.each { entry ->
+            println "  E2E tests for $entry.key :)"
+            def key = entry.key
+            task e2eTest$key {
+                println "task $key"
+                //TODO not clone if exist or delete dir?
+                gitClone(key, e2eProjects[key]).execute()
+                //TODO b) bump version of producer to locally built
+                //TODO c) performRelease -Preleasing.dryRun
+            }
+        }
+    }
+}
+
+def gitClone(String projectName, String repoUrl) {
+    return tasks.create("gitClone$projectName", Exec) {
+        commandLine 'git', 'clone', "$repoUrl", "$projectDir/$projectName"
+    }
+}
+
+task check {
+    dependsOn e2eTest
+}
+
+task build {
+    dependsOn check
+}
