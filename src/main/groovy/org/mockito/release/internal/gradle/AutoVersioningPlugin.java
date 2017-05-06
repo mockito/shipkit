@@ -43,6 +43,7 @@ public class AutoVersioningPlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
+        final GitStatusPlugin.GitStatus gitStatus = project.getPlugins().apply(GitStatusPlugin.class).getGitStatus();
 
         project.getPlugins().apply(VersioningPlugin.class);
 
@@ -76,7 +77,7 @@ public class AutoVersioningPlugin implements Plugin<Project> {
 
                 lazyConfiguration(t, new Runnable() {
                     public void run() {
-                        t.setCommandLine(GitUtil.getGitPushArgs(conf));
+                        t.setCommandLine(GitUtil.getGitPushArgs(conf, gitStatus.getBranch()));
                         t.setSecretValue(conf.getGitHub().getWriteAuthToken());
                     }
                 });

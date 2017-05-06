@@ -18,8 +18,8 @@ public class GitUtil {
     /**
      * Quiet command line to be used to perform git push without exposing write token
      */
-    public static List<String> getGitPushArgsWithTag(ReleaseConfiguration conf, Project project) {
-        ArrayList<String> args = getBaseGitPushArgs(conf);
+    public static List<String> getGitPushArgsWithTag(ReleaseConfiguration conf, Project project, String branch) {
+        ArrayList<String> args = getBaseGitPushArgs(conf, branch);
 
         args.add(getTag(conf, project));
 
@@ -27,14 +27,13 @@ public class GitUtil {
         return args;
     }
 
-    public static List<String> getGitPushArgs(ReleaseConfiguration conf) {
-        ArrayList<String> args = getBaseGitPushArgs(conf);
+    public static List<String> getGitPushArgs(ReleaseConfiguration conf, String branch) {
+        ArrayList<String> args = getBaseGitPushArgs(conf, branch);
         addDryRunIfNeeded(conf, args);
         return args;
     }
 
-    private static ArrayList<String> getBaseGitPushArgs(ReleaseConfiguration conf) {
-        String branch = conf.getBuild().getBranch();
+    private static ArrayList<String> getBaseGitPushArgs(ReleaseConfiguration conf, String branch) {
         String url = getRepoUrl(conf);
 
         return new ArrayList<String>(asList("git", "push", url, branch));

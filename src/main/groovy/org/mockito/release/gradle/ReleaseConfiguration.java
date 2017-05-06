@@ -144,21 +144,6 @@ public class ReleaseConfiguration {
         public void setPullRequest(boolean pullRequest) {
             this.pullRequest = pullRequest;
         }
-
-        /**
-         * Get the Git branch this Travis job is building.
-         * Will be used to commit / push code to.
-         */
-        public String getBranch() {
-            return getString("build.branch");
-        }
-
-        /**
-         * See {@link #getBranch()}
-         */
-        public void setBranch(String branch) {
-            configuration.put("build.branch", branch);
-        }
     }
 
     public class GitHub {

@@ -52,6 +52,9 @@ public class LazyConfiguration {
      * We validate for presence of those secrets only when the task is scheduled in the graph.
      * This way, normal builds don't require users to provide secrets.
      * Only release builds will fail early when secrets are not provided.
+     * <p>
+     * Lazy configuration action should not apply other plugins, add tasks or add new task relationships (like dependsOn).
+     * It will not work because Gradle does not allow adding tasks after the task graph has be already created.
      */
     public static void lazyConfiguration(Task task, Runnable configuration) {
         LazyConfiguration configurer = getConfigurer(task.getProject());
