@@ -80,9 +80,9 @@ public class GitHubAllContributorsFetcher {
 
         GitHubProjectContributors build() {
             // see API doc: https://developer.github.com/v3/repos/#list-contributors
-            String nextPageUrl = String.format("%s%s",
-                    "https://api.github.com/repos/" + repository + "/contributors",
-                    "?access_token=" + readOnlyAuthToken);
+            String nextPageUrl = "https://api.github.com/repos/" + repository + "/contributors" +
+                    "?access_token=" + readOnlyAuthToken +
+                    "&per_page=100";
             return new GitHubProjectContributors(nextPageUrl);
         }
     }
