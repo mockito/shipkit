@@ -7,7 +7,10 @@ import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.mockito.release.gradle.ReleaseConfiguration;
-import org.mockito.release.notes.contributors.*;
+import org.mockito.release.notes.contributors.AllContributorsSerializer;
+import org.mockito.release.notes.contributors.Contributors;
+import org.mockito.release.notes.contributors.GitHubContributorsProvider;
+import org.mockito.release.notes.contributors.ProjectContributorsSet;
 
 import java.io.File;
 
@@ -77,5 +80,7 @@ public class AllContributorsFetcherTask extends DefaultTask {
 
         AllContributorsSerializer serializer = Contributors.getAllContributorsSerializer(outputFile);
         serializer.serialize(allContributorsForProject);
+
+        LOG.lifecycle("  Serialized all contributors into: {}", getProject().relativePath(outputFile));
     }
 }
