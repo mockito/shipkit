@@ -9,12 +9,12 @@ class ReleaseNeededTaskTest extends Specification {
 
     ReleaseNeededTask underTest = new ProjectBuilder().build().getTasks().create("releaseNeeded", ReleaseNeededTask)
 
-    def "allPublicationsEqual should be true if no PublicationComparisonTasks"() {
+    def "allPublicationsEqual should be false if no PublicationComparisonTasks"() {
         when:
         underTest.releaseNeeded()
 
         then:
-        underTest.areAllPublicationsEqual()
+        !underTest.areAllPublicationsEqual()
     }
 
     def "allPublicationsEqual should be true if all PublicationComparisonTasks return true"() {
