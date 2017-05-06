@@ -15,3 +15,7 @@ gradle-app.setting
 # gradle/wrapper/gradle-wrapper.properties
 
 .idea
+
+# ignore projects for E2E testing, but not build.gradle
+e2eTests/
+!e2eTests/build.gradle
