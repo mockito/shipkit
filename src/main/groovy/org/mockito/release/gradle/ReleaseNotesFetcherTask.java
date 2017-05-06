@@ -1,7 +1,6 @@
 package org.mockito.release.gradle;
 
 import org.gradle.api.DefaultTask;
-import org.gradle.api.internal.ConventionTask;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
@@ -26,7 +25,7 @@ public class ReleaseNotesFetcherTask extends DefaultTask {
     @Input private String gitHubReadOnlyAuthToken;
     @Input private String gitHubRepository;
     @Input private String tagPrefix = "v";
-    @Input private boolean onlyPullRequests = false;
+    @Input private boolean onlyPullRequests;
     @Input private File gitWorkDir = getProject().getRootDir();
     @Input private Collection<String> gitHubLabels = Collections.emptyList();
     @OutputFile private File outputFile;
