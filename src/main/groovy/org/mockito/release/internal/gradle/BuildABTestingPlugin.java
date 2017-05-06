@@ -7,6 +7,9 @@ import org.gradle.api.tasks.*;
 
 import java.io.File;
 
+/**
+ * See rationale and design at: https://github.com/mockito/mockito-release-tools/issues/113
+ */
 public class BuildABTestingPlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
@@ -43,6 +46,11 @@ public class BuildABTestingPlugin implements Plugin<Project> {
         analyze.dependsOn(compare);
         analyze.setComparisonResultsFile(compare.getResultsFile());
     }
+
+    /**
+     * BELOW task types are only empty shells.
+     * They act as suggestions for workflow / API design.
+     */
 
     public static class AnalyzeComparisonResultsTask extends DefaultTask {
 
