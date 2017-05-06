@@ -3,6 +3,8 @@ package org.mockito.release.internal.gradle;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.mockito.release.gradle.ReleaseConfiguration;
+import org.mockito.release.internal.gradle.configuration.BasicValidator;
+import org.mockito.release.internal.gradle.configuration.LazyConfiguration;
 
 import static org.mockito.release.internal.gradle.GitSetupPlugin.CHECKOUT_BRANCH_TASK;
 
@@ -33,7 +35,15 @@ public class TravisPlugin implements Plugin<Project> {
         boolean isPullRequest = pr != null && !pr.trim().isEmpty() && !pr.equals("false");
         conf.getBuild().setPullRequest(isPullRequest);
 
-        GitCheckOutTask gitCheckOutTask = (GitCheckOutTask) project.getTasks().getByName(CHECKOUT_BRANCH_TASK);
-        gitCheckOutTask.setRev(System.getenv("TRAVIS_BRANCH"));
+        final GitCheckOutTask checkout = (GitCheckOutTask) project.getTasks().getByName(CHECKOUT_BRANCH_TASK);
+        checkout.setRev(System.getenv("TRAVIS_BRANCH"));
+
+        LazyConfiguration.lazyConfiguration(checkout, new Runnable() {
+            public void run() {
+                BasicValidator.notNull(checkout.getRev(),
+                        "Please export 'TRAVIS_BRANCH' environment variable first!\n" +
+                                "Alternatively, configure '" + checkout.getPath() + ".rev' task property.");
+            }
+        });
     }
 }
