@@ -87,7 +87,7 @@ class PomCustomizer {
                     contributorsPath,
                     conf.team.contributors,
                     conf.team.developers,
-                    conf.team.addContributorsToPomFromGitHub)
+                    true)
         }
     }
 }
