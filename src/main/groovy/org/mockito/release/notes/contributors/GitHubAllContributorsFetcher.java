@@ -30,6 +30,8 @@ public class GitHubAllContributorsFetcher {
                 result.addAllContributors(extractContributors(page, readOnlyAuthToken));
             }
         } catch (Exception e) {
+            //TODO we need to eliminate below from the codebase here and everywhere, else to
+            //Let's throw an exception!!!
             e.printStackTrace();
         }
         return result;
