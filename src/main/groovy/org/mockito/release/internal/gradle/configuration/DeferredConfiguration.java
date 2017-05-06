@@ -39,7 +39,8 @@ public class DeferredConfiguration {
     public static void deferredConfiguration(Project project, final Runnable runnable) {
         project.afterEvaluate(new Action<Project>() {
             public void execute(Project project) {
-                LOGGER.info("{} - executing deferred configuration using 'afterEvaluate'", project.getPath());
+                LOGGER.info("{} - executing deferred configuration using 'afterEvaluate'",
+                        project.getPath().equals(":") ? "Root project" : project.getPath());
                 runnable.run();
             }
         });
