@@ -12,8 +12,8 @@ import org.mockito.release.gradle.SecureExecTask;
 import org.mockito.release.internal.gradle.util.GitUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 
-import static org.mockito.release.internal.gradle.configuration.LazyConfiguration.lazyConfiguration;
 import static org.mockito.release.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
+import static org.mockito.release.internal.gradle.configuration.LazyConfiguration.lazyConfiguration;
 import static org.mockito.release.internal.gradle.util.GitUtil.getTag;
 import static org.mockito.release.internal.gradle.util.StringUtil.join;
 
@@ -34,8 +34,20 @@ public class GitPlugin implements Plugin<Project> {
     static final String SET_USER_TASK = "setGitUserName";
     static final String SET_EMAIL_TASK = "setGitUserEmail";
 
+    public static class GitStatus {
+        String getBranch() {
+            //TODO:
+            //1. probably a separate class to keep clean
+            //2. should exec out to git to get current branch
+            //3. should keep state and be synchronized and exec out only once
+            return "sf"; //the branch I usually work on :P
+        }
+    }
+
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
+
+        project.getExtensions().create(GitPlugin.class.getName(), GitStatus.class);
 
         TaskMaker.execTask(project, COMMIT_TASK, new Action<Exec>() {
             public void execute(final Exec t) {
