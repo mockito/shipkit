@@ -22,12 +22,17 @@ import static java.util.Arrays.asList;
 public class ReleaseNotesFetcherTask extends DefaultTask {
 
     @Input private String previousVersion;
+    @Input private String version = getProject().getVersion().toString();
     @Input private String gitHubReadOnlyAuthToken;
     @Input private String gitHubRepository;
+    @Input private String tagPrefix = "v";
+    @Input private boolean onlyPullRequests = false;
+    @Input private File gitWorkDir = getProject().getRootDir();
+    @Input private Collection<String> gitHubLabels = Collections.emptyList();
     @OutputFile private File outputFile;
 
     /**
-     * GitHub read only authentication token needed for loading issue information from GitHub.
+     * See {@link ReleaseConfiguration.GitHub#getReadOnlyAuthToken()}
      */
     public String getGitHubReadOnlyAuthToken() {
         return gitHubReadOnlyAuthToken;
@@ -41,8 +46,7 @@ public class ReleaseNotesFetcherTask extends DefaultTask {
     }
 
     /**
-     * Name of the GitHub repository in format "user|org/repository",
-     * for example: "mockito/mockito"
+     * See {@link ReleaseConfiguration.GitHub#getRepository()}
      */
     public String getGitHubRepository() {
         return gitHubRepository;
@@ -57,6 +61,7 @@ public class ReleaseNotesFetcherTask extends DefaultTask {
 
     /**
      * Previous released version we generate the release notes from.
+     * See {@link ReleaseConfiguration#getPreviousReleaseVersion()}
      */
     public String getPreviousVersion() {
         return previousVersion;
@@ -83,16 +88,85 @@ public class ReleaseNotesFetcherTask extends DefaultTask {
         this.outputFile = outputFile;
     }
 
+    /**
+     * Version we generate release notes data for
+     */
+    public String getVersion() {
+        return version;
+    }
+
+    /**
+     * See {@link #getVersion()}
+     */
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    /**
+     * Whether to include only pull requests in the release notes data
+     */
+    public boolean isOnlyPullRequests() {
+        return onlyPullRequests;
+    }
+
+    /**
+     * See {@link #isOnlyPullRequests()}
+     */
+    public void setOnlyPullRequests(boolean onlyPullRequests) {
+        this.onlyPullRequests = onlyPullRequests;
+    }
+
+    /**
+     * See {@link ReleaseConfiguration.Git#getTagPrefix()}
+     */
+    public String getTagPrefix() {
+        return tagPrefix;
+    }
+
+    /**
+     * See {@link #getTagPrefix()}
+     */
+    public void setTagPrefix(String tagPrefix) {
+        this.tagPrefix = tagPrefix;
+    }
+
+    /**
+     * Work directory where git operations will be invoked (like 'git log', etc.)
+     */
+    public File getGitWorkDir() {
+        return gitWorkDir;
+    }
+
+    /**
+     * See {@link #getGitWorkDir()}
+     */
+    public void setGitWorkDir(File gitWorkDir) {
+        this.gitWorkDir = gitWorkDir;
+    }
+
+    /**
+     * GitHub labels to include when querying GitHub issues API.
+     * If empty, then all labels will be included.
+     * If labels are configured, only tickets with those labels will be included in the release notes.
+     */
+    public Collection<String> getGitHubLabels() {
+        return gitHubLabels;
+    }
+
+    /**
+     * See {@link #getGitHubLabels()}
+     */
+    public void setGitHubLabels(Collection<String> gitHubLabels) {
+        this.gitHubLabels = gitHubLabels;
+    }
+
     @TaskAction
     public void generateReleaseNotes() {
         ReleaseNotesGenerator generator = ReleaseNotesGenerators.releaseNotesGenerator(
-                getProject().getRootDir(), getGitHubRepository(), getGitHubReadOnlyAuthToken());
+                gitWorkDir, gitHubRepository, gitHubReadOnlyAuthToken);
 
-        //TODO expose other values hardcoded here as class fields/properties, e.g.
-        // target version, tag prefix, only pull requests
         Collection<ReleaseNotesData> releaseNotes = generator.generateReleaseNotesData(
-                getProject().getVersion().toString(), asList(getPreviousVersion()), "v",
-                Collections.<String>emptyList(), false);
+                version, asList(previousVersion), tagPrefix, gitHubLabels, onlyPullRequests);
 
         ReleaseNotesSerializer releaseNotesSerializer = new ReleaseNotesSerializer(getOutputFile());
         releaseNotesSerializer.serialize(releaseNotes);
