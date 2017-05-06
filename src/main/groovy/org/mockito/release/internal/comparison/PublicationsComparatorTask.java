@@ -8,7 +8,11 @@ import org.mockito.release.internal.util.ExposedForTesting;
 
 import java.io.*;
 
-//TODO ww - can you add javadoc?
+/**
+ * Compares sources jars and pom files produced by the build with analogical artifacts
+ * from last published build. If it determines that there were no changes it advises the user to
+ * skip publication of the new version artifacts.
+ */
 public class PublicationsComparatorTask extends DefaultTask {
 
     private Boolean publicationsEqual;
@@ -25,6 +29,9 @@ public class PublicationsComparatorTask extends DefaultTask {
 
     private File tempStorageDirectory;
 
+    /**
+     * @return if there were any changes in builds between current and previously released version
+     */
     public boolean isPublicationsEqual() {
         assert publicationsEqual != null : "Comparison task was not executed yet, the 'publicationsEqual' information not available.";
         return publicationsEqual;
