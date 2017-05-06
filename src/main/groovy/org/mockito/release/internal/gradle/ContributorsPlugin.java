@@ -72,8 +72,8 @@ public class ContributorsPlugin implements Plugin<Project> {
                         File contributorsFile = allProjectContributorsFile(project);
                         task.setReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
                         task.setRepository(conf.getGitHub().getRepository());
-                        task.setContributorsFile(contributorsFile);
-                        task.setSkipTaskExecution(!conf.getTeam().isAddContributorsToPomFromGitHub());
+                        task.setOutputFile(contributorsFile);
+                        task.setEnabled(conf.getTeam().getContributors().isEmpty());
                     }
                 });
             }
