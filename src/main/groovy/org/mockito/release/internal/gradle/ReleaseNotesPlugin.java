@@ -85,7 +85,8 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
             }
         });
 
-        final RecentContributorsFetcherTask contributors = (RecentContributorsFetcherTask) project.getTasks().getByName("fetchLastContributorsFromGitHub");
+        final RecentContributorsFetcherTask contributors = (RecentContributorsFetcherTask) project.getTasks()
+                .getByName(ContributorsPlugin.FETCH_RECENT_CONTRIBUTORS_TASK);
         contributors.setReleaseNotesData(fetcher.getOutputFile());
         contributors.dependsOn(fetcher);
 
