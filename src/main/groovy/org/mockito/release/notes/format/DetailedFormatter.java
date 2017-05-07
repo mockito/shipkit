@@ -61,14 +61,14 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         StringBuilder sb = new StringBuilder();
         //add extra information about authors when there are many of them
         if (contributions.getAuthorCount() > MAX_AUTHORS) {
-            sb.append(":cocktail: Commits: ").append(itemizedAuthors(contributions));
+            sb.append(" - Commits: ").append(itemizedAuthors(contributions));
         }
         return sb.toString();
     }
 
     static String formatImprovements(Collection<Improvement> improvements, Map<String, String> labelMapping) {
         if (improvements.isEmpty()) {
-            return ":cocktail: No pull requests referenced in commit messages.";
+            return " - No pull requests referenced in commit messages.";
         }
 
         StringBuilder sb = new StringBuilder();
@@ -77,11 +77,11 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         for (String label: sorted.keySet()) {
             for (Improvement i : sorted.get(label)) {
                 String labelPrefix = label.equals(NO_LABEL)? "":"[" + label + "] ";
-                sb.append(":cocktail: ").append(labelPrefix).append(formatImprovement(i)).append("\n");
+                sb.append(" - ").append(labelPrefix).append(formatImprovement(i)).append("\n");
             }
         }
 
-        return sb.toString().trim();
+        return " " + sb.toString().trim();
     }
 
     private static String formatImprovement(Improvement i) {
@@ -141,13 +141,21 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         StringBuilder sb = new StringBuilder();
         boolean showIndividualCommits = contributions.getAuthorCount() > 1;
         for (Contribution c : contributions.getContributions()) {
-            sb.append(c.getAuthorName());
+            sb.append(authorLink(c));
             if (showIndividualCommits) {
                 sb.append(" (").append(c.getCommits().size()).append(")");
             }
             sb.append(", ");
         }
         return sb.substring(0, sb.length() - 2); //lose trailing ", "
+    }
+
+    static String authorLink(Contribution c) {
+        if (c.getContributor() == null) {
+            return c.getAuthorName();
+        } else {
+            return "[" + c.getAuthorName() + "](" + c.getContributor().getProfileUrl() + ")";
+        }
     }
 
     private static String pluralize(int size, String singularNoun) {

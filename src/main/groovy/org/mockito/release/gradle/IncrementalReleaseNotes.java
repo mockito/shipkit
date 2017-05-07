@@ -7,7 +7,10 @@ import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.*;
 import org.mockito.release.internal.gradle.util.FileUtil;
 import org.mockito.release.internal.gradle.util.ReleaseNotesSerializer;
+import org.mockito.release.notes.contributors.ContributorsSerializer;
+import org.mockito.release.notes.contributors.ContributorsSet;
 import org.mockito.release.notes.format.ReleaseNotesFormatters;
+import org.mockito.release.notes.model.Contribution;
 import org.mockito.release.notes.model.ReleaseNotesData;
 
 import java.io.File;
@@ -29,6 +32,7 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
     private Map<String, String> gitHubLabelMapping = new LinkedHashMap<String, String>();
     private String publicationRepository;
     private File releaseNotesData;
+    private File contributorsData;
 
     /**
      * Release notes file this task operates on.
@@ -112,6 +116,37 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
         this.previousVersion = previousVersion;
     }
 
+    /**
+     * Input to the release notes generation,
+     * serialized release notes data objects of type {@link ReleaseNotesData}.
+     * They are used to generate formatted release notes.
+     */
+    @InputFile
+    public File getReleaseNotesData() {
+        return releaseNotesData;
+    }
+
+    /**
+     * See {@link #getReleaseNotesData()}
+     */
+    public void setReleaseNotesData(File releaseNotesData) {
+        this.releaseNotesData = releaseNotesData;
+    }
+
+    /**
+     * Serialized contributors data to be included in release notes
+     */
+    public File getContributorsData() {
+        return contributorsData;
+    }
+
+    /**
+     * See {@link #getContributorsData()}
+     */
+    public void setContributorsData(File contributorsData) {
+        this.contributorsData = contributorsData;
+    }
+
     private void assertConfigured() {
         //TODO SF unit test coverage
         if (releaseNotesFile == null || !releaseNotesFile.isFile()) {
@@ -133,7 +168,21 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
         String version = getProject().getVersion().toString();
         String tagPrefix = "v";
 
-        Collection<ReleaseNotesData> data = new ReleaseNotesSerializer(getReleaseNotesData()).deserialize();
+        Collection<ReleaseNotesData> data = new ReleaseNotesSerializer(releaseNotesData).deserialize();
+        ContributorsSet contributors = new ContributorsSerializer(contributorsData).deserialize();
+        //TODO this is not nice at all. Suggested plan:
+        // Merge the functionality of recent contributors fetching + all contributors fetching.
+        // 1. Provide a single service that will:
+        //   - fetch all contributors using https://developer.github.com/v3/repos/#list-contributors
+        //   - then fetch recent contributors (last 48hrs) using https://developer.github.com/v3/repos/commits/#list-commits-on-a-repository
+        // 2. Have just a single Gradle task that gets contributors data instead of current 2 (recent + all)
+        // 3. Release notes fetcher task will depend on contributors so
+        // that it will product complete release notes data
+        for (ReleaseNotesData d : data) {
+            for (Contribution c : d.getContributions().getContributions()) {
+                c.setContributor(contributors.findByAuthorName(c.getAuthorName()));
+            }
+        }
 
         String vcsCommitTemplate = "https://github.com/" + gitHubRepository + "/compare/"
                 + tagPrefix + previousVersion + "..." + tagPrefix + version;
@@ -142,20 +191,6 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
                 .formatReleaseNotes(data);
 
         return notes + "\n\n";
-    }
-
-    public void setReleaseNotesData(File releaseNotesData) {
-        this.releaseNotesData = releaseNotesData;
-    }
-
-    /**
-     * Input to the release notes generation,
-     * serialized release notes data objects of type {@link ReleaseNotesData}.
-     * They are used to generate formatted release notes.
-     */
-    @InputFile
-    public File getReleaseNotesData() {
-        return releaseNotesData;
     }
 
     /**

@@ -68,7 +68,6 @@ class PomCustomizer {
                         assert split.length == 2
                         def d = node.appendNode('contributor')
                         d.appendNode('name', split[1])
-                        d.appendNode('roles').appendNode('role', 'Core developer')
                         d.appendNode('url', "https://github.com/${split[0]}")
                     }
                 }

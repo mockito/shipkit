@@ -7,8 +7,6 @@ import java.io.File;
  */
 public class Contributors {
 
-    private static final String LAST_CONTRIBUTORS_FILE_PATH = "/contributors/contributors-%s-%s.json";
-
     /**
      * Fetches contributors from GitHub. Needs GitHub auth token.
      *
@@ -17,17 +15,6 @@ public class Contributors {
      */
     public static GitHubContributorsProvider getGitHubContributorsProvider(String repository, String readOnlyAuthToken) {
         return new GitHubContributorsProvider(repository, readOnlyAuthToken);
-    }
-
-    /**
-     * Generate file path where last contributors are stored.
-     * @param buildDir project build dir
-     * @param fromRev from revision or tag
-     * @param toRevision end revision or 'HEAD'
-     * @return file path
-     */
-    public static String getLastContributorsFileName(String buildDir, String fromRev, String toRevision) {
-        return buildDir + String.format(LAST_CONTRIBUTORS_FILE_PATH, fromRev, toRevision);
     }
 
     /**

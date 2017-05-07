@@ -37,8 +37,8 @@ public class ReleaseNotesSerializer {
             objectInput = getReleaseNotesFileStream();
             return (Collection<ReleaseNotesData>) objectInput.readObject();
         } catch (Exception e) {
-            throw new RuntimeException("Deserializing release notes from temporary file failed. " +
-                    "Probably the file was not properly generated in the previous step.", e);
+            throw new RuntimeException("Problems deserializing release notes from file:\n  " + file +
+                    "  Most likely the file was not generated correctly, please clean it up and regenerate it.", e);
         } finally{
             if(objectInput != null) {
                 try {
