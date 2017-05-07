@@ -9,7 +9,7 @@ task e2eTest {
                 deleteProjectDir(projectName)
                 gitClone(projectName, e2eProjects[projectName])
                 bumpProjectVersion(projectName)
-                //TODO c) performRelease -Preleasing.dryRun
+                performRelease(projectName)
             }
         }
     }
@@ -35,6 +35,12 @@ def bumpProjectVersion(String projectName) {
     }
 }
 
+def performRelease(String projectName) {
+    tasks.create("performRelease$projectName", Exec) {
+        workingDir "$projectDir/$projectName"
+        commandLine './gradlew', 'performRelease', '-Preleasing.dryRun'
+    }.execute()
+}
 
 task check {
     dependsOn e2eTest
