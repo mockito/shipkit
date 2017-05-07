@@ -7,11 +7,11 @@ import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.gradle.contributors.ConfigureContributorsTask;
 import org.mockito.release.internal.gradle.util.Specs;
 import org.mockito.release.internal.gradle.util.TaskMaker;
-import org.mockito.release.notes.contributors.Contributors;
 
 import java.io.File;
 
 import static org.mockito.release.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
+import static org.mockito.release.internal.gradle.util.BuildConventions.outputFile;
 
 /**
  * Adds and configures tasks for getting contributor git user to GitHub user mappings.
@@ -19,7 +19,7 @@ import static org.mockito.release.internal.gradle.configuration.DeferredConfigur
  * <ul>
  *     <li>fetchRecentContributors - {@link RecentContributorsFetcherTask}</li>
  *     <li>fetchAllContributors - {@link AllContributorsFetcherTask}</li>
- *     <li>configureContributors - {@link AllContributorsFetcherTask}</li>
+ *     <li>configureContributors - {@link ConfigureContributorsTask}</li>
  * </ul>
  */
 public class ContributorsPlugin implements Plugin<Project> {
@@ -48,7 +48,7 @@ public class ContributorsPlugin implements Plugin<Project> {
                 deferredConfiguration(project, new Runnable() {
                     public void run() {
                         String fromRevision = "v" + conf.getPreviousReleaseVersion();
-                        File contributorsFile = lastContributorsFile(project, fromRevision, toRevision);
+                        File contributorsFile = outputFile(project, "recent-contributors.json");
 
                         task.setReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
                         task.setRepository(conf.getGitHub().getRepository());
@@ -66,7 +66,7 @@ public class ContributorsPlugin implements Plugin<Project> {
             public void execute(final AllContributorsFetcherTask task) {
                 task.setGroup(TaskMaker.TASK_GROUP);
                 task.setDescription("Fetch info about all project contributors from GitHub and store it in file");
-                task.setOutputFile(new File(project.getBuildDir(), "release-tools/project-contributors.json"));
+                task.setOutputFile(outputFile(project, "all-contributors.json"));
 
                 deferredConfiguration(project, new Runnable() {
                     @Override
@@ -89,12 +89,6 @@ public class ContributorsPlugin implements Plugin<Project> {
                 t.onlyIf(Specs.fileExists(fetcher.getOutputFile()));
             }
         });
-    }
-
-    private File lastContributorsFile(Project project, String fromRevision, String toRevision) {
-        String contributorsFileName = Contributors.getLastContributorsFileName(
-                project.getBuildDir().getAbsolutePath(), fromRevision, toRevision);
-        return new File(contributorsFileName);
     }
 }
 
