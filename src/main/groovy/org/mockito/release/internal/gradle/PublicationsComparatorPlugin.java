@@ -56,6 +56,17 @@ public class PublicationsComparatorPlugin implements Plugin<Project> {
                     @Override
                     public void run() {
                         t.setProjectGroup(project.getGroup().toString());
+                        /*
+                        TODO ww it is more convenient for Gradle users and for us, when the task has simple inputs (Strings, Files)
+                        If the task API has getters/setters on types like DefaultArtifactUrlResolver
+                        it is harder to make it incremental, it also makes the public API bigger because you need to expose and document those types
+                        Why not have the url get calculated right here, with some conditional check:
+
+                        if (t.getPreviousJarUrl() == null) {
+                          t.setPreviousJarUrl(...)
+                        }
+
+                        */
                         DefaultArtifactUrlResolver artifactUrlResolver =
                                 new DefaultArtifactUrlResolverFactory().getDefaultResolver(project, sourcesJar.getBaseName(), conf.getPreviousReleaseVersion());
                         t.setDefaultArtifactUrlResolver(artifactUrlResolver);
