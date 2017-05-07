@@ -6,6 +6,8 @@ import org.gradle.api.Project;
 import org.gradle.api.tasks.bundling.Jar;
 import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.internal.comparison.PublicationsComparatorTask;
+import org.mockito.release.internal.comparison.artifact.DefaultArtifactUrlResolver;
+import org.mockito.release.internal.comparison.artifact.DefaultArtifactUrlResolverFactory;
 import org.mockito.release.internal.gradle.configuration.DeferredConfiguration;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 
@@ -42,7 +44,7 @@ public class PublicationsComparatorPlugin implements Plugin<Project> {
                 t.setPreviousVersion(conf.getPreviousReleaseVersion());
 
                 //Let's say that the initial implementation compares sources jar. We can this API method to the task:
-                Jar sourcesJar = (Jar) project.getTasks().getByName(BaseJavaLibraryPlugin.SOURCES_JAR_TASK);
+                final Jar sourcesJar = (Jar) project.getTasks().getByName(BaseJavaLibraryPlugin.SOURCES_JAR_TASK);
                 t.compareSourcesJar(sourcesJar);
                 //Let's say we compare poms, we can add this API
                 //maven-publish plugin is messed up in Gradle API, we cannot really access generate pom task and we have to pass String
@@ -53,6 +55,9 @@ public class PublicationsComparatorPlugin implements Plugin<Project> {
                     @Override
                     public void run() {
                         t.setProjectGroup(project.getGroup().toString());
+                        DefaultArtifactUrlResolver artifactUrlResolver =
+                                new DefaultArtifactUrlResolverFactory().getDefaultResolver(project, sourcesJar.getBaseName(), conf.getPreviousReleaseVersion());
+                        t.setDefaultArtifactUrlResolver(artifactUrlResolver);
                     }
                 });
             }

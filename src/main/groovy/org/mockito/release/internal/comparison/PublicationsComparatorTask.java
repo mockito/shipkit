@@ -1,9 +1,11 @@
 package org.mockito.release.internal.comparison;
 
 import org.gradle.api.DefaultTask;
+import org.gradle.api.GradleException;
 import org.gradle.api.publish.maven.tasks.GenerateMavenPom;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.bundling.Jar;
+import org.mockito.release.internal.comparison.artifact.DefaultArtifactUrlResolver;
 import org.mockito.release.internal.util.ExposedForTesting;
 
 import java.io.*;
@@ -26,6 +28,8 @@ public class PublicationsComparatorTask extends DefaultTask {
 
     private String previousVersionPomUrl;
     private String previousVersionSourcesJarUrl;
+
+    private DefaultArtifactUrlResolver defaultArtifactUrlResolver;
 
     private File tempStorageDirectory;
 
@@ -53,6 +57,9 @@ public class PublicationsComparatorTask extends DefaultTask {
         File currentVersionPomPath = pomTask.getDestination();
         File currentVersionSourcesJarPath = sourcesJar.getArchivePath();
 
+        previousVersionPomUrl = getDefaultIfNull(previousVersionPomUrl, "previousVersionPomUrl", ".pom");
+        previousVersionSourcesJarUrl = getDefaultIfNull(previousVersionSourcesJarUrl, "previousSourcesJarUrl", "-sources.jar");
+
         artifactName = sourcesJar.getBaseName();
 
         getLogger().lifecycle("{} - about to compare publications, for versions {} and {}",
@@ -69,6 +76,21 @@ public class PublicationsComparatorTask extends DefaultTask {
         getLogger().lifecycle("{} - source jars equal: {}", getPath(), jars);
 
         this.publicationsEqual = jars && poms;
+    }
+
+    private String getDefaultIfNull(String url, String variableName, String extension) {
+        if(url == null){
+            if(defaultArtifactUrlResolver == null){
+                throw new GradleException("You have to configure " + variableName + " to use PublicationsComparatorTask.\n"
+                        + "If you use one of the supported publishing plugins default url will be configured for you.\n"
+                        + "Currently supported plugins: Bintray"
+                );
+            }
+            String defaultUrl = defaultArtifactUrlResolver.getDefaultUrl(extension);
+            getLogger().lifecycle("Variable {} not set. Setting it to default value - {}", variableName, defaultUrl);
+            return defaultUrl;
+        }
+        return url;
     }
 
     public void compareSourcesJar(Jar sourcesJar) {
@@ -149,6 +171,14 @@ public class PublicationsComparatorTask extends DefaultTask {
 
     public void setPreviousVersionSourcesJarUrl(String previousVersionSourcesJarUrl) {
         this.previousVersionSourcesJarUrl = previousVersionSourcesJarUrl;
+    }
+
+    public DefaultArtifactUrlResolver getDefaultArtifactUrlResolver() {
+        return defaultArtifactUrlResolver;
+    }
+
+    public void setDefaultArtifactUrlResolver(DefaultArtifactUrlResolver defaultArtifactUrlResolver) {
+        this.defaultArtifactUrlResolver = defaultArtifactUrlResolver;
     }
 
     /**
