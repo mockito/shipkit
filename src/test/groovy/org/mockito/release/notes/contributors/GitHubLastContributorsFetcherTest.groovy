@@ -10,25 +10,25 @@ class GitHubLastContributorsFetcherTest extends Specification {
     def readOnlyToken = "a0a4c0f41c200f7c653323014d6a72a127764e17"
 
     def "fetches contributors from GitHub"() {
-        def authorNames = ["Continuous Delivery Drone", "Szczepan Faber"]
-
         when:
-        def contributors = fetcher.fetchContributors("mockito/mockito", readOnlyToken, authorNames, "", "HEAD")
+        def c = fetcher.fetchContributors("mockito/mockito", readOnlyToken, "2017-05-04", "2017-05-06")
 
         then:
-        contributors.findByAuthorName("Continuous Delivery Drone").login == "continuous-delivery-drone"
-        contributors.findByAuthorName("Continuous Delivery Drone").name == "Continuous Delivery Drone"
-        contributors.findByAuthorName("Continuous Delivery Drone").profileUrl == "https://github.com/continuous-delivery-drone"
-        contributors.findByAuthorName("Szczepan Faber").login == "szczepiq"
-        contributors.findByAuthorName("Szczepan Faber").name == "Szczepan Faber"
-        contributors.findByAuthorName("Szczepan Faber").profileUrl == "https://github.com/szczepiq"
+        c*.name == ["Roman Elizarov", "Allon Murienik", "Szczepan Faber"]
+        c*.profileUrl == ["https://github.com/elizarov", "https://github.com/mureinik", "https://github.com/szczepiq"]
     }
 
-    def "dont fetch contributors when empty contributions"() {
-        when:
-        def contributors = fetcher.fetchContributors("mockito/mockito", readOnlyToken, Collections.emptyList(), "", "HEAD")
+    def "no contributors for given dates"() {
+        def c = fetcher.fetchContributors("mockito/mockito", readOnlyToken, "2017-05-01", "2017-05-03")
+        expect:
+        c.empty
+    }
 
-        then:
-        contributors.size() == 0
+    def "null until date smoke test"() {
+        def c = fetcher.fetchContributorsSinceYesterday("mockito/mockito-release-tools", readOnlyToken)
+        expect:
+        //we cannot write assertions because we are querying for commits since yesterday
+        //and the commits can change. Smoke testing only
+        println c*.profileUrl
     }
 }

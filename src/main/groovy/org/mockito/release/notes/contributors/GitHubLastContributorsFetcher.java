@@ -4,62 +4,66 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.json.simple.DeserializationException;
 import org.json.simple.JsonObject;
-import org.mockito.release.internal.gradle.util.StringUtil;
+import org.mockito.release.internal.gradle.configuration.BasicValidator;
 import org.mockito.release.notes.model.Contributor;
 import org.mockito.release.notes.util.GitHubListFetcher;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+import static org.mockito.release.internal.util.ArgumentValidation.notNull;
+import static org.mockito.release.internal.util.DateUtil.forGitHub;
+import static org.mockito.release.internal.util.DateUtil.yesterday;
+
+/**
+ * Fetches recent contributors from GitHub using the "commit" end point.
+ * The "contributors" endpoint does not return the most recent contributors as documented.
+ */
 public class GitHubLastContributorsFetcher {
 
     private static final Logger LOG = Logging.getLogger(GitHubLastContributorsFetcher.class);
 
-    ContributorsSet fetchContributors(String repository, String readOnlyAuthToken, Collection<String> authorNames, String fromRevision, String toRevision) {
-        LOG.info("Querying GitHub API for commits (for contributors)");
-        ContributorsSet result = new DefaultContributorsSet();
+    /**
+     * Contributors that pushed commits to the repo withing the last 24hrs
+     */
+    public Collection<Contributor> fetchContributorsSinceYesterday(String repository, String readOnlyAuthToken) {
+        String yesterday = forGitHub(yesterday());
+        return fetchContributors(repository, readOnlyAuthToken, yesterday, null);
+    }
 
-        Set<String> remaining = new HashSet<String>(authorNames);
+    /**
+     * Contributors that pushed commits to the repo within the time span.
+     * @param dateSince - must not be null, the since date, in format accepted by GitHub
+     *                  ({@link org.mockito.release.internal.util.DateUtil#forGitHub(Date)})
+     * @param dateUntil - can be null, it means there is no end date, in format accepted by GitHub
+     *                  ({@link org.mockito.release.internal.util.DateUtil#forGitHub(Date)})
+     */
+    public Collection<Contributor> fetchContributors(String repository, String readOnlyAuthToken, String dateSince, String dateUntil) {
+        LOG.info("Querying GitHub API for commits (for contributors)");
+        Set<Contributor> contributors = new LinkedHashSet<Contributor>();
 
         try {
-            GitHubCommits commits = GitHubCommits.authenticatingWith(repository, readOnlyAuthToken)
-                    .fromRevision(fromRevision)
-                    .toRevision(toRevision)
+            GitHubCommits commits = GitHubCommits
+                    .with(repository, readOnlyAuthToken, dateSince, dateUntil)
                     .build();
 
-            while(!remaining.isEmpty() && commits.hasNextPage()) {
+            while(commits.hasNextPage()) {
                 List<JsonObject> page = commits.nextPage();
-                result.addAllContributors(extractContributors(page, remaining));
-            }
-            if (!remaining.isEmpty()) {
-                LOG.lifecycle("{} contributor(s) will not have link to GitHub profile in release notes data.\n" +
-                                "  We were not able to extract contributor information from GitHub API using 'commits' endpoint.\n" +
-                                "  Contributors with no profile: \n  {}",
-                        remaining.size(), StringUtil.join(remaining, ", "));
+                contributors.addAll(extractContributors(page));
             }
         } catch (Exception e) {
-            LOG.info("Problems fetching commits from GitHub", e);
             throw new RuntimeException("Problems fetching commits from GitHub", e);
         }
 
-        return result;
+        return contributors;
     }
 
-    private Set<Contributor> extractContributors(List<JsonObject> commits, Set<String> authors) {
+    private Set<Contributor> extractContributors(List<JsonObject> commits) {
         Set<Contributor> result = new HashSet<Contributor>();
         for (JsonObject commit : commits) {
             Contributor contributor = GitHubCommitsJSON.toContributor(commit);
             if(contributor != null) {
-                if (authors.contains(contributor.getName())) {
-                    result.add(contributor);
-                    authors.remove(contributor.getName());
-                }
-                if (authors.isEmpty()) {
-                    return result;
-                }
+                result.add(contributor);
             }
         }
         return result;
@@ -67,29 +71,15 @@ public class GitHubLastContributorsFetcher {
 
     private static class GitHubCommits {
 
-        private final String fromRevision;
         private final GitHubListFetcher fetcher;
         private List<JsonObject> lastFetchedPage;
 
-        private GitHubCommits(String nextPageUrl, String fromRevision) {
+        private GitHubCommits(String nextPageUrl) {
             fetcher = new GitHubListFetcher(nextPageUrl);
-            this.fromRevision = fromRevision;
         }
 
         boolean hasNextPage() {
-            return !containsRevision(lastFetchedPage, fromRevision) && fetcher.hasNextPage();
-        }
-
-        private boolean containsRevision(List<JsonObject> lastFetchedPage, String revision) {
-            if(lastFetchedPage == null) {
-                return false;
-            }
-            for (JsonObject commit : lastFetchedPage) {
-                if(GitHubCommitsJSON.containsRevision(commit, revision)) {
-                    return true;
-                }
-            }
-            return false;
+            return fetcher.hasNextPage();
         }
 
         List<JsonObject> nextPage() throws IOException, DeserializationException {
@@ -97,46 +87,32 @@ public class GitHubLastContributorsFetcher {
             return lastFetchedPage;
         }
 
-        static GitHubCommitsBuilder authenticatingWith(String repository, String readOnlyAuthToken) {
-            return new GitHubCommitsBuilder(repository, readOnlyAuthToken);
+        static GitHubCommitsBuilder with(String repository, String readOnlyAuthToken, String dateSince, String dateUntil) {
+            return new GitHubCommitsBuilder(repository, readOnlyAuthToken, dateSince, dateUntil);
         }
 
         private static class GitHubCommitsBuilder {
             private final String repository;
             private final String readOnlyAuthToken;
-            private String fromRevision;
-            private String toRevision;
+            private final String dateSince;
+            private final String dateUntil;
 
-            private GitHubCommitsBuilder(String repository, String readOnlyAuthToken) {
+            private GitHubCommitsBuilder(String repository, String readOnlyAuthToken, String dateSince, String dateUntil) {
+                notNull(repository, "repository", readOnlyAuthToken, "readOnlyAuthToken", dateSince, "dateSince");
                 this.repository = repository;
                 this.readOnlyAuthToken = readOnlyAuthToken;
-            }
-
-            GitHubCommitsBuilder fromRevision(String fromRevision) {
-                this.fromRevision = fromRevision;
-                return this;
-            }
-
-            GitHubCommitsBuilder toRevision(String toRevision) {
-                this.toRevision = toRevision;
-                return this;
+                this.dateSince = dateSince;
+                this.dateUntil = dateUntil;
             }
 
             GitHubCommits build() {
                 // see API doc: https://developer.github.com/v3/repos/commits/#list-commits-on-a-repository
-                String nextPageUrl = String.format("%s%s%s%s",
-                        "https://api.github.com/repos/" + repository + "/commits",
-                        "?access_token=" + readOnlyAuthToken,
-                        max(toRevision),
-                        "&page=1");
-                return new GitHubCommits(nextPageUrl, fromRevision);
-            }
-
-            private String max(String toRevision) {
-                if(toRevision != null && !toRevision.isEmpty()) {
-                    return "&max=" + toRevision;
-                }
-                return "";
+                String nextPageUrl = "https://api.github.com/repos/" + repository + "/commits"
+                        + "?access_token=" + readOnlyAuthToken
+                        + "&since=" + dateSince
+                        + ((dateUntil != null)? "&until=" + dateUntil : "")
+                        + "&page=1&per_page=100";
+                return new GitHubCommits(nextPageUrl);
             }
         }
     }
