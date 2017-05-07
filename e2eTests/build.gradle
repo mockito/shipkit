@@ -4,23 +4,37 @@ task e2eTest {
     doFirst {
         e2eProjects.each { entry ->
             println "  E2E tests for $entry.key :)"
-            def key = entry.key
-            task e2eTest$key {
-                println "task $key"
-                //TODO not clone if exist or delete dir?
-                gitClone(key, e2eProjects[key]).execute()
-                //TODO b) bump version of producer to locally built
+            def projectName = entry.key
+            task e2eTest$projectName {
+                deleteProjectDir(projectName)
+                gitClone(projectName, e2eProjects[projectName])
+                bumpProjectVersion(projectName)
                 //TODO c) performRelease -Preleasing.dryRun
             }
         }
     }
 }
 
+def deleteProjectDir(String projectName) {
+    tasks.create("deleteDir$projectName", Delete) {
+        delete "$projectDir/$projectName"
+    }.execute()
+}
+
 def gitClone(String projectName, String repoUrl) {
-    return tasks.create("gitClone$projectName", Exec) {
+    tasks.create("gitClone$projectName", Exec) {
         commandLine 'git', 'clone', "$repoUrl", "$projectDir/$projectName"
+    }.execute()
+}
+
+def bumpProjectVersion(String projectName) {
+    ant.replaceregexp(
+            match: "gradle\\.plugin\\.org\\.mockito:mockito-release-tools:(\\d+)?\\.(\\d+)?\\.(\\d+)?",
+            replace: "gradle.plugin.org.mockito:mockito-release-tools:$project.version") {
+        fileset(dir: "$projectDir/$projectName", includes: 'build.gradle gradle.properties')
     }
 }
+
 
 task check {
     dependsOn e2eTest
