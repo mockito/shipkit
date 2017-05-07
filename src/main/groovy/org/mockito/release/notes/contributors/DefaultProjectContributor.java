@@ -91,10 +91,7 @@ public class DefaultProjectContributor implements ProjectContributor {
         if (!login.equals(that.login)) {
             return false;
         }
-        if (!profileUrl.equals(that.profileUrl)) {
-            return false;
-        }
-        return numberOfContributions.equals(that.numberOfContributions);
+        return profileUrl.equals(that.profileUrl);
     }
 
     @Override
@@ -102,7 +99,6 @@ public class DefaultProjectContributor implements ProjectContributor {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + login.hashCode();
         result = 31 * result + profileUrl.hashCode();
-        result = 31 * result + numberOfContributions.hashCode();
         return result;
     }
 }
