@@ -1,6 +1,7 @@
 package org.mockito.release.notes.contributors;
 
 import org.json.simple.Jsoner;
+import org.mockito.release.notes.model.Contributor;
 import org.mockito.release.notes.model.ProjectContributor;
 
 import java.io.IOException;
@@ -16,11 +17,19 @@ public class DefaultProjectContributor implements ProjectContributor {
     private final String profileUrl;
     private final Integer numberOfContributions;
 
-    DefaultProjectContributor(String name, String login, String profileUrl, Integer numberOfContributions) {
+    public DefaultProjectContributor(String name, String login, String profileUrl, Integer numberOfContributions) {
         this.name = name;
         this.login = login;
         this.profileUrl = profileUrl;
         this.numberOfContributions = numberOfContributions;
+    }
+
+    /**
+     * Creating project contributor from vanilla contributor,
+     * will assume that there is only single contribution.
+     */
+    public DefaultProjectContributor(Contributor contributor) {
+        this(contributor.getName(), contributor.getLogin(), contributor.getProfileUrl(), 1);
     }
 
     @Override
