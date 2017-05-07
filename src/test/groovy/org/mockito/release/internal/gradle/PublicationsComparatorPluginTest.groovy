@@ -6,7 +6,6 @@ import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import org.mockito.release.gradle.ReleaseConfiguration
 import org.mockito.release.internal.comparison.PublicationsComparatorTask
-import org.mockito.release.internal.gradle.configuration.DeferredConfiguration
 import spock.lang.Specification
 
 class PublicationsComparatorPluginTest extends Specification {
