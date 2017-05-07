@@ -18,7 +18,7 @@ public class GitHubAllContributorsFetcher {
     private static final Logger LOG = Logging.getLogger(GitHubAllContributorsFetcher.class);
 
     ProjectContributorsSet fetchAllContributorsForProject(String repository, String readOnlyAuthToken) {
-        LOG.lifecycle("Querying GitHub API for all contributors for project");
+        LOG.lifecycle("  Querying GitHub API for all contributors for project");
         ProjectContributorsSet result = new DefaultProjectContributorsSet();
 
         try {

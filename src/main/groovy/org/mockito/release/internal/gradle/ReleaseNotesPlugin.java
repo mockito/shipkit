@@ -85,24 +85,28 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
             }
         });
 
+        final ContributorsFetcherTask contributors = (ContributorsFetcherTask) project.getTasks().getByName("fetchLastContributorsFromGitHub");
+        contributors.setReleaseNotesData(fetcher.getOutputFile());
+        contributors.dependsOn(fetcher);
+
         TaskMaker.task(project, "updateReleaseNotes", IncrementalReleaseNotes.UpdateTask.class, new Action<IncrementalReleaseNotes.UpdateTask>() {
             public void execute(final IncrementalReleaseNotes.UpdateTask t) {
                 t.setDescription("Updates release notes file.");
-                configureDetailedNotes(t, fetcher, project, conf);
+                configureDetailedNotes(t, fetcher, contributors, project, conf);
             }
         });
 
         TaskMaker.task(project, "previewReleaseNotes", IncrementalReleaseNotes.PreviewTask.class, new Action<IncrementalReleaseNotes.PreviewTask>() {
             public void execute(final IncrementalReleaseNotes.PreviewTask t) {
                 t.setDescription("Shows new incremental content of release notes. Useful for previewing the release notes.");
-                configureDetailedNotes(t, fetcher, project, conf);
+                configureDetailedNotes(t, fetcher, contributors, project, conf);
             }
         });
     }
 
-    private static void configureDetailedNotes(final IncrementalReleaseNotes task, final ReleaseNotesFetcherTask fetcher, final Project project, final ReleaseConfiguration conf) {
-        task.dependsOn("fetchLastContributorsFromGitHub");
-        task.dependsOn(fetcher);
+    private static void configureDetailedNotes(final IncrementalReleaseNotes task, final ReleaseNotesFetcherTask fetcher,
+                                               ContributorsFetcherTask contributors, final Project project, final ReleaseConfiguration conf) {
+        task.dependsOn(fetcher, contributors);
         deferredConfiguration(project, new Runnable() {
             public void run() {
                 task.setReleaseNotesData(fetcher.getOutputFile());

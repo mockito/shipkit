@@ -5,37 +5,26 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.mockito.release.notes.model.ProjectContributor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class ContributorsToPom {
 
     private static final Logger LOG = Logging.getLogger(GitHubAllContributorsFetcher.class);
 
     /**
-     * Add contributors to node. Contributors comes from file generated earlier by
-     * `fetchAllProjectContributorsFromGitHub` and from contributors list (3rd param).
+     * Add contributors to node.
      * Contributors defined in developers list are ignored to avoid duplication.
      *
      * @param contributorsNode       contributors node in pom.xml where contributors will be add
-     * @param fileName               a file with fetched all project contributors from GitHub
-     * @param contributorsStringList list of contributors in format: login:name_surname
+     * @param contributors           list of contributors in format: login:name_surname
      * @param developers             list of developers in format: login:name_surname
      */
     public static void include(Node contributorsNode,
-                               String fileName,
-                               List<String> contributorsStringList,
-                               List<String> developers,
-                               boolean addContributorsToPomFromGitHub) {
-        ProjectContributorsSet contributorsSet = loadContributorsSet(fileName, addContributorsToPomFromGitHub);
-        new ContributorsToPom().include(contributorsNode, contributorsSet.getAllContributors(), contributorsStringList, developers);
-    }
-
-    private static ProjectContributorsSet loadContributorsSet(String fileName, boolean addContributorsToPomFromGitHub) {
-        if(addContributorsToPomFromGitHub) {
-            AllProjectContributorsReader reader = AllProjectsContributorsProvider.getAllProjectContributorsReader();
-            return reader.loadAllContributors(fileName);
-        }
-        return new DefaultProjectContributorsSet();
+                               List<String> contributors,
+                               List<String> developers) {
+        new ContributorsToPom().include(contributorsNode, contributors, developers);
     }
 
     /**
@@ -62,9 +51,9 @@ public class ContributorsToPom {
         }
     }
 
-    private List<ProjectContributor> convert(List<String> contributorsStringList) {
+    private List<ProjectContributor> convert(List<String> contributors) {
         List<ProjectContributor> result = new ArrayList<ProjectContributor>();
-        for (String text : contributorsStringList) {
+        for (String text : contributors) {
             String[] split = text.split(":");
             if (split.length != 2) {
                 String message = String.format("%s%s%s%s%s",
