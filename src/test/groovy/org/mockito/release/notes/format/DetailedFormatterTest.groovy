@@ -6,6 +6,7 @@ import org.mockito.release.notes.internal.DefaultReleaseNotesData
 import org.mockito.release.notes.model.Commit
 import org.mockito.release.notes.model.Contribution
 import org.mockito.release.notes.model.ContributionSet
+import org.mockito.release.notes.model.Contributor
 import spock.lang.Specification
 
 class DetailedFormatterTest extends Specification {
@@ -36,7 +37,10 @@ No release information."""
         def c = Stub(ContributionSet) {
             getAllCommits() >> [Stub(Commit)]
             getAuthorCount() >> 1
-            getContributions() >> [Stub(Contribution) { getAuthorName() >> "Szczepan Faber"}]
+            getContributions() >> [Stub(Contribution) {
+                getAuthorName() >> "Szczepan Faber"
+                getContributor() >> null
+            }]
         }
 
         def d = new DefaultReleaseNotesData("2.0.0", new Date(1483500000000), c, [], Stub(ContributorsSet), "v1.9.0", "v2.0.0")
@@ -99,7 +103,7 @@ No release information."""
         }
 
         expect:
-        DetailedFormatter.authorsSummary(c, "link") == "[1 commit](link) by Szczepan Faber"
+        DetailedFormatter.authorsSummary(c, "link") == "[1 commit](link) by [Szczepan Faber](http://Szczepan Faber)"
     }
 
     def "authors summary with multiple authors"() {
@@ -110,7 +114,7 @@ No release information."""
         }
 
         expect:
-        DetailedFormatter.authorsSummary(c, "link") == "[4 commits](link) by Szczepan Faber (2), Brice Dutheil (2)"
+        DetailedFormatter.authorsSummary(c, "link") == "[4 commits](link) by [Szczepan Faber](http://Szczepan Faber) (2), [Brice Dutheil](http://Brice Dutheil) (2)"
     }
 
     def "authors summary with many authors"() {
@@ -139,13 +143,26 @@ No release information."""
 
         expect:
         summary == """[100 commits](link) by 4 authors - *2017-01-04* - published to Bintray repo
-:cocktail: Commits: Szczepan Faber (40), Brice Dutheil (30), Rafael Winterhalter (20), Tim van der Lippe (10)"""
+:cocktail: Commits: [Szczepan Faber](http://Szczepan Faber) (40), [Brice Dutheil](http://Brice Dutheil) (30), [Rafael Winterhalter](http://Rafael Winterhalter) (20), [Tim van der Lippe](http://Tim van der Lippe) (10)"""
+    }
+
+    def "contribution with unmapped contributor"() {
+        def c = Stub(Contribution) {
+            getAuthorName() >> "John"
+            getContributor() >> null
+        }
+
+        expect:
+        DetailedFormatter.authorLink(c) == "John"
     }
 
     private Contribution c(String name, int commits) {
         return Stub(Contribution) {
             getAuthorName() >> name
             getCommits() >> [Stub(Commit)] * commits
+            getContributor() >> Stub(Contributor) {
+                getProfileUrl() >> "http://$name"
+            }
         }
     }
 }

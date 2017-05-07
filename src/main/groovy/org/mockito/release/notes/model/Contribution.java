@@ -7,7 +7,7 @@ import java.util.Collection;
  * VCS contribution, author + all commits.
  * Contribution holds many commits and potentially many improvements by a single author.
  */
-public interface Contribution extends Serializable{
+public interface Contribution extends Serializable {
 
     /**
      * Commits
@@ -18,4 +18,15 @@ public interface Contribution extends Serializable{
      * The name of the author
      */
     String getAuthorName();
+
+    /**
+     * See {@link #getContributor()}
+     */
+    void setContributor(Contributor contributor);
+
+    /**
+     * Contributor that authored this contribution.
+     * Warning! Can be null if the contributor was not configured.
+     */
+    Contributor getContributor();
 }

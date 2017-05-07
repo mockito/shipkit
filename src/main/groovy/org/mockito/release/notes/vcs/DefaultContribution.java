@@ -2,6 +2,7 @@ package org.mockito.release.notes.vcs;
 
 import org.mockito.release.notes.model.Commit;
 import org.mockito.release.notes.model.Contribution;
+import org.mockito.release.notes.model.Contributor;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -13,6 +14,7 @@ class DefaultContribution implements Contribution, Comparable<DefaultContributio
     final String authorEmail;
     final String authorName;
     final List<Commit> commits = new LinkedList<Commit>();
+    private Contributor contributor;
 
     DefaultContribution(Commit commit) {
         authorEmail = commit.getAuthorEmail();
@@ -41,6 +43,16 @@ class DefaultContribution implements Contribution, Comparable<DefaultContributio
     @Override
     public String getAuthorName() {
         return authorName;
+    }
+
+    @Override
+    public void setContributor(Contributor contributor) {
+        this.contributor = contributor;
+    }
+
+    @Override
+    public Contributor getContributor() {
+        return contributor;
     }
 
     public String toString() {

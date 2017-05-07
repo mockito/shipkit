@@ -106,11 +106,12 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     }
 
     private static void configureDetailedNotes(final IncrementalReleaseNotes task, final ReleaseNotesFetcherTask fetcher,
-                                               RecentContributorsFetcherTask contributors, final Project project, final ReleaseConfiguration conf) {
+                                               final RecentContributorsFetcherTask contributors, final Project project, final ReleaseConfiguration conf) {
         task.dependsOn(fetcher, contributors);
         deferredConfiguration(project, new Runnable() {
             public void run() {
                 task.setReleaseNotesData(fetcher.getOutputFile());
+                task.setContributorsData(contributors.getOutputFile());
                 task.setGitHubLabelMapping(conf.getReleaseNotes().getLabelMapping()); //TODO make it optional
                 task.setReleaseNotesFile(project.file(conf.getReleaseNotes().getFile())); //TODO add sensible default
                 task.setGitHubRepository(conf.getGitHub().getRepository());

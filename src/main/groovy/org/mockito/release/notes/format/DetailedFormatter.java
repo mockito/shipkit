@@ -141,13 +141,21 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         StringBuilder sb = new StringBuilder();
         boolean showIndividualCommits = contributions.getAuthorCount() > 1;
         for (Contribution c : contributions.getContributions()) {
-            sb.append(c.getAuthorName());
+            sb.append(authorLink(c));
             if (showIndividualCommits) {
                 sb.append(" (").append(c.getCommits().size()).append(")");
             }
             sb.append(", ");
         }
         return sb.substring(0, sb.length() - 2); //lose trailing ", "
+    }
+
+    static String authorLink(Contribution c) {
+        if (c.getContributor() == null) {
+            return c.getAuthorName();
+        } else {
+            return "[" + c.getAuthorName() + "](" + c.getContributor().getProfileUrl() + ")";
+        }
     }
 
     private static String pluralize(int size, String singularNoun) {
