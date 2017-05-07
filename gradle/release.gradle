@@ -1,6 +1,6 @@
 releasing {
     gitHub.repository = "mockito/mockito-release-tools"
-    gitHub.writeAuthUser = "mockito"
+    gitHub.writeAuthUser = "wwilk"
     gitHub.writeAuthToken = System.getenv("GH_WRITE_TOKEN")
     gitHub.readOnlyAuthToken = "e7fe8fcdd6ffed5c38498c4c79b2a68e6f6ed1bb"
 
