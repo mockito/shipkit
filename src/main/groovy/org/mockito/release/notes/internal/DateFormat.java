@@ -7,6 +7,8 @@ import java.util.TimeZone;
 
 /**
  * Date parsing and formatting utilities
+ *
+ * //TODO move to DateUtil
  */
 public class DateFormat {
 
