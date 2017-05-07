@@ -52,6 +52,37 @@ class GitUtilTest extends Specification {
         result == ["git", "push", "https://wwilk:token@github.com/mockito-release-tools.git", "master"]
     }
 
+    def "git push with --dry-run" () {
+        given:
+        def conf = new ReleaseConfiguration()
+
+        conf.gitHub.setWriteAuthUser("wwilk")
+        conf.gitHub.setWriteAuthToken("token")
+        conf.gitHub.setRepository("mockito-release-tools")
+        conf.setDryRun(true)
+
+        when:
+        def result = GitUtil.getGitPushArgs(conf, "master")
+
+        then:
+        result == ["git", "push", "https://wwilk:token@github.com/mockito-release-tools.git", "master", "--dry-run"]
+    }
+
+    def "git push with --dry-run and without GitHub token" () {
+        given:
+        def conf = new ReleaseConfiguration()
+
+        conf.gitHub.setWriteAuthUser("wwilk")
+        conf.gitHub.setRepository("mockito-release-tools")
+        conf.setDryRun(true)
+
+        when:
+        def result = GitUtil.getGitPushArgs(conf, "master")
+
+        then:
+        result == ["git", "push", "https://wwilk:token@github.com/mockito-release-tools.git", "master", "--dry-run"]
+    }
+
     def "git push with tag" () {
         given:
         def conf = new ReleaseConfiguration()

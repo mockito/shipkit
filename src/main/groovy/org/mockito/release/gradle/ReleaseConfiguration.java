@@ -211,8 +211,20 @@ public class ReleaseConfiguration {
                     "    releasing.gitHub.writeAuthToken = 'secret'");
         }
 
+        /**
+         * See {@link #getWriteAuthToken()}
+         */
         public void setWriteAuthToken(String writeAuthToken) {
             configuration.put("gitHub.writeAuthToken", writeAuthToken);
+        }
+
+        /**
+         * Check gitHub.writeAuthToken is defined or not
+         */
+        public boolean existWriteAuthToken() {
+            Object token = configuration.get("gitHub.writeAuthToken");
+            return token != null
+                    && !((String) token).isEmpty();
         }
     }
 

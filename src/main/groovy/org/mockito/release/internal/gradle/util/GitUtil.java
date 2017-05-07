@@ -47,7 +47,7 @@ public class GitUtil {
 
     private static String getRepoUrl(ReleaseConfiguration conf) {
         String ghUser = conf.getGitHub().getWriteAuthUser();
-        String ghWriteToken = conf.getGitHub().getWriteAuthToken();
+        String ghWriteToken = getWriteAuthTokenOrDefault(conf);
         String ghRepo = conf.getGitHub().getRepository();
         return MessageFormat.format("https://{0}:{1}@github.com/{2}.git", ghUser, ghWriteToken, ghRepo);
     }
@@ -76,5 +76,15 @@ public class GitUtil {
             return message;
         }
         return message + " " + postfix;
+    }
+
+    private static String getWriteAuthTokenOrDefault(ReleaseConfiguration conf) {
+        String ghWriteToken;
+        if (conf.getGitHub().existWriteAuthToken()) {
+            ghWriteToken = conf.getGitHub().getWriteAuthToken();
+        } else {
+            ghWriteToken = "[secret]";
+        }
+        return ghWriteToken;
     }
 }

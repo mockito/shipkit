@@ -78,7 +78,11 @@ public class AutoVersioningPlugin implements Plugin<Project> {
                 lazyConfiguration(t, new Runnable() {
                     public void run() {
                         t.setCommandLine(GitUtil.getGitPushArgs(conf, gitStatus.getBranch()));
-                        t.setSecretValue(conf.getGitHub().getWriteAuthToken());
+                        if(conf.isDryRun() && !conf.getGitHub().existWriteAuthToken()) {
+                            // useful for local e2e testing without setting write auth token
+                        } else {
+                            t.setSecretValue(conf.getGitHub().getWriteAuthToken());
+                        }
                     }
                 });
             }
