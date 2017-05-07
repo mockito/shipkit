@@ -12,6 +12,7 @@ import java.util.Set;
 
 /**
  * Original formatter
+ * TODO - delete - not needed any more
  */
 class DefaultFormatter implements SingleReleaseNotesFormatter {
 
