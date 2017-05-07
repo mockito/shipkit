@@ -43,10 +43,11 @@ public class PublicationsComparatorPlugin implements Plugin<Project> {
                 t.setCurrentVersion(project.getVersion().toString());
                 t.setPreviousVersion(conf.getPreviousReleaseVersion());
 
-                //Let's say that the initial implementation compares sources jar. We can this API method to the task:
+                //Set local sources jar for comparison with previously released
                 final Jar sourcesJar = (Jar) project.getTasks().getByName(BaseJavaLibraryPlugin.SOURCES_JAR_TASK);
                 t.compareSourcesJar(sourcesJar);
-                //Let's say we compare poms, we can add this API
+
+                //Set locally built pom file for comparison with previously released
                 //maven-publish plugin is messed up in Gradle API, we cannot really access generate pom task and we have to pass String
                 //The generate pom task is dynamically created by Gradle and we can only access it during execution
                 t.comparePom(BaseJavaLibraryPlugin.POM_TASK);
