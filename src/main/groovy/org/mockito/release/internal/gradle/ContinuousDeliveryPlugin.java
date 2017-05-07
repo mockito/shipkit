@@ -190,7 +190,6 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
             public void execute(final ReleaseNeededTask t) {
                 t.setDescription("Asserts that criteria for the release are met and throws exception if release not needed.");
                 t.setExplosive(true);
-                System.out.println("release needed task");
                 t.setCommitMessage(conf.getBuild().getCommitMessage());
                 t.setPullRequest(conf.getBuild().isPullRequest());
 

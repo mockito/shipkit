@@ -31,7 +31,6 @@ public class ReleaseConfiguration {
     public ReleaseConfiguration() {
         //Configure default values
         git.setTagPrefix("v"); //so that tags are "v1.0", "v2.3.4"
-        System.out.println("configuration");
         git.setReleasableBranchRegex("master|release/.+");  // matches 'master', 'release/2.x', 'release/3.x', etc.
         team.setAddContributorsToPomFromGitHub(true);
     }
@@ -310,7 +309,6 @@ public class ReleaseConfiguration {
          * See {@link #getReleasableBranchRegex()}
          */
         public void setReleasableBranchRegex(String releasableBranchRegex) {
-            System.out.println("release branch " + releasableBranchRegex);
             configuration.put("git.releasableBranchRegex", releasableBranchRegex);
         }
 
