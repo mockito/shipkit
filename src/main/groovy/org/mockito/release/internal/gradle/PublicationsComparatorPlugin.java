@@ -35,7 +35,26 @@ public class PublicationsComparatorPlugin implements Plugin<Project> {
         project.getPlugins().apply(BaseJavaLibraryPlugin.class);
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
 
-        //TODO (big one). Figure out how to make this task incremental and avoid downloads each time it runs
+        /*
+        TODO ww make this puppy incremental :)
+
+        I suggest we split the functionality of this task into 2 separate tasks:
+         - 1st gets the previously released files (we will make it incremental)
+         - 2nd performs comparison (does not have to be incremental, it does not have download operation)
+
+        I suggest that the JavaLibraryPlugin applies PublicationsComparatorPlugin because the former has access to Bintray extension
+
+        It is more Gradle style (effective, incremental, easy to work with),
+        when we divide operations into tasks and can pipe the inputs and outputs.
+        See how we have done it in:
+         - ContributorsPlugin: fetcher task + configurer task
+         - ReleaseNotesPlugin: contributors fetcher + release notes fetcher + release notes builder
+
+        Bonus (long term, Gradle craftsmanship :) - it would be great to divide the comparison operations even further and have:
+         1. download previous releases (incremental)
+         2. compare and produce comparison result object that we serialize to file or produce some 'diff' files (incremental)
+         3. release needed task would deserialize results and read it or check for presence of 'diff' files (non-incremental)
+        */
         TaskMaker.task(project, COMPARE_PUBLICATIONS_TASK, PublicationsComparatorTask.class, new Action<PublicationsComparatorTask>() {
             public void execute(final PublicationsComparatorTask t) {
                 t.setDescription("Compares artifacts and poms between last version and the currently built one to see if there are any differences");
