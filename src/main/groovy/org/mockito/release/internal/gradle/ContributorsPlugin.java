@@ -18,7 +18,7 @@ import static org.mockito.release.internal.gradle.configuration.DeferredConfigur
  * Adds and configures tasks for getting contributor git user to GitHub user mappings.
  * Useful for release notes and pom.xml generation. Adds tasks:
  * <ul>
- *     <li>fetchLastContributorsFromGitHub - {@link ContributorsFetcherTask}</li>
+ *     <li>fetchLastContributorsFromGitHub - {@link RecentContributorsFetcherTask}</li>
  *     <li>fetchAllContributors - {@link AllContributorsFetcherTask}</li>
  *     <li>configureContributors - {@link AllContributorsFetcherTask}</li>
  * </ul>
@@ -37,9 +37,9 @@ public class ContributorsPlugin implements Plugin<Project> {
     }
 
     private void createTaskFetchLastContributorsFromGitHub(final Project project, final ReleaseConfiguration conf) {
-        project.getTasks().create("fetchLastContributorsFromGitHub", ContributorsFetcherTask.class, new Action<ContributorsFetcherTask>() {
+        project.getTasks().create("fetchLastContributorsFromGitHub", RecentContributorsFetcherTask.class, new Action<RecentContributorsFetcherTask>() {
             @Override
-            public void execute(final ContributorsFetcherTask task) {
+            public void execute(final RecentContributorsFetcherTask task) {
                 task.setGroup(TaskMaker.TASK_GROUP);
                 task.setDescription("Fetch info about last contributors from GitHub and store it in file");
 
@@ -56,7 +56,7 @@ public class ContributorsPlugin implements Plugin<Project> {
                         task.setReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
                         task.setRepository(conf.getGitHub().getRepository());
                         task.setFromRevision(fromRevision);
-                        task.setContributorsFile(contributorsFile);
+                        task.setOutputFile(contributorsFile);
                     }
                 });
             }

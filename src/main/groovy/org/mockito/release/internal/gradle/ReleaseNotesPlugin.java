@@ -85,7 +85,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
             }
         });
 
-        final ContributorsFetcherTask contributors = (ContributorsFetcherTask) project.getTasks().getByName("fetchLastContributorsFromGitHub");
+        final RecentContributorsFetcherTask contributors = (RecentContributorsFetcherTask) project.getTasks().getByName("fetchLastContributorsFromGitHub");
         contributors.setReleaseNotesData(fetcher.getOutputFile());
         contributors.dependsOn(fetcher);
 
@@ -105,7 +105,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     }
 
     private static void configureDetailedNotes(final IncrementalReleaseNotes task, final ReleaseNotesFetcherTask fetcher,
-                                               ContributorsFetcherTask contributors, final Project project, final ReleaseConfiguration conf) {
+                                               RecentContributorsFetcherTask contributors, final Project project, final ReleaseConfiguration conf) {
         task.dependsOn(fetcher, contributors);
         deferredConfiguration(project, new Runnable() {
             public void run() {
