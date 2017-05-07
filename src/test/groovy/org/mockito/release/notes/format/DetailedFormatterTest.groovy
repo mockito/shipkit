@@ -49,12 +49,12 @@ No release information."""
         f.formatReleaseNotes([d]) == """Release notes:
 
 **2.0.0** - [1 commit](http://commits/v1.9.0...v2.0.0) by Szczepan Faber - *2017-01-04* - published to Bintray
-:cocktail: No pull requests referenced in commit messages."""
+ - No pull requests referenced in commit messages."""
     }
 
     def "formats no improvements"() {
         expect:
-        DetailedFormatter.formatImprovements([], [:]) == ":cocktail: No pull requests referenced in commit messages."
+        DetailedFormatter.formatImprovements([], [:]) == " - No pull requests referenced in commit messages."
     }
 
     def "formats few improvements"() {
@@ -65,8 +65,8 @@ No release information."""
 
         expect:
         //issues that have label that matches the mapping have an extra label prefix
-        DetailedFormatter.formatImprovements(i, labelMapping) == """:cocktail: [Bugfixes] Fixed issue [(#100)](http://issues/100)
-:cocktail: New feature [(#103)](http://issues/103)"""
+        DetailedFormatter.formatImprovements(i, labelMapping) == """ - [Bugfixes] Fixed issue [(#100)](http://issues/100)
+ - New feature [(#103)](http://issues/103)"""
     }
 
     def "formats and sorts many improvements"() {
@@ -82,12 +82,12 @@ No release information."""
         expect:
         //improvements are sorted based on the label mapping
         //if an issue has labels that match multiple mapping, first mapping in label mapping wins
-        DetailedFormatter.formatImprovements(i, labelMapping) == """:cocktail: [Noteworthy] Fixed major issue [(#103)](http://issues/103)
-:cocktail: [Bugfixes] Fixed problem [(#100)](http://issues/100)
-:cocktail: [Bugfixes] Fixed bugs in javadoc [(#106)](http://issues/106)
-:cocktail: Refactoring [(#105)](http://issues/105)
-:cocktail: Big refactoring [(#107)](http://issues/107)
-:cocktail: Small tweak [(#108)](http://issues/108)"""
+        DetailedFormatter.formatImprovements(i, labelMapping) == """ - [Noteworthy] Fixed major issue [(#103)](http://issues/103)
+ - [Bugfixes] Fixed problem [(#100)](http://issues/100)
+ - [Bugfixes] Fixed bugs in javadoc [(#106)](http://issues/106)
+ - Refactoring [(#105)](http://issues/105)
+ - Big refactoring [(#107)](http://issues/107)
+ - Small tweak [(#108)](http://issues/108)"""
     }
 
     def "release headline with no commits"() {
@@ -143,7 +143,7 @@ No release information."""
 
         expect:
         summary == """[100 commits](link) by 4 authors - *2017-01-04* - published to Bintray repo
-:cocktail: Commits: [Szczepan Faber](http://Szczepan Faber) (40), [Brice Dutheil](http://Brice Dutheil) (30), [Rafael Winterhalter](http://Rafael Winterhalter) (20), [Tim van der Lippe](http://Tim van der Lippe) (10)"""
+ - Commits: [Szczepan Faber](http://Szczepan Faber) (40), [Brice Dutheil](http://Brice Dutheil) (30), [Rafael Winterhalter](http://Rafael Winterhalter) (20), [Tim van der Lippe](http://Tim van der Lippe) (10)"""
     }
 
     def "contribution with unmapped contributor"() {
