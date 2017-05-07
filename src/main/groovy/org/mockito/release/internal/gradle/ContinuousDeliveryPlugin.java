@@ -58,12 +58,12 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                 subproject.getPlugins().withType(BaseJavaLibraryPlugin.class, new Action<BaseJavaLibraryPlugin>() {
                     @Override
                     public void execute(BaseJavaLibraryPlugin p) {
-                        final Task fetcher = project.getTasks().getByName(ContributorsPlugin.FETCH_CONTRIBUTORS_TASK);
+                        final Task contributors = project.getTasks().getByName(ContributorsPlugin.CONFIGURE_CONTRIBUTORS_TASK);
                         //Because maven-publish plugin uses new configuration model, we cannot get the task directly
                         //So we use 'matching' technique
                         subproject.getTasks().matching(withName(POM_TASK)).all(new Action<Task>() {
                             public void execute(Task t) {
-                                t.dependsOn(fetcher);
+                                t.dependsOn(contributors);
                             }
                         });
                     }

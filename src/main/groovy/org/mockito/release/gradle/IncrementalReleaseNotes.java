@@ -6,18 +6,14 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.*;
 import org.mockito.release.internal.gradle.util.FileUtil;
+import org.mockito.release.internal.gradle.util.ReleaseNotesSerializer;
 import org.mockito.release.notes.format.ReleaseNotesFormatters;
-import org.mockito.release.notes.generator.ReleaseNotesGenerator;
-import org.mockito.release.notes.generator.ReleaseNotesGenerators;
 import org.mockito.release.notes.model.ReleaseNotesData;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import static java.util.Arrays.asList;
 
 /**
  * Generates incremental, detailed release notes text.
@@ -29,10 +25,10 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
 
     private String previousVersion;
     private File releaseNotesFile;
-    private String gitHubReadOnlyAuthToken;
     private String gitHubRepository;
     private Map<String, String> gitHubLabelMapping = new LinkedHashMap<String, String>();
     private String publicationRepository;
+    private File releaseNotesData;
 
     /**
      * Release notes file this task operates on.
@@ -47,21 +43,6 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
      */
     public void setReleaseNotesFile(File releaseNotesFile) {
         this.releaseNotesFile = releaseNotesFile;
-    }
-
-    /**
-     * GitHub read only authentication token needed for loading issue information from GitHub.
-     */
-    @Input
-    public String getGitHubReadOnlyAuthToken() {
-        return gitHubReadOnlyAuthToken;
-    }
-
-    /**
-     * See {@link #getGitHubReadOnlyAuthToken()}
-     */
-    public void setGitHubReadOnlyAuthToken(String readOnlyToken) {
-        this.gitHubReadOnlyAuthToken = readOnlyToken;
     }
 
     /**
@@ -137,10 +118,6 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
             throw new GradleException("'" + this.getPath() + ".releaseNotesFile' must be configured and the file must be present.");
         }
 
-        if (gitHubReadOnlyAuthToken == null || gitHubReadOnlyAuthToken.trim().isEmpty()) {
-            throw new GradleException("'" + this.getPath() + ".gitHubReadOnlyToken' must be configured.");
-        }
-
         if (gitHubRepository == null || gitHubRepository.trim().isEmpty()) {
             throw new GradleException("'" + this.getPath() + "gitHubRepository' must be configured.");
         }
@@ -153,11 +130,11 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
         assertConfigured();
         LOG.lifecycle("  Building new release notes based on {}", releaseNotesFile);
 
-        ReleaseNotesGenerator generator = ReleaseNotesGenerators.releaseNotesGenerator(getProject().getRootDir(), gitHubRepository, gitHubReadOnlyAuthToken);
         String version = getProject().getVersion().toString();
         String tagPrefix = "v";
-        Collection<ReleaseNotesData> data = generator.generateReleaseNotesData(
-                version, asList(previousVersion), tagPrefix, Collections.<String>emptyList(), false);
+
+        Collection<ReleaseNotesData> data = new ReleaseNotesSerializer(getReleaseNotesData()).deserialize();
+
         String vcsCommitTemplate = "https://github.com/" + gitHubRepository + "/compare/"
                 + tagPrefix + previousVersion + "..." + tagPrefix + version;
         String notes = ReleaseNotesFormatters.detailedFormatter(
@@ -165,6 +142,20 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
                 .formatReleaseNotes(data);
 
         return notes + "\n\n";
+    }
+
+    public void setReleaseNotesData(File releaseNotesData) {
+        this.releaseNotesData = releaseNotesData;
+    }
+
+    /**
+     * Input to the release notes generation,
+     * serialized release notes data objects of type {@link ReleaseNotesData}.
+     * They are used to generate formatted release notes.
+     */
+    @InputFile
+    public File getReleaseNotesData() {
+        return releaseNotesData;
     }
 
     /**

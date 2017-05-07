@@ -3,6 +3,7 @@ package org.mockito.release.gradle;
 import org.gradle.api.GradleException;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +33,7 @@ public class ReleaseConfiguration {
         //Configure default values
         git.setTagPrefix("v"); //so that tags are "v1.0", "v2.3.4"
         git.setReleasableBranchRegex("master|release/.+");  // matches 'master', 'release/2.x', 'release/3.x', etc.
-        team.setAddContributorsToPomFromGitHub(true);
+        team.setContributors(Collections.<String>emptyList());
     }
 
     //TODO currently it's not clear when to use class fields and when to use the 'configuration' map
@@ -386,23 +387,6 @@ public class ReleaseConfiguration {
          */
         public void setContributors(Collection<String> contributors) {
             configuration.put("team.contributors", contributors);
-        }
-
-        /**
-         * A boolean flag for fetch all contributors from GitHub to include them in generated pom file.
-         * This is optional value, by default set to true.
-         * <p>
-         * See POM reference for <a href="https://maven.apache.org/pom.html#Contributors">Contributors</a>.
-         */
-        public boolean isAddContributorsToPomFromGitHub() {
-            return getBoolean("team.addContributorsToPomFromGitHub");
-        }
-
-        /**
-         * See {@link #isAddContributorsToPomFromGitHub()}
-         */
-        public void setAddContributorsToPomFromGitHub(Boolean addContributorsToPomFromGitHub) {
-            configuration.put("team.addContributorsToPomFromGitHub", addContributorsToPomFromGitHub);
         }
     }
 

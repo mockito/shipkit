@@ -30,7 +30,7 @@ class PublicationsComparatorPluginTest extends Specification {
 
         when:
         child.plugins.apply("org.mockito.mockito-release-tools.publications-comparator")
-        DeferredConfiguration.forceConfiguration(child)
+        child.evaluate()
 
         then:
         def task = (PublicationsComparatorTask) child.getTasks()
@@ -73,7 +73,7 @@ class PublicationsComparatorPluginTest extends Specification {
 
         when:
         child.plugins.apply("org.mockito.mockito-release-tools.publications-comparator")
-        DeferredConfiguration.forceConfiguration(child)
+        child.evaluate()
 
         then:
         def task = (PublicationsComparatorTask) child.getTasks()

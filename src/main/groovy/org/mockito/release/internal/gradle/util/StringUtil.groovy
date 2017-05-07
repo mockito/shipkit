@@ -23,4 +23,11 @@ class StringUtil {
     static String capitalize(String input) {
         return input.capitalize();
     }
+
+    /**
+     * Checks if input is empty
+     */
+    static boolean isEmpty(String input) {
+        return input == null || input.isEmpty();
+    }
 }

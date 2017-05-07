@@ -5,6 +5,7 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.mockito.release.gradle.IncrementalReleaseNotes;
 import org.mockito.release.gradle.ReleaseConfiguration;
+import org.mockito.release.gradle.ReleaseNotesFetcherTask;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.version.VersionInfo;
 
@@ -34,19 +35,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         project.getPlugins().apply(VersioningPlugin.class);
         project.getPlugins().apply(ContributorsPlugin.class);
 
-        TaskMaker.task(project, "updateReleaseNotes", IncrementalReleaseNotes.UpdateTask.class, new Action<IncrementalReleaseNotes.UpdateTask>() {
-            public void execute(final IncrementalReleaseNotes.UpdateTask t) {
-                t.setDescription("Updates release notes file.");
-                preconfigureIncrementalNotes(t, project, conf);
-            }
-        });
-
-        TaskMaker.task(project, "previewReleaseNotes", IncrementalReleaseNotes.PreviewTask.class, new Action<IncrementalReleaseNotes.PreviewTask>() {
-            public void execute(final IncrementalReleaseNotes.PreviewTask t) {
-                t.setDescription("Shows new incremental content of release notes. Useful for previewing the release notes.");
-                preconfigureIncrementalNotes(t, project, conf);
-            }
-        });
+        detailedReleaseNotes(project, conf);
 
         project.getTasks().create("fetchNotableReleaseNotes", NotableReleaseNotesFetcherTask.class, new Action<NotableReleaseNotesFetcherTask>() {
             public void execute(NotableReleaseNotesFetcherTask task) {
@@ -80,13 +69,49 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         configureNotableReleaseNotes(project);
     }
 
-    private static void preconfigureIncrementalNotes(final IncrementalReleaseNotes task, final Project project, final ReleaseConfiguration conf) {
-        task.dependsOn("fetchLastContributorsFromGitHub");
+    private static void detailedReleaseNotes(final Project project, final ReleaseConfiguration conf) {
+        final ReleaseNotesFetcherTask fetcher = TaskMaker.task(project, "fetchReleaseNotes", ReleaseNotesFetcherTask.class, new Action<ReleaseNotesFetcherTask>() {
+            public void execute(final ReleaseNotesFetcherTask t) {
+                t.setDescription("Fetches release notes data from Git and GitHub and serializes them to a file");
+                t.setOutputFile(new File(project.getBuildDir(), "detailed-release-notes.ser"));
+
+                deferredConfiguration(project, new Runnable() {
+                    public void run() {
+                        t.setGitHubReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
+                        t.setGitHubRepository(conf.getGitHub().getRepository());
+                        t.setPreviousVersion(conf.getPreviousReleaseVersion());
+                    }
+                });
+            }
+        });
+
+        final ContributorsFetcherTask contributors = (ContributorsFetcherTask) project.getTasks().getByName("fetchLastContributorsFromGitHub");
+        contributors.setReleaseNotesData(fetcher.getOutputFile());
+        contributors.dependsOn(fetcher);
+
+        TaskMaker.task(project, "updateReleaseNotes", IncrementalReleaseNotes.UpdateTask.class, new Action<IncrementalReleaseNotes.UpdateTask>() {
+            public void execute(final IncrementalReleaseNotes.UpdateTask t) {
+                t.setDescription("Updates release notes file.");
+                configureDetailedNotes(t, fetcher, contributors, project, conf);
+            }
+        });
+
+        TaskMaker.task(project, "previewReleaseNotes", IncrementalReleaseNotes.PreviewTask.class, new Action<IncrementalReleaseNotes.PreviewTask>() {
+            public void execute(final IncrementalReleaseNotes.PreviewTask t) {
+                t.setDescription("Shows new incremental content of release notes. Useful for previewing the release notes.");
+                configureDetailedNotes(t, fetcher, contributors, project, conf);
+            }
+        });
+    }
+
+    private static void configureDetailedNotes(final IncrementalReleaseNotes task, final ReleaseNotesFetcherTask fetcher,
+                                               ContributorsFetcherTask contributors, final Project project, final ReleaseConfiguration conf) {
+        task.dependsOn(fetcher, contributors);
         deferredConfiguration(project, new Runnable() {
             public void run() {
+                task.setReleaseNotesData(fetcher.getOutputFile());
                 task.setGitHubLabelMapping(conf.getReleaseNotes().getLabelMapping()); //TODO make it optional
                 task.setReleaseNotesFile(project.file(conf.getReleaseNotes().getFile())); //TODO add sensible default
-                task.setGitHubReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
                 task.setGitHubRepository(conf.getGitHub().getRepository());
                 task.setPreviousVersion(project.getExtensions().getByType(VersionInfo.class).getPreviousVersion());
             }

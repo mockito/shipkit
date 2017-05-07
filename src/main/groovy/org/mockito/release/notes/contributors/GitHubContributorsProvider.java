@@ -2,7 +2,8 @@ package org.mockito.release.notes.contributors;
 
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.mockito.release.notes.model.ContributionSet;
+
+import java.util.Collection;
 
 public class GitHubContributorsProvider implements ContributorsProvider {
 
@@ -17,9 +18,9 @@ public class GitHubContributorsProvider implements ContributorsProvider {
     }
 
     @Override
-    public ContributorsSet mapContributorsToGitHubUser(ContributionSet contributions, String fromRevision, String toRevision) {
-        LOG.info("Parsing {} commits with {} contributors", contributions.getAllCommits().size(), contributions.getAuthorCount());
-        return new GitHubLastContributorsFetcher().fetchContributors(repository, readOnlyAuthToken, contributions.getContributions(), fromRevision, toRevision);
+    public ContributorsSet mapContributorsToGitHubUser(Collection<String> authorNames, String fromRevision, String toRevision) {
+        LOG.info("Fetching contributor information for {} authors", authorNames.size());
+        return new GitHubLastContributorsFetcher().fetchContributors(repository, readOnlyAuthToken, authorNames, fromRevision, toRevision);
     }
 
     @Override
