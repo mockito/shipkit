@@ -17,7 +17,7 @@ import java.io.File;
 /**
  * Fetch data about all project contributors and store it in file.
  * It is used later in generation pom.xml.
- * Uses GitHub contributors endpoint, quoting documentation:
+ * It use GitHub repos/contributors endpoint: https://developer.github.com/v3/repos/#list-contributors
  * "Contributors data is cached for performance reasons. This endpoint may return information that is a few hours old."
  */
 public class AllContributorsFetcherTask extends DefaultTask {
