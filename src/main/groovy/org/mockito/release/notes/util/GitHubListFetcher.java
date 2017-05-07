@@ -46,6 +46,7 @@ public class GitHubListFetcher {
         }
         URL url = new URL(nextPageUrl);
         LOG.info("GitHub API querying page {}", queryParamValue(url, "page"));
+        LOG.lifecycle("GET " + nextPageUrl);
         URLConnection urlConnection = url.openConnection();
         LOG.info("Established connection to GitHub API");
 
