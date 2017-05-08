@@ -4,7 +4,7 @@ import spock.lang.Specification
 
 class DefaultProjectContributorTest extends Specification {
 
-    def "equals"() {
+    def "equals method"() {
         def contributor = new DefaultProjectContributor(
                 "Szczepan Faber", "szczepiq", "http://github.com/szczepiq", 1)
         def same = new DefaultProjectContributor(
@@ -20,7 +20,7 @@ class DefaultProjectContributorTest extends Specification {
 
         expect:
         contributor == same
-        same == same
+        same == contributor
 
         contributor != differentContributions
         contributor != differentName
