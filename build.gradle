@@ -5,7 +5,7 @@ buildscript {
     }
     dependencies {
         classpath "com.gradle.publish:plugin-publish-plugin:0.9.6"
-        classpath "gradle.plugin.org.mockito:mockito-release-tools:0.8.10"
+        classpath "gradle.plugin.org.mockito:mockito-release-tools:0.8.13"
     }
 }
 
@@ -15,7 +15,7 @@ apply plugin: 'groovy'
 apply plugin: 'com.gradle.plugin-publish'
 apply plugin: 'checkstyle'
 apply plugin: 'codenarc'
-apply plugin: 'org.mockito.release-tools.auto-versioning'
+apply plugin: 'org.mockito.mockito-release-tools.gradle-plugin-releasing'
 
 apply from: 'gradle/precommit.gradle'
 apply from: 'gradle/release.gradle'
@@ -94,7 +94,7 @@ task travisRelease {
     doLast {
         logger.lifecycle("{} - Publishing to Gradle Plugin Portal...", path)
         exec {
-            commandLine "./gradlew", "publishPlugins", "bumpVersionAndPush",
+            commandLine "./gradlew", "publishPlugins",
                     "-Pgradle.publish.key=${System.getenv('GRADLE_PUBLISH_KEY')}",
                     "-Pgradle.publish.secret=${System.getenv('GRADLE_PUBLISH_SECRET')}"
         }
