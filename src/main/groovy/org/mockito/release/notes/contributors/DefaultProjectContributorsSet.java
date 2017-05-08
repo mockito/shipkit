@@ -1,5 +1,6 @@
 package org.mockito.release.notes.contributors;
 
+import org.mockito.release.notes.model.Contributor;
 import org.mockito.release.notes.model.ProjectContributor;
 
 import java.io.Serializable;
@@ -35,4 +36,8 @@ class DefaultProjectContributorsSet implements ProjectContributorsSet, Serializa
         return sorted;
     }
 
+    @Override
+    public Contributor findByName(String name) {
+        return null;
+    }
 }

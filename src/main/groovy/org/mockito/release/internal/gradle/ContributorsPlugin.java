@@ -17,7 +17,6 @@ import static org.mockito.release.internal.gradle.util.BuildConventions.outputFi
  * Adds and configures tasks for getting contributor git user to GitHub user mappings.
  * Useful for release notes and pom.xml generation. Adds tasks:
  * <ul>
- *     <li>fetchRecentContributors - {@link RecentContributorsFetcherTask}</li>
  *     <li>fetchAllContributors - {@link AllContributorsFetcherTask}</li>
  *     <li>configureContributors - {@link ConfigureContributorsTask}</li>
  * </ul>
@@ -25,39 +24,11 @@ import static org.mockito.release.internal.gradle.util.BuildConventions.outputFi
 public class ContributorsPlugin implements Plugin<Project> {
 
     public final static String FETCH_ALL_CONTRIBUTORS_TASK = "fetchAllContributors";
-    public final static String FETCH_RECENT_CONTRIBUTORS_TASK = "fetchRecentContributors";
     public final static String CONFIGURE_CONTRIBUTORS_TASK = "configureContributors";
 
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
-
-        fetchRecentTask(project, conf);
         fetchAllTask(project, conf);
-    }
-
-    private void fetchRecentTask(final Project project, final ReleaseConfiguration conf) {
-        project.getTasks().create(FETCH_RECENT_CONTRIBUTORS_TASK, RecentContributorsFetcherTask.class, new Action<RecentContributorsFetcherTask>() {
-            @Override
-            public void execute(final RecentContributorsFetcherTask task) {
-                task.setGroup(TaskMaker.TASK_GROUP);
-                task.setDescription("Fetch info about last contributors from GitHub and store it in file");
-
-                final String toRevision = "HEAD";
-                task.setToRevision(toRevision);
-
-                deferredConfiguration(project, new Runnable() {
-                    public void run() {
-                        String fromRevision = "v" + conf.getPreviousReleaseVersion();
-                        File contributorsFile = outputFile(project, "recent-contributors.json");
-
-                        task.setReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
-                        task.setRepository(conf.getGitHub().getRepository());
-                        task.setFromRevision(fromRevision);
-                        task.setOutputFile(contributorsFile);
-                    }
-                });
-            }
-        });
     }
 
     private void fetchAllTask(final Project project, final ReleaseConfiguration conf) {
