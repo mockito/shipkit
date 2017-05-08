@@ -31,7 +31,7 @@ public class GitHubObjectFetcher {
     public JsonObject getPage() throws IOException, DeserializationException {
         URL url = new URL(String.format("%s%s%s", pageUrl, "?access_token=", authToken));
         LOG.info("GitHub API querying page {}", url);
-
+        LOG.lifecycle("GET {}", url);
         URLConnection urlConnection = url.openConnection();
 
         String resetInLocalTime = resetLimitInLocalTimeOrEmpty(urlConnection);
