@@ -59,6 +59,12 @@ pluginBundle {
             displayName = 'Mockito automated versioning plugin'
             tags = ['mockito', 'continuous delivery', 'release', 'versioning', 'auto-versioning', 'semantic-versioning']
         }
+
+        gradlePluginReleasingPlugin {
+            id = 'org.mockito.mockito-release-tools.gradle-plugin-releasing'
+            displayName = 'Mockito automated versioning and Travis CI integration'
+            tags = ['mockito', 'continuous delivery', 'release', 'versioning', 'auto-versioning', 'semantic-versioning', 'travis']
+        }
     }
 
     mavenCoordinates {
