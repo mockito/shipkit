@@ -7,7 +7,7 @@ import org.mockito.release.notes.model.ProjectContributor;
 import java.io.IOException;
 import java.io.Writer;
 
-public class DefaultProjectContributor implements ProjectContributor {
+public class DefaultProjectContributor implements ProjectContributor, Comparable<DefaultProjectContributor> {
 
     private static final String JSON_FORMAT = "{ \"name\": \"%s\", \"login\": \"%s\", \"profileUrl\": \"%s\", " +
             "\"numberOfContributions\": \"%s\" }";
@@ -83,15 +83,7 @@ public class DefaultProjectContributor implements ProjectContributor {
             return false;
         }
 
-        DefaultProjectContributor that = (DefaultProjectContributor) o;
-
-        if (name != null ? !name.equals(that.name) : that.name != null) {
-            return false;
-        }
-        if (!login.equals(that.login)) {
-            return false;
-        }
-        return profileUrl.equals(that.profileUrl);
+        return compareTo((DefaultProjectContributor) o) == 0;
     }
 
     @Override
@@ -100,5 +92,22 @@ public class DefaultProjectContributor implements ProjectContributor {
         result = 31 * result + login.hashCode();
         result = 31 * result + profileUrl.hashCode();
         return result;
+    }
+
+    @Override
+    public int compareTo(DefaultProjectContributor other) {
+        int result = numberOfContributions - other.getNumberOfContributions();
+        if (result != 0) {
+            return result;
+        }
+        result = this.name.compareTo(other.getName());
+        if (result != 0) {
+            return result;
+        }
+        result = this.login.compareTo(other.getLogin());
+        if (result != 0) {
+            return result;
+        }
+        return this.profileUrl.compareTo(other.getProfileUrl());
     }
 }
