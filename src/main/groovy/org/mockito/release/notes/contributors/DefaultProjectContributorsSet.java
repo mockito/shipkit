@@ -8,11 +8,11 @@ import java.util.*;
 class DefaultProjectContributorsSet implements ProjectContributorsSet, Serializable {
 
     private final Set<ProjectContributor> contributors = new HashSet<ProjectContributor>();
-    private Set<ProjectContributor> sorted = new TreeSet<ProjectContributor>();
+    private final Set<ProjectContributor> sorted = new TreeSet<ProjectContributor>(Collections.<ProjectContributor>reverseOrder());
 
     @Override
     public void addContributor(ProjectContributor contributorToAdd) {
-        if(contributors.add(contributorToAdd)) {
+        if (contributors.add(contributorToAdd)) {
             //avoiding duplicates in the sorted collection, see unit tests
             sorted.add(contributorToAdd);
         }
@@ -20,9 +20,8 @@ class DefaultProjectContributorsSet implements ProjectContributorsSet, Serializa
 
     @Override
     public void addAllContributors(Collection<ProjectContributor> contributorsToAdd) {
-        if(contributors.addAll(contributorsToAdd)) {
-            //avoiding duplicates in the sorted collection, see unit tests
-            sorted = new TreeSet<ProjectContributor>(contributorsToAdd);
+        if (contributors.addAll(contributorsToAdd)) {
+            sorted.addAll(contributors);
         }
     }
 

@@ -18,6 +18,21 @@ class DefaultProjectContributorsSetTest extends Specification {
         c[0].numberOfContributions == 2000
     }
 
+    def "does not replace existing contributors and ensures sort order"() {
+        def set = new DefaultProjectContributorsSet()
+        set.addAllContributors([
+            new DefaultProjectContributor("a", "a", "a", 10),
+            new DefaultProjectContributor("b", "b", "b", 10)
+        ])
+        set.addAllContributors([
+            new DefaultProjectContributor("a", "a", "a", 1),
+            new DefaultProjectContributor("c", "c", "c", 1)
+        ])
+
+        expect:
+        set.allContributors.toString() == "[b/b[10], a/a[10], c/c[1]]"
+    }
+
     def "does not drop contributors with the same amount of contributions"() {
         def set = new DefaultProjectContributorsSet()
         set.addContributor(new DefaultProjectContributor(
