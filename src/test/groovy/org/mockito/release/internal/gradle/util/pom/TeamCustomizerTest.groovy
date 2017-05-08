@@ -1,13 +1,12 @@
-package org.mockito.release.notes.contributors
+package org.mockito.release.internal.gradle.util.pom
 
-import org.mockito.release.internal.gradle.util.pom.ContributorsToPom
+import org.mockito.release.notes.contributors.DefaultProjectContributor
 import spock.lang.Specification
 import spock.lang.Subject
 
+class TeamCustomizerTest extends Specification {
 
-class ContributorsToPomTest extends Specification {
-
-    @Subject sut = new ContributorsToPom()
+    @Subject sut = new TeamCustomizer()
 
     def "should include all contributors from contributors set"() {
         def node = new Node(null, "contributors")

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class ContributorsToPom {
+public class TeamCustomizer {
 
     private static final Logger LOG = Logging.getLogger(GitHubAllContributorsFetcher.class);
 
@@ -26,7 +26,7 @@ public class ContributorsToPom {
     public static void include(Node contributorsNode,
                                List<String> contributors,
                                List<String> developers) {
-        new ContributorsToPom().include(contributorsNode, contributors, developers);
+        new TeamCustomizer().include(contributorsNode, contributors, developers);
     }
 
     /**

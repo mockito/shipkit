@@ -47,7 +47,7 @@ class PomCustomizer {
             ci.appendNode('url', "https://travis-ci.org/${conf.getGitHub().getRepository()}")
             ci.appendNode('system', 'TravisCI')
 
-            //TODO use ContributorsToPom
+            //TODO use TeamCustomizer
             def developers = root.appendNode('developers')
             conf.team.developers.each {
                 def split = it.split(':')
