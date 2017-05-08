@@ -19,7 +19,7 @@ class DefaultProjectContributorsSet implements ProjectContributorsSet, Serializa
     }
 
     @Override
-    public void addAllContributors(Set<ProjectContributor> contributorsToAdd) {
+    public void addAllContributors(Collection<ProjectContributor> contributorsToAdd) {
         if(contributors.addAll(contributorsToAdd)) {
             //avoiding duplicates in the sorted collection, see unit tests
             sorted = new TreeSet<ProjectContributor>(contributorsToAdd);
