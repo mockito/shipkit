@@ -2,6 +2,7 @@ package org.mockito.release.internal.gradle.util
 
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.testfixtures.ProjectBuilder
+import org.mockito.release.internal.gradle.util.pom.PomCustomizer
 import spock.lang.Specification
 
 class PomCustomizerTest extends Specification {

@@ -1,4 +1,4 @@
-package org.mockito.release.internal.gradle.util
+package org.mockito.release.internal.gradle.util.pom
 
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
