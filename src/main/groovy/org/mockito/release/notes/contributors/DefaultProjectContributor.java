@@ -83,7 +83,7 @@ public class DefaultProjectContributor implements ProjectContributor, Comparable
             return false;
         }
 
-        return compareTo((DefaultProjectContributor) o) == 0;
+        return compareIgnoringContributions((DefaultProjectContributor) o) == 0;
     }
 
     @Override
@@ -100,6 +100,11 @@ public class DefaultProjectContributor implements ProjectContributor, Comparable
         if (result != 0) {
             return result;
         }
+        return compareIgnoringContributions(other);
+    }
+
+    private int compareIgnoringContributions(DefaultProjectContributor other) {
+        int result;
         result = this.name.compareTo(other.getName());
         if (result != 0) {
             return result;

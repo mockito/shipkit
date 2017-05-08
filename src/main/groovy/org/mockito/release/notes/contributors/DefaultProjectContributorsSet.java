@@ -7,35 +7,23 @@ import java.util.*;
 
 class DefaultProjectContributorsSet implements ProjectContributorsSet, Serializable {
 
-    private final Set<ProjectContributor> contributors;
-
-    DefaultProjectContributorsSet() {
-        contributors = new TreeSet<ProjectContributor>(new Comparator<ProjectContributor>() {
-            @Override
-            public int compare(ProjectContributor o1, ProjectContributor o2) {
-                //TODO this looks hacky.
-                // Let's make DefaultProjectContributor an instance of Comparable, similar to how we do it in DefaultContribution.
-                if (o1.equals(o2)) {
-                    return 0;
-                }
-
-                int result = o2.getNumberOfContributions() - o1.getNumberOfContributions(); // descend
-                if (result == 0 && !o1.equals(o2)) {
-                    return -1; //the result does not matter so long it's not '0' (it would drop the element from collection)
-                }
-                return result;
-            }
-        });
-    }
+    private final Set<ProjectContributor> contributors = new HashSet<ProjectContributor>();
+    private Set<ProjectContributor> sorted = new TreeSet<ProjectContributor>();
 
     @Override
     public void addContributor(ProjectContributor contributorToAdd) {
-        contributors.add(contributorToAdd);
+        if(contributors.add(contributorToAdd)) {
+            //avoiding duplicates in the sorted collection, see unit tests
+            sorted.add(contributorToAdd);
+        }
     }
 
     @Override
     public void addAllContributors(Set<ProjectContributor> contributorsToAdd) {
-        contributors.addAll(contributorsToAdd);
+        if(contributors.addAll(contributorsToAdd)) {
+            //avoiding duplicates in the sorted collection, see unit tests
+            sorted = new TreeSet<ProjectContributor>(contributorsToAdd);
+        }
     }
 
     @Override
@@ -45,7 +33,7 @@ class DefaultProjectContributorsSet implements ProjectContributorsSet, Serializa
 
     @Override
     public Set<ProjectContributor> getAllContributors() {
-        return contributors;
+        return sorted;
     }
 
 }
