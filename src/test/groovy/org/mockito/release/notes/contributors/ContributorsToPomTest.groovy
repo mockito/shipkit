@@ -1,5 +1,6 @@
 package org.mockito.release.notes.contributors
 
+import org.mockito.release.internal.gradle.util.pom.ContributorsToPom
 import spock.lang.Specification
 import spock.lang.Subject
 

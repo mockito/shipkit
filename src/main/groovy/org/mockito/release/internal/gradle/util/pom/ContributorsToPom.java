@@ -1,8 +1,10 @@
-package org.mockito.release.notes.contributors;
+package org.mockito.release.internal.gradle.util.pom;
 
 import groovy.util.Node;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
+import org.mockito.release.notes.contributors.DefaultProjectContributor;
+import org.mockito.release.notes.contributors.GitHubAllContributorsFetcher;
 import org.mockito.release.notes.model.ProjectContributor;
 
 import java.util.ArrayList;
