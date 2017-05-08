@@ -25,4 +25,4 @@ script:
   - ./gradlew build -s -i
 
 after_success:
-  - ./gradlew ciReleasePrepare && ./gradlew travisRelease bumpVersionAndPush -s
+  - ./gradlew ciReleasePrepare && ./gradlew travisRelease bumpVersionAndPush -s -Preleasing.dryRun=false
