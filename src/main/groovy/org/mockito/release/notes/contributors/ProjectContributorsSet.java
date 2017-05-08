@@ -1,6 +1,5 @@
 package org.mockito.release.notes.contributors;
 
-import org.mockito.release.notes.model.Contributor;
 import org.mockito.release.notes.model.ProjectContributor;
 
 import java.util.Collection;
@@ -16,5 +15,9 @@ public interface ProjectContributorsSet {
 
     Set<ProjectContributor> getAllContributors();
 
-    Contributor findByName(String name);
+    /**
+     * Finds project contributor by name.
+     * Returns null if one cannot be found.
+     */
+    ProjectContributor findByName(String name);
 }

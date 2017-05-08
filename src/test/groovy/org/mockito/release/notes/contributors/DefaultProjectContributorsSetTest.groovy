@@ -4,8 +4,9 @@ import spock.lang.Specification
 
 class DefaultProjectContributorsSetTest extends Specification {
 
+    def set = new DefaultProjectContributorsSet()
+
     def "does not replace existing contributor"() {
-        def set = new DefaultProjectContributorsSet()
         set.addContributor(new DefaultProjectContributor("a", "a", "a", 2000))
         //this is important use case because of how we get contributors from GitHub.
         // We issue 2 queries to GitHub, first query gets us most contributors, second gets us most recent contributors
@@ -19,7 +20,6 @@ class DefaultProjectContributorsSetTest extends Specification {
     }
 
     def "does not replace existing contributors and ensures sort order"() {
-        def set = new DefaultProjectContributorsSet()
         set.addAllContributors([
             new DefaultProjectContributor("a", "a", "a", 10),
             new DefaultProjectContributor("b", "b", "b", 10)
@@ -34,7 +34,6 @@ class DefaultProjectContributorsSetTest extends Specification {
     }
 
     def "does not drop contributors with the same amount of contributions"() {
-        def set = new DefaultProjectContributorsSet()
         set.addContributor(new DefaultProjectContributor(
                 "Szczepan Faber 1", "szczepiq", "http://github.com/szczepiq", 2000))
         set.addContributor(new DefaultProjectContributor(
@@ -42,5 +41,17 @@ class DefaultProjectContributorsSetTest extends Specification {
 
         expect:
         set.allContributors.size() == 2
+    }
+
+    def "finds by name"() {
+        set.addAllContributors([
+                new DefaultProjectContributor("a", "a", "a", 10),
+                new DefaultProjectContributor("b", "b", "b", 10)
+        ])
+
+        expect:
+        set.findByName("c") == null
+        set.findByName("b").name == "b"
+        set.findByName("a").name == "a"
     }
 }
