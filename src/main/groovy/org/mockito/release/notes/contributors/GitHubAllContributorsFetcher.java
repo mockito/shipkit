@@ -40,6 +40,8 @@ public class GitHubAllContributorsFetcher {
     private Set<ProjectContributor> extractContributors(List<JsonObject> page, String readOnlyAuthToken) throws IOException, DeserializationException {
         Set<ProjectContributor> result = new HashSet<ProjectContributor>();
         for (JsonObject contributor : page) {
+            //Since returned contributor does not have 'name' element, we need to fetch the user data to get his name
+            //TODO add static caching of this. Names don't change that often, let's just cache this forever in build cache.
             String url = (String) contributor.get("url");
             GitHubObjectFetcher userFetcher = new GitHubObjectFetcher(url, readOnlyAuthToken);
             JsonObject user = userFetcher.getPage();
