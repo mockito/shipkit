@@ -1,13 +1,10 @@
 package org.mockito.release.notes.contributors;
 
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
+import org.mockito.release.notes.model.Contributor;
 
 import java.util.Collection;
 
 public class GitHubContributorsProvider implements ContributorsProvider {
-
-    private static final Logger LOG = Logging.getLogger(GitHubContributorsProvider.class);
 
     private final String repository;
     private final String readOnlyAuthToken;
@@ -19,12 +16,25 @@ public class GitHubContributorsProvider implements ContributorsProvider {
 
     @Override
     public ContributorsSet mapContributorsToGitHubUser(Collection<String> authorNames, String fromRevision, String toRevision) {
-        LOG.info("Fetching contributor information for {} authors", authorNames.size());
-        return new GitHubLastContributorsFetcher().fetchContributors(repository, readOnlyAuthToken, authorNames, fromRevision, toRevision);
+        throw new RuntimeException("Not supported any more! TODO: remove");
     }
 
     @Override
     public ProjectContributorsSet getAllContributorsForProject() {
-        return new GitHubAllContributorsFetcher().fetchAllContributorsForProject(repository, readOnlyAuthToken);
+        ProjectContributorsSet contributors = new GitHubAllContributorsFetcher().fetchAllContributorsForProject(repository, readOnlyAuthToken);
+        Collection<Contributor> recent = new GitHubLastContributorsFetcher().fetchContributorsSinceYesterday(repository, readOnlyAuthToken);
+        return mergeContributors(contributors, recent);
+    }
+
+    static ProjectContributorsSet mergeContributors(ProjectContributorsSet contributors, Collection<Contributor> recent) {
+        for (Contributor c : recent) {
+            //Create project contributor with single contribution
+            DefaultProjectContributor newContributor = new DefaultProjectContributor(c);
+            //The implementation of ProjectContributorsSet ensures that we don't have duplicates
+            // and that we don't overwrite existing contributors
+            contributors.addContributor(newContributor);
+        }
+
+        return contributors;
     }
 }
