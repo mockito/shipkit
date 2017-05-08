@@ -14,8 +14,7 @@ class GitHubLastContributorsFetcherTest extends Specification {
         def c = fetcher.fetchContributors("mockito/mockito", readOnlyToken, "2017-05-04", "2017-05-06")
 
         then:
-        c*.name == ["Roman Elizarov", "Allon Murienik", "Szczepan Faber"]
-        c*.profileUrl == ["https://github.com/elizarov", "https://github.com/mureinik", "https://github.com/szczepiq"]
+        c.toString() == "[Roman Elizarov/elizarov, Allon Murienik/mureinik]"
     }
 
     def "no contributors for given dates"() {
