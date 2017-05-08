@@ -18,7 +18,7 @@ import java.util.Date;
 public class GitHubObjectFetcher {
 
     private static final Logger LOG = Logging.getLogger(GitHubObjectFetcher.class);
-
+    //TODO GitHubObjectFetcher and GitHubListFetcher can probably be merged into one, there's code duplicated
 
     private final String pageUrl;
     private final String authToken;
