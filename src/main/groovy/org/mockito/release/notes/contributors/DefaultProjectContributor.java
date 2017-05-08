@@ -115,4 +115,9 @@ public class DefaultProjectContributor implements ProjectContributor, Comparable
         }
         return this.profileUrl.compareTo(other.getProfileUrl());
     }
+
+    @Override
+    public String toString() {
+        return name + '/' + login + '[' + numberOfContributions + ']';
+    }
 }
