@@ -11,11 +11,12 @@ class DateUtilTest extends Specification {
 
     def "gitHub format"() {
         //TODO it would be good to have a method for this on DateUtil class
-        def cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"))
+        def tz = TimeZone.getTimeZone("GMT")
+        def cal = Calendar.getInstance(tz)
         cal.set(2017, 1, 1, 12, 0, 0)
         def date = cal.getTime()
 
         expect:
-        DateUtil.forGitHub(date) == "2017-02-01T04:02:00-0800"
+        DateUtil.forGitHub(date, tz) == "2017-02-01T12:00:00+0000"
     }
 }
