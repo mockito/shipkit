@@ -18,6 +18,7 @@ public class SecureExecTask extends DefaultTask {
 
     private List<String> commandLine = new LinkedList<String>();
     private String secretValue;
+    private boolean dryRun;
 
     /**
      * @return command line to be executed
@@ -47,9 +48,18 @@ public class SecureExecTask extends DefaultTask {
         this.secretValue = secretValue;
     }
 
+    public boolean isDryRun() {
+        return dryRun;
+    }
+
+    public void setDryRun(boolean dryRun) {
+        this.dryRun = dryRun;
+    }
+
     @TaskAction public void secureExec() {
         new DefaultProcessRunner(getProject().getProjectDir())
             .setSecretValue(secretValue)
+            .setDryRun(dryRun)
             .run(commandLine);
     }
 }

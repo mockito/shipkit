@@ -22,6 +22,7 @@ public class DefaultProcessRunner implements ProcessRunner {
     private static final Logger LOG = Logging.getLogger(DefaultProcessRunner.class);
     private final File workDir;
     private String secretValue;
+    private boolean dryRun;
 
     public DefaultProcessRunner(File workDir) {
         this.workDir = workDir;
@@ -38,6 +39,11 @@ public class DefaultProcessRunner implements ProcessRunner {
     String run(Logger log, List<String> commandLine) {
         // WARNING!!! ensure that masked command line is used for all logging!!!
         String maskedCommandLine = mask(join(commandLine, " "));
+        if(dryRun) {
+            log.lifecycle("  Skipped executing:\n    " + maskedCommandLine);
+            return "";
+        }
+
         log.lifecycle("  Executing:\n    " + maskedCommandLine);
 
         ProcessResult result = executeProcess(commandLine, maskedCommandLine);
@@ -95,6 +101,18 @@ public class DefaultProcessRunner implements ProcessRunner {
      */
     public DefaultProcessRunner setSecretValue(String secretValue) {
         this.secretValue = secretValue;
+        return this;
+    }
+
+    /**
+     * Sometimes we are not able to run command even with --dry-run flag,
+     * e.g. 'git push' if write token is not specified.
+     * In such cases we should only print this command
+     * @param dryRun
+     * @return this runner
+     */
+    public DefaultProcessRunner setDryRun(boolean dryRun) {
+        this.dryRun = dryRun;
         return this;
     }
 

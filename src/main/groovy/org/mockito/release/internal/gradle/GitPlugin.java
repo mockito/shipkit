@@ -69,7 +69,12 @@ public class GitPlugin implements Plugin<Project> {
                 lazyConfiguration(t, new Runnable() {
                     public void run() {
                         t.setCommandLine(GitUtil.getGitPushArgsWithTag(conf, project, gitStatus.getBranch()));
-                        t.setSecretValue(conf.getGitHub().getWriteAuthToken());
+                        if(conf.isDryRun() && !conf.getGitHub().existWriteAuthToken()) {
+                            // if dry run is set && write auth token doesn't exist don't run git push command
+                            t.setDryRun(true);
+                        } else {
+                            t.setSecretValue(conf.getGitHub().getWriteAuthToken());
+                        }
                     }
                 });
             }

@@ -94,14 +94,16 @@ public class BintrayPlugin implements Plugin<Project> {
         });
 
         //TODO unit test, create static wrapper over env variables that we use for testing
-        lazyConfiguration(bintrayUpload, new Runnable() {
-            public void run() {
-                String key = notNull(bintray.getKey(), "BINTRAY_API_KEY",
-                        "Missing 'bintray.key' value.\n" +
-                        "  Please configure Bintray extension or export 'BINTRAY_API_KEY' env variable.");
-                bintray.setKey(key);
-            }
-        });
+        if(!conf.isDryRun()) {
+            lazyConfiguration(bintrayUpload, new Runnable() {
+                public void run() {
+                    String key = notNull(bintray.getKey(), "BINTRAY_API_KEY",
+                            "Missing 'bintray.key' value.\n" +
+                                    "  Please configure Bintray extension or export 'BINTRAY_API_KEY' env variable.");
+                    bintray.setKey(key);
+                }
+            });
+        }
     }
 
     static String uploadWelcomeMessage(BintrayUploadTask t) {
