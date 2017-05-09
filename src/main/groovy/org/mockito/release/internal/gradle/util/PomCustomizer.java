@@ -1,15 +1,43 @@
-package org.mockito.release.internal.gradle.util.pom;
+package org.mockito.release.internal.gradle.util;
 
 import groovy.util.Node;
+import org.gradle.api.Action;
+import org.gradle.api.Project;
+import org.gradle.api.XmlProvider;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
+import org.gradle.api.publish.maven.MavenPublication;
 import org.mockito.release.gradle.ReleaseConfiguration;
-import org.mockito.release.internal.gradle.util.ReleaseConfigurationTeamParser;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.mockito.release.internal.gradle.util.ReleaseConfigurationTeamParser.parsePerson;
 
-public class PomXmlCustomizer {
+public class PomCustomizer {
+
+    private static final Logger LOG = Logging.getLogger(PomCustomizer.class);
+
+    /**
+     * Customizes the pom. The method requires following properties on root project to function correctly:
+     */
+    public static void customizePom(final Project project, final ReleaseConfiguration conf, final MavenPublication publication) {
+        publication.getPom().withXml(new Action<XmlProvider>() {
+            public void execute(XmlProvider xml) {
+                String archivesBaseName = (String) project.getProperties().get("archivesBaseName");
+                LOG.info("  Customizing pom for publication " + publication.getName() + " in " + project.toString() +
+                        "\n   - Module name (project.archivesBaseName): " + archivesBaseName +
+                        "\n   - Description (project.description): " + project.getDescription() +
+                        "\n   - GitHub repository (project.rootProject.releasing.gitHub.repository): "
+                                + conf.getGitHub().getRepository() +
+                        "\n   - Developers (project.rootProject.releasing.team.developers): "
+                                + StringUtil.join(conf.getTeam().getDevelopers(), ", ") +
+                        "\n   - Contributors (project.rootProject.releasing.team.contributors): "
+                                + StringUtil.join(conf.getTeam().getContributors(), ", "));
+                customizePom(xml.asNode(), conf, archivesBaseName, project.getDescription());
+            }
+        });
+    }
 
     /**
      * Customizes pom xml based on the provide configuration and settings

@@ -13,7 +13,7 @@ import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.api.tasks.bundling.Jar;
 import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.internal.gradle.util.GradleDSLHelper;
-import org.mockito.release.internal.gradle.util.pom.PomCustomizer;
+import org.mockito.release.internal.gradle.util.PomCustomizer;
 
 import static org.mockito.release.internal.gradle.util.StringUtil.capitalize;
 
