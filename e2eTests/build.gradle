@@ -36,10 +36,11 @@ def bumpProjectVersion(String projectName) {
 }
 
 def performRelease(String projectName) {
-    tasks.create("performRelease$projectName", Exec) {
+    println "  Testing the Gradle build..."
+    exec {
         workingDir "$projectDir/$projectName"
-        commandLine './gradlew', 'performRelease', '-Preleasing.dryRun'
-    }.execute()
+        commandLine './gradlew', 'publishToMavenLocal', 'testRelease', '-x', 'gitPush', '-x', 'bintrayUpload'
+    }
 }
 
 task check {
