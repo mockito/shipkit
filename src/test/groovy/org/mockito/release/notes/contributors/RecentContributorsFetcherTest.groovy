@@ -19,7 +19,8 @@ class RecentContributorsFetcherTest extends Specification {
     }
 
     def "no contributors for given dates"() {
-        def c = fetcher.fetchContributors("mockito/mockito", readOnlyToken, "2017-05-01", "2017-05-03")
+        def c = fetcher.fetchContributors("mockito/mockito", readOnlyToken,
+                "2017-05-02T00:00:00-0000", "2017-05-03T00:00:00-0000")
         expect:
         c.empty
     }
