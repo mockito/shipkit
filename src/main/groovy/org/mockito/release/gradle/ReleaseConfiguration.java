@@ -34,6 +34,7 @@ public class ReleaseConfiguration {
         git.setTagPrefix("v"); //so that tags are "v1.0", "v2.3.4"
         git.setReleasableBranchRegex("master|release/.+");  // matches 'master', 'release/2.x', 'release/3.x', etc.
         team.setContributors(Collections.<String>emptyList());
+        team.setDevelopers(Collections.<String>emptyList());
     }
 
     //TODO currently it's not clear when to use class fields and when to use the 'configuration' map

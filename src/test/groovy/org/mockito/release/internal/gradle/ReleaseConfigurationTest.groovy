@@ -7,6 +7,11 @@ class ReleaseConfigurationTest extends Specification {
 
     def conf = new ReleaseConfiguration()
 
+    def "default values"() {
+        conf.team.developers.empty
+        conf.team.contributors.empty
+    }
+
     def "custom commitMessagePostfix"() {
         //TODO figure out a test that would validate all properties with reflection
         //rather than implement individual unit test for each property (getter and setter)
