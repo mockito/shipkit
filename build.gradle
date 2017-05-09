@@ -65,6 +65,12 @@ pluginBundle {
             displayName = 'Mockito automated versioning and Travis CI integration'
             tags = ['mockito', 'continuous delivery', 'release', 'versioning', 'auto-versioning', 'semantic-versioning', 'travis']
         }
+
+        releaseNeededPlugin {
+            id = 'org.mockito.mockito-release-tools.release-needed'
+            displayName = 'Mockito plugin for checking if release is needed'
+            tags = ['mockito', 'continuous delivery', 'release']
+        }
     }
 
     mavenCoordinates {

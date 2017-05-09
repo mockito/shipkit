@@ -51,6 +51,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
         project.getPlugins().apply(GitPlugin.class);
         project.getPlugins().apply(ContributorsPlugin.class);
         project.getPlugins().apply(TravisPlugin.class);
+        project.getPlugins().apply(ReleaseNeededPlugin.class);
 
         project.allprojects(new Action<Project>() {
             @Override
@@ -168,51 +169,6 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                 //using finalizedBy so that all clean up tasks run, even if one of them fails
                 t.finalizedBy(GitPlugin.COMMIT_CLEANUP_TASK);
                 t.finalizedBy(GitPlugin.TAG_CLEANUP_TASK);
-            }
-        });
-
-        //Task that throws an exception when release is not needed is very useful for CI workflows
-        //Travis CI job will stop executing further commands if assertReleaseNeeded fails.
-        //See the example projects how we have set up the 'assertReleaseNeeded' task in CI pipeline.
-        releaseNeededTask(project, "assertReleaseNeeded", conf)
-                .setExplosive(true)
-                .setDescription("Asserts that criteria for the release are met and throws exception if release is not needed.");
-
-        //Below task is useful for testing. It will not throw an exception but will run the code that check is release is needed
-        //and it will print the information to the console.
-        releaseNeededTask(project, "releaseNeeded", conf)
-                .setExplosive(false)
-                .setDescription("Checks and prints to the console if criteria for the release are met.");
-    }
-
-    private static ReleaseNeededTask releaseNeededTask(final Project project, String taskName, final ReleaseConfiguration conf) {
-        return TaskMaker.task(project, taskName, ReleaseNeededTask.class, new Action<ReleaseNeededTask>() {
-            public void execute(final ReleaseNeededTask t) {
-                t.setDescription("Asserts that criteria for the release are met and throws exception if release not needed.");
-                t.setExplosive(true);
-                t.setCommitMessage(conf.getBuild().getCommitMessage());
-                t.setPullRequest(conf.getBuild().isPullRequest());
-
-                project.allprojects(new Action<Project>() {
-                    public void execute(final Project subproject) {
-                        subproject.getPlugins().withType(PublicationsComparatorPlugin.class, new Action<PublicationsComparatorPlugin>() {
-                            public void execute(PublicationsComparatorPlugin p) {
-                                // make this task depend on all comparePublications tasks
-                                Task task = subproject.getTasks().getByName(PublicationsComparatorPlugin.COMPARE_PUBLICATIONS_TASK);
-                                t.addPublicationsComparator((PublicationsComparatorTask) task);
-                            }
-                        });
-                    }
-                });
-
-                final GitStatusPlugin.GitStatus gitStatus = project.getPlugins().apply(GitStatusPlugin.class).getGitStatus();
-                lazyConfiguration(t, new Runnable() {
-                    public void run() {
-                        String branch = gitStatus.getBranch();
-                        t.setBranch(branch);
-                        t.setReleasableBranchRegex(conf.getGit().getReleasableBranchRegex());
-                    }
-                });
             }
         });
     }
