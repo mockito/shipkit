@@ -50,3 +50,28 @@ task check {
 task build {
     dependsOn check
 }
+
+/*
+
+I loooove the direction :) I was even able to run it locally when I did some tweaks to the code (pushed to your branch)
+
+Before we can push the code, I'd like to clean it up a little bit (TODO)
+1. Clone into build directory of the project, no need to tweak .idea
+    This also means that the cloned content will be automatically 'excluded' from indexing by IDEA
+2. Use imperative exec instead of task.execute()
+3. Task descriptions
+4. In order for Gradle to neatly paralelize,
+let's have the mockito and mockito-release-tools-example be separate subprojects,
+just like I have set it up in PR #100.
+This way, the integration tests will run in parallel (Gradle parallelizes per project)
+5. Let's have completely separate task for cloning which will be incremental
+    (e.g. does not clone twice when you run build twice).
+    The task that performs the test will copy from the files from the clone task into some work dir and execute the test there
+6. Let's use relatively shallow clone. We don't need all history.
+7. I think we're missing task dependency to root's 'publishToMavenLocal'
+
+Integration testing is a big feature of shipkit!
+We will morph it into a plugin that will be part of the release tools plugins.
+Take your time engineering it and learn as much Gradle as possible during the process :)
+
+ */
