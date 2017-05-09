@@ -13,9 +13,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class GitHubAllContributorsFetcher {
+public class AllContributorsFetcher {
 
-    private static final Logger LOG = Logging.getLogger(GitHubAllContributorsFetcher.class);
+    private static final Logger LOG = Logging.getLogger(AllContributorsFetcher.class);
 
     ProjectContributorsSet fetchAllContributorsForProject(String repository, String readOnlyAuthToken) {
         LOG.lifecycle("  Querying GitHub API for all contributors for project");

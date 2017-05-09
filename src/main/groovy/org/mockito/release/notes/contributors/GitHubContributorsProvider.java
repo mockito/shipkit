@@ -21,8 +21,8 @@ public class GitHubContributorsProvider implements ContributorsProvider {
 
     @Override
     public ProjectContributorsSet getAllContributorsForProject() {
-        ProjectContributorsSet contributors = new GitHubAllContributorsFetcher().fetchAllContributorsForProject(repository, readOnlyAuthToken);
-        Collection<Contributor> recent = new GitHubLastContributorsFetcher().fetchContributorsSinceYesterday(repository, readOnlyAuthToken);
+        ProjectContributorsSet contributors = new AllContributorsFetcher().fetchAllContributorsForProject(repository, readOnlyAuthToken);
+        Collection<Contributor> recent = new RecentContributorsFetcher().fetchContributorsSinceYesterday(repository, readOnlyAuthToken);
         return mergeContributors(contributors, recent);
     }
 

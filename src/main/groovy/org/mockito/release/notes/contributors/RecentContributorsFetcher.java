@@ -4,7 +4,6 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.json.simple.DeserializationException;
 import org.json.simple.JsonObject;
-import org.mockito.release.internal.gradle.configuration.BasicValidator;
 import org.mockito.release.notes.model.Contributor;
 import org.mockito.release.notes.util.GitHubListFetcher;
 
@@ -19,9 +18,9 @@ import static org.mockito.release.internal.util.DateUtil.yesterday;
  * Fetches recent contributors from GitHub using the "commit" end point.
  * The "contributors" endpoint does not return the most recent contributors as documented.
  */
-public class GitHubLastContributorsFetcher {
+public class RecentContributorsFetcher {
 
-    private static final Logger LOG = Logging.getLogger(GitHubLastContributorsFetcher.class);
+    private static final Logger LOG = Logging.getLogger(RecentContributorsFetcher.class);
 
     /**
      * Contributors that pushed commits to the repo withing the last 24hrs
