@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.mockito.release.internal.gradle.util.ReleaseConfigurationTeamParser.validateTeamMembers;
+
 /**
  * Configuration of the releasing plugin.
  * <p>
@@ -369,6 +371,7 @@ public class ReleaseConfiguration {
          * See {@link #getDevelopers()}
          */
         public void setDevelopers(Collection<String> developers) {
+            validateTeamMembers(developers);
             configuration.put("team.developers", developers);
         }
 
@@ -387,6 +390,7 @@ public class ReleaseConfiguration {
          * See {@link #getContributors()}
          */
         public void setContributors(Collection<String> contributors) {
+            validateTeamMembers(contributors);
             configuration.put("team.contributors", contributors);
         }
     }
