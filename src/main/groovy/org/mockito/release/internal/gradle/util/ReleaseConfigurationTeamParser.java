@@ -29,7 +29,7 @@ public class ReleaseConfigurationTeamParser {
         }
     }
 
-    static Person parsePerson(String notation) {
+    public static Person parsePerson(String notation) {
         notNull(notation, "Team member notation cannot be null");
         String[] split = notation.split(":");
         if (split.length != 2) {

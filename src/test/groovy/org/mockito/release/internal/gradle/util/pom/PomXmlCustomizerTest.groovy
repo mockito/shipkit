@@ -103,15 +103,6 @@ class PomXmlCustomizerTest extends Specification {
 """
     }
 
-    def "developer without name"() {
-        //possible when contributors are automatically populated from GitHub
-
-    }
-
-    def "descriptive failure when developer in wrong format"() {
-
-    }
-
     private static String printXml(Node node) {
         def sw = new StringWriter()
         def printer = new XmlNodePrinter(new PrintWriter(sw))
