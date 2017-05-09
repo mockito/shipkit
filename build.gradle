@@ -5,7 +5,7 @@ buildscript {
     }
     dependencies {
         classpath "com.gradle.publish:plugin-publish-plugin:0.9.6"
-        classpath "gradle.plugin.org.mockito:mockito-release-tools:0.8.13"
+        classpath "gradle.plugin.org.mockito:mockito-release-tools:0.8.25"
     }
 }
 
@@ -16,6 +16,7 @@ apply plugin: 'com.gradle.plugin-publish'
 apply plugin: 'checkstyle'
 apply plugin: 'codenarc'
 apply plugin: 'org.mockito.mockito-release-tools.gradle-plugin-releasing'
+apply plugin: 'org.mockito.mockito-release-tools.release-needed'
 
 apply from: 'gradle/precommit.gradle'
 apply from: 'gradle/release.gradle'
@@ -79,29 +80,13 @@ pluginBundle {
     }
 }
 
-task releaseNeeded {
-    ext.needed = true
-    doLast {
-        def pullRequest = System.getenv('TRAVIS_PULL_REQUEST')?.matches("\\d+")
-        def onMaster = "master" == System.getenv('TRAVIS_BRANCH')
-        ext.needed = !pullRequest && onMaster
-        if (needed) {
-            logger.lifecycle("{} - Release to Gradle Plugin Portal is needed.", path)
-        } else {
-            logger.lifecycle("{} - Current branch is not 'master' or we're building pull request.\n" +
-                    "  Release to Gradle Plugin Portal is not needed.", path)
-        }
-    }
-}
-
-//TODO ww add -Preleasing.dryRun=false to commandLine when releaseNeeded takes into account [ci skipRelease] in commit msg
 task travisRelease {
     dependsOn releaseNeeded
-    onlyIf { releaseNeeded.needed }
+    onlyIf { !releaseNeeded.releaseNotNeeded }
     doLast {
         logger.lifecycle("{} - Publishing to Gradle Plugin Portal...", path)
         exec {
-            commandLine "./gradlew", "publishPlugins", "bumpVersionAndPush",
+            commandLine "./gradlew", "publishPlugins", "bumpVersionAndPush", "-Preleasing.dryRun=false",
                     "-Pgradle.publish.key=${System.getenv('GRADLE_PUBLISH_KEY')}",
                     "-Pgradle.publish.secret=${System.getenv('GRADLE_PUBLISH_SECRET')}"
         }
