@@ -42,7 +42,7 @@ public class PomCustomizer {
     /**
      * Customizes pom xml based on the provide configuration and settings
      */
-    public static void customizePom(Node root, ReleaseConfiguration conf,
+    static void customizePom(Node root, ReleaseConfiguration conf,
                                     String projectName, String projectDescription) {
         //Assumes project has java plugin applied. Pretty safe assumption
         root.appendNode("name", projectName);
