@@ -29,6 +29,7 @@ class ReleaseConfigurationTest extends Specification {
     }
 
     def "validates team members"() {
+        when:
         conf.team.developers = []
         conf.team.developers = ["foo:bar"]
         conf.team.developers = ["foo:bar", "x:y"]
@@ -36,6 +37,9 @@ class ReleaseConfigurationTest extends Specification {
         conf.team.contributors = []
         conf.team.contributors = ["foo:bar"]
         conf.team.contributors = ["foo:bar", "x:y"]
+
+        then:
+        noExceptionThrown()
     }
 
     def "fails when team members have wrong format"() {
