@@ -34,9 +34,8 @@ class AllContributorsFetcher {
                 result.addAllContributors(extractContributors(page, readOnlyAuthToken));
             }
         } catch (Exception e) {
-            //TODO we need to eliminate below from the codebase here and everywhere, else to
-            //Let's throw an exception!!!
-            e.printStackTrace();
+            throw new RuntimeException("Problems fetching and parsing contributors from GitHub repo: '" + repository
+                    + "', using read only token: 'readOnlyAuthToken'", e);
         }
         return result;
     }
