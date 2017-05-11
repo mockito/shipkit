@@ -7,8 +7,8 @@ import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.*;
 import org.mockito.release.internal.gradle.util.FileUtil;
 import org.mockito.release.internal.gradle.util.ReleaseNotesSerializer;
-import org.mockito.release.notes.contributors.ContributorsSerializer;
-import org.mockito.release.notes.contributors.ContributorsSet;
+import org.mockito.release.notes.contributors.Contributors;
+import org.mockito.release.notes.contributors.ProjectContributorsSet;
 import org.mockito.release.notes.format.ReleaseNotesFormatters;
 import org.mockito.release.notes.model.Contribution;
 import org.mockito.release.notes.model.ReleaseNotesData;
@@ -161,7 +161,7 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
     /**
      * Generates new incremental content of the release notes.
      */
-    protected String getNewContent() {
+    String getNewContent() {
         assertConfigured();
         LOG.lifecycle("  Building new release notes based on {}", releaseNotesFile);
 
@@ -169,18 +169,14 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
         String tagPrefix = "v";
 
         Collection<ReleaseNotesData> data = new ReleaseNotesSerializer(releaseNotesData).deserialize();
-        ContributorsSet contributors = new ContributorsSerializer(contributorsData).deserialize();
+        ProjectContributorsSet contributors = Contributors.getAllContributorsSerializer(contributorsData).deserialize();
         //TODO this is not nice at all. Suggested plan:
         // Merge the functionality of recent contributors fetching + all contributors fetching.
-        // 1. Provide a single service that will:
-        //   - fetch all contributors using https://developer.github.com/v3/repos/#list-contributors
-        //   - then fetch recent contributors (last 48hrs) using https://developer.github.com/v3/repos/commits/#list-commits-on-a-repository
-        // 2. Have just a single Gradle task that gets contributors data instead of current 2 (recent + all)
-        // 3. Release notes fetcher task will depend on contributors so
-        // that it will product complete release notes data
+        // 1. Make the the release notes fetcher depend on the contributors fetcher
+        // 2. Make release notes fetcher use contributors to construct and serialize ReleaseNotesData
         for (ReleaseNotesData d : data) {
             for (Contribution c : d.getContributions().getContributions()) {
-                c.setContributor(contributors.findByAuthorName(c.getAuthorName()));
+                c.setContributor(contributors.findByName(c.getAuthorName()));
             }
         }
 

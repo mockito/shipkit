@@ -1,5 +1,6 @@
 package org.mockito.release.notes.contributors;
 
+import org.mockito.release.notes.model.Contributor;
 import org.mockito.release.notes.model.ProjectContributor;
 
 import java.io.Serializable;
@@ -7,25 +8,27 @@ import java.util.*;
 
 class DefaultProjectContributorsSet implements ProjectContributorsSet, Serializable {
 
-    private final Set<ProjectContributor> contributors;
+    //This set is used to manage uniqueness of contributors:
+    private final Set<ProjectContributor> contributors = new HashSet<ProjectContributor>();
+    //To keep sorted contributors ready to be used:
+    private final Set<ProjectContributor> sorted = new TreeSet<ProjectContributor>(Collections.<ProjectContributor>reverseOrder());
+    //For fast lookups:
+    private final Map<String, ProjectContributor> map = new HashMap<String, ProjectContributor>();
 
-    DefaultProjectContributorsSet() {
-        contributors = new TreeSet<ProjectContributor>(new Comparator<ProjectContributor>() {
-            @Override
-            public int compare(ProjectContributor o1, ProjectContributor o2) {
-                return o2.getNumberOfContributions() - o1.getNumberOfContributions();   // sort descend
-            }
-        });
+    @Override
+    public void addContributor(ProjectContributor contributor) {
+        if (contributors.add(contributor)) {
+            //avoiding duplicates in the sorted collection, see unit tests
+            sorted.add(contributor);
+            map.put(contributor.getName(), contributor);
+        }
     }
 
     @Override
-    public void addContributor(ProjectContributor contributorToAdd) {
-        contributors.add(contributorToAdd);
-    }
-
-    @Override
-    public void addAllContributors(Set<ProjectContributor> contributorsToAdd) {
-        contributors.addAll(contributorsToAdd);
+    public void addAllContributors(Collection<ProjectContributor> contributors) {
+        for (ProjectContributor c : contributors) {
+            addContributor(c);
+        }
     }
 
     @Override
@@ -35,7 +38,11 @@ class DefaultProjectContributorsSet implements ProjectContributorsSet, Serializa
 
     @Override
     public Set<ProjectContributor> getAllContributors() {
-        return contributors;
+        return sorted;
     }
 
+    @Override
+    public ProjectContributor findByName(String name) {
+        return map.get(name);
+    }
 }

@@ -18,7 +18,7 @@ import java.util.Date;
 public class GitHubObjectFetcher {
 
     private static final Logger LOG = Logging.getLogger(GitHubObjectFetcher.class);
-
+    //TODO GitHubObjectFetcher and GitHubListFetcher can probably be merged into one, there's code duplicated
 
     private final String pageUrl;
     private final String authToken;
@@ -31,7 +31,7 @@ public class GitHubObjectFetcher {
     public JsonObject getPage() throws IOException, DeserializationException {
         URL url = new URL(String.format("%s%s%s", pageUrl, "?access_token=", authToken));
         LOG.info("GitHub API querying page {}", url);
-
+        LOG.lifecycle("GET {}", url);
         URLConnection urlConnection = url.openConnection();
 
         String resetInLocalTime = resetLimitInLocalTimeOrEmpty(urlConnection);

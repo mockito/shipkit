@@ -13,9 +13,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class GitHubAllContributorsFetcher {
+/**
+ * Gets all contributors from the repository
+ * https://developer.github.com/v3/repos/#list-contributors
+ */
+class AllContributorsFetcher {
 
-    private static final Logger LOG = Logging.getLogger(GitHubAllContributorsFetcher.class);
+    private static final Logger LOG = Logging.getLogger(AllContributorsFetcher.class);
 
     ProjectContributorsSet fetchAllContributorsForProject(String repository, String readOnlyAuthToken) {
         LOG.lifecycle("  Querying GitHub API for all contributors for project");
@@ -30,9 +34,8 @@ public class GitHubAllContributorsFetcher {
                 result.addAllContributors(extractContributors(page, readOnlyAuthToken));
             }
         } catch (Exception e) {
-            //TODO we need to eliminate below from the codebase here and everywhere, else to
-            //Let's throw an exception!!!
-            e.printStackTrace();
+            throw new RuntimeException("Problems fetching and parsing contributors from GitHub repo: '" + repository
+                    + "', using read only token: 'readOnlyAuthToken'", e);
         }
         return result;
     }
@@ -40,6 +43,8 @@ public class GitHubAllContributorsFetcher {
     private Set<ProjectContributor> extractContributors(List<JsonObject> page, String readOnlyAuthToken) throws IOException, DeserializationException {
         Set<ProjectContributor> result = new HashSet<ProjectContributor>();
         for (JsonObject contributor : page) {
+            //Since returned contributor does not have 'name' element, we need to fetch the user data to get his name
+            //TODO add static caching of this. Names don't change that often, let's just cache this forever in build cache.
             String url = (String) contributor.get("url");
             GitHubObjectFetcher userFetcher = new GitHubObjectFetcher(url, readOnlyAuthToken);
             JsonObject user = userFetcher.getPage();

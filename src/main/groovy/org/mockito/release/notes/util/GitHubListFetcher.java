@@ -29,13 +29,6 @@ public class GitHubListFetcher {
         this.nextPageUrl = nextPageUrl;
     }
 
-    //TODO SF is this method needed? It's never used
-    public GitHubListFetcher init() throws IOException {
-        URLConnection urlConnection = new URL(nextPageUrl).openConnection();
-        nextPageUrl = extractRelativeLink(urlConnection.getHeaderField("Link"), "next");
-        return this;
-    }
-
     public boolean hasNextPage() {
         return !RELATIVE_LINK_NOT_FOUND.equals(nextPageUrl);
     }
@@ -46,6 +39,7 @@ public class GitHubListFetcher {
         }
         URL url = new URL(nextPageUrl);
         LOG.info("GitHub API querying page {}", queryParamValue(url, "page"));
+        LOG.lifecycle("GET " + nextPageUrl);
         URLConnection urlConnection = url.openConnection();
         LOG.info("Established connection to GitHub API");
 

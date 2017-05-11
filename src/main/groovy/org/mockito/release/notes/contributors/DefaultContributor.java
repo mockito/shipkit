@@ -75,10 +75,6 @@ public class DefaultContributor implements Contributor {
 
     @Override
     public String toString() {
-        return "DefaultContributor{" +
-                "name='" + name + '\'' +
-                ", login='" + login + '\'' +
-                ", profileUrl='" + profileUrl + '\'' +
-                '}';
+        return name + '/' + login;
     }
 }

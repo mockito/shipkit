@@ -72,14 +72,14 @@ public class AllContributorsFetcherTask extends DefaultTask {
     }
 
     @TaskAction
-    public void fetchAllProjectContributorsFromGitHub() {
+    public void fetchContributors() {
         LOG.lifecycle("  Fetching all contributors for project");
 
         GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContributorsProvider(repository, readOnlyAuthToken);
-        ProjectContributorsSet allContributorsForProject = contributorsProvider.getAllContributorsForProject();
+        ProjectContributorsSet contributors = contributorsProvider.getAllContributorsForProject();
 
         AllContributorsSerializer serializer = Contributors.getAllContributorsSerializer(outputFile);
-        serializer.serialize(allContributorsForProject);
+        serializer.serialize(contributors);
 
         LOG.lifecycle("  Serialized all contributors into: {}", getProject().relativePath(outputFile));
     }

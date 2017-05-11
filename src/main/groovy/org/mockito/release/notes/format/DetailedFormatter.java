@@ -152,6 +152,10 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
 
     static String authorLink(Contribution c) {
         if (c.getContributor() == null) {
+            //TODO if the author name does not have spaces it indicates that this could be
+            // GitHub id that we could automatically try to use
+            // At worst what can happen is that we will have bad links for scenarios where we did not have any links before
+            // But we will solve some cases, for example 'epeee' - user without name but with id ;)
             return c.getAuthorName();
         } else {
             return "[" + c.getAuthorName() + "](" + c.getContributor().getProfileUrl() + ")";
