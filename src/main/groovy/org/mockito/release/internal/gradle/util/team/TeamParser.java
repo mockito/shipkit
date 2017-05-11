@@ -1,41 +1,50 @@
-package org.mockito.release.internal.gradle.util;
+package org.mockito.release.internal.gradle.util.team;
 
 import org.gradle.api.GradleException;
+import org.mockito.release.gradle.ReleaseConfiguration;
 
 import java.util.Collection;
 
 import static org.mockito.release.internal.util.ArgumentValidation.notNull;
 
-public class ReleaseConfigurationTeamParser {
+/**
+ * Parses team members configurable via {@link ReleaseConfiguration.Team#getDevelopers()}
+ * and {@link ReleaseConfiguration.Team#getContributors()}
+ */
+public class TeamParser {
 
-    public static void validateTeamMembers(Collection<String> teamMembers) {
+    /**
+     * Validates team memberes configured via {@link ReleaseConfiguration.Team#getDevelopers()}
+     * and {@link ReleaseConfiguration.Team#getContributors()}
+     */
+    public static void validateTeamMembers(Collection<String> teamMembers) throws InvalidInput {
         for (String member : teamMembers) {
             parsePerson(member);
         }
     }
 
-    public static class Person {
-        public final String gitHubUser;
-        public final String name;
-        Person(String gitHubUser, String name) {
-            this.gitHubUser = gitHubUser;
-            this.name = name;
-        }
-    }
-
+    /**
+     * Thrown when the team members are not configured correctly in
+     * {@link ReleaseConfiguration.Team#getDevelopers()}
+     * or {@link ReleaseConfiguration.Team#getContributors()}
+     */
     public static class InvalidInput extends GradleException {
         InvalidInput(String message) {
             super(message);
         }
     }
 
-    public static Person parsePerson(String notation) {
+    /**
+     * Parses single person notation provided via {@link ReleaseConfiguration.Team#getDevelopers()}
+     * and {@link ReleaseConfiguration.Team#getContributors()}
+     */
+    public static TeamMember parsePerson(String notation) throws InvalidInput {
         notNull(notation, "Team member notation cannot be null");
         String[] split = notation.split(":");
         if (split.length != 2) {
             throw invalidInput(notation);
         }
-        Person person = new Person(split[0], split[1]);
+        TeamMember person = new TeamMember(split[0], split[1]);
         if (person.gitHubUser.trim().isEmpty() || person.name.trim().isEmpty()) {
             throw invalidInput(notation);
         }

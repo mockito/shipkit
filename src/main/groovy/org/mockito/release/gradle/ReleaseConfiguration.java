@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mockito.release.internal.gradle.util.ReleaseConfigurationTeamParser.validateTeamMembers;
+import static org.mockito.release.internal.gradle.util.team.TeamParser.validateTeamMembers;
 
 /**
  * Configuration of the releasing plugin.

@@ -1,7 +1,7 @@
 package org.mockito.release.internal.gradle
 
 import org.mockito.release.gradle.ReleaseConfiguration
-import org.mockito.release.internal.gradle.util.ReleaseConfigurationTeamParser
+import org.mockito.release.internal.gradle.util.team.TeamParser
 import spock.lang.Specification
 
 class ReleaseConfigurationTest extends Specification {
@@ -40,9 +40,9 @@ class ReleaseConfigurationTest extends Specification {
 
     def "fails when team members have wrong format"() {
         when: conf.team.developers = [""]
-        then: thrown(ReleaseConfigurationTeamParser.InvalidInput.class)
+        then: thrown(TeamParser.InvalidInput.class)
 
         when: conf.team.contributors = ["ala:"]
-        then: thrown(ReleaseConfigurationTeamParser.InvalidInput.class)
+        then: thrown(TeamParser.InvalidInput.class)
     }
 }

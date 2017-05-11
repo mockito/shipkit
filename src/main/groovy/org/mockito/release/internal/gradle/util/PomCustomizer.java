@@ -8,12 +8,16 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.publish.maven.MavenPublication;
 import org.mockito.release.gradle.ReleaseConfiguration;
+import org.mockito.release.internal.gradle.util.team.TeamMember;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.mockito.release.internal.gradle.util.ReleaseConfigurationTeamParser.parsePerson;
+import static org.mockito.release.internal.gradle.util.team.TeamParser.parsePerson;
 
+/**
+ * Customizes the pom file. Intended to be used with Gradle's 'maven-publish' plugin.
+ */
 public class PomCustomizer {
 
     private static final Logger LOG = Logging.getLogger(PomCustomizer.class);
@@ -70,7 +74,7 @@ public class PomCustomizer {
         if (!conf.getTeam().getDevelopers().isEmpty()) {
             Node developers = root.appendNode("developers");
             for (String notation : conf.getTeam().getDevelopers()) {
-                ReleaseConfigurationTeamParser.Person person = parsePerson(notation);
+                TeamMember person = parsePerson(notation);
                 Node d = developers.appendNode("developer");
                 d.appendNode("id", person.gitHubUser);
                 d.appendNode("name", person.name);
@@ -84,7 +88,7 @@ public class PomCustomizer {
             Node contributors = root.appendNode("contributors");
             for (String notation : conf.getTeam().getContributors()) {
                 if (!devs.contains(notation)) {
-                    ReleaseConfigurationTeamParser.Person person = parsePerson(notation);
+                    TeamMember person = parsePerson(notation);
                     Node d = contributors.appendNode("contributor");
                     d.appendNode("name", person.name);
                     d.appendNode("url", "https://github.com/" + person.gitHubUser);

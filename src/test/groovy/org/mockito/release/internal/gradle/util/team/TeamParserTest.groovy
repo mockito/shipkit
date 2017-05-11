@@ -1,12 +1,12 @@
-package org.mockito.release.internal.gradle.util
+package org.mockito.release.internal.gradle.util.team
 
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import static org.mockito.release.internal.gradle.util.ReleaseConfigurationTeamParser.parsePerson
-import static org.mockito.release.internal.gradle.util.ReleaseConfigurationTeamParser.validateTeamMembers
+import static TeamParser.parsePerson
+import static TeamParser.validateTeamMembers
 
-class ReleaseConfigurationTeamParserTest extends Specification {
+class TeamParserTest extends Specification {
 
     def "parses person"() {
         when:
@@ -22,7 +22,7 @@ class ReleaseConfigurationTeamParserTest extends Specification {
         when:
         validateTeamMembers(["foo:bar", "a:"])
         then:
-        thrown(ReleaseConfigurationTeamParser.InvalidInput)
+        thrown(TeamParser.InvalidInput)
     }
 
     @Unroll
@@ -30,7 +30,7 @@ class ReleaseConfigurationTeamParserTest extends Specification {
         when:
         parsePerson(input)
         then:
-        thrown(ReleaseConfigurationTeamParser.InvalidInput)
+        thrown(TeamParser.InvalidInput)
         where:
         input << ["", "  ", ":", "a:", ":b", "a:b:c"]
     }
