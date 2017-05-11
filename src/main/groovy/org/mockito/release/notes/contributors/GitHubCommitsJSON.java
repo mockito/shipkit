@@ -20,7 +20,7 @@ public class GitHubCommitsJSON {
             String profileUrl = (String) ((Map) commit.get("author")).get("html_url");
             return new DefaultContributor(name, login, profileUrl);
         } catch (NullPointerException e) {
-            //TODO when does it happen?
+            //Author does not exist. See unit tests.
             return null;
         }
     }
