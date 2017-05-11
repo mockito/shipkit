@@ -28,18 +28,15 @@ class RecentContributorsFetcher {
      * Contributors that pushed commits to the repo withing the last 24hrs
      */
     public Collection<Contributor> fetchContributorsSinceYesterday(String repository, String readOnlyAuthToken) {
-        String yesterday = forGitHub(yesterday());
-        return fetchContributors(repository, readOnlyAuthToken, yesterday, null);
+        return fetchContributors(repository, readOnlyAuthToken, yesterday(), null);
     }
 
     /**
      * Contributors that pushed commits to the repo within the time span.
-     * @param dateSince - must not be null, the since date, in format accepted by GitHub
-     *                  ({@link org.mockito.release.internal.util.DateUtil#forGitHub(Date)})
-     * @param dateUntil - can be null, it means there is no end date, in format accepted by GitHub
-     *                  ({@link org.mockito.release.internal.util.DateUtil#forGitHub(Date)})
+     * @param dateSince - must not be null, the since date
+     * @param dateUntil - can be null, it means there is no end date
      */
-    public Collection<Contributor> fetchContributors(String repository, String readOnlyAuthToken, String dateSince, String dateUntil) {
+    public Collection<Contributor> fetchContributors(String repository, String readOnlyAuthToken, Date dateSince, Date dateUntil) {
         LOG.info("Querying GitHub API for commits (for contributors)");
         Set<Contributor> contributors = new LinkedHashSet<Contributor>();
 
@@ -88,17 +85,17 @@ class RecentContributorsFetcher {
             return lastFetchedPage;
         }
 
-        static GitHubCommitsBuilder with(String repository, String readOnlyAuthToken, String dateSince, String dateUntil) {
+        static GitHubCommitsBuilder with(String repository, String readOnlyAuthToken, Date dateSince, Date dateUntil) {
             return new GitHubCommitsBuilder(repository, readOnlyAuthToken, dateSince, dateUntil);
         }
 
         private static class GitHubCommitsBuilder {
             private final String repository;
             private final String readOnlyAuthToken;
-            private final String dateSince;
-            private final String dateUntil;
+            private final Date dateSince;
+            private final Date dateUntil;
 
-            private GitHubCommitsBuilder(String repository, String readOnlyAuthToken, String dateSince, String dateUntil) {
+            private GitHubCommitsBuilder(String repository, String readOnlyAuthToken, Date dateSince, Date dateUntil) {
                 notNull(repository, "repository", readOnlyAuthToken, "readOnlyAuthToken", dateSince, "dateSince");
                 this.repository = repository;
                 this.readOnlyAuthToken = readOnlyAuthToken;
@@ -110,8 +107,8 @@ class RecentContributorsFetcher {
                 // see API doc: https://developer.github.com/v3/repos/commits/#list-commits-on-a-repository
                 String nextPageUrl = "https://api.github.com/repos/" + repository + "/commits"
                         + "?access_token=" + readOnlyAuthToken
-                        + "&since=" + dateSince
-                        + ((dateUntil != null)? "&until=" + dateUntil : "")
+                        + "&since=" + forGitHub(dateSince)
+                        + ((dateUntil != null)? "&until=" + forGitHub(dateUntil) : "")
                         + "&page=1&per_page=100";
                 return new GitHubCommits(nextPageUrl);
             }
