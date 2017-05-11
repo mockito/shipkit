@@ -13,7 +13,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class AllContributorsFetcher {
+/**
+ * Gets all contributors from the repository
+ * https://developer.github.com/v3/repos/#list-contributors
+ */
+class AllContributorsFetcher {
 
     private static final Logger LOG = Logging.getLogger(AllContributorsFetcher.class);
 
