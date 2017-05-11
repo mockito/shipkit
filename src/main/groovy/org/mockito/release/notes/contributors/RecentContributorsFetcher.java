@@ -16,9 +16,11 @@ import static org.mockito.release.internal.util.DateUtil.yesterday;
 
 /**
  * Fetches recent contributors from GitHub using the "commit" end point.
- * The "contributors" endpoint does not return the most recent contributors as documented.
+ * Uses https://developer.github.com/v3/repos/commits/
+ * We use it because the "contributors" endpoint does not return the most recent contributors as documented
+ * (see {@link AllContributorsFetcher}).
  */
-public class RecentContributorsFetcher {
+class RecentContributorsFetcher {
 
     private static final Logger LOG = Logging.getLogger(RecentContributorsFetcher.class);
 
