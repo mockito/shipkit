@@ -9,6 +9,7 @@ import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.notes.contributors.AllContributorsSerializer;
 import org.mockito.release.notes.contributors.ProjectContributorsSet;
 import org.mockito.release.notes.model.ProjectContributor;
+import org.mockito.release.notes.util.IOUtil;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -57,7 +58,7 @@ public class ConfigureContributorsTask extends DefaultTask {
     }
 
     @TaskAction public void configure() {
-        ProjectContributorsSet all = new AllContributorsSerializer(contributorsData).deserialize();
+        ProjectContributorsSet all = new AllContributorsSerializer().deserialize(IOUtil.readFully(contributorsData));
         List<String> contributors = new LinkedList<String>();
         for (ProjectContributor c : all.getAllContributors()) {
             contributors.add(c.getLogin() + ":" + (isEmpty(c.getName())? c.getLogin() : c.getName()));

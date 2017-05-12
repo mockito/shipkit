@@ -6,33 +6,23 @@ import org.json.simple.JsonArray;
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
 import org.mockito.release.notes.model.ProjectContributor;
-import org.mockito.release.notes.util.IOUtil;
 
-import java.io.File;
 import java.util.Collection;
 
 public class AllContributorsSerializer {
 
     private static final Logger LOG = Logging.getLogger(AllContributorsSerializer.class);
 
-    private final File file;
-
-    public AllContributorsSerializer(File file) {
-        this.file = file;
-    }
-
-    public void serialize(ProjectContributorsSet contributorsSet) {
+    public String serialize(ProjectContributorsSet contributorsSet) {
         Collection<ProjectContributor> allContributors = contributorsSet.getAllContributors();
         String json = Jsoner.serialize(allContributors);
         LOG.info("Serialize contributors to: {}", json);
-        IOUtil.writeFile(file, json);
+        return json;
     }
 
-    public ProjectContributorsSet deserialize() {
-        String json = "";
+    public ProjectContributorsSet deserialize(String json) {
         ProjectContributorsSet set = new DefaultProjectContributorsSet();
         try {
-            json = IOUtil.readFully(file);
             LOG.info("Deserialize project contributors from: {}", json);
             JsonArray array = (JsonArray) Jsoner.deserialize(json);
             for (Object object : array) {
