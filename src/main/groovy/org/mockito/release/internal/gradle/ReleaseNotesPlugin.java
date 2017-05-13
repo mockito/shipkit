@@ -85,31 +85,31 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
             }
         });
 
-        final AllContributorsFetcherTask contributors = (AllContributorsFetcherTask) project.getTasks()
-                .getByName(ContributorsPlugin.FETCH_ALL_CONTRIBUTORS_TASK);
+
 
         TaskMaker.task(project, "updateReleaseNotes", IncrementalReleaseNotes.UpdateTask.class, new Action<IncrementalReleaseNotes.UpdateTask>() {
             public void execute(final IncrementalReleaseNotes.UpdateTask t) {
                 t.setDescription("Updates release notes file.");
-                configureDetailedNotes(t, fetcher, contributors, project, conf);
+                configureDetailedNotes(t, fetcher, project, conf);
             }
         });
 
         TaskMaker.task(project, "previewReleaseNotes", IncrementalReleaseNotes.PreviewTask.class, new Action<IncrementalReleaseNotes.PreviewTask>() {
             public void execute(final IncrementalReleaseNotes.PreviewTask t) {
                 t.setDescription("Shows new incremental content of release notes. Useful for previewing the release notes.");
-                configureDetailedNotes(t, fetcher, contributors, project, conf);
+                configureDetailedNotes(t, fetcher, project, conf);
             }
         });
     }
 
     private static void configureDetailedNotes(final IncrementalReleaseNotes task, final ReleaseNotesFetcherTask fetcher,
-                                               final AllContributorsFetcherTask contributors, final Project project, final ReleaseConfiguration conf) {
-        task.dependsOn(fetcher, contributors);
+                                               final Project project, final ReleaseConfiguration conf) {
+        task.dependsOn(fetcher, ContributorsPlugin.CONFIGURE_CONTRIBUTORS_TASK);
         deferredConfiguration(project, new Runnable() {
             public void run() {
                 task.setReleaseNotesData(fetcher.getOutputFile());
-                task.setContributorsData(contributors.getOutputFile());
+                task.setDevelopers(conf.getTeam().getDevelopers());
+                task.setContributors(conf.getTeam().getContributors());
                 task.setGitHubLabelMapping(conf.getReleaseNotes().getLabelMapping()); //TODO make it optional
                 task.setReleaseNotesFile(project.file(conf.getReleaseNotes().getFile())); //TODO add sensible default
                 task.setGitHubRepository(conf.getGitHub().getRepository());

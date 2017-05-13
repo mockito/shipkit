@@ -18,15 +18,4 @@ public interface Contribution extends Serializable {
      * The name of the author
      */
     String getAuthorName();
-
-    /**
-     * See {@link #getContributor()}
-     */
-    void setContributor(Contributor contributor);
-
-    /**
-     * Contributor that authored this contribution.
-     * Warning! Can be null if the contributor was not configured.
-     */
-    Contributor getContributor();
 }

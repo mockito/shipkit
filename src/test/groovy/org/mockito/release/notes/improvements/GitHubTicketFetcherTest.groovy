@@ -1,6 +1,5 @@
 package org.mockito.release.notes.improvements
 
-import org.mockito.release.notes.format.DefaultFormatter
 import spock.lang.Ignore
 import spock.lang.Specification
 import spock.lang.Subject
@@ -22,9 +21,8 @@ class GitHubTicketFetcherTest extends Specification {
         //TODO SF we can leave this test but we should create a sample project for it instead of using Mockito repo
         //This way it will be faster, mockito repo has many issues and pagination takes a lot of time
         improvements[0].labels == ["enhancement"] as Set
-        new DefaultFormatter([:]).format([:], improvements) == """* Improvements: 3
-  * Allow instances of other classes in AdditionalAnswers.delegatesTo [(#112)](https://github.com/mockito/mockito/issues/112)
-  * Improve automated release notes look [(#109)](https://github.com/mockito/mockito/issues/109)
-  * Clarify Spy vs Mock CALLS_REAL_METHODS [(#108)](https://github.com/mockito/mockito/issues/108)"""
+        improvements.join("\n") == """DefaultImprovement{id=112, title='Allow instances of other classes in AdditionalAnswers.delegatesTo', url='https://github.com/mockito/mockito/issues/112', labels=[enhancement], isPullRequest=false}
+DefaultImprovement{id=109, title='Improve automated release notes look', url='https://github.com/mockito/mockito/issues/109', labels=[continuous integration, enhancement], isPullRequest=false}
+DefaultImprovement{id=108, title='Clarify Spy vs Mock CALLS_REAL_METHODS', url='https://github.com/mockito/mockito/issues/108', labels=[], isPullRequest=false}"""
     }
 }

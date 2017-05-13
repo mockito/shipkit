@@ -47,4 +47,15 @@ public class DefaultImprovement implements Improvement {
     public boolean isPullRequest() {
         return isPullRequest;
     }
+
+    @Override
+    public String toString() {
+        return "DefaultImprovement{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", url='" + url + '\'' +
+                ", labels=" + labels +
+                ", isPullRequest=" + isPullRequest +
+                '}';
+    }
 }
