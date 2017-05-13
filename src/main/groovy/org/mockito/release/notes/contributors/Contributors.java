@@ -28,11 +28,10 @@ public class Contributors {
 
     /**
      * Return Json serializer for all project contributors
-     * @param contributorsFile file where all project contributions are stored
      * @return instance of {@link AllContributorsSerializer}
      */
-    public static AllContributorsSerializer getAllContributorsSerializer(File contributorsFile) {
-        return new AllContributorsSerializer(contributorsFile);
+    public static AllContributorsSerializer getAllContributorsSerializer() {
+        return new AllContributorsSerializer();
     }
 
 }

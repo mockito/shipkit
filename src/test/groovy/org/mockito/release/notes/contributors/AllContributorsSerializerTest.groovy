@@ -5,8 +5,7 @@ import spock.lang.Subject
 
 class AllContributorsSerializerTest extends Specification {
 
-    private File tempFile = new File(System.getProperty("java.io.tmpdir") + "/project-contributors.json")
-    @Subject serializer = new AllContributorsSerializer(tempFile)
+    @Subject serializer = new AllContributorsSerializer()
 
     def "serialization and deserialization of one contributor"() {
         def contributors = new DefaultProjectContributorsSet()
@@ -14,8 +13,8 @@ class AllContributorsSerializerTest extends Specification {
         contributors.addContributor(contributor)
 
         when:
-        serializer.serialize(contributors)
-        def actual = serializer.deserialize()
+        def serializeData = serializer.serialize(contributors)
+        def actual = serializer.deserialize(serializeData)
 
         then:
         actual.getAllContributors().containsAll(contributors.getAllContributors())
@@ -26,8 +25,8 @@ class AllContributorsSerializerTest extends Specification {
         def contributors = new DefaultProjectContributorsSet()
 
         when:
-        serializer.serialize(contributors)
-        def actual = serializer.deserialize()
+        def serializedData = serializer.serialize(contributors)
+        def actual = serializer.deserialize(serializedData)
 
         then:
         actual.getAllContributors().containsAll(contributors.getAllContributors())
@@ -43,8 +42,8 @@ class AllContributorsSerializerTest extends Specification {
         contributors.addContributor(contributor2)
 
         when:
-        serializer.serialize(contributors)
-        def actual = serializer.deserialize()
+        def serializedData = serializer.serialize(contributors)
+        def actual = serializer.deserialize(serializedData)
 
         then:
         actual.getAllContributors().containsAll(contributors.getAllContributors())
@@ -57,8 +56,8 @@ class AllContributorsSerializerTest extends Specification {
         contributors.addContributor(contributor)
 
         when:
-        serializer.serialize(contributors)
-        def actual = serializer.deserialize()
+        def serializedData = serializer.serialize(contributors)
+        def actual = serializer.deserialize(serializedData)
 
         then:
         actual.getAllContributors().containsAll(contributors.getAllContributors())
@@ -71,8 +70,8 @@ class AllContributorsSerializerTest extends Specification {
         contributors.addContributor(contributor)
 
         when:
-        serializer.serialize(contributors)
-        def actual = serializer.deserialize()
+        def serializedData = serializer.serialize(contributors)
+        def actual = serializer.deserialize(serializedData)
 
         then:
         actual.getAllContributors().containsAll(contributors.getAllContributors())
@@ -85,8 +84,8 @@ class AllContributorsSerializerTest extends Specification {
         contributors.addContributor(contributor)
 
         when:
-        serializer.serialize(contributors)
-        def actual = serializer.deserialize()
+        def serializedData = serializer.serialize(contributors)
+        def actual = serializer.deserialize(serializedData)
 
         then:
         actual.getAllContributors().containsAll(contributors.getAllContributors())

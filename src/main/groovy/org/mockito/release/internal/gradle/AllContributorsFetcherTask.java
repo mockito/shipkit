@@ -11,6 +11,7 @@ import org.mockito.release.notes.contributors.AllContributorsSerializer;
 import org.mockito.release.notes.contributors.Contributors;
 import org.mockito.release.notes.contributors.GitHubContributorsProvider;
 import org.mockito.release.notes.contributors.ProjectContributorsSet;
+import org.mockito.release.notes.util.IOUtil;
 
 import java.io.File;
 
@@ -78,8 +79,9 @@ public class AllContributorsFetcherTask extends DefaultTask {
         GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContributorsProvider(repository, readOnlyAuthToken);
         ProjectContributorsSet contributors = contributorsProvider.getAllContributorsForProject();
 
-        AllContributorsSerializer serializer = Contributors.getAllContributorsSerializer(outputFile);
-        serializer.serialize(contributors);
+        AllContributorsSerializer serializer = Contributors.getAllContributorsSerializer();
+        final String json = serializer.serialize(contributors);
+        IOUtil.writeFile(outputFile, json);
 
         LOG.lifecycle("  Serialized all contributors into: {}", getProject().relativePath(outputFile));
     }

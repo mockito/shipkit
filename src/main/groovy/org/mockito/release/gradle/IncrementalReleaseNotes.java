@@ -12,6 +12,7 @@ import org.mockito.release.notes.contributors.ProjectContributorsSet;
 import org.mockito.release.notes.format.ReleaseNotesFormatters;
 import org.mockito.release.notes.model.Contribution;
 import org.mockito.release.notes.model.ReleaseNotesData;
+import org.mockito.release.notes.util.IOUtil;
 
 import java.io.File;
 import java.util.Collection;
@@ -169,7 +170,7 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
         String tagPrefix = "v";
 
         Collection<ReleaseNotesData> data = new ReleaseNotesSerializer(releaseNotesData).deserialize();
-        ProjectContributorsSet contributors = Contributors.getAllContributorsSerializer(contributorsData).deserialize();
+        ProjectContributorsSet contributors = Contributors.getAllContributorsSerializer().deserialize(IOUtil.readFully(contributorsData));
         //TODO this is not nice at all. Suggested plan:
         // Merge the functionality of recent contributors fetching + all contributors fetching.
         // 1. Make the the release notes fetcher depend on the contributors fetcher
