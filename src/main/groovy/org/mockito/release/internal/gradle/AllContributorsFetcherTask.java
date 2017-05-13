@@ -79,7 +79,7 @@ public class AllContributorsFetcherTask extends DefaultTask {
         GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContributorsProvider(repository, readOnlyAuthToken);
         ProjectContributorsSet contributors = contributorsProvider.getAllContributorsForProject();
 
-        AllContributorsSerializer serializer = Contributors.getAllContributorsSerializer();
+        AllContributorsSerializer serializer = new AllContributorsSerializer();
         final String json = serializer.serialize(contributors);
         IOUtil.writeFile(outputFile, json);
 

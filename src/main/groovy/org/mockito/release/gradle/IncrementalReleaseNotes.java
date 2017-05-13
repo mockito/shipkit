@@ -7,7 +7,7 @@ import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.*;
 import org.mockito.release.internal.gradle.util.FileUtil;
 import org.mockito.release.internal.gradle.util.ReleaseNotesSerializer;
-import org.mockito.release.notes.contributors.Contributors;
+import org.mockito.release.notes.contributors.AllContributorsSerializer;
 import org.mockito.release.notes.contributors.ProjectContributorsSet;
 import org.mockito.release.notes.format.ReleaseNotesFormatters;
 import org.mockito.release.notes.model.Contribution;
@@ -170,7 +170,7 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
         String tagPrefix = "v";
 
         Collection<ReleaseNotesData> data = new ReleaseNotesSerializer(releaseNotesData).deserialize();
-        ProjectContributorsSet contributors = Contributors.getAllContributorsSerializer().deserialize(IOUtil.readFully(contributorsData));
+        ProjectContributorsSet contributors = new AllContributorsSerializer().deserialize(IOUtil.readFully(contributorsData));
         //TODO this is not nice at all. Suggested plan:
         // Merge the functionality of recent contributors fetching + all contributors fetching.
         // 1. Make the the release notes fetcher depend on the contributors fetcher
