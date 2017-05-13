@@ -7,15 +7,17 @@ import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.*;
 import org.mockito.release.internal.gradle.util.FileUtil;
 import org.mockito.release.internal.gradle.util.ReleaseNotesSerializer;
-import org.mockito.release.notes.contributors.Contributors;
-import org.mockito.release.notes.contributors.ProjectContributorsSet;
+import org.mockito.release.internal.gradle.util.team.TeamMember;
+import org.mockito.release.internal.gradle.util.team.TeamParser;
+import org.mockito.release.notes.contributors.DefaultContributor;
 import org.mockito.release.notes.format.ReleaseNotesFormatters;
-import org.mockito.release.notes.model.Contribution;
+import org.mockito.release.notes.model.Contributor;
 import org.mockito.release.notes.model.ReleaseNotesData;
 import org.mockito.release.notes.util.IOUtil;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -33,7 +35,8 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
     private Map<String, String> gitHubLabelMapping = new LinkedHashMap<String, String>();
     private String publicationRepository;
     private File releaseNotesData;
-    private File contributorsData;
+    private Collection<String> developers;
+    private Collection<String> contributors;
 
     /**
      * Release notes file this task operates on.
@@ -135,17 +138,31 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
     }
 
     /**
-     * Serialized contributors data to be included in release notes
+     * Developers as configured in {@link ReleaseConfiguration.Team#getDevelopers()}
      */
-    public File getContributorsData() {
-        return contributorsData;
+    @Input public Collection<String> getDevelopers() {
+        return developers;
     }
 
     /**
-     * See {@link #getContributorsData()}
+     * See {@link #getDevelopers()}
      */
-    public void setContributorsData(File contributorsData) {
-        this.contributorsData = contributorsData;
+    public void setDevelopers(Collection<String> developers) {
+        this.developers = developers;
+    }
+
+    /**
+     * Contributors as configured in {@link ReleaseConfiguration.Team#getContributors()}
+     */
+    @Input public Collection<String> getContributors() {
+        return contributors;
+    }
+
+    /**
+     * See {@link #getContributors()}
+     */
+    public void setContributors(Collection<String> contributors) {
+        this.contributors = contributors;
     }
 
     private void assertConfigured() {
@@ -170,24 +187,32 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
         String tagPrefix = "v";
 
         Collection<ReleaseNotesData> data = new ReleaseNotesSerializer(releaseNotesData).deserialize();
-        ProjectContributorsSet contributors = Contributors.getAllContributorsSerializer().deserialize(IOUtil.readFully(contributorsData));
-        //TODO this is not nice at all. Suggested plan:
-        // Merge the functionality of recent contributors fetching + all contributors fetching.
-        // 1. Make the the release notes fetcher depend on the contributors fetcher
-        // 2. Make release notes fetcher use contributors to construct and serialize ReleaseNotesData
-        for (ReleaseNotesData d : data) {
-            for (Contribution c : d.getContributions().getContributions()) {
-                c.setContributor(contributors.findByName(c.getAuthorName()));
-            }
-        }
 
         String vcsCommitTemplate = "https://github.com/" + gitHubRepository + "/compare/"
                 + tagPrefix + previousVersion + "..." + tagPrefix + version;
+
+        Map<String, Contributor> contributorsMap = contributorsMap(contributors, developers);
         String notes = ReleaseNotesFormatters.detailedFormatter(
-                "", gitHubLabelMapping, vcsCommitTemplate, publicationRepository)
+                "", gitHubLabelMapping, vcsCommitTemplate, publicationRepository, contributorsMap)
                 .formatReleaseNotes(data);
 
         return notes + "\n\n";
+    }
+
+    //TODO SF deduplicate and unit test
+    static Map<String, Contributor> contributorsMap(Collection<String> contributors, Collection<String> developers) {
+        Map<String, Contributor> out = new HashMap<String, Contributor>();
+        for (String contributor : contributors) {
+            TeamMember member = TeamParser.parsePerson(contributor);
+            out.put(member.name, new DefaultContributor(member.name, member.gitHubUser,
+                    "http://github.com/" + member.gitHubUser));
+        }
+        for (String developer : developers) {
+            TeamMember member = TeamParser.parsePerson(developer);
+            out.put(member.name, new DefaultContributor(member.name, member.gitHubUser,
+                    "http://github.com/" + member.gitHubUser));
+        }
+        return out;
     }
 
     /**

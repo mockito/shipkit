@@ -25,13 +25,4 @@ public class Contributors {
     public static ContributorsSerializer getLastContributorsSerializer(File contributorsFile) {
         return new ContributorsSerializer(contributorsFile);
     }
-
-    /**
-     * Return Json serializer for all project contributors
-     * @return instance of {@link AllContributorsSerializer}
-     */
-    public static AllContributorsSerializer getAllContributorsSerializer() {
-        return new AllContributorsSerializer();
-    }
-
 }

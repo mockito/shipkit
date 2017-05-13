@@ -1,26 +1,13 @@
 package org.mockito.release.notes.format;
 
+import org.mockito.release.notes.model.Contributor;
+
 import java.util.Map;
 
 /**
  * Gives access to all release and version notes formatters
  */
 public class ReleaseNotesFormatters {
-
-    /**
-     * Returns the default formatter for version notes data
-     *
-     * @param labelMapping Mapping of label to descriptive label summary.
-     * Labels of the improvements (see {@link org.mockito.release.notes.model.Improvement#getLabels()} are often short
-     * and not very descriptive.
-     * In final release notes we want descriptive sections of improvements.
-     * Mappings also allow controlling priority in presenting improvements -
-     *  the formatter can use the order of label mappings. For example, 'noteworthy' labelled improvements on top.
-     * @param publicationRepository where the binaries were published to
-     */
-    public static SingleReleaseNotesFormatter defaultFormatter(Map<String, String> labelMapping, String publicationRepository) {
-        return new DefaultFormatter(labelMapping, publicationRepository);
-    }
 
     /**
      * Returns the concise formatter intended to use for notable releases
@@ -39,7 +26,7 @@ public class ReleaseNotesFormatters {
 
     /**
      * Returns the detailed formatter intended to use for all releases
-     *  @param introductionText text to be placed on the top of the release notes content
+     * @param introductionText text to be placed on the top of the release notes content
      * @param labelMapping Mapping of label to descriptive label summary.
      *                     Labels of the improvements (see {@link org.mockito.release.notes.model.Improvement#getLabels()}
      *                     are often short and not very descriptive.
@@ -47,12 +34,16 @@ public class ReleaseNotesFormatters {
      *                     Mappings also allow controlling priority in presenting improvements -
      *                     the formatter can use the order of label mappings. For example, 'noteworthy' labelled improvements on top.
      * @param vcsCommitsLinkTemplate template to generate link to vcs view of the commits.
- *                               For example: https://github.com/mockito/mockito/compare/{0}...{1}".
+     *                      For example: https://github.com/mockito/mockito/compare/{0}...{1}".
      * @param publicationRepository where the binaries were published to, will be printed as-is in the release notes
+     * @param contributors mapped by name, used to generate links to GitHub profiles
      */
     public static MultiReleaseNotesFormatter detailedFormatter(String introductionText,
                                                                Map<String, String> labelMapping,
-                                                               String vcsCommitsLinkTemplate, String publicationRepository) {
-        return new DetailedFormatter(introductionText, labelMapping, vcsCommitsLinkTemplate, publicationRepository);
+                                                               String vcsCommitsLinkTemplate,
+                                                               String publicationRepository,
+                                                               Map<String, Contributor> contributors) {
+        return new DetailedFormatter(introductionText, labelMapping, vcsCommitsLinkTemplate,
+                publicationRepository, contributors);
     }
 }
