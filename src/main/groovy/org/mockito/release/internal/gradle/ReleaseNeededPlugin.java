@@ -35,22 +35,24 @@ public class ReleaseNeededPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
+        final GitStatusPlugin.GitStatus gitStatus = project.getPlugins().apply(GitStatusPlugin.class).getGitStatus();
 
         //Task that throws an exception when release is not needed is very useful for CI workflows
         //Travis CI job will stop executing further commands if assertReleaseNeeded fails.
         //See the example projects how we have set up the 'assertReleaseNeeded' task in CI pipeline.
-        releaseNeededTask(project, "assertReleaseNeeded", conf)
+        releaseNeededTask(project, "assertReleaseNeeded", conf, gitStatus)
                 .setExplosive(true)
                 .setDescription("Asserts that criteria for the release are met and throws exception if release is not needed.");
 
         //Below task is useful for testing. It will not throw an exception but will run the code that check is release is needed
         //and it will print the information to the console.
-        releaseNeededTask(project, "releaseNeeded", conf)
+        releaseNeededTask(project, "releaseNeeded", conf, gitStatus)
                 .setExplosive(false)
                 .setDescription("Checks and prints to the console if criteria for the release are met.");
     }
 
-    private static ReleaseNeededTask releaseNeededTask(final Project project, String taskName, final ReleaseConfiguration conf) {
+    private static ReleaseNeededTask releaseNeededTask(final Project project, String taskName,
+                                                       final ReleaseConfiguration conf, final GitStatusPlugin.GitStatus gitStatus) {
         return TaskMaker.task(project, taskName, ReleaseNeededTask.class, new Action<ReleaseNeededTask>() {
             public void execute(final ReleaseNeededTask t) {
                 t.setDescription("Asserts that criteria for the release are met and throws exception if release not needed.");
@@ -68,7 +70,6 @@ public class ReleaseNeededPlugin implements Plugin<Project> {
                     }
                 });
 
-                final GitStatusPlugin.GitStatus gitStatus = project.getPlugins().apply(GitStatusPlugin.class).getGitStatus();
                 deferredConfiguration(project, new Runnable() {
                     public void run() {
                         t.setReleasableBranchRegex(conf.getGit().getReleasableBranchRegex());
