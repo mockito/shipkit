@@ -36,6 +36,7 @@ public class ReleaseConfiguration {
         git.setReleasableBranchRegex("master|release/.+");  // matches 'master', 'release/2.x', 'release/3.x', etc.
         team.setContributors(Collections.<String>emptyList());
         team.setDevelopers(Collections.<String>emptyList());
+        git.setCommitMessagePostfix("[ci skip]");
     }
 
     //TODO currently it's not clear when to use class fields and when to use the 'configuration' map

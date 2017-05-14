@@ -27,8 +27,6 @@ public class TravisPlugin implements Plugin<Project> {
         String buildNo = System.getenv("TRAVIS_BUILD_NUMBER");
         if (buildNo != null) {
             conf.getGit().setCommitMessagePostfix("by Travis CI build " + buildNo + " [ci skip]");
-        } else {
-            conf.getGit().setCommitMessagePostfix("[ci skip]"); //TODO belongs to the defaults, not here
         }
 
         String pr = System.getenv("TRAVIS_PULL_REQUEST");

@@ -11,6 +11,7 @@ class ReleaseConfigurationTest extends Specification {
     def "default values"() {
         conf.team.developers.empty
         conf.team.contributors.empty
+        conf.git.commitMessagePostfix == "[ci skip]"
     }
 
     def "custom commitMessagePostfix"() {
