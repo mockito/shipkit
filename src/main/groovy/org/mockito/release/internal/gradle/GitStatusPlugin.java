@@ -3,6 +3,8 @@ package org.mockito.release.internal.gradle;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.mockito.release.exec.Exec;
 import org.mockito.release.exec.ProcessRunner;
 
@@ -13,6 +15,7 @@ import org.mockito.release.exec.ProcessRunner;
 public class GitStatusPlugin implements Plugin<Project> {
 
     private GitStatus gitStatus;
+    private final static Logger LOG = Logging.getLogger(Logger.class);
 
     @Override
     public void apply(Project project) {
@@ -52,6 +55,7 @@ public class GitStatusPlugin implements Plugin<Project> {
                 synchronized (SYNC) {
                     if (branchName == null || branchName.isEmpty()) {
                         branchName = runner.run("git", "rev-parse", "--abbrev-ref", "HEAD").trim();
+                        LOG.lifecycle("  Identified current git branch as: " + branchName);
                     }
                 }
             }
