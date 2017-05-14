@@ -10,6 +10,7 @@ import org.mockito.release.internal.comparison.PublicationsComparatorTask;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 
 import static org.mockito.release.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
+import static org.mockito.release.internal.gradle.configuration.LazyConfiguration.lazyConfiguration;
 
 /**
  * Adds tasks for checking if release is needed
@@ -67,9 +68,18 @@ public class ReleaseNeededPlugin implements Plugin<Project> {
                     }
                 });
 
+                final GitStatusPlugin.GitStatus gitStatus = project.getPlugins().apply(GitStatusPlugin.class).getGitStatus();
                 deferredConfiguration(project, new Runnable() {
                     public void run() {
                         t.setReleasableBranchRegex(conf.getGit().getReleasableBranchRegex());
+                    }
+                });
+                lazyConfiguration(t, new Runnable() {
+                    public void run() {
+                        //if the user or some other task have configured the branch, don't overwrite it
+                        if (t.getBranch() == null) {
+                            t.setBranch(gitStatus.getBranch());
+                        }
                     }
                 });
             }
