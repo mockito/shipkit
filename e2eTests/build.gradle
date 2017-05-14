@@ -1,55 +1,65 @@
-def e2eProjects = ["mockito-release-tools-example": "https://github.com/mockito/mockito-release-tools-example"]
+apply plugin: 'org.mockito.mockito-release-tools.e2e-test'
 
-task e2eTest {
-    doFirst {
-        e2eProjects.each { entry ->
-            println "  E2E tests for $entry.key :)"
-            def projectName = entry.key
-            task e2eTest$projectName {
-                deleteProjectDir(projectName)
-                gitClone(projectName, e2eProjects[projectName])
-                bumpProjectVersion(projectName)
-                performRelease(projectName)
-            }
-        }
-    }
-}
 
-def deleteProjectDir(String projectName) {
-    tasks.create("deleteDir$projectName", Delete) {
-        delete "$projectDir/$projectName"
-    }.execute()
-}
 
-def gitClone(String projectName, String repoUrl) {
-    tasks.create("gitClone$projectName", Exec) {
-        commandLine 'git', 'clone', "$repoUrl", "$projectDir/$projectName"
-    }.execute()
-}
+//def e2eProjects = ["mockito-release-tools-example": "https://github.com/mockito/mockito-release-tools-example"]
 
-def bumpProjectVersion(String projectName) {
-    ant.replaceregexp(
-            match: "gradle\\.plugin\\.org\\.mockito:mockito-release-tools:(\\d+)?\\.(\\d+)?\\.(\\d+)?",
-            replace: "gradle.plugin.org.mockito:mockito-release-tools:$project.version") {
-        fileset(dir: "$projectDir/$projectName", includes: 'build.gradle gradle.properties')
-    }
-}
+//subprojects {
+//    tasks.create("e2eTest", E2ETestingPlugin.E2ETest) {
+//        create("https://github.com/mockito/mockito-release-tools-example")
+//    }
+//}
 
-def performRelease(String projectName) {
-    println "  Testing the Gradle build..."
-    exec {
-        workingDir "$projectDir/$projectName"
-        commandLine './gradlew', 'publishToMavenLocal', 'testRelease', '-x', 'gitPush', '-x', 'bintrayUpload'
-    }
-}
+//task e2eTest {
+//    doFirst {
+//        e2eProjects.each { entry ->
+//            println "  E2E tests for $entry.key :)"
+//            def projectName = entry.key
+//            task e2eTest$projectName {
+//                deleteProjectDir(projectName)
+//                gitClone(projectName, e2eProjects[projectName])
+//                bumpProjectVersion(projectName)
+//                performRelease(projectName)
+//            }
+//        }
+//    }
+//}
+//
+//def deleteProjectDir(String projectName) {
+//    tasks.create("deleteDir$projectName", Delete) {
+//        delete "$projectDir/$projectName"
+//    }.execute()
+//}
+//
+//def gitClone(String projectName, String repoUrl) {
+//    tasks.create("gitClone$projectName", Exec) {
+//        commandLine 'git', 'clone', "$repoUrl", "$projectDir/$projectName"
+//    }.execute()
+//}
+//
+//def bumpProjectVersion(String projectName) {
+//    ant.replaceregexp(
+//            match: "gradle\\.plugin\\.org\\.mockito:mockito-release-tools:(\\d+)?\\.(\\d+)?\\.(\\d+)?",
+//            replace: "gradle.plugin.org.mockito:mockito-release-tools:$project.version") {
+//        fileset(dir: "$projectDir/$projectName", includes: 'build.gradle gradle.properties')
+//    }
+//}
+//
+//def performRelease(String projectName) {
+//    println "  Testing the Gradle build..."
+//    exec {
+//        workingDir "$projectDir/$projectName"
+//        commandLine './gradlew', 'publishToMavenLocal', 'testRelease', '-x', 'gitPush', '-x', 'bintrayUpload'
+//    }
+//}
 
-task check {
-    dependsOn e2eTest
-}
-
-task build {
-    dependsOn check
-}
+//task check {
+//    dependsOn e2eTest
+//}
+//
+//task build {
+//    dependsOn check
+//}
 
 /*
 
