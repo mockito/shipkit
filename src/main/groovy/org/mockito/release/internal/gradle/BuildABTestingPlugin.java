@@ -4,6 +4,7 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.*;
+import org.mockito.release.exec.DefaultProcessRunner;
 
 import java.io.File;
 
@@ -54,42 +55,53 @@ public class BuildABTestingPlugin implements Plugin<Project> {
 
     public static class AnalyzeComparisonResultsTask extends DefaultTask {
 
+        private File comparisonResultsFile;
+
         @InputFile
         public void setComparisonResultsFile(File comparisonResultsFile) {
+            this.comparisonResultsFile = comparisonResultsFile;
         }
     }
 
     public static class CompareDirectoriesTask extends DefaultTask {
 
+        private File dirA;
+        private File dirB;
+        private File resultsFile;
+
         @InputDirectory
         public void setDirA(File dir) {
-
+            this.dirA = dir;
         }
 
         @InputDirectory
         public void setDirB(File dir) {
-
+            this.dirB = dir;
         }
 
         public void setResultsFile(File file) {
-
+            this.resultsFile = file;
         }
 
         @OutputFile
         public File getResultsFile() {
-            return null;
+            return resultsFile;
         }
     }
 
     public static class RunTestTask extends DefaultTask {
 
+        private File sourceDir;
+        private File workDir;
+        private File outputDir;
+
         @InputDirectory
         public void setSourceDir(File sourceDir) {
-
+            this.sourceDir = sourceDir;
         }
 
         public void setWorkDir(File workDir) {
-
+            this.workDir = workDir;
         }
 
         @Input
@@ -97,16 +109,16 @@ public class BuildABTestingPlugin implements Plugin<Project> {
         }
 
         public File getWorkDir() {
-            return null;
+            return workDir;
         }
 
         @OutputDirectory
         public void setOutputDir(File outputDir) {
-
+            this.outputDir = outputDir;
         }
 
         public File getOutputDir() {
-            return null;
+            return outputDir;
         }
     }
 
@@ -115,25 +127,47 @@ public class BuildABTestingPlugin implements Plugin<Project> {
 
     public static class CloneGitHubRepositoryTask extends DefaultTask {
 
+        private String repository;
+        private File targetDir;
+        private static final String REPO_BASE_URL = "https://github.com/";
+
         @Input
-        public void setRepository(String s) {
+        public void setRepository(String repository) {
+            this.repository = repository;
         }
 
         public void setTargetDir(File targetDir) {
-
+            this.targetDir = targetDir;
         }
 
         @OutputDirectory
         public File getTargetDir() {
-            return null;
+            return targetDir;
+        }
+
+        @TaskAction
+        public void cloneGit() {
+            if(!targetDir.exists()) {
+                targetDir.mkdirs();
+            }
+
+            if (repository == null || repository.isEmpty()) {
+                throw new RuntimeException("Invalid repository '" + repository + "' given!");
+            }
+
+            String url = REPO_BASE_URL + repository;
+
+            new DefaultProcessRunner(targetDir).run("git", "clone", url);
         }
     }
 
     public static class PrepareABTestingTask extends DefaultTask {
 
+        private File sourceDir;
+
         @InputDirectory
         public void setSourceDir(File sourceDir) {
-
+            this.sourceDir = sourceDir;
         }
     }
 }
