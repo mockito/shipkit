@@ -6,8 +6,7 @@ buildscript {
     }
     dependencies {
         classpath "com.gradle.publish:plugin-publish-plugin:0.9.6"
-        //TODO MS back to concrete version after finish
-        classpath "gradle.plugin.org.mockito:mockito-release-tools:0.8.+"
+        classpath "gradle.plugin.org.mockito:mockito-release-tools:0.8.32"
     }
 }
 
