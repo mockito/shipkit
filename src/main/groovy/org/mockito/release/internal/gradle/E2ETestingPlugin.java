@@ -1,25 +1,26 @@
 package org.mockito.release.internal.gradle;
 
-import org.gradle.api.DefaultTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
-import org.gradle.api.tasks.*;
-import org.mockito.release.exec.*;
 
 import java.io.File;
-import java.util.List;
 
 import static java.util.Arrays.asList;
+import static org.mockito.release.internal.gradle.util.StringUtil.capitalize;
 
 /**
  * This plugin tests your library end-to-end (e2e) using client projects.
- * TODO MS doc
+ * Plugin clones client projects to '$buildDir/project-name-pristine' first, next clone project from 'pristine' to
+ * '$buildDir/project-name-work' and execute 'testRelease' task using the newest mockito-release-tools version
+ *
+ * Adds tasks:
+ * <ul>
+ *     <li>cloneProjectFromGitHub$projectName - {@link CloneGitRepositoryTask}</li>
+ *     <li>cloneProjectToWorkDir$projectName - {@link CloneGitRepositoryTask}</li>
+ *     <li>runTest$projectName - {@link RunTestReleaseTask}</li>
+ * </ul>
  */
 public class E2ETestingPlugin implements Plugin<Project> {
-
-    private static final Logger LOG = Logging.getLogger(ContinuousDeliveryPlugin.class);
 
     public void apply(final Project project) {
         E2ETest e2eTest = project.getExtensions().create("e2eTest", E2ETest.class, project);
@@ -37,7 +38,10 @@ public class E2ETestingPlugin implements Plugin<Project> {
 
         void create(String gitHubRepoUrl) {
             String repoName = extractRepoName(gitHubRepoUrl);
-            CloneGitHubRepositoryTask clone = project.getTasks().create("cloneProjectFromGitHub" + repoName, CloneGitHubRepositoryTask.class);
+            // TODO add depth clone configuration for shallow clone
+            CloneGitRepositoryTask clone = project.getTasks().create(
+                    "cloneProjectFromGitHub" + capitalize(repoName),
+                    CloneGitRepositoryTask.class);
             clone.setRepository(gitHubRepoUrl);
             clone.setTargetDir(new File(project.getBuildDir(), repoName + "-pristine"));
             // For now for easier testing
@@ -45,95 +49,41 @@ public class E2ETestingPlugin implements Plugin<Project> {
 
             // Clone from *-pristine to *-work. Copy task will not work because of ignoring git specific files:
             // https://discuss.gradle.org/t/copy-git-specific-files/11970
+            // Furthermore we can verify push to pristine origin
             File workDir = new File(project.getBuildDir(), repoName + "-work");
-            CloneGitHubRepositoryTask copy = project.getTasks().create("cloneProjectToWorkDir" + repoName, CloneGitHubRepositoryTask.class);
+            CloneGitRepositoryTask copy = project.getTasks().create(
+                    "cloneProjectToWorkDir" + capitalize(repoName),
+                    CloneGitRepositoryTask.class);
             copy.dependsOn(clone);
             copy.setRepository(clone.getTargetDir().getAbsolutePath());
             copy.setTargetDir(workDir);
 
-            RunTestTask run = project.getTasks().create("runTest" + repoName, RunTestTask.class);
+            RunTestReleaseTask run = project.getTasks().create(
+                    "runTest" + capitalize(repoName),
+                    RunTestReleaseTask.class);
             run.dependsOn(copy);
             run.setWorkDir(workDir);
             run.setRepoName(repoName);
 
-            //Using Gradle's composite builds ("--include-build") so that we're picking up current version of tools
+            // Using Gradle's composite builds ("--include-build") so that we're picking up current version of tools
             run.setCommand(asList("./gradlew", "publishToMavenLocal", "testRelease",
                     "-x", "gitPush", "-x", "bintrayUpload",
                     "--include-build", project.getRootDir().getAbsolutePath(), "-s"));
 
-            //we should put the build log in separate file instead of including it in the console of the parent build
-            //otherwise the output will be really messy
+            // Build log in separate file instead of including it in the console of the parent build
+            // Otherwise the output will be really messy
             run.setBuildOutputFile(new File(project.getBuildDir(), repoName + "-build.log"));
         }
 
         // TODO MS Unit testing
         private String extractRepoName(String gitHubRepo) {
-            return gitHubRepo.substring(gitHubRepo.lastIndexOf('/') + 1, gitHubRepo.length());
+            String text = gitHubRepo.trim();
+            if(text.lastIndexOf('/') == text.length() - 1) {
+                // cut last slash
+                text = text.substring(0, text.length() - 1);
+            }
+            return text.substring(text.lastIndexOf('/') + 1, text.length());
         }
     }
 
-    public static class CloneGitHubRepositoryTask extends DefaultTask {
-
-        private String repository;
-        private File targetDir;
-
-        @TaskAction
-        public void cloneRepository() {
-            LOG.lifecycle("  Clone repository");
-            getProject().getBuildDir().mkdirs();    // build dir can be not created yet
-            ProcessRunner processRunner = org.mockito.release.exec.Exec.getProcessRunner(getProject().getBuildDir());
-            processRunner.run("git", "clone", repository, targetDir.getAbsolutePath());
-        }
-
-        @Input
-        public void setRepository(String repository) {
-            this.repository = repository;
-        }
-
-        @OutputDirectory
-        public void setTargetDir(File targetDir) {
-            this.targetDir = targetDir;
-        }
-
-        public File getTargetDir() {
-            return targetDir;
-        }
-    }
-
-
-    public static class RunTestTask extends DefaultTask {
-
-        private List<String> command;
-        private File buildOutput;
-        private File workDir;
-        private String repoName;
-
-        @TaskAction
-        public void runTest() {
-            LOG.lifecycle("  Run test of {}. The output will be save in {}", repoName, buildOutput.getAbsoluteFile());
-            ProcessRunner processRunner = org.mockito.release.exec.Exec.getProcessRunner(workDir, buildOutput);
-            processRunner.run(command);
-        }
-
-        @Input
-        public void setWorkDir(File workDir) {
-            this.workDir = workDir;
-        }
-
-        @Input
-        public void setCommand(List<String> command) {
-            this.command = command;
-        }
-
-        @OutputFile
-        public void setBuildOutputFile(File file) {
-            buildOutput = file;
-        }
-
-        @Input
-        public void setRepoName(String repoName) {
-            this.repoName = repoName;
-        }
-
-    }
 }

@@ -1,79 +1,13 @@
 apply plugin: 'base'    // for clean task
-apply plugin: 'org.mockito.mockito-release-tools.e2e-test'
 
-group = 'gradle.plugin.org.mockito'
-description = 'for running e2e tests'
-
-// org.gradle.language.base.plugins.LifecycleBasePlugin
-
-//def e2eProjects = ["mockito-release-tools-example": "https://github.com/mockito/mockito-release-tools-example"]
-
-//subprojects {
-//    tasks.create("e2eTest", E2ETestingPlugin.E2ETest) {
-//        create("https://github.com/mockito/mockito-release-tools-example")
-//    }
-//}
-
-//task e2eTest {
-//    doFirst {
-//        e2eProjects.each { entry ->
-//            println "  E2E tests for $entry.key :)"
-//            def projectName = entry.key
-//            task e2eTest$projectName {
-//                deleteProjectDir(projectName)
-//                gitClone(projectName, e2eProjects[projectName])
-//                bumpProjectVersion(projectName)
-//                performRelease(projectName)
-//            }
-//        }
-//    }
-//}
-//
-//def deleteProjectDir(String projectName) {
-//    tasks.create("deleteDir$projectName", Delete) {
-//        delete "$projectDir/$projectName"
-//    }.execute()
-//}
-//
-//def gitClone(String projectName, String repoUrl) {
-//    tasks.create("gitClone$projectName", Exec) {
-//        commandLine 'git', 'clone', "$repoUrl", "$projectDir/$projectName"
-//    }.execute()
-//}
-//
-//def bumpProjectVersion(String projectName) {
-//    ant.replaceregexp(
-//            match: "gradle\\.plugin\\.org\\.mockito:mockito-release-tools:(\\d+)?\\.(\\d+)?\\.(\\d+)?",
-//            replace: "gradle.plugin.org.mockito:mockito-release-tools:$project.version") {
-//        fileset(dir: "$projectDir/$projectName", includes: 'build.gradle gradle.properties')
-//    }
-//}
-//
-//def performRelease(String projectName) {
-//    println "  Testing the Gradle build..."
-//    exec {
-//        workingDir "$projectDir/$projectName"
-//        commandLine './gradlew', 'publishToMavenLocal', 'testRelease', '-x', 'gitPush', '-x', 'bintrayUpload'
-//    }
-//}
-
-//task check {
-//    dependsOn e2eTest
-//}
-//
-//task build {
-//    dependsOn check
-//}
+// It needs to be commented until first version of release-tools with E2E plugin is released.
+// If not, Gradle is unable to configure whole project, because E2E plugin isn't published in any version yet.
+// TODO uncomment in next PR
+// apply plugin: 'org.mockito.mockito-release-tools.e2e-test'
 
 /*
 
-I loooove the direction :) I was even able to run it locally when I did some tweaks to the code (pushed to your branch)
-
 Before we can push the code, I'd like to clean it up a little bit (TODO)
-1. Clone into build directory of the project, no need to tweak .idea
-    This also means that the cloned content will be automatically 'excluded' from indexing by IDEA
-2. Use imperative exec instead of task.execute()
-3. Task descriptions
 4. In order for Gradle to neatly paralelize,
 let's have the mockito and mockito-release-tools-example be separate subprojects,
 just like I have set it up in PR #100.
