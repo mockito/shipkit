@@ -38,6 +38,12 @@ public class E2ETestingPlugin implements Plugin<Project> {
 
         void create(String gitHubRepoUrl) {
             String repoName = extractRepoName(gitHubRepoUrl);
+            CloneGitRepositoryTask clone = createCloneProjectFromGitHub(gitHubRepoUrl, repoName);
+            CloneGitRepositoryTask workDirCloneTask = createCloneProjectToWorkDirTask(repoName, clone);
+            createRunTestReleaseTask(repoName, workDirCloneTask);
+        }
+
+        private CloneGitRepositoryTask createCloneProjectFromGitHub(String gitHubRepoUrl, String repoName) {
             // TODO add depth clone configuration for shallow clone
             CloneGitRepositoryTask clone = project.getTasks().create(
                     "cloneProjectFromGitHub" + capitalize(repoName),
@@ -46,7 +52,10 @@ public class E2ETestingPlugin implements Plugin<Project> {
             clone.setTargetDir(new File(project.getBuildDir(), repoName + "-pristine"));
             // For now for easier testing
             clone.dependsOn("clean");
+            return clone;
+        }
 
+        private CloneGitRepositoryTask createCloneProjectToWorkDirTask(String repoName, CloneGitRepositoryTask clone) {
             // Clone from *-pristine to *-work. Copy task will not work because of ignoring git specific files:
             // https://discuss.gradle.org/t/copy-git-specific-files/11970
             // Furthermore we can verify push to pristine origin
@@ -57,12 +66,15 @@ public class E2ETestingPlugin implements Plugin<Project> {
             copy.dependsOn(clone);
             copy.setRepository(clone.getTargetDir().getAbsolutePath());
             copy.setTargetDir(workDir);
+            return copy;
+        }
 
+        private void createRunTestReleaseTask(String repoName, CloneGitRepositoryTask copy) {
             RunTestReleaseTask run = project.getTasks().create(
-                    "runTest" + capitalize(repoName),
+                    "runTestRelease" + capitalize(repoName),
                     RunTestReleaseTask.class);
             run.dependsOn(copy);
-            run.setWorkDir(workDir);
+            run.setWorkDir(copy.getTargetDir());
             run.setRepoName(repoName);
 
             // Using Gradle's composite builds ("--include-build") so that we're picking up current version of tools
@@ -75,7 +87,6 @@ public class E2ETestingPlugin implements Plugin<Project> {
             run.setBuildOutputFile(new File(project.getBuildDir(), repoName + "-build.log"));
         }
 
-        // TODO MS Unit testing
         private String extractRepoName(String gitHubRepo) {
             String text = gitHubRepo.trim();
             if(text.lastIndexOf('/') == text.length() - 1) {

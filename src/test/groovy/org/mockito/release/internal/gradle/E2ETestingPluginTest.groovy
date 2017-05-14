@@ -9,10 +9,9 @@ class E2ETestingPluginTest extends Specification {
 
     def "e2e with example project by default"() {
         project.plugins.apply("org.mockito.mockito-release-tools.e2e-test")
-        println project.tasks
 
         expect:
-        project.tasks.'runTestMockito-release-tools-example'
+        project.tasks.'runTestReleaseMockito-release-tools-example'
     }
 
     def "should extract project name correctly"() {
@@ -22,7 +21,7 @@ class E2ETestingPluginTest extends Specification {
         sut.create("https://github.com/mockito/mockito")
 
         then:
-        project.tasks.runTestMockito
+        project.tasks.runTestReleaseMockito
         project.tasks.cloneProjectFromGitHubMockito
         project.tasks.cloneProjectToWorkDirMockito
     }
@@ -34,7 +33,7 @@ class E2ETestingPluginTest extends Specification {
         sut.create("https://github.com/xx/yyy/")
 
         then:
-        project.tasks.runTestYyy
+        project.tasks.runTestReleaseYyy
         project.tasks.cloneProjectFromGitHubYyy
         project.tasks.cloneProjectToWorkDirYyy
     }
