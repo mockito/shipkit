@@ -74,11 +74,6 @@ public class GitSetupPlugin implements Plugin<Project> {
         TaskMaker.task(project, CHECKOUT_BRANCH_TASK, GitCheckOutTask.class, new Action<GitCheckOutTask>() {
             public void execute(final GitCheckOutTask t) {
                 t.setDescription("Checks out the branch that can be committed. CI systems often check out revision that is not committable.");
-                lazyConfiguration(t, new Runnable() {
-                    public void run() {
-                        t.setRev(System.getenv("TRAVIS_BRANCH"));
-                    }
-                });
             }
         });
 
