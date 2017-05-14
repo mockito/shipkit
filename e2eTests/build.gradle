@@ -1,6 +1,10 @@
+apply plugin: 'base'    // for clean task
 apply plugin: 'org.mockito.mockito-release-tools.e2e-test'
 
+group = 'gradle.plugin.org.mockito'
+description = 'for running e2e tests'
 
+// org.gradle.language.base.plugins.LifecycleBasePlugin
 
 //def e2eProjects = ["mockito-release-tools-example": "https://github.com/mockito/mockito-release-tools-example"]
 
