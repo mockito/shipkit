@@ -26,7 +26,6 @@ public class ReleaseConfiguration {
     private final ReleaseNotes releaseNotes = new ReleaseNotes();
     private final Git git = new Git();
     private final Team team = new Team();
-    private final Build build = new Build();
 
     private boolean notableRelease;
     private String previousReleaseVersion;
@@ -103,51 +102,6 @@ public class ReleaseConfiguration {
      */
     public String getPreviousReleaseVersion() {
         return previousReleaseVersion;
-    }
-
-    /**
-     * Settings of the current build job.
-     * Typically they are inferred from env variables
-     */
-    public Build getBuild() {
-        return build;
-    }
-
-    /**
-     * Settings for the current build job.
-     */
-    public class Build {
-
-        private String commitMessage;
-        private boolean pullRequest;
-
-        /**
-         * Commit message of the commit that triggered the job
-         */
-        public String getCommitMessage() {
-            return commitMessage;
-        }
-
-        /**
-         * See {@link #getCommitMessage()}
-         */
-        public void setCommitMessage(String commitMessage) {
-            this.commitMessage = commitMessage;
-        }
-
-        /**
-         * Whether this Travis job is a pull request build
-         */
-        public boolean isPullRequest() {
-            return pullRequest;
-        }
-
-        /**
-         * See {@link #isPullRequest()}
-         */
-        public void setPullRequest(boolean pullRequest) {
-            this.pullRequest = pullRequest;
-        }
     }
 
     public class GitHub {

@@ -9,7 +9,7 @@ import org.mockito.release.gradle.ReleaseNeededTask;
 import org.mockito.release.internal.comparison.PublicationsComparatorTask;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 
-import static org.mockito.release.internal.gradle.configuration.LazyConfiguration.lazyConfiguration;
+import static org.mockito.release.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
 
 /**
  * Adds tasks for checking if release is needed
@@ -54,8 +54,6 @@ public class ReleaseNeededPlugin implements Plugin<Project> {
             public void execute(final ReleaseNeededTask t) {
                 t.setDescription("Asserts that criteria for the release are met and throws exception if release not needed.");
                 t.setExplosive(true);
-                t.setCommitMessage(conf.getBuild().getCommitMessage());
-                t.setPullRequest(conf.getBuild().isPullRequest());
 
                 project.allprojects(new Action<Project>() {
                     public void execute(final Project subproject) {
@@ -69,11 +67,8 @@ public class ReleaseNeededPlugin implements Plugin<Project> {
                     }
                 });
 
-                final GitStatusPlugin.GitStatus gitStatus = project.getPlugins().apply(GitStatusPlugin.class).getGitStatus();
-                lazyConfiguration(t, new Runnable() {
+                deferredConfiguration(project, new Runnable() {
                     public void run() {
-                        String branch = gitStatus.getBranch();
-                        t.setBranch(branch);
                         t.setReleasableBranchRegex(conf.getGit().getReleasableBranchRegex());
                     }
                 });

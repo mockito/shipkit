@@ -22,12 +22,6 @@ class ReleaseConfigurationTest extends Specification {
         conf.git.commitMessagePostfix ==  " by CI build 1234 [ci skip-release]"
     }
 
-    def "empty build settings are ok"() {
-        expect:
-        conf.build.commitMessage == null
-        !conf.build.pullRequest
-    }
-
     def "validates team members"() {
         when:
         conf.team.developers = []
