@@ -146,6 +146,12 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
             }
         });
 
+        //commit task that is added by GitPlugin needs to run after the add bump version task added by AutoVersioningPlugin
+        //TODO: let's think about a way to avoid 'git add' tasks completely.
+        //      We can use git commit with paths to commit specific files without the need for 'add' operation
+        //      Using 'git add' adds complexity and causes weird bugs like #145
+        project.getTasks().getByName(GitPlugin.COMMIT_TASK).mustRunAfter(AutoVersioningPlugin.ADD_BUMP_VERSION_TASK);
+
         TaskMaker.task(project, "performRelease", new Action<Task>() {
             public void execute(final Task t) {
                 t.setDescription("Performs release. " +
@@ -153,7 +159,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                         "Test with: './gradlew testRelease'");
 
                 t.dependsOn(VersioningPlugin.BUMP_VERSION_FILE_TASK, "updateReleaseNotes", "updateNotableReleaseNotes");
-                t.dependsOn("gitAddBumpVersion", "gitAddReleaseNotes", GitPlugin.COMMIT_TASK, GitPlugin.TAG_TASK);
+                t.dependsOn(AutoVersioningPlugin.ADD_BUMP_VERSION_TASK, "gitAddReleaseNotes", GitPlugin.COMMIT_TASK, GitPlugin.TAG_TASK);
                 t.dependsOn(GitPlugin.PUSH_TASK);
                 t.dependsOn("bintrayUploadAll");
 
