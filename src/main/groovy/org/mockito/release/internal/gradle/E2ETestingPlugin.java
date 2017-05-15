@@ -28,6 +28,8 @@ public class E2ETestingPlugin implements Plugin<Project> {
         e2eTest.create("https://github.com/mockito/mockito-release-tools-example");
     }
 
+    //TODO ms - closer to the finish line we need to make this type public in one of the public packages
+    //this is how users will interface with configuring e2e tests
     public static class E2ETest {
 
         Project project;
