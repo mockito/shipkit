@@ -2,10 +2,7 @@ package org.mockito.release.gradle;
 
 import org.gradle.api.GradleException;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.mockito.release.internal.gradle.util.team.TeamParser.validateTeamMembers;
 
@@ -34,7 +31,7 @@ public class ReleaseConfiguration {
         //Configure default values
         git.setTagPrefix("v"); //so that tags are "v1.0", "v2.3.4"
         git.setReleasableBranchRegex("master|release/.+");  // matches 'master', 'release/2.x', 'release/3.x', etc.
-        team.setContributors(Collections.<String>emptyList());
+        configuration.put("team.contributors", new ArrayList<String>());    // can't use setter at this point
         team.setDevelopers(Collections.<String>emptyList());
         git.setCommitMessagePostfix("[ci skip]");
     }
@@ -346,7 +343,9 @@ public class ReleaseConfiguration {
          */
         public void setContributors(Collection<String> contributors) {
             validateTeamMembers(contributors);
-            configuration.put("team.contributors", contributors);
+            // because we share here contributors as 'global state' we need to add they to existing collection
+            Collection<String> current = getCollection("team.contributors");
+            current.addAll(contributors);
         }
     }
 
