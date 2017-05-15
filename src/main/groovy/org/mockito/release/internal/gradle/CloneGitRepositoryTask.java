@@ -29,7 +29,7 @@ public class CloneGitRepositoryTask extends DefaultTask {
 
     @TaskAction
     public void cloneRepository() {
-        LOG.lifecycle("  Clone repository");
+        LOG.lifecycle("  Cloning repository {}\n    into {}", repository, targetDir);
         getProject().getBuildDir().mkdirs();    // build dir can be not created yet
         ProcessRunner processRunner = org.mockito.release.exec.Exec.getProcessRunner(getProject().getBuildDir());
         processRunner.run("git", "clone", repository, targetDir.getAbsolutePath());
