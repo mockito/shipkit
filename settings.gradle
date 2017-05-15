@@ -1,1 +1,5 @@
 rootProject.name="mockito-release-tools"
+
+//TODO dynamically load projects from 'e2eTests' directory
+include ":e2eTests:mockito"
+include ":e2eTests:mockito-release-tools-example"

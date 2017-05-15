@@ -1,0 +1,6 @@
+subprojects {
+    //TODO the plugin does not exist yet :)
+    //apply plugin: "e2eTest"
+    //e2eTest.create(project.name)
+}
+
