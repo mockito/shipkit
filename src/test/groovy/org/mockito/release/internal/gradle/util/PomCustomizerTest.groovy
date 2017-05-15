@@ -30,7 +30,7 @@ class PomCustomizerTest extends Specification {
         conf.gitHub.repository = "repo"
         conf.team.developers = ["szczepiq:Szczepan Faber", "wwilk:Wojtek Wilk"]
         //wwilk will not be duplicated in developers/contributors
-        conf.team.contributors = ["mstachniuk:Marcin Stachniuk", "wwilk:Wojtek Wilk"]
+        conf.team.addAllContributors(["mstachniuk:Marcin Stachniuk", "wwilk:Wojtek Wilk"])
 
         PomCustomizer.customizePom(node, conf, "foo", "Foo library")
 
@@ -89,7 +89,7 @@ class PomCustomizerTest extends Specification {
     def "empty team settings"() {
         conf.gitHub.repository = "repo"
         conf.team.developers = []
-        conf.team.contributors = []
+        conf.team.addAllContributors([])
 
         PomCustomizer.customizePom(node, conf, "foo", "Foo library")
 

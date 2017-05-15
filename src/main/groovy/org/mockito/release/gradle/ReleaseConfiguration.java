@@ -341,7 +341,7 @@ public class ReleaseConfiguration {
         /**
          * See {@link #getContributors()}
          */
-        public void setContributors(Collection<String> contributors) {
+        public void addAllContributors(Collection<String> contributors) {
             validateTeamMembers(contributors);
             // because we share here contributors as 'global state' we need to add they to existing collection
             Collection<String> current = getCollection("team.contributors");

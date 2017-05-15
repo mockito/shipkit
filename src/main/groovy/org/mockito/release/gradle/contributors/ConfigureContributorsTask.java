@@ -66,6 +66,6 @@ public class ConfigureContributorsTask extends DefaultTask {
 
         LOG.lifecycle("  Configuring {} contributors into 'releasing.team.contributors' setting.",
                 contributors.size());
-        releaseConfiguration.getTeam().setContributors(contributors);
+        releaseConfiguration.getTeam().addAllContributors(contributors);
     }
 }

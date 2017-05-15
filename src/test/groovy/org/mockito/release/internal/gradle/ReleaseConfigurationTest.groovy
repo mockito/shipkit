@@ -31,9 +31,9 @@ class ReleaseConfigurationTest extends Specification {
         conf.team.developers = ["foo:bar"]
         conf.team.developers = ["foo:bar", "x:y"]
 
-        conf.team.contributors = []
-        conf.team.contributors = ["foo:bar"]
-        conf.team.contributors = ["foo:bar", "x:y"]
+        conf.team.addAllContributors([])
+        conf.team.addAllContributors(["foo:bar"])
+        conf.team.addAllContributors(["foo:bar", "x:y"])
 
         then:
         noExceptionThrown()
@@ -43,7 +43,7 @@ class ReleaseConfigurationTest extends Specification {
         when: conf.team.developers = [""]
         then: thrown(TeamParser.InvalidInput.class)
 
-        when: conf.team.contributors = ["ala:"]
+        when: conf.team.addAllContributors(["ala:"])
         then: thrown(TeamParser.InvalidInput.class)
     }
 
@@ -53,7 +53,7 @@ class ReleaseConfigurationTest extends Specification {
         def newContributors = asList("foo:bar", "fiz:buz")
 
         when:
-        conf.getTeam().setContributors(newContributors)
+        conf.getTeam().addAllContributors(newContributors)
 
         then:
         conf.getTeam().getContributors() == contributors    // check is the same reference
