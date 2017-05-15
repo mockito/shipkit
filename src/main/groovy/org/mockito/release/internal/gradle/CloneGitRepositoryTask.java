@@ -34,6 +34,10 @@ public class CloneGitRepositoryTask extends DefaultTask {
         this.repository = repository;
     }
 
+    public String getRepository() {
+        return repository;
+    }
+
     @OutputDirectory
     public void setTargetDir(File targetDir) {
         this.targetDir = targetDir;
