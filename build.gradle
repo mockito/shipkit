@@ -1,11 +1,12 @@
 // First, apply the publishing plugin
 buildscript {
     repositories {
+        mavenLocal()        // for e2e test
         maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
         classpath "com.gradle.publish:plugin-publish-plugin:0.9.6"
-        classpath "gradle.plugin.org.mockito:mockito-release-tools:0.8.25"
+        classpath "gradle.plugin.org.mockito:mockito-release-tools:0.8.32"
     }
 }
 
@@ -71,6 +72,12 @@ pluginBundle {
             id = 'org.mockito.mockito-release-tools.release-needed'
             displayName = 'Mockito plugin for checking if release is needed'
             tags = ['mockito', 'continuous delivery', 'release']
+        }
+
+        e2eTestPlugin {
+            id = 'org.mockito.mockito-release-tools.e2e-test'
+            displayName = 'Mockito e2e tests plugin'
+            tags = ['mockito', 'continuous delivery', 'release', 'e2e', 'end-to-end', 'end-2-end', 'test']
         }
     }
 

@@ -1,1 +1,3 @@
 rootProject.name="mockito-release-tools"
+
+include "e2eTests"
