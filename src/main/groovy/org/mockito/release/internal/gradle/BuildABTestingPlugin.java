@@ -1,8 +1,10 @@
 package org.mockito.release.internal.gradle;
 
+import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.file.CopySpec;
 import org.gradle.api.tasks.*;
 import org.mockito.release.exec.DefaultProcessRunner;
 
@@ -22,18 +24,18 @@ public class BuildABTestingPlugin implements Plugin<Project> {
         //Step 2. Run A test
         RunTestTask runA = project.getTasks().create("runA", RunTestTask.class);
         runA.dependsOn(clone);
-        runA.setSourceDir(clone.getTargetDir());
+        runA.setSourceDir(new File(clone.getTargetDir(),  "mockito"));
         runA.setWorkDir(new File(project.getBuildDir(), "abTesting/mockito/testA-" + System.currentTimeMillis()));
         runA.commandLine("./gradlew", "build");
         runA.setOutputDir(new File(runA.getWorkDir(), "build"));
 
         //Step 3. Run B test
         RunTestTask runB = project.getTasks().create("runB", RunTestTask.class);
-        runA.dependsOn(clone);
-        runA.setSourceDir(clone.getTargetDir());
-        runA.setWorkDir(new File(project.getBuildDir(), "abTesting/mockito/testB-" + System.currentTimeMillis()));
-        runA.commandLine("./gradlew", "build");
-        runA.setOutputDir(new File(runA.getWorkDir(), "build"));
+        runB.dependsOn(clone);
+        runB.setSourceDir(new File(clone.getTargetDir(), "mockito"));
+        runB.setWorkDir(new File(project.getBuildDir(), "abTesting/mockito/testB-" + System.currentTimeMillis()));
+        runB.commandLine("./gradlew", "build");
+        runB.setOutputDir(new File(runB.getWorkDir(), "build"));
 
         //Step 4. Compare test outcomes
         CompareDirectoriesTask compare = project.getTasks().create("compareAB", CompareDirectoriesTask.class);
@@ -94,6 +96,7 @@ public class BuildABTestingPlugin implements Plugin<Project> {
         private File sourceDir;
         private File workDir;
         private File outputDir;
+        private String[] arg;
 
         @InputDirectory
         public void setSourceDir(File sourceDir) {
@@ -106,19 +109,33 @@ public class BuildABTestingPlugin implements Plugin<Project> {
 
         @Input
         public void commandLine(String ... arg) {
+            this.arg = arg;
         }
 
         public File getWorkDir() {
             return workDir;
         }
 
-        @OutputDirectory
         public void setOutputDir(File outputDir) {
             this.outputDir = outputDir;
         }
 
+        @OutputDirectory
         public File getOutputDir() {
             return outputDir;
+        }
+
+        @TaskAction
+        public void executeTestTask() {
+            if (outputDir != null && !outputDir.exists()) {
+                outputDir.mkdirs();
+            }
+            getProject().copy(new Action<CopySpec>() {
+                public void execute(CopySpec copy) {
+                    copy.from(sourceDir).into(workDir);
+                }
+            });
+            new DefaultProcessRunner(workDir).run(arg);
         }
     }
 
@@ -147,7 +164,7 @@ public class BuildABTestingPlugin implements Plugin<Project> {
 
         @TaskAction
         public void cloneGit() {
-            if(!targetDir.exists()) {
+            if(targetDir != null && !targetDir.exists()) {
                 targetDir.mkdirs();
             }
 
