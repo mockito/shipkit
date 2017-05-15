@@ -105,6 +105,8 @@ public class DefaultProcessRunner implements ProcessRunner {
 
     private void storeOutputToFile(String content) {
         if(outputLogFile != null) {
+            //TODO ms - can we make sure that the output does not have sensitive secret values
+            //should we mask secret values in the output stored in file, too?
             IOUtil.writeFile(outputLogFile, content);
         }
     }
