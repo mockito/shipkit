@@ -29,6 +29,11 @@ public class CloneGitRepositoryTask extends DefaultTask {
         processRunner.run("git", "clone", repository, targetDir.getAbsolutePath());
     }
 
+    //TODO ms - let's put javadoc on all public methods of the task
+    // No need to put it on "cloneRepository" method because it is not intended to be used by end users.
+    // It's nice if javadoc for 'repository' demonstrates an example value
+    // When reading the API by looking at method signature
+    //   I don't know if repository should be a name of repo or valid url to the repo
     @Input
     public void setRepository(String repository) {
         this.repository = repository;
