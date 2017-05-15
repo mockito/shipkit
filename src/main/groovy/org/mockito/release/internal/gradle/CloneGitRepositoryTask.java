@@ -13,6 +13,12 @@ import java.io.File;
 /**
  * This task clone git project from repository to target dir.
  * It support clone from remote server and from local filesystem.
+ *
+ * TODO ms - when you are ready, please move the new task types to the public packages,
+ *   for example "org.mockito.release.*". With 1.0 we need all task types to be public.
+ *   It's because users interface with task types when they work with Gradle build scripts.
+ *   So it makes sense to be explicit that those types are public and we guarantee compatibility.
+ *   See also README.md on the compatibility where I attempted to describe this ;)
  */
 public class CloneGitRepositoryTask extends DefaultTask {
 
