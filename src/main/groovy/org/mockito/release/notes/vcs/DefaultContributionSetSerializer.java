@@ -10,6 +10,9 @@ public class DefaultContributionSetSerializer {
 
     private GitCommitSerializer gitCommitSerializer = new GitCommitSerializer();
 
+    public DefaultContributionSetSerializer() {
+    }
+
     public DefaultContributionSetSerializer(GitCommitSerializer gitCommitSerializer) {
         this.gitCommitSerializer = gitCommitSerializer;
     }

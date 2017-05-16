@@ -19,8 +19,9 @@ public class NotableReleaseNotesGeneratorTask extends DefaultTask {
     }
 
     @TaskAction public void generateReleaseNotes() {
-        ReleaseNotesSerializer releaseNotesSerializer = new ReleaseNotesSerializer(notesGeneration.getTemporarySerializedNotesFile());
-        Collection<ReleaseNotesData> releaseNotes = releaseNotesSerializer.deserialize();
+        ReleaseNotesSerializer releaseNotesSerializer = new ReleaseNotesSerializer();
+        final String serializedNotesData = IOUtil.readFully(notesGeneration.getTemporarySerializedNotesFile());
+        Collection<ReleaseNotesData> releaseNotes = releaseNotesSerializer.deserialize(serializedNotesData);
         String notes = ReleaseNotesFormatters.notableFormatter(
                 notesGeneration.getIntroductionText(), notesGeneration.getDetailedReleaseNotesLink(), notesGeneration.getVcsCommitsLinkTemplate())
                 .formatReleaseNotes(releaseNotes);
