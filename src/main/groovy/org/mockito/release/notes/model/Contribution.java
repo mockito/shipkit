@@ -7,7 +7,7 @@ import java.util.Collection;
  * VCS contribution, author + all commits.
  * Contribution holds many commits and potentially many improvements by a single author.
  */
-public interface Contribution extends Serializable{
+public interface Contribution extends Serializable {
 
     /**
      * Commits

@@ -20,13 +20,8 @@ public class GitHubCommitsJSON {
             String profileUrl = (String) ((Map) commit.get("author")).get("html_url");
             return new DefaultContributor(name, login, profileUrl);
         } catch (NullPointerException e) {
+            //Author does not exist. See unit tests.
             return null;
         }
     }
-
-    public static boolean containsRevision(JsonObject commit, String revision) {
-        String sha = (String)commit.get("sha");
-        return sha.equals(revision);
-    }
-
 }

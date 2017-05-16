@@ -15,4 +15,11 @@ public class Exec {
     public static ProcessRunner getProcessRunner(File workDir) {
         return new DefaultProcessRunner(workDir);
     }
+
+    /**
+     * Provides process runner for given working dir
+     */
+    public static ProcessRunner getProcessRunner(File workDir, File outputLogFile) {
+        return new DefaultProcessRunner(workDir, outputLogFile);
+    }
 }

@@ -30,24 +30,4 @@ class GitHubCommitsJSONTest extends Specification {
         then:
         contributor == null
     }
-
-    def "return true when commit contains revision"() {
-        def commit = new JsonObject([sha: '1234'])
-
-        when:
-        def result = GitHubCommitsJSON.containsRevision(commit, "1234")
-
-        then:
-        result == true
-    }
-
-    def "return false when commit NOT contains revision"() {
-        def commit = new JsonObject([sha: '1234'])
-
-        when:
-        def result = GitHubCommitsJSON.containsRevision(commit, "abc")
-
-        then:
-        result == false
-    }
 }

@@ -6,18 +6,20 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.*;
 import org.mockito.release.internal.gradle.util.FileUtil;
+import org.mockito.release.internal.gradle.util.ReleaseNotesSerializer;
+import org.mockito.release.internal.gradle.util.team.TeamMember;
+import org.mockito.release.internal.gradle.util.team.TeamParser;
+import org.mockito.release.notes.contributors.DefaultContributor;
 import org.mockito.release.notes.format.ReleaseNotesFormatters;
-import org.mockito.release.notes.generator.ReleaseNotesGenerator;
-import org.mockito.release.notes.generator.ReleaseNotesGenerators;
+import org.mockito.release.notes.model.Contributor;
 import org.mockito.release.notes.model.ReleaseNotesData;
+import org.mockito.release.notes.util.IOUtil;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import static java.util.Arrays.asList;
 
 /**
  * Generates incremental, detailed release notes text.
@@ -29,10 +31,12 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
 
     private String previousVersion;
     private File releaseNotesFile;
-    private String gitHubReadOnlyAuthToken;
     private String gitHubRepository;
     private Map<String, String> gitHubLabelMapping = new LinkedHashMap<String, String>();
     private String publicationRepository;
+    private File releaseNotesData;
+    private Collection<String> developers;
+    private Collection<String> contributors;
 
     /**
      * Release notes file this task operates on.
@@ -47,21 +51,6 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
      */
     public void setReleaseNotesFile(File releaseNotesFile) {
         this.releaseNotesFile = releaseNotesFile;
-    }
-
-    /**
-     * GitHub read only authentication token needed for loading issue information from GitHub.
-     */
-    @Input
-    public String getGitHubReadOnlyAuthToken() {
-        return gitHubReadOnlyAuthToken;
-    }
-
-    /**
-     * See {@link #getGitHubReadOnlyAuthToken()}
-     */
-    public void setGitHubReadOnlyAuthToken(String readOnlyToken) {
-        this.gitHubReadOnlyAuthToken = readOnlyToken;
     }
 
     /**
@@ -131,14 +120,55 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
         this.previousVersion = previousVersion;
     }
 
+    /**
+     * Input to the release notes generation,
+     * serialized release notes data objects of type {@link ReleaseNotesData}.
+     * They are used to generate formatted release notes.
+     */
+    @InputFile
+    public File getReleaseNotesData() {
+        return releaseNotesData;
+    }
+
+    /**
+     * See {@link #getReleaseNotesData()}
+     */
+    public void setReleaseNotesData(File releaseNotesData) {
+        this.releaseNotesData = releaseNotesData;
+    }
+
+    /**
+     * Developers as configured in {@link ReleaseConfiguration.Team#getDevelopers()}
+     */
+    @Input public Collection<String> getDevelopers() {
+        return developers;
+    }
+
+    /**
+     * See {@link #getDevelopers()}
+     */
+    public void setDevelopers(Collection<String> developers) {
+        this.developers = developers;
+    }
+
+    /**
+     * Contributors as configured in {@link ReleaseConfiguration.Team#getContributors()}
+     */
+    @Input public Collection<String> getContributors() {
+        return contributors;
+    }
+
+    /**
+     * See {@link #getContributors()}
+     */
+    public void setContributors(Collection<String> contributors) {
+        this.contributors = contributors;
+    }
+
     private void assertConfigured() {
         //TODO SF unit test coverage
         if (releaseNotesFile == null || !releaseNotesFile.isFile()) {
             throw new GradleException("'" + this.getPath() + ".releaseNotesFile' must be configured and the file must be present.");
-        }
-
-        if (gitHubReadOnlyAuthToken == null || gitHubReadOnlyAuthToken.trim().isEmpty()) {
-            throw new GradleException("'" + this.getPath() + ".gitHubReadOnlyToken' must be configured.");
         }
 
         if (gitHubRepository == null || gitHubRepository.trim().isEmpty()) {
@@ -149,22 +179,40 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
     /**
      * Generates new incremental content of the release notes.
      */
-    protected String getNewContent() {
+    String getNewContent() {
         assertConfigured();
         LOG.lifecycle("  Building new release notes based on {}", releaseNotesFile);
 
-        ReleaseNotesGenerator generator = ReleaseNotesGenerators.releaseNotesGenerator(getProject().getRootDir(), gitHubRepository, gitHubReadOnlyAuthToken);
         String version = getProject().getVersion().toString();
         String tagPrefix = "v";
-        Collection<ReleaseNotesData> data = generator.generateReleaseNotesData(
-                version, asList(previousVersion), tagPrefix, Collections.<String>emptyList(), false);
+
+        Collection<ReleaseNotesData> data = new ReleaseNotesSerializer(releaseNotesData).deserialize();
+
         String vcsCommitTemplate = "https://github.com/" + gitHubRepository + "/compare/"
                 + tagPrefix + previousVersion + "..." + tagPrefix + version;
+
+        Map<String, Contributor> contributorsMap = contributorsMap(contributors, developers);
         String notes = ReleaseNotesFormatters.detailedFormatter(
-                "", gitHubLabelMapping, vcsCommitTemplate, publicationRepository)
+                "", gitHubLabelMapping, vcsCommitTemplate, publicationRepository, contributorsMap)
                 .formatReleaseNotes(data);
 
         return notes + "\n\n";
+    }
+
+    //TODO SF deduplicate and unit test
+    static Map<String, Contributor> contributorsMap(Collection<String> contributors, Collection<String> developers) {
+        Map<String, Contributor> out = new HashMap<String, Contributor>();
+        for (String contributor : contributors) {
+            TeamMember member = TeamParser.parsePerson(contributor);
+            out.put(member.name, new DefaultContributor(member.name, member.gitHubUser,
+                    "http://github.com/" + member.gitHubUser));
+        }
+        for (String developer : developers) {
+            TeamMember member = TeamParser.parsePerson(developer);
+            out.put(member.name, new DefaultContributor(member.name, member.gitHubUser,
+                    "http://github.com/" + member.gitHubUser));
+        }
+        return out;
     }
 
     /**

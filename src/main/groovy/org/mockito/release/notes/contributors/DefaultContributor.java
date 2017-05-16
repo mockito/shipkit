@@ -14,7 +14,7 @@ public class DefaultContributor implements Contributor {
     private final String login;
     private final String profileUrl;
 
-    DefaultContributor(String name, String login, String profileUrl) {
+    public DefaultContributor(String name, String login, String profileUrl) {
         this.name = name;
         this.login = login;
         this.profileUrl = profileUrl;
@@ -75,10 +75,6 @@ public class DefaultContributor implements Contributor {
 
     @Override
     public String toString() {
-        return "DefaultContributor{" +
-                "name='" + name + '\'' +
-                ", login='" + login + '\'' +
-                ", profileUrl='" + profileUrl + '\'' +
-                '}';
+        return name + '/' + login;
     }
 }

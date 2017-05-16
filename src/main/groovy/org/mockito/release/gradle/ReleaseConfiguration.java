@@ -3,8 +3,11 @@ package org.mockito.release.gradle;
 import org.gradle.api.GradleException;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.mockito.release.internal.gradle.util.team.TeamParser.validateTeamMembers;
 
 /**
  * Configuration of the releasing plugin.
@@ -23,7 +26,6 @@ public class ReleaseConfiguration {
     private final ReleaseNotes releaseNotes = new ReleaseNotes();
     private final Git git = new Git();
     private final Team team = new Team();
-    private final Build build = new Build();
 
     private boolean notableRelease;
     private String previousReleaseVersion;
@@ -32,7 +34,9 @@ public class ReleaseConfiguration {
         //Configure default values
         git.setTagPrefix("v"); //so that tags are "v1.0", "v2.3.4"
         git.setReleasableBranchRegex("master|release/.+");  // matches 'master', 'release/2.x', 'release/3.x', etc.
-        team.setAddContributorsToPomFromGitHub(true);
+        team.setContributors(Collections.<String>emptyList());
+        team.setDevelopers(Collections.<String>emptyList());
+        git.setCommitMessagePostfix("[ci skip]");
     }
 
     //TODO currently it's not clear when to use class fields and when to use the 'configuration' map
@@ -99,51 +103,6 @@ public class ReleaseConfiguration {
      */
     public String getPreviousReleaseVersion() {
         return previousReleaseVersion;
-    }
-
-    /**
-     * Settings of the current build job.
-     * Typically they are inferred from env variables
-     */
-    public Build getBuild() {
-        return build;
-    }
-
-    /**
-     * Settings for the current build job.
-     */
-    public class Build {
-
-        private String commitMessage;
-        private boolean pullRequest;
-
-        /**
-         * Commit message of the commit that triggered the job
-         */
-        public String getCommitMessage() {
-            return commitMessage;
-        }
-
-        /**
-         * See {@link #getCommitMessage()}
-         */
-        public void setCommitMessage(String commitMessage) {
-            this.commitMessage = commitMessage;
-        }
-
-        /**
-         * Whether this Travis job is a pull request build
-         */
-        public boolean isPullRequest() {
-            return pullRequest;
-        }
-
-        /**
-         * See {@link #isPullRequest()}
-         */
-        public void setPullRequest(boolean pullRequest) {
-            this.pullRequest = pullRequest;
-        }
     }
 
     public class GitHub {
@@ -367,6 +326,7 @@ public class ReleaseConfiguration {
          * See {@link #getDevelopers()}
          */
         public void setDevelopers(Collection<String> developers) {
+            validateTeamMembers(developers);
             configuration.put("team.developers", developers);
         }
 
@@ -385,24 +345,8 @@ public class ReleaseConfiguration {
          * See {@link #getContributors()}
          */
         public void setContributors(Collection<String> contributors) {
+            validateTeamMembers(contributors);
             configuration.put("team.contributors", contributors);
-        }
-
-        /**
-         * A boolean flag for fetch all contributors from GitHub to include them in generated pom file.
-         * This is optional value, by default set to true.
-         * <p>
-         * See POM reference for <a href="https://maven.apache.org/pom.html#Contributors">Contributors</a>.
-         */
-        public boolean isAddContributorsToPomFromGitHub() {
-            return getBoolean("team.addContributorsToPomFromGitHub");
-        }
-
-        /**
-         * See {@link #isAddContributorsToPomFromGitHub()}
-         */
-        public void setAddContributorsToPomFromGitHub(Boolean addContributorsToPomFromGitHub) {
-            configuration.put("team.addContributorsToPomFromGitHub", addContributorsToPomFromGitHub);
         }
     }
 

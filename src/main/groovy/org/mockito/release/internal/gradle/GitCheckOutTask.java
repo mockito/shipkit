@@ -1,6 +1,5 @@
 package org.mockito.release.internal.gradle;
 
-
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
@@ -14,8 +13,18 @@ public class GitCheckOutTask extends DefaultTask {
     @Input
     private String rev;
 
+    /**
+     * See {@link #setRev(String)}
+     */
     public void setRev(String rev) {
         this.rev = rev;
+    }
+
+    /**
+     * Revision to check out
+     */
+    public String getRev() {
+        return rev;
     }
 
     @TaskAction

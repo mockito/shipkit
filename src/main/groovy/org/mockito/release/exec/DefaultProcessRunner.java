@@ -3,6 +3,7 @@ package org.mockito.release.exec;
 import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
+import org.mockito.release.notes.util.IOUtil;
 import org.mockito.release.notes.util.ReleaseNotesException;
 
 import java.io.BufferedReader;
@@ -21,10 +22,24 @@ public class DefaultProcessRunner implements ProcessRunner {
 
     private static final Logger LOG = Logging.getLogger(DefaultProcessRunner.class);
     private final File workDir;
+    private final File outputLogFile;
     private String secretValue;
 
+    /**
+     * Calls {@link #DefaultProcessRunner(File, File)}
+     */
     public DefaultProcessRunner(File workDir) {
+        this(workDir, null);
+    }
+
+    /**
+     * Create Process runner
+     * @param workDir Work directory where to start a process
+     * @param outputLogFile If process create a long output it's better to save it in file
+     */
+    public DefaultProcessRunner(File workDir, File outputLogFile) {
         this.workDir = workDir;
+        this.outputLogFile = outputLogFile;
     }
 
     public String run(String... commandLine) {
@@ -43,9 +58,7 @@ public class DefaultProcessRunner implements ProcessRunner {
         ProcessResult result = executeProcess(commandLine, maskedCommandLine);
 
         if (result.getExitValue() != 0) {
-            throw new GradleException("Execution of command failed (exit code " + result.getExitValue() + "):\n" +
-                    "  " + maskedCommandLine + "\n" +
-                    "Captured command output:\n" + result.getOutput());
+            return executionOfCommandFailed(maskedCommandLine, result);
         } else {
             return result.getOutput();
         }
@@ -56,6 +69,7 @@ public class DefaultProcessRunner implements ProcessRunner {
         try {
             Process process = new ProcessBuilder(commandLine).directory(workDir).redirectErrorStream(true).start();
             String output = mask(readFully(new BufferedReader(new InputStreamReader(process.getInputStream()))));
+            storeOutputToFile(output);
 
             //TODO add sanity timeout when we move to Java 1.7
             // 1. we can do something like process.waitFor(15, TimeUnit.MINUTES)
@@ -87,6 +101,25 @@ public class DefaultProcessRunner implements ProcessRunner {
         } finally {
             reader.close();
         }
+    }
+
+    private void storeOutputToFile(String content) {
+        if(outputLogFile != null) {
+            //TODO ms - can we make sure that the output does not have sensitive secret values
+            //should we mask secret values in the output stored in file, too?
+            IOUtil.writeFile(outputLogFile, content);
+        }
+    }
+
+    private String executionOfCommandFailed(String maskedCommandLine, ProcessResult result) {
+        String message = "Execution of command failed (exit code " + result.getExitValue() + "):\n" +
+                "  " + maskedCommandLine + "\n";
+        if(outputLogFile == null) {
+            message = message + "  Captured command output:\n" + result.getOutput();
+        } else {
+            message = message + "  Captured command output stored in " + outputLogFile;
+        }
+        throw new GradleException(message);
     }
 
     /**

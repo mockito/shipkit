@@ -2,7 +2,6 @@ package org.mockito.release.notes.generator;
 
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.mockito.release.notes.contributors.ContributorsSet;
 import org.mockito.release.notes.contributors.ContributorsProvider;
 import org.mockito.release.notes.improvements.ImprovementsProvider;
 import org.mockito.release.notes.internal.DefaultReleaseNotesData;
@@ -13,7 +12,10 @@ import org.mockito.release.notes.vcs.ContributionsProvider;
 import org.mockito.release.notes.vcs.ReleasedVersion;
 import org.mockito.release.notes.vcs.ReleasedVersionsProvider;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 class DefaultReleaseNotesGenerator implements ReleaseNotesGenerator {
 
@@ -55,13 +57,7 @@ class DefaultReleaseNotesGenerator implements ReleaseNotesGenerator {
             Collection<Improvement> improvements = improvementsProvider.getImprovements(contributions, gitHubLabels, onlyPullRequests);
             LOG.lifecycle("Retrieved " + improvements.size() + " improvement(s) for tickets: " + contributions.getAllTickets());
 
-            //TODO below is duplicated if the author is the same and he is already mapped
-            //TODO commented out to speed up generation of notable release notes, which currently don't need the contributors
-            //LOG.lifecycle("Getting contributor details for " + contributions.getAuthorCount() + " author(s).");
-            //ContributorsSet contributors = contributorsProvider.mapContributorsToGitHubUser(contributions, v.getPreviousRev(), v.getRev());
-            ContributorsSet contributors = null;
-
-            out.add(new DefaultReleaseNotesData(v.getVersion(), v.getDate(), contributions, improvements, contributors, v.getPreviousRev(), v.getRev()));
+            out.add(new DefaultReleaseNotesData(v.getVersion(), v.getDate(), contributions, improvements, v.getPreviousRev(), v.getRev()));
         }
 
         return out;

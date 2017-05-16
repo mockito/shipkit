@@ -22,7 +22,6 @@ class ReleaseNotesSerializerTest extends Specification {
                 new Date(),
                 null,
                 null,
-                null,
                 "0.0.1",
                 "0.2")
 

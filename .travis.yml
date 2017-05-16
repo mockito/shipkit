@@ -25,4 +25,4 @@ script:
   - ./gradlew build -s -i
 
 after_success:
-  - ./gradlew travisRelease -s
+  - ./gradlew ciReleasePrepare && ./gradlew travisRelease -s

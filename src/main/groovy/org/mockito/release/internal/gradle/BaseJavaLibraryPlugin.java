@@ -12,11 +12,8 @@ import org.gradle.api.publish.PublicationContainer;
 import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.api.tasks.bundling.Jar;
 import org.mockito.release.gradle.ReleaseConfiguration;
-import org.mockito.release.internal.comparison.PublicationsComparatorTask;
-import org.mockito.release.internal.gradle.configuration.DeferredConfiguration;
 import org.mockito.release.internal.gradle.util.GradleDSLHelper;
 import org.mockito.release.internal.gradle.util.PomCustomizer;
-import org.mockito.release.internal.gradle.util.TaskMaker;
 
 import static org.mockito.release.internal.gradle.util.StringUtil.capitalize;
 
@@ -46,8 +43,8 @@ public class BaseJavaLibraryPlugin implements Plugin<Project> {
     private final static Logger LOG = Logging.getLogger(BaseJavaLibraryPlugin.class);
 
     final static String PUBLICATION_NAME = "javaLibrary";
-    final static String COMPARE_PUBLICATIONS_TASK = "comparePublications";
     final static String POM_TASK = "generatePomFileFor" + capitalize(PUBLICATION_NAME) + "Publication";
+    public static final String SOURCES_JAR_TASK = "sourcesJar";
 
 
     public void apply(final Project project) {
@@ -66,7 +63,7 @@ public class BaseJavaLibraryPlugin implements Plugin<Project> {
 
         final JavaPluginConvention java = project.getConvention().getPlugin(JavaPluginConvention.class);
 
-        final Jar sourcesJar = project.getTasks().create("sourcesJar", Jar.class, new Action<Jar>() {
+        final Jar sourcesJar = project.getTasks().create(SOURCES_JAR_TASK, Jar.class, new Action<Jar>() {
             public void execute(Jar jar) {
                 jar.from(java.getSourceSets().getByName("main").getAllSource());
                 jar.setClassifier("sources");
@@ -79,30 +76,6 @@ public class BaseJavaLibraryPlugin implements Plugin<Project> {
                 jar.from(project.getTasks().getByName("javadoc"));
                 jar.setClassifier("javadoc");
                 jar.with(license);
-            }
-        });
-
-        //TODO (big one). Figure out how to make this task incremental and avoid downloads each time it runs
-        TaskMaker.task(project, COMPARE_PUBLICATIONS_TASK, PublicationsComparatorTask.class, new Action<PublicationsComparatorTask>() {
-            public void execute(final PublicationsComparatorTask t) {
-                t.setDescription("Compares artifacts and poms between last version and the currently built one to see if there are any differences");
-
-                t.setCurrentVersion(project.getVersion().toString());
-                t.setPreviousVersion(conf.getPreviousReleaseVersion());
-
-                //Let's say that the initial implementation compares sources jar. We can this API method to the task:
-                t.compareSourcesJar(sourcesJar);
-                //Let's say we compare poms, we can add this API
-                //maven-publish plugin is messed up in Gradle API, we cannot really access generate pom task and we have to pass String
-                //The generate pom task is dynamically created by Gradle and we can only access it during execution
-                t.comparePom(POM_TASK);
-
-                DeferredConfiguration.deferredConfiguration(project, new Runnable() {
-                    @Override
-                    public void run() {
-                        t.setProjectGroup(project.getGroup().toString());
-                    }
-                });
             }
         });
 

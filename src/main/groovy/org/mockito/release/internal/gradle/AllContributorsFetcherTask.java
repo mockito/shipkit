@@ -6,12 +6,20 @@ import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
-import org.mockito.release.notes.contributors.*;
+import org.mockito.release.gradle.ReleaseConfiguration;
+import org.mockito.release.notes.contributors.AllContributorsSerializer;
+import org.mockito.release.notes.contributors.Contributors;
+import org.mockito.release.notes.contributors.GitHubContributorsProvider;
+import org.mockito.release.notes.contributors.ProjectContributorsSet;
+import org.mockito.release.notes.util.IOUtil;
 
 import java.io.File;
 
 /**
- * Fetch data about all project contributors and store it in file. It is used later in generation pom.xml.
+ * Fetch data about all project contributors and store it in file.
+ * It is used later in generation pom.xml.
+ * It use GitHub repos/contributors endpoint: https://developer.github.com/v3/repos/#list-contributors
+ * "Contributors data is cached for performance reasons. This endpoint may return information that is a few hours old."
  */
 public class AllContributorsFetcherTask extends DefaultTask {
 
@@ -19,46 +27,62 @@ public class AllContributorsFetcherTask extends DefaultTask {
 
     @Input private String repository;
     @Input private String readOnlyAuthToken;
-    @Input private boolean skipTaskExecution;
 
-    @OutputFile private File contributorsFile;
+    @OutputFile private File outputFile;
 
-    @TaskAction
-    public void fetchAllProjectContributorsFromGitHub() {
-        if(skipTaskExecution) {
-            LOG.lifecycle("  Fetching all contributors for project SKIPPED (disabled in configuration)");
-            return;
-        }
-
-        // Fetching info about all contributors is expensive.
-        // Task execution is skipped when output file exist for speed up local builds.
-        if(contributorsFile.exists()) {
-            LOG.lifecycle("  Fetching all contributors for project SKIPPED (output file exist)");
-            return;
-        }
-
-        LOG.lifecycle("  Fetching all contributors for project");
-
-        GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContributorsProvider(repository, readOnlyAuthToken);
-        ProjectContributorsSet allContributorsForProject = contributorsProvider.getAllContributorsForProject();
-
-        AllContributorsSerializer serializer = Contributors.getAllContributorsSerializer(contributorsFile);
-        serializer.serialize(allContributorsForProject);
+    /**
+     * See {@link ReleaseConfiguration.GitHub#getRepository()}
+     */
+    public String getRepository() {
+        return repository;
     }
 
+    /**
+     * See {@link #getRepository()}
+     */
     public void setRepository(String repository) {
         this.repository = repository;
     }
 
+    /**
+     * See {@link ReleaseConfiguration.GitHub#getReadOnlyAuthToken()}
+     */
+    public String getReadOnlyAuthToken() {
+        return readOnlyAuthToken;
+    }
+
+    /**
+     * See {@link #getReadOnlyAuthToken()}
+     */
     public void setReadOnlyAuthToken(String readOnlyAuthToken) {
         this.readOnlyAuthToken = readOnlyAuthToken;
     }
 
-    public void setSkipTaskExecution(boolean skipTaskExecution) {
-        this.skipTaskExecution = skipTaskExecution;
+    /**
+     * Where serialized information about contributors will be stored.
+     */
+    public File getOutputFile() {
+        return outputFile;
     }
 
-    public void setContributorsFile(File contributorsFile) {
-        this.contributorsFile = contributorsFile;
+    /**
+     * See {@link #getOutputFile()}
+     */
+    public void setOutputFile(File outputFile) {
+        this.outputFile = outputFile;
+    }
+
+    @TaskAction
+    public void fetchContributors() {
+        LOG.lifecycle("  Fetching all contributors for project");
+
+        GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContributorsProvider(repository, readOnlyAuthToken);
+        ProjectContributorsSet contributors = contributorsProvider.getAllContributorsForProject();
+
+        AllContributorsSerializer serializer = new AllContributorsSerializer();
+        final String json = serializer.serialize(contributors);
+        IOUtil.writeFile(outputFile, json);
+
+        LOG.lifecycle("  Serialized all contributors into: {}", getProject().relativePath(outputFile));
     }
 }

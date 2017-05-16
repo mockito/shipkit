@@ -9,6 +9,7 @@ import org.mockito.release.gradle.BumpVersionFileTask;
 import org.mockito.release.gradle.IncrementalReleaseNotes;
 import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.gradle.ReleaseNeededTask;
+import org.mockito.release.internal.comparison.PublicationsComparatorTask;
 import org.mockito.release.internal.gradle.util.BintrayUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.version.VersionInfo;
@@ -50,6 +51,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
         project.getPlugins().apply(GitPlugin.class);
         project.getPlugins().apply(ContributorsPlugin.class);
         project.getPlugins().apply(TravisPlugin.class);
+        project.getPlugins().apply(ReleaseNeededPlugin.class);
 
         project.allprojects(new Action<Project>() {
             @Override
@@ -57,12 +59,12 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                 subproject.getPlugins().withType(BaseJavaLibraryPlugin.class, new Action<BaseJavaLibraryPlugin>() {
                     @Override
                     public void execute(BaseJavaLibraryPlugin p) {
-                        final Task fetcher = project.getTasks().getByName(ContributorsPlugin.FETCH_CONTRIBUTORS_TASK);
+                        final Task contributors = project.getTasks().getByName(ContributorsPlugin.CONFIGURE_CONTRIBUTORS_TASK);
                         //Because maven-publish plugin uses new configuration model, we cannot get the task directly
                         //So we use 'matching' technique
                         subproject.getTasks().matching(withName(POM_TASK)).all(new Action<Task>() {
                             public void execute(Task t) {
-                                t.dependsOn(fetcher);
+                                t.dependsOn(contributors);
                             }
                         });
                     }
@@ -144,6 +146,12 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
             }
         });
 
+        //commit task that is added by GitPlugin needs to run after the add bump version task added by AutoVersioningPlugin
+        //TODO: let's think about a way to avoid 'git add' tasks completely.
+        //      We can use git commit with paths to commit specific files without the need for 'add' operation
+        //      Using 'git add' adds complexity and causes weird bugs like #145
+        project.getTasks().getByName(GitPlugin.COMMIT_TASK).mustRunAfter(AutoVersioningPlugin.ADD_BUMP_VERSION_TASK);
+
         TaskMaker.task(project, "performRelease", new Action<Task>() {
             public void execute(final Task t) {
                 t.setDescription("Performs release. " +
@@ -151,7 +159,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                         "Test with: './gradlew testRelease'");
 
                 t.dependsOn(VersioningPlugin.BUMP_VERSION_FILE_TASK, "updateReleaseNotes", "updateNotableReleaseNotes");
-                t.dependsOn("gitAddBumpVersion", "gitAddReleaseNotes", GitPlugin.COMMIT_TASK, GitPlugin.TAG_TASK);
+                t.dependsOn(AutoVersioningPlugin.ADD_BUMP_VERSION_TASK, "gitAddReleaseNotes", GitPlugin.COMMIT_TASK, GitPlugin.TAG_TASK);
                 t.dependsOn(GitPlugin.PUSH_TASK);
                 t.dependsOn("bintrayUploadAll");
 
@@ -167,60 +175,6 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                 //using finalizedBy so that all clean up tasks run, even if one of them fails
                 t.finalizedBy(GitPlugin.COMMIT_CLEANUP_TASK);
                 t.finalizedBy(GitPlugin.TAG_CLEANUP_TASK);
-            }
-        });
-
-        //Task that throws an exception when release is not needed is very useful for CI workflows
-        //Travis CI job will stop executing further commands if assertReleaseNeeded fails.
-        //See the example projects how we have set up the 'assertReleaseNeeded' task in CI pipeline.
-        releaseNeededTask(project, "assertReleaseNeeded", conf)
-                .setExplosive(true)
-                .setDescription("Asserts that criteria for the release are met and throws exception if release is not needed.");
-
-        //Below task is useful for testing. It will not throw an exception but will run the code that check is release is needed
-        //and it will print the information to the console.
-        releaseNeededTask(project, "releaseNeeded", conf)
-                .setExplosive(false)
-                .setDescription("Checks and prints to the console if criteria for the release are met.");
-    }
-
-    private static ReleaseNeededTask releaseNeededTask(final Project project, String taskName, final ReleaseConfiguration conf) {
-        return TaskMaker.task(project, taskName, ReleaseNeededTask.class, new Action<ReleaseNeededTask>() {
-            public void execute(final ReleaseNeededTask t) {
-                t.setDescription("Asserts that criteria for the release are met and throws exception if release not needed.");
-                t.setReleasableBranchRegex(conf.getGit().getReleasableBranchRegex());
-                t.setExplosive(true);
-                t.setCommitMessage(conf.getBuild().getCommitMessage());
-                t.setPullRequest(conf.getBuild().isPullRequest());
-
-                project.allprojects(new Action<Project>() {
-                    public void execute(final Project subproject) {
-                        //TODO WW, let's push out the complexity of comparing publications out of BaseJavaLibraryPlugin
-                        //into a separate plugin, something like 'PublicationsComparatorPlugin'
-                        //This way, we make the plugins smaller, more fine granular, easier to reuse and comprehend
-                        //The new plugin depends on sources jar and pom gen task so
-                        // 'PublicationsComparatorPlugin' task should first apply 'BaseJavaLibraryPlugin'
-                        //when we do that, the code below should use "withType(PublicationsComparatorPlugin.class)"
-                        subproject.getPlugins().withType(BaseJavaLibraryPlugin.class, new Action<BaseJavaLibraryPlugin>() {
-                            public void execute(BaseJavaLibraryPlugin p) {
-                                // make this task depend on all comparePublications tasks
-                                Task task = subproject.getTasks().getByName(BaseJavaLibraryPlugin.COMPARE_PUBLICATIONS_TASK);
-
-                                //TODO WW, removing comparing publications from the workflow for now
-                                //by commenting out below code
-                                //t.addPublicationsComparator((PublicationsComparatorTask) task);
-                            }
-                        });
-                    }
-                });
-
-                final GitStatusPlugin.GitStatus gitStatus = project.getPlugins().apply(GitStatusPlugin.class).getGitStatus();
-                lazyConfiguration(t, new Runnable() {
-                    public void run() {
-                        String branch = gitStatus.getBranch();
-                        t.setBranch(branch);
-                    }
-                });
             }
         });
     }

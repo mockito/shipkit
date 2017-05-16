@@ -1,6 +1,6 @@
 package org.mockito.release.notes.format
 
-import org.mockito.release.notes.contributors.ContributorsSet
+import org.mockito.release.notes.contributors.DefaultContributor
 import org.mockito.release.notes.internal.DefaultImprovement
 import org.mockito.release.notes.internal.DefaultReleaseNotesData
 import org.mockito.release.notes.model.Commit
@@ -11,7 +11,7 @@ import spock.lang.Specification
 class DetailedFormatterTest extends Specification {
 
     def f = new DetailedFormatter("Release notes:\n\n", ["noteworthy": "Noteworthy", "bug": "Bugfixes"],
-            "http://commits/{0}...{1}", "Bintray")
+            "http://commits/{0}...{1}", "Bintray", [:])
 
     def "no releases"() {
         expect:
@@ -21,8 +21,8 @@ No release information."""
     }
 
     def "empty releases"() {
-        def d1 = new DefaultReleaseNotesData("2.0.0", new Date(1483500000000), Stub(ContributionSet), [], Stub(ContributorsSet), "v1.9.0", "v2.0.0")
-        def d2 = new DefaultReleaseNotesData("1.9.0", new Date(1483100000000), Stub(ContributionSet), [], Stub(ContributorsSet), "v1.8.0", "v1.9.0")
+        def d1 = new DefaultReleaseNotesData("2.0.0", new Date(1483500000000), Stub(ContributionSet), [], "v1.9.0", "v2.0.0")
+        def d2 = new DefaultReleaseNotesData("1.9.0", new Date(1483100000000), Stub(ContributionSet), [], "v1.8.0", "v1.9.0")
 
         expect:
         f.formatReleaseNotes([d1, d2]) == """Release notes:
@@ -36,21 +36,23 @@ No release information."""
         def c = Stub(ContributionSet) {
             getAllCommits() >> [Stub(Commit)]
             getAuthorCount() >> 1
-            getContributions() >> [Stub(Contribution) { getAuthorName() >> "Szczepan Faber"}]
+            getContributions() >> [Stub(Contribution) {
+                getAuthorName() >> "Szczepan Faber"
+            }]
         }
 
-        def d = new DefaultReleaseNotesData("2.0.0", new Date(1483500000000), c, [], Stub(ContributorsSet), "v1.9.0", "v2.0.0")
+        def d = new DefaultReleaseNotesData("2.0.0", new Date(1483500000000), c, [], "v1.9.0", "v2.0.0")
 
         expect:
         f.formatReleaseNotes([d]) == """Release notes:
 
 **2.0.0** - [1 commit](http://commits/v1.9.0...v2.0.0) by Szczepan Faber - *2017-01-04* - published to Bintray
-:cocktail: No pull requests referenced in commit messages."""
+ - No pull requests referenced in commit messages."""
     }
 
     def "formats no improvements"() {
         expect:
-        DetailedFormatter.formatImprovements([], [:]) == ":cocktail: No pull requests referenced in commit messages."
+        DetailedFormatter.formatImprovements([], [:]) == " - No pull requests referenced in commit messages."
     }
 
     def "formats few improvements"() {
@@ -61,8 +63,8 @@ No release information."""
 
         expect:
         //issues that have label that matches the mapping have an extra label prefix
-        DetailedFormatter.formatImprovements(i, labelMapping) == """:cocktail: [Bugfixes] Fixed issue [(#100)](http://issues/100)
-:cocktail: New feature [(#103)](http://issues/103)"""
+        DetailedFormatter.formatImprovements(i, labelMapping) == """ - [Bugfixes] Fixed issue [(#100)](http://issues/100)
+ - New feature [(#103)](http://issues/103)"""
     }
 
     def "formats and sorts many improvements"() {
@@ -78,17 +80,17 @@ No release information."""
         expect:
         //improvements are sorted based on the label mapping
         //if an issue has labels that match multiple mapping, first mapping in label mapping wins
-        DetailedFormatter.formatImprovements(i, labelMapping) == """:cocktail: [Noteworthy] Fixed major issue [(#103)](http://issues/103)
-:cocktail: [Bugfixes] Fixed problem [(#100)](http://issues/100)
-:cocktail: [Bugfixes] Fixed bugs in javadoc [(#106)](http://issues/106)
-:cocktail: Refactoring [(#105)](http://issues/105)
-:cocktail: Big refactoring [(#107)](http://issues/107)
-:cocktail: Small tweak [(#108)](http://issues/108)"""
+        DetailedFormatter.formatImprovements(i, labelMapping) == """ - [Noteworthy] Fixed major issue [(#103)](http://issues/103)
+ - [Bugfixes] Fixed problem [(#100)](http://issues/100)
+ - [Bugfixes] Fixed bugs in javadoc [(#106)](http://issues/106)
+ - Refactoring [(#105)](http://issues/105)
+ - Big refactoring [(#107)](http://issues/107)
+ - Small tweak [(#108)](http://issues/108)"""
     }
 
     def "release headline with no commits"() {
         expect:
-        DetailedFormatter.authorsSummary(Stub(ContributionSet), "link") == "no code changes (no commits)"
+        DetailedFormatter.authorsSummary(Stub(ContributionSet), [:],"link") == "no code changes (no commits)"
     }
 
     def "authors summary with 1 commit"() {
@@ -99,7 +101,9 @@ No release information."""
         }
 
         expect:
-        DetailedFormatter.authorsSummary(c, "link") == "[1 commit](link) by Szczepan Faber"
+        DetailedFormatter.authorsSummary(c,
+                ["Szczepan Faber": new DefaultContributor("Szczepan Faber", "szczepiq", "http://github.com/szczepiq") ]
+                , "link") == "[1 commit](link) by [Szczepan Faber](http://github.com/szczepiq)"
     }
 
     def "authors summary with multiple authors"() {
@@ -110,7 +114,7 @@ No release information."""
         }
 
         expect:
-        DetailedFormatter.authorsSummary(c, "link") == "[4 commits](link) by Szczepan Faber (2), Brice Dutheil (2)"
+        DetailedFormatter.authorsSummary(c, [:], "link") == "[4 commits](link) by Szczepan Faber (2), Brice Dutheil (2)"
     }
 
     def "authors summary with many authors"() {
@@ -121,7 +125,7 @@ No release information."""
         }
 
         expect:
-        DetailedFormatter.authorsSummary(c, "link") == "[100 commits](link) by 10 authors"
+        DetailedFormatter.authorsSummary(c, [:], "link") == "[100 commits](link) by 10 authors"
     }
 
     def "release notes with many authors"() {
@@ -134,12 +138,22 @@ No release information."""
                                     c("Tim van der Lippe", 10)]
         }
 
-        def summary = DetailedFormatter.releaseSummary(new Date(1483500000000), c, "link",
+        def summary = DetailedFormatter.releaseSummary(new Date(1483500000000), c, [:], "link",
                 "Bintray repo")
 
         expect:
         summary == """[100 commits](link) by 4 authors - *2017-01-04* - published to Bintray repo
-:cocktail: Commits: Szczepan Faber (40), Brice Dutheil (30), Rafael Winterhalter (20), Tim van der Lippe (10)"""
+ - Commits: Szczepan Faber (40), Brice Dutheil (30), Rafael Winterhalter (20), Tim van der Lippe (10)
+"""
+    }
+
+    def "contribution with unmapped contributor"() {
+        def c = Stub(Contribution) {
+            getAuthorName() >> "John"
+        }
+
+        expect:
+        DetailedFormatter.authorLink(c, null) == "John"
     }
 
     private Contribution c(String name, int commits) {
