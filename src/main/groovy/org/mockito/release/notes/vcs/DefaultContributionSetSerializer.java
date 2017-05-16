@@ -28,12 +28,14 @@ public class DefaultContributionSetSerializer {
     }
 
     public DefaultContributionSet deserialize(JsonObject jsonObject) {
+        final IgnoredCommit ignoredCommit = IgnoredCommitProvider.fromType(jsonObject.getString("type"));
+        DefaultContributionSet defaultContributionSet = new DefaultContributionSet(ignoredCommit);
         JsonArray commits = jsonObject.getCollection("commits");
-        return createDefaultContributionWithCommits(commits);
+        addCommits(defaultContributionSet, commits);
+        return defaultContributionSet;
     }
 
-    private DefaultContributionSet createDefaultContributionWithCommits(JsonArray commits) {
-        DefaultContributionSet defaultContributionSet = new DefaultContributionSet(new IgnoreCiSkip());
+    private DefaultContributionSet addCommits(DefaultContributionSet defaultContributionSet, JsonArray commits) {
         for (int i = 0; i < commits.size(); i++) {
             Commit commit = gitCommitSerializer.deserialize((JsonObject) commits.get(0));
             defaultContributionSet.add(commit);

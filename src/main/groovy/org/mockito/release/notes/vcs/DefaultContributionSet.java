@@ -12,7 +12,7 @@ import java.util.*;
 
 class DefaultContributionSet implements ContributionSet {
 
-    private static final String JSON_FORMAT = "{ \"commits\": %s }";
+    private static final String JSON_FORMAT = "{ \"type\": \"%s\", \"commits\": %s }";
 
     private final List<DefaultContribution> contributions = new LinkedList<DefaultContribution>();
 
@@ -78,7 +78,7 @@ class DefaultContributionSet implements ContributionSet {
     @Override
     public String toJson() {
         final String serializedCommits = Jsoner.serialize(commits);
-        return String.format(JSON_FORMAT, serializedCommits);
+        return String.format(JSON_FORMAT, ignoreCommit.getType(), serializedCommits);
     }
 
     @Override
