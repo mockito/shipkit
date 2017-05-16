@@ -1,5 +1,7 @@
 package org.mockito.release.notes.model;
 
+import org.json.simple.Jsonable;
+
 import java.io.Serializable;
 import java.util.Collection;
 
@@ -7,7 +9,7 @@ import java.util.Collection;
  * VCS contribution, author + all commits.
  * Contribution holds many commits and potentially many improvements by a single author.
  */
-public interface Contribution extends Serializable {
+public interface Contribution extends Jsonable, Serializable {
 
     /**
      * Commits
