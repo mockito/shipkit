@@ -1,8 +1,6 @@
 package org.mockito.release.notes.vcs;
 
-import org.mockito.release.notes.model.Commit;
 import org.mockito.release.notes.model.ContributionSet;
-import org.mockito.release.notes.util.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,9 +8,9 @@ class GitContributionsProvider implements ContributionsProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(GitContributionsProvider.class);
     private final GitLogProvider logProvider;
-    private final Predicate<Commit> ignoredCommit;
+    private final IgnoredCommit ignoredCommit;
 
-    GitContributionsProvider(GitLogProvider logProvider, Predicate<Commit> ignoredCommit) {
+    GitContributionsProvider(GitLogProvider logProvider, IgnoredCommit ignoredCommit) {
         this.logProvider = logProvider;
         this.ignoredCommit = ignoredCommit;
     }

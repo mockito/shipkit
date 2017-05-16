@@ -6,7 +6,7 @@ import spock.lang.Subject
 
 class DefaultContributionSetTest extends Specification {
 
-    @Subject contributions = new DefaultContributionSet({false} as Predicate)
+    @Subject contributions = new DefaultContributionSet({false} as IgnoredCommit)
 
     def "empty contributions"() {
         expect:
