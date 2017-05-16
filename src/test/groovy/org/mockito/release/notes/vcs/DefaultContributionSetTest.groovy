@@ -1,12 +1,12 @@
 package org.mockito.release.notes.vcs
 
-import org.mockito.release.notes.util.Predicate
 import spock.lang.Specification
 import spock.lang.Subject
 
 class DefaultContributionSetTest extends Specification {
 
-    @Subject contributions = new DefaultContributionSet({false} as IgnoredCommit)
+    @Subject
+            contributions = new DefaultContributionSet({ false } as IgnoredCommit)
 
     def "empty contributions"() {
         expect:
