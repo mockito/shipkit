@@ -6,6 +6,9 @@ import org.mockito.release.notes.util.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
+import java.util.LinkedList;
+
 class GitContributionsProvider implements ContributionsProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(GitContributionsProvider.class);
@@ -20,8 +23,21 @@ class GitContributionsProvider implements ContributionsProvider {
     public ContributionSet getContributionsBetween(String fromRev, String toRev) {
         LOG.info("Fetching {} from the repo", fromRev);
 
+        Collection<Commit> commits = getCommits(fromRev, toRev);
+
+        DefaultContributionSet contributions = new DefaultContributionSet();
+        for (Commit commit : commits) {
+            if (!ignoredCommit.isTrue(commit)) {
+                contributions.add(commit);
+            }
+        }
+        return contributions;
+    }
+
+    private Collection<Commit> getCommits(String fromRev, String toRev) {
         LOG.info("Loading all commits between {} and {}", fromRev, toRev);
 
+        LinkedList<Commit> commits = new LinkedList<Commit>();
         String commitToken = "@@commit@@";
         String infoToken = "@@info@@";
         // %H: commit hash
@@ -31,8 +47,6 @@ class GitContributionsProvider implements ContributionsProvider {
         // %N: commit notes
         String log = logProvider.getLog(fromRev, toRev, "--pretty=format:%H" + infoToken + "%ae" + infoToken + "%an" + infoToken + "%B%N" + commitToken);
 
-        DefaultContributionSet contributions = new DefaultContributionSet();
-
         for (String entry : log.split(commitToken)) {
             String[] entryParts = entry.split(infoToken);
             if (entryParts.length == 4) {
@@ -41,10 +55,9 @@ class GitContributionsProvider implements ContributionsProvider {
                 String author = entryParts[2].trim();
                 String message = entryParts[3].trim();
                 LOG.info("Loaded commit - email: {}, author: {}, message (trimmed): {}", email, author, message.replaceAll("\n.*", ""));
-                contributions.add(new GitCommit(commitId, email, author, message));
+                commits.add(new GitCommit(commitId, email, author, message));
             }
         }
-
-        return contributions;
+        return commits;
     }
 }
