@@ -17,7 +17,7 @@ public class BuildABTestingPlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
         //Step 1. Clone the repo for A/B testing
-        CloneGitHubRepositoryTask clone = project.getTasks().create("cloneGitHubRepository", CloneGitHubRepositoryTask.class);
+        CloneGitRepositoryTask clone = project.getTasks().create("cloneGitHubRepository", CloneGitRepositoryTask.class);
         clone.setRepository("mockito/mockito");
         clone.setTargetDir(new File(project.getBuildDir(), "abTesting/mockito/pristine"));
 
