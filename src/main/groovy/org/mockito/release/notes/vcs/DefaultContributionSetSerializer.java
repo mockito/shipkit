@@ -31,8 +31,7 @@ public class DefaultContributionSetSerializer {
     }
 
     public DefaultContributionSet deserialize(JsonObject jsonObject) {
-        final IgnoredCommit ignoredCommit = IgnoredCommitProvider.fromType(jsonObject.getString("type"));
-        DefaultContributionSet defaultContributionSet = new DefaultContributionSet(ignoredCommit);
+        DefaultContributionSet defaultContributionSet = new DefaultContributionSet();
         JsonArray commits = jsonObject.getCollection("commits");
         addCommits(defaultContributionSet, commits);
         return defaultContributionSet;

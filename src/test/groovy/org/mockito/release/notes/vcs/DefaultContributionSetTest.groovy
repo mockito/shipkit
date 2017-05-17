@@ -5,8 +5,7 @@ import spock.lang.Subject
 
 class DefaultContributionSetTest extends Specification {
 
-    @Subject
-            contributions = new DefaultContributionSet({ false } as IgnoredCommit)
+    @Subject contributions = new DefaultContributionSet()
 
     def "empty contributions"() {
         expect:
@@ -23,19 +22,5 @@ class DefaultContributionSetTest extends Specification {
 
         expect:
         contributions.allTickets == ["123", "100"] as Set
-    }
-
-    def "ignores specific commits"() {
-        contributions = new DefaultContributionSet(new IgnoreCiSkip())
-
-        when:
-        contributions.add(new GitCommit("", "a@b", "A", "foo [ci skip] bar"))
-        contributions.add(new GitCommit("", "a@b", "A", "good one"))
-        def c = contributions.allCommits as List
-
-        then:
-        c.size() == 1
-        c[0].message == "good one"
-        c[0].authorName == "A"
     }
 }

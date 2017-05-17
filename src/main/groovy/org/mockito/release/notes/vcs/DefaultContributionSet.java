@@ -4,7 +4,6 @@ import org.json.simple.Jsoner;
 import org.mockito.release.notes.model.Commit;
 import org.mockito.release.notes.model.Contribution;
 import org.mockito.release.notes.model.ContributionSet;
-import org.mockito.release.notes.util.Predicate;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -12,22 +11,14 @@ import java.util.*;
 
 class DefaultContributionSet implements ContributionSet {
 
-    private static final String JSON_FORMAT = "{ \"type\": \"%s\", \"commits\": %s }";
+    private static final String JSON_FORMAT = "{ \"commits\": %s }";
 
     private final List<DefaultContribution> contributions = new LinkedList<DefaultContribution>();
 
     private final Collection<Commit> commits = new LinkedList<Commit>();
-    private final IgnoredCommit ignoreCommit;
     private final Set<String> tickets = new LinkedHashSet<String>();
 
-    DefaultContributionSet(IgnoredCommit ignoredCommit) {
-        this.ignoreCommit = ignoredCommit;
-    }
-
     public DefaultContributionSet add(Commit commit) {
-        if (ignoreCommit.isTrue(commit)) {
-            return this;
-        }
         commits.add(commit);
         tickets.addAll(commit.getTickets());
 
@@ -78,7 +69,7 @@ class DefaultContributionSet implements ContributionSet {
     @Override
     public String toJson() {
         final String serializedCommits = Jsoner.serialize(commits);
-        return String.format(JSON_FORMAT, ignoreCommit.getType(), serializedCommits);
+        return String.format(JSON_FORMAT, serializedCommits);
     }
 
     @Override

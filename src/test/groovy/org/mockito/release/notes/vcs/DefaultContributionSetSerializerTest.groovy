@@ -11,7 +11,7 @@ class DefaultContributionSetSerializerTest extends Specification {
     def "should serialize and deserialize default contribution set"() {
         def firstCommit = new GitCommit("firstCommitId", "sample@email.com", "sampleAuthor", "sampleCommitMessage")
         def secondCommit = new GitCommit("secondCommitId", "sample@email.com", "sampleAuthor", "sampleCommitMessage")
-        def defaultContributionSet = new DefaultContributionSet(new IgnoreCiSkip())
+        def defaultContributionSet = new DefaultContributionSet()
         defaultContributionSet.add(firstCommit)
         defaultContributionSet.add(secondCommit)
         commitSerializer.deserialize(_) >>> [firstCommit, secondCommit]
@@ -22,20 +22,5 @@ class DefaultContributionSetSerializerTest extends Specification {
 
         then:
         EqualsBuilder.reflectionEquals(defaultContributionSet.getAllCommits(), deserializedData.getAllCommits())
-    }
-
-    def "should skip ci commit after deserialization"() {
-        def defaultContributionSet = new DefaultContributionSet(new IgnoreCiSkip())
-        def serializedData = serializer.serialize(defaultContributionSet)
-        def deserializedData = serializer.deserialize(serializedData)
-        def normalCommit = new GitCommit("firstCommitId", "sample@email.com", "sampleAuthor", "sampleCommitMessage")
-        def ciSkipCommit = new GitCommit("firstCommitId", "sample@email.com", "sampleAuthor", "[ci skip] sample message")
-
-        when:
-        deserializedData.add(normalCommit)
-        deserializedData.add(ciSkipCommit)
-
-        then:
-        deserializedData.getAllCommits().size() == 1
     }
 }

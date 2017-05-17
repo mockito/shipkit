@@ -7,7 +7,6 @@ import org.mockito.release.notes.internal.DefaultReleaseNotesData
 import org.mockito.release.notes.model.Improvement
 import org.mockito.release.notes.vcs.DefaultContributionSet
 import org.mockito.release.notes.vcs.DefaultContributionSetSerializer
-import org.mockito.release.notes.vcs.IgnoreCiSkip
 import spock.lang.Specification
 import spock.lang.Subject
 
@@ -26,7 +25,7 @@ class ReleaseNotesSerializerTest extends Specification {
         def improvements = new LinkedList<Improvement>()
         def improvement = new DefaultImprovement(123L, "sampleTitle", "sample.url.com", new LinkedList<String>(), true)
         improvements.add(improvement)
-        def contributionSet = new DefaultContributionSet(new IgnoreCiSkip())
+        def contributionSet = new DefaultContributionSet()
         defaultContributionSetSerializer.deserialize(_) >> contributionSet
         defaultImprovementSerializer.deserialize(_) >> improvement
         def releaseNote = new DefaultReleaseNotesData("0.1",

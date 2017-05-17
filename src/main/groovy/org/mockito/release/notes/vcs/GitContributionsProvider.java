@@ -29,7 +29,7 @@ class GitContributionsProvider implements ContributionsProvider {
         // %N: commit notes
         String log = logProvider.getLog(fromRev, toRev, "--pretty=format:%H" + infoToken + "%ae" + infoToken + "%an" + infoToken + "%B%N" + commitToken);
 
-        DefaultContributionSet contributions = new DefaultContributionSet(ignoredCommit);
+        DefaultContributionSet contributions = new DefaultContributionSet();
 
         for (String entry : log.split(commitToken)) {
             String[] entryParts = entry.split(infoToken);
