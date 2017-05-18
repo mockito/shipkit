@@ -1,12 +1,14 @@
 package org.mockito.release.notes.model;
 
+import org.json.simple.Jsonable;
+
 import java.io.Serializable;
 import java.util.Collection;
 
 /**
  * A set of contributions
  */
-public interface ContributionSet extends Serializable{
+public interface ContributionSet extends Jsonable, Serializable {
 
     /**
      * All commits in given contribution set, spanning all authors

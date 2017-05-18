@@ -186,7 +186,7 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
         String version = getProject().getVersion().toString();
         String tagPrefix = "v";
 
-        Collection<ReleaseNotesData> data = new ReleaseNotesSerializer(releaseNotesData).deserialize();
+        Collection<ReleaseNotesData> data = new ReleaseNotesSerializer().deserialize(IOUtil.readFully(releaseNotesData));
 
         String vcsCommitTemplate = "https://github.com/" + gitHubRepository + "/compare/"
                 + tagPrefix + previousVersion + "..." + tagPrefix + version;

@@ -49,4 +49,17 @@ c76924d41c219f3b71b50a28d80c23c9c81b7a8c@@info@@john@doe@@info@@John R. Doe@@inf
         then:
         c.allCommits.isEmpty()
     }
+
+    def "should skip ci commits"() {
+        def logWithSkipCiCommits = log + """11197f9e6cfc06e2fa70ed12ee6c9571af8a7fc9@@info@@szczepiq@gmail.com@@info@@Szczepan Faber@@info@@[ci skip]sample message
+second line
+@@commit@@"""
+        logProvider.getLog(_, _, _) >> logWithSkipCiCommits
+
+        when:
+        def c = provider.getContributionsBetween("v1.10.10", "HEAD")
+
+        then:
+        c.allCommits.size() == 3
+    }
 }

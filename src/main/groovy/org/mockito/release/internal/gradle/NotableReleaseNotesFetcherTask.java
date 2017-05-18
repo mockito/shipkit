@@ -7,6 +7,7 @@ import org.mockito.release.internal.gradle.util.ReleaseNotesSerializer;
 import org.mockito.release.notes.generator.ReleaseNotesGenerator;
 import org.mockito.release.notes.generator.ReleaseNotesGenerators;
 import org.mockito.release.notes.model.ReleaseNotesData;
+import org.mockito.release.notes.util.IOUtil;
 
 import java.util.Collection;
 
@@ -29,7 +30,8 @@ public class NotableReleaseNotesFetcherTask extends DefaultTask {
         Collection<ReleaseNotesData> releaseNotes = generator.generateReleaseNotesData(
                 notesGeneration.getHeadVersion(), notesGeneration.getTargetVersions(), notesGeneration.getTagPrefix(), notesGeneration.getGitHubLabels(), notesGeneration.isOnlyPullRequests());
 
-        ReleaseNotesSerializer releaseNotesSerializer = new ReleaseNotesSerializer(notesGeneration.getTemporarySerializedNotesFile());
-        releaseNotesSerializer.serialize(releaseNotes);
+        ReleaseNotesSerializer releaseNotesSerializer = new ReleaseNotesSerializer();
+        final String serializedData = releaseNotesSerializer.serialize(releaseNotes);
+        IOUtil.writeFile(notesGeneration.getTemporarySerializedNotesFile(), serializedData);
     }
 }

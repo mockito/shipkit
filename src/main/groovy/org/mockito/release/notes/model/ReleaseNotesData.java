@@ -1,5 +1,7 @@
 package org.mockito.release.notes.model;
 
+import org.json.simple.Jsonable;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -7,7 +9,7 @@ import java.util.Date;
 /**
  * Contains all the information that is needed for release notes for single specific release (version).
  */
-public interface ReleaseNotesData extends Serializable{
+public interface ReleaseNotesData extends Jsonable, Serializable {
 
     /**
      * Version of the released software component

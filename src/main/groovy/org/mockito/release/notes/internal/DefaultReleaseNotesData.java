@@ -1,13 +1,21 @@
 package org.mockito.release.notes.internal;
 
+import org.json.simple.Jsoner;
 import org.mockito.release.notes.model.ContributionSet;
 import org.mockito.release.notes.model.Improvement;
 import org.mockito.release.notes.model.ReleaseNotesData;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 
 public class DefaultReleaseNotesData implements ReleaseNotesData {
+
+    private static final String JSON_FORMAT = "{ \"version\": \"%s\", \"date\": \"%s\", \"contributions\": %s, " +
+            "\"improvements\": [%s], \"previousVersionTag\": \"%s\" , \"thisVersionTag\": \"%s\" }";
+
     private final String version;
     private final Date date;
     private final ContributionSet contributions;
@@ -54,5 +62,30 @@ public class DefaultReleaseNotesData implements ReleaseNotesData {
     @Override
     public String getPreviousVersionVcsTag() {
         return previousVersionTag;
+    }
+
+    @Override
+    public String toJson() {
+        final StringBuilder improvementsBuilder = new StringBuilder();
+        final Iterator<Improvement> iterator = improvements.iterator();
+        while (iterator.hasNext()) {
+            improvementsBuilder.append(iterator.next().toJson());
+            if (iterator.hasNext()) {
+                improvementsBuilder.append(",");
+            }
+        }
+        return String.format(JSON_FORMAT,
+                Jsoner.escape(version),
+                Jsoner.escape(String.valueOf(date.getTime())),
+                contributions.toJson(),
+                improvementsBuilder.toString(),
+                Jsoner.escape(previousVersionTag),
+                Jsoner.escape(thisVersionTag)
+        );
+    }
+
+    @Override
+    public void toJson(Writer writable) throws IOException {
+        writable.append(toJson());
     }
 }
