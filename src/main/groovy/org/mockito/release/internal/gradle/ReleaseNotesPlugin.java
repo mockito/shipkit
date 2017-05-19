@@ -17,8 +17,10 @@ import static org.mockito.release.internal.gradle.configuration.DeferredConfigur
  * The plugin adds following tasks:
  *
  * <ul>
- *     <li>updateReleaseNotes - updates release notes file in place.</li>
- *     <li>previewReleaseNotes - prints incremental release notes to the console for preview.</li>
+ *     <li>fetchReleaseNotes - fetches release notes data, see {@link ReleaseNotesFetcherTask}</li>
+ *     <li>updateReleaseNotes - updates release notes file in place, see {@link IncrementalReleaseNotes.UpdateTask}</li>
+ *     <li>previewReleaseNotes - prints incremental release notes to the console for preview,
+ *          see {@link IncrementalReleaseNotes.PreviewTask}</li>
  * </ul>
  */
 public class ReleaseNotesPlugin implements Plugin<Project> {
