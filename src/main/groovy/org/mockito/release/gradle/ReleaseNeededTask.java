@@ -121,7 +121,6 @@ public class ReleaseNeededTask extends DefaultTask {
 
         boolean allPublicationsEqual = areAllPublicationsEqual();
 
-        // add unit tests for release not needed
         releaseNotNeeded = allPublicationsEqual || skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
 
         String message = "  Release is needed: " + !releaseNotNeeded +
