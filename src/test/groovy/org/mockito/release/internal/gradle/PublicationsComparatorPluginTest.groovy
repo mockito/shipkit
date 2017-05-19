@@ -26,8 +26,8 @@ class PublicationsComparatorPluginTest extends Specification {
 
         new File(tmp.root.absolutePath + "/version.properties") << "version=1.0.1\npreviousVersion=1.0.0"
 
-        parent.allprojects.each { p ->
-            p.setGroup("org.group")
+        parent.allprojects{
+            group = "org.group"
         }
 
         when:
@@ -35,8 +35,7 @@ class PublicationsComparatorPluginTest extends Specification {
         child.evaluate()
 
         then:
-        def task = (PublicationsComparatorTask) child.getTasks()
-                .getByName(PublicationsComparatorPlugin.COMPARE_PUBLICATIONS_TASK)
+        PublicationsComparatorTask task = child.getTasks().getByName(PublicationsComparatorPlugin.COMPARE_PUBLICATIONS_TASK)
         task.getProjectGroup() == "org.group"
         task.getCurrentVersion() == "1.0.1"
         task.getPreviousVersion() == "1.0.0"
@@ -56,8 +55,7 @@ class PublicationsComparatorPluginTest extends Specification {
         child.plugins.apply("org.mockito.mockito-release-tools.publications-comparator")
 
         then:
-        def task = (PublicationsComparatorTask) child.getTasks()
-                .getByName(PublicationsComparatorPlugin.COMPARE_PUBLICATIONS_TASK);
+        PublicationsComparatorTask task = child.getTasks().getByName(PublicationsComparatorPlugin.COMPARE_PUBLICATIONS_TASK);
 
         task.getCurrentVersion() == "0.1.1"
         task.getPreviousVersion() == "0.1.0"
@@ -79,7 +77,7 @@ class PublicationsComparatorPluginTest extends Specification {
         child.evaluate()
 
         then:
-        def task = (DownloadPreviousReleaseArtifactsTask) child.getTasks()
+        DownloadPreviousReleaseArtifactsTask task = child.getTasks()
                 .getByName(PublicationsComparatorPlugin.DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK);
 
         task.previousVersionPomUrl.contains("bintray.com")
@@ -96,7 +94,7 @@ class PublicationsComparatorPluginTest extends Specification {
         child.evaluate()
 
         then:
-        def task = (DownloadPreviousReleaseArtifactsTask) child.getTasks()
+        DownloadPreviousReleaseArtifactsTask task = child.getTasks()
                 .getByName(PublicationsComparatorPlugin.DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK);
 
         task.previousVersionPomUrl == null
@@ -117,9 +115,9 @@ class PublicationsComparatorPluginTest extends Specification {
         child.evaluate()
 
         then:
-        def downloadTask = (DownloadPreviousReleaseArtifactsTask) child.getTasks()
+        DownloadPreviousReleaseArtifactsTask downloadTask = child.getTasks()
                 .getByName(PublicationsComparatorPlugin.DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK)
-        def comparisonTask = (PublicationsComparatorTask) child.getTasks()
+        PublicationsComparatorTask comparisonTask = child.getTasks()
                 .getByName(PublicationsComparatorPlugin.COMPARE_PUBLICATIONS_TASK)
 
         def basePath = child.getBuildDir().absolutePath + "/previous-release-artifacts/child-1.0.0";

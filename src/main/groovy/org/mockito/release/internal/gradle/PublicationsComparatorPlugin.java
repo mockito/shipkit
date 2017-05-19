@@ -131,11 +131,14 @@ public class PublicationsComparatorPlugin implements Plugin<Project> {
 
     private String getDefaultIfNull(String url, String variableName, String extension, DefaultArtifactUrlResolver defaultArtifactUrlResolver) {
         if(url == null){
+            /**
+             * it's null when {@link DefaultArtifactUrlResolverFactory} can't find any implementation suitable for the current implementation
+             */
             if(defaultArtifactUrlResolver == null){
                 return null;
             }
             String defaultUrl = defaultArtifactUrlResolver.getDefaultUrl(extension);
-            LOG.lifecycle("Variable {} not set. Setting it to default value - {}", variableName, defaultUrl);
+            LOG.info("Property {} of task {} not set. Setting it to default value - {}", variableName, COMPARE_PUBLICATIONS_TASK, defaultUrl);
             return defaultUrl;
         }
         return url;

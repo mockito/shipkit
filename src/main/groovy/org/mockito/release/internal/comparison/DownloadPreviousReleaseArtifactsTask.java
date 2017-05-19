@@ -29,21 +29,14 @@ public class DownloadPreviousReleaseArtifactsTask extends DefaultTask {
 
 
     @TaskAction public void downloadPreviousReleases(){
-        if(previousVersionPomUrl == null || previousVersionSourcesJarUrl == null){
-            throw new GradleException("You have to configure previousVersionPomUrl and previousVersionSourcesJarUrl to use DownloadPreviousReleaseArtifactsTask.\n"
-                    + "If you use one of the supported publishing plugins default url will be configured for you.\n"
-                    + "Currently supported plugins: Bintray"
-            );
-        }
-        downloadRemoteFile(".pom", previousVersionPomUrl, previousVersionPomLocalFile);
-        downloadRemoteFile("-sources.jar", previousVersionSourcesJarUrl, previousVersionSourcesJarLocalFile);
+        downloadRemoteFile(previousVersionPomUrl, previousVersionPomLocalFile);
+        downloadRemoteFile(previousVersionSourcesJarUrl, previousVersionSourcesJarLocalFile);
     }
 
-    private void downloadRemoteFile(String extension, String remoteUrl, File localFile) {
+    private void downloadRemoteFile(String remoteUrl, File localFile) {
         LOG.lifecycle("Downloading remote artifact\n" +
                 "  - from {}\n" +
                 "  - and saving it to {}", remoteUrl, localFile);
-
 
         IOUtil.downloadToFile(remoteUrl, localFile);
     }
@@ -52,6 +45,10 @@ public class DownloadPreviousReleaseArtifactsTask extends DefaultTask {
         return previousVersionPomUrl;
     }
 
+    /**
+     *
+     * @param previousVersionPomUrl URL where previous version pom file can be found
+     */
     public void setPreviousVersionPomUrl(String previousVersionPomUrl) {
         this.previousVersionPomUrl = previousVersionPomUrl;
     }
@@ -60,10 +57,16 @@ public class DownloadPreviousReleaseArtifactsTask extends DefaultTask {
         return previousVersionSourcesJarUrl;
     }
 
+    /**
+     * @param previousVersionSourcesJarUrl URL where previous version sources jar can be found
+     */
     public void setPreviousVersionSourcesJarUrl(String previousVersionSourcesJarUrl) {
         this.previousVersionSourcesJarUrl = previousVersionSourcesJarUrl;
     }
 
+    /**
+     * @param previousVersionPomLocalFile temporary storage file for downloaded previous version pom
+     */
     public void setPreviousVersionPomLocalFile(File previousVersionPomLocalFile) {
         this.previousVersionPomLocalFile = previousVersionPomLocalFile;
     }
@@ -76,6 +79,9 @@ public class DownloadPreviousReleaseArtifactsTask extends DefaultTask {
         return previousVersionSourcesJarLocalFile;
     }
 
+    /**
+     * @param previousVersionSourcesJarLocalFile temporary storage file for downloaded previous version sources jar
+     */
     public void setPreviousVersionSourcesJarLocalFile(File previousVersionSourcesJarLocalFile) {
         this.previousVersionSourcesJarLocalFile = previousVersionSourcesJarLocalFile;
     }
