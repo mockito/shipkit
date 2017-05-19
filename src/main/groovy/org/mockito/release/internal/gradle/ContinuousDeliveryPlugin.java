@@ -90,7 +90,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                     public void execute(Task task) {
                         //doFirst (execution time)
                         // so that we can access user-configured properties
-                        t.commandLine("git", "add", conf.getReleaseNotes().getFile(), conf.getReleaseNotes().getNotableFile());
+                        t.commandLine("git", "add", conf.getReleaseNotes().getFile());
                     }
                 });
             }

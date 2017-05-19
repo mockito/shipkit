@@ -191,20 +191,6 @@ public class ReleaseConfiguration {
         }
 
         /**
-         * Notable release notes file, for example "docs/notable-release-notes.md"
-         */
-        public String getNotableFile() {
-            return getString("releaseNotes.notableFile");
-        }
-
-        /**
-         * See {@link #getNotableFile()}
-         */
-        public void setNotableFile(String notableFile) {
-            configuration.put("releaseNotes.notableFile", notableFile);
-        }
-
-        /**
          * Issue tracker label mappings.
          * The mapping of issue tracker labels (for example "GitHub label") to human readable and presentable name.
          * The order of labels is important and will influence the order
