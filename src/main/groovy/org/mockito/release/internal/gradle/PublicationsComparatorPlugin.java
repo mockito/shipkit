@@ -3,13 +3,18 @@ package org.mockito.release.internal.gradle;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.bundling.Jar;
 import org.mockito.release.gradle.ReleaseConfiguration;
+import org.mockito.release.internal.comparison.DownloadPreviousReleaseArtifactsTask;
 import org.mockito.release.internal.comparison.PublicationsComparatorTask;
 import org.mockito.release.internal.comparison.artifact.DefaultArtifactUrlResolver;
 import org.mockito.release.internal.comparison.artifact.DefaultArtifactUrlResolverFactory;
 import org.mockito.release.internal.gradle.configuration.DeferredConfiguration;
 import org.mockito.release.internal.gradle.util.TaskMaker;
+
+import java.io.File;
 
 /**
  * Opinionated continuous delivery plugin.
@@ -23,17 +28,52 @@ import org.mockito.release.internal.gradle.util.TaskMaker;
  * Adds following tasks:
  *
  * <ul>
+ *     <li>downloadPreviousReleaseArtifacts</li>
  *     <li>comparePublications</li>
  * </ul>
  */
 public class PublicationsComparatorPlugin implements Plugin<Project> {
 
+    private static final Logger LOG = Logging.getLogger(PublicationsComparatorPlugin.class);
+
+    final static String DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK = "downloadPreviousReleaseArtifacts";
     final static String COMPARE_PUBLICATIONS_TASK = "comparePublications";
+
+    final static String PREVIOUS_RELEASE_ARTIFACTS_DIR = "/previous-release-artifacts";
 
     @Override
     public void apply(final Project project) {
         project.getPlugins().apply(BaseJavaLibraryPlugin.class);
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
+
+        final Jar sourcesJar = (Jar) project.getTasks().getByName(BaseJavaLibraryPlugin.SOURCES_JAR_TASK);
+
+        String basePreviousVersionArtifactPath = getBasePreviousVersionArtifactPath(project, conf, sourcesJar);
+        final File previousVersionPomLocalFile = new File(basePreviousVersionArtifactPath + ".pom");
+        final File previousVersionSourcesJarLocalFile = new File(basePreviousVersionArtifactPath + "-sources.jar");
+
+        TaskMaker.task(project, DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK, DownloadPreviousReleaseArtifactsTask.class, new Action<DownloadPreviousReleaseArtifactsTask>() {
+            @Override
+            public void execute(final DownloadPreviousReleaseArtifactsTask t) {
+                t.setDescription("Downloads artifacts of last released version and stores it locally for comparison");
+
+                DeferredConfiguration.deferredConfiguration(project, new Runnable() {
+                    @Override
+                    public void run() {
+                        DefaultArtifactUrlResolver artifactUrlResolver =
+                                new DefaultArtifactUrlResolverFactory().getDefaultResolver(project, sourcesJar.getBaseName(), conf.getPreviousReleaseVersion());
+
+                        String previousVersionPomUrl = getDefaultIfNull(t.getPreviousVersionPomUrl(), "previousVersionPomUrl", ".pom", artifactUrlResolver);
+                        t.setPreviousVersionPomUrl(previousVersionPomUrl);
+                        String previousVersionSourcesJarUrl = getDefaultIfNull(t.getPreviousVersionSourcesJarUrl(), "previousSourcesJarUrl", "-sources.jar", artifactUrlResolver);
+                        t.setPreviousVersionSourcesJarUrl(previousVersionSourcesJarUrl);
+
+                        t.setPreviousVersionPomLocalFile(previousVersionPomLocalFile);
+                        t.setPreviousVersionSourcesJarLocalFile(previousVersionSourcesJarLocalFile);
+                    }
+                });
+            }
+        });
 
         /*
         TODO ww make this puppy incremental :)
@@ -59,11 +99,14 @@ public class PublicationsComparatorPlugin implements Plugin<Project> {
             public void execute(final PublicationsComparatorTask t) {
                 t.setDescription("Compares artifacts and poms between last version and the currently built one to see if there are any differences");
 
+                t.dependsOn(DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK);
+
                 t.setCurrentVersion(project.getVersion().toString());
                 t.setPreviousVersion(conf.getPreviousReleaseVersion());
+                t.setPreviousVersionPomFile(previousVersionPomLocalFile);
+                t.setPreviousVersionSourcesJarFile(previousVersionSourcesJarLocalFile);
 
                 //Set local sources jar for comparison with previously released
-                final Jar sourcesJar = (Jar) project.getTasks().getByName(BaseJavaLibraryPlugin.SOURCES_JAR_TASK);
                 t.compareSourcesJar(sourcesJar);
 
                 //Set locally built pom file for comparison with previously released
@@ -75,23 +118,29 @@ public class PublicationsComparatorPlugin implements Plugin<Project> {
                     @Override
                     public void run() {
                         t.setProjectGroup(project.getGroup().toString());
-                        /*
-                        TODO ww it is more convenient for Gradle users and for us, when the task has simple inputs (Strings, Files)
-                        If the task API has getters/setters on types like DefaultArtifactUrlResolver
-                        it is harder to make it incremental, it also makes the public API bigger because you need to expose and document those types
-                        Why not have the url get calculated right here, with some conditional check:
-
-                        if (t.getPreviousJarUrl() == null) {
-                          t.setPreviousJarUrl(...)
-                        }
-
-                        */
-                        DefaultArtifactUrlResolver artifactUrlResolver =
-                                new DefaultArtifactUrlResolverFactory().getDefaultResolver(project, sourcesJar.getBaseName(), conf.getPreviousReleaseVersion());
-                        t.setDefaultArtifactUrlResolver(artifactUrlResolver);
                     }
                 });
             }
         });
+    }
+
+    private String getBasePreviousVersionArtifactPath(Project project, ReleaseConfiguration conf, Jar sourcesJar) {
+        return project.getBuildDir().getAbsolutePath() + PREVIOUS_RELEASE_ARTIFACTS_DIR
+                + File.separator + sourcesJar.getBaseName() + "-" + conf.getPreviousReleaseVersion();
+    }
+
+    private String getDefaultIfNull(String url, String variableName, String extension, DefaultArtifactUrlResolver defaultArtifactUrlResolver) {
+        if(url == null){
+            /**
+             * it's null when {@link DefaultArtifactUrlResolverFactory} can't find any implementation suitable for the current implementation
+             */
+            if(defaultArtifactUrlResolver == null){
+                return null;
+            }
+            String defaultUrl = defaultArtifactUrlResolver.getDefaultUrl(extension);
+            LOG.info("Property {} of task {} not set. Setting it to default value - {}", variableName, COMPARE_PUBLICATIONS_TASK, defaultUrl);
+            return defaultUrl;
+        }
+        return url;
     }
 }
