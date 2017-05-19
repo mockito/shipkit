@@ -1,12 +1,11 @@
 package org.mockito.release.notes.contributors;
 
-import org.mockito.release.notes.model.Contributor;
 import org.mockito.release.notes.model.ProjectContributor;
 
 import java.io.Serializable;
 import java.util.*;
 
-class DefaultProjectContributorsSet implements ProjectContributorsSet, Serializable {
+public class DefaultProjectContributorsSet implements ProjectContributorsSet, Serializable {
 
     //This set is used to manage uniqueness of contributors:
     private final Set<ProjectContributor> contributors = new HashSet<ProjectContributor>();

@@ -5,21 +5,23 @@ import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.*;
+import org.gradle.api.tasks.Optional;
 import org.mockito.release.internal.gradle.util.FileUtil;
 import org.mockito.release.internal.gradle.util.ReleaseNotesSerializer;
 import org.mockito.release.internal.gradle.util.team.TeamMember;
 import org.mockito.release.internal.gradle.util.team.TeamParser;
+import org.mockito.release.notes.contributors.AllContributorsSerializer;
 import org.mockito.release.notes.contributors.DefaultContributor;
+import org.mockito.release.notes.contributors.DefaultProjectContributorsSet;
+import org.mockito.release.notes.contributors.ProjectContributorsSet;
 import org.mockito.release.notes.format.ReleaseNotesFormatters;
 import org.mockito.release.notes.model.Contributor;
+import org.mockito.release.notes.model.ProjectContributor;
 import org.mockito.release.notes.model.ReleaseNotesData;
 import org.mockito.release.notes.util.IOUtil;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Generates incremental, detailed release notes text.
@@ -37,6 +39,7 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
     private File releaseNotesData;
     private Collection<String> developers;
     private Collection<String> contributors;
+    private File contributorsDataFile;
 
     /**
      * Release notes file this task operates on.
@@ -165,6 +168,21 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
         this.contributors = contributors;
     }
 
+    /**
+     * {@link #getContributorsDataFile()}
+     */
+
+    public void setContributorsDataFile(File contributorsDataFile) {
+        this.contributorsDataFile = contributorsDataFile;
+    }
+
+    /**
+     * File name from reads contributors from GitHub
+     */
+    @InputFile public File getContributorsDataFile() {
+        return contributorsDataFile;
+    }
+
     private void assertConfigured() {
         //TODO SF unit test coverage
         if (releaseNotesFile == null || !releaseNotesFile.isFile()) {
@@ -191,7 +209,15 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
         String vcsCommitTemplate = "https://github.com/" + gitHubRepository + "/compare/"
                 + tagPrefix + previousVersion + "..." + tagPrefix + version;
 
-        Map<String, Contributor> contributorsMap = contributorsMap(contributors, developers);
+        ProjectContributorsSet contributorsFromGitHub;
+        if(!contributors.isEmpty()) {
+            // if contributors are defined in releasing.team.contributors don't deserialize them from file
+            contributorsFromGitHub = new DefaultProjectContributorsSet();
+        } else {
+            contributorsFromGitHub = new AllContributorsSerializer().deserialize(IOUtil.readFully(contributorsDataFile));
+        }
+
+        Map<String, Contributor> contributorsMap = contributorsMap(contributors, contributorsFromGitHub, developers);
         String notes = ReleaseNotesFormatters.detailedFormatter(
                 "", gitHubLabelMapping, vcsCommitTemplate, publicationRepository, contributorsMap)
                 .formatReleaseNotes(data);
@@ -200,12 +226,17 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
     }
 
     //TODO SF deduplicate and unit test
-    static Map<String, Contributor> contributorsMap(Collection<String> contributors, Collection<String> developers) {
+    static Map<String, Contributor> contributorsMap(Collection<String> contributorsFromConfiguration,
+                                                    ProjectContributorsSet contributorsFromGitHub,
+                                                    Collection<String> developers) {
         Map<String, Contributor> out = new HashMap<String, Contributor>();
-        for (String contributor : contributors) {
+        for (String contributor : contributorsFromConfiguration) {
             TeamMember member = TeamParser.parsePerson(contributor);
             out.put(member.name, new DefaultContributor(member.name, member.gitHubUser,
                     "http://github.com/" + member.gitHubUser));
+        }
+        for (ProjectContributor projectContributor : contributorsFromGitHub.getAllContributors()) {
+            out.put(projectContributor.getName(), projectContributor);
         }
         for (String developer : developers) {
             TeamMember member = TeamParser.parsePerson(developer);
