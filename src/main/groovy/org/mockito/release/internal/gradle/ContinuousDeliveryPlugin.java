@@ -5,14 +5,10 @@ import org.gradle.api.*;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Exec;
-import org.mockito.release.gradle.BumpVersionFileTask;
 import org.mockito.release.gradle.IncrementalReleaseNotes;
 import org.mockito.release.gradle.ReleaseConfiguration;
-import org.mockito.release.gradle.ReleaseNeededTask;
-import org.mockito.release.internal.comparison.PublicationsComparatorTask;
 import org.mockito.release.internal.gradle.util.BintrayUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
-import org.mockito.release.version.VersionInfo;
 
 import static org.mockito.release.internal.gradle.BaseJavaLibraryPlugin.POM_TASK;
 import static org.mockito.release.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
@@ -72,15 +68,10 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
             }
         });
 
-        final boolean notableRelease = project.getExtensions().getByType(VersionInfo.class).isNotableRelease();
-
-        //TODO use constants for all task names
-        ((BumpVersionFileTask) project.getTasks().getByName(VersioningPlugin.BUMP_VERSION_FILE_TASK))
-                .setUpdateNotableVersions(notableRelease);
-
         //TODO we should have tasks from the same plugin to have the same group
         //let's have a task maker instance in a plugin that has sets the group accordingly
 
+        //TODO use constants for all task names
         TaskMaker.execTask(project, "gitAddReleaseNotes", new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Performs 'git add' for the release notes file");
