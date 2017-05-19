@@ -75,7 +75,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
         TaskMaker.execTask(project, "gitAddReleaseNotes", new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Performs 'git add' for the release notes file");
-                t.mustRunAfter("updateReleaseNotes");
+                t.mustRunAfter(ReleaseNotesPlugin.UPDATE_NOTES_TASK);
                 project.getTasks().getByName(GitPlugin.COMMIT_TASK).mustRunAfter(t);
                 t.doFirst(new Action<Task>() {
                     public void execute(Task task) {
@@ -149,7 +149,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                         "Ship with: './gradlew performRelease -Preleasing.dryRun=false'. " +
                         "Test with: './gradlew testRelease'");
 
-                t.dependsOn(VersioningPlugin.BUMP_VERSION_FILE_TASK, "updateReleaseNotes");
+                t.dependsOn(VersioningPlugin.BUMP_VERSION_FILE_TASK, ReleaseNotesPlugin.UPDATE_NOTES_TASK);
                 t.dependsOn(AutoVersioningPlugin.ADD_BUMP_VERSION_TASK, "gitAddReleaseNotes", GitPlugin.COMMIT_TASK, GitPlugin.TAG_TASK);
                 t.dependsOn(GitPlugin.PUSH_TASK);
                 t.dependsOn("bintrayUploadAll");
