@@ -5,9 +5,11 @@ import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.internal.impldep.com.google.gson.annotations.Expose;
 import org.mockito.release.internal.DefaultEnvPropertyAccessor;
 import org.mockito.release.internal.comparison.PublicationsComparatorTask;
 import org.mockito.release.internal.util.EnvPropertyAccessor;
+import org.mockito.release.internal.util.ExposedForTesting;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -147,6 +149,7 @@ public class ReleaseNeededTask extends DefaultTask {
         publicationsComparators.add(task);
     }
 
+    @ExposedForTesting
     boolean areAllPublicationsEqual() {
         if (publicationsComparators.isEmpty()) {
             return false;
@@ -161,6 +164,7 @@ public class ReleaseNeededTask extends DefaultTask {
         return allEqual;
     }
 
+    @ExposedForTesting
     void setEnvPropertyAccessor(EnvPropertyAccessor envPropertyAccessor){
         this.envPropertyAccessor = envPropertyAccessor;
     }
