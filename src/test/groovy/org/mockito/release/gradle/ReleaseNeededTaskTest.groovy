@@ -3,7 +3,7 @@ package org.mockito.release.gradle
 import org.gradle.api.GradleException
 import org.gradle.testfixtures.ProjectBuilder
 import org.mockito.release.internal.comparison.PublicationsComparatorTask
-import org.mockito.release.internal.util.EnvPropertyAccessor
+import org.mockito.release.internal.util.EnvVariables
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -18,9 +18,9 @@ class ReleaseNeededTaskTest extends Specification {
         underTest.setCommitMessage(commitMessage)
         underTest.setBranch(branch)
         underTest.setPullRequest(pullRequest)
-        def envPropertyAcceccor = Mock(EnvPropertyAccessor)
-        envPropertyAcceccor.getenv("SKIP_RELEASE") >> skipEnvVar
-        underTest.setEnvPropertyAccessor(envPropertyAcceccor)
+        def envVariables = Mock(EnvVariables)
+        envVariables.getenv("SKIP_RELEASE") >> skipEnvVar
+        underTest.setEnvVariables(envVariables)
         int i = 0;
         publicationsComparatorsResults.each{
             def task = tasks.create("" + i++, PublicationsComparatorTask)
