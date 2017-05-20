@@ -2,14 +2,15 @@ package org.mockito.release.notes.generator
 
 import org.mockito.release.notes.format.ReleaseNotesFormatters
 import org.mockito.release.notes.vcs.DefaultCommitApprover
+import spock.lang.Ignore
 import spock.lang.Specification
 
 class DefaultReleaseNotesGeneratorTest extends Specification {
 
-//    @Ignore //TODO make it a proper integ test
+    @Ignore //TODO make it a proper integ test
     def "gets release notes data"() {
         File rootDir = findRootDir()
-        rootDir = new File("/Users/mkuster/work/mockito-release-tools-example")
+        rootDir = new File("/Users/sfaber/mockito/example-release")
 
         def authToken = "e7fe8fcdd6ffed5c38498c4c79b2a68e6f6ed1bb"
         def gen = ReleaseNotesGenerators.releaseNotesGenerator(rootDir, "mockito/mockito-release-tools-example", authToken, new DefaultCommitApprover())
