@@ -113,7 +113,6 @@ class DefaultVersionInfo implements VersionInfo {
     }
 
     public boolean isNotableRelease() {
-        //TODO also check for env variable here / commit message, we already check for 'TRAVIS_COMMIT_MESSAGE' elsewhere
-        return version.endsWith(".0") || version.endsWith(".0.0");
+        return version.endsWith(".0.0");
     }
 }
