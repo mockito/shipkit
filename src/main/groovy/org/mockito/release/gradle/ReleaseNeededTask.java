@@ -38,7 +38,6 @@ public class ReleaseNeededTask extends DefaultTask {
     private String commitMessage;
     private boolean pullRequest;
     private boolean explosive;
-    private boolean releaseNotNeeded;
     private EnvVariables envVariables = new EnvVariables();
 
     /**
@@ -127,7 +126,7 @@ public class ReleaseNeededTask extends DefaultTask {
 
         boolean allPublicationsEqual = areAllPublicationsEqual();
 
-        releaseNotNeeded = allPublicationsEqual || skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
+        boolean releaseNotNeeded = allPublicationsEqual || skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
 
         String message = "  Release is needed: " + !releaseNotNeeded +
                 "\n    - skip by env variable: " + skipEnvVariable +
