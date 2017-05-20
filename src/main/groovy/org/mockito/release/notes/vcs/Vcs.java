@@ -11,7 +11,7 @@ public class Vcs {
      * Provides means to get contributions.
      */
     public static ContributionsProvider getContributionsProvider(ProcessRunner runner) {
-        return new GitContributionsProvider(new GitLogProvider(runner), new IgnoreCiSkip());
+        return new GitContributionsProvider(new GitLogProvider(runner), new DefaultCommitApprover());
     }
 
     /**

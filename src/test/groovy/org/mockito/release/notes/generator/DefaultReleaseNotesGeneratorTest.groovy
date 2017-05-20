@@ -6,10 +6,10 @@ import spock.lang.Specification
 
 class DefaultReleaseNotesGeneratorTest extends Specification {
 
-    @Ignore //TODO make it a proper integ test
+//    @Ignore //TODO make it a proper integ test
     def "gets release notes data"() {
         File rootDir = findRootDir()
-        rootDir = new File("/Users/sfaber/mockito/example-release")
+        rootDir = new File("/Users/mkuster/work/mockito-release-tools-example")
 
         def authToken = "e7fe8fcdd6ffed5c38498c4c79b2a68e6f6ed1bb"
         def gen = ReleaseNotesGenerators.releaseNotesGenerator(rootDir, "mockito/mockito-release-tools-example", authToken)

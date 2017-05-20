@@ -15,9 +15,9 @@ class GitContributionsProvider implements ContributionsProvider {
     private final GitLogProvider logProvider;
     private final Predicate<Commit> ignoredCommit;
 
-    GitContributionsProvider(GitLogProvider logProvider, Predicate<Commit> ignoredCommit) {
+    GitContributionsProvider(GitLogProvider logProvider, Predicate<Commit> commitApprover) {
         this.logProvider = logProvider;
-        this.ignoredCommit = ignoredCommit;
+        this.ignoredCommit = commitApprover;
     }
 
     public ContributionSet getContributionsBetween(String fromRev, String toRev) {
@@ -27,7 +27,7 @@ class GitContributionsProvider implements ContributionsProvider {
 
         DefaultContributionSet contributions = new DefaultContributionSet();
         for (Commit commit : commits) {
-            if (!ignoredCommit.isTrue(commit)) {
+            if (ignoredCommit.isTrue(commit)) {
                 contributions.add(commit);
             }
         }
