@@ -1,3 +1,4 @@
+#!/bin/bash
 # pre-commit.sh
 # based on: https://gist.github.com/KenVanHoeylandt/c7a928426bce83ffab400ab1fd99054a
 # and on: http://codeinthehole.com/tips/tips-for-using-a-git-pre-commit-hook/
