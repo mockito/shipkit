@@ -3,6 +3,7 @@ package org.mockito.release.gradle
 import org.gradle.api.GradleException
 import org.gradle.testfixtures.ProjectBuilder
 import org.mockito.release.internal.comparison.PublicationsComparatorTask
+import org.mockito.release.internal.util.EnvPropertyAccessor
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -12,11 +13,14 @@ class ReleaseNeededTaskTest extends Specification {
     ReleaseNeededTask underTest = tasks.create("releaseNeeded", ReleaseNeededTask)
 
     @Unroll
-    def "release is needed" (commitMessage, branch, pullRequest, publicationsComparatorsResults, releaseNotNeeded){
+    def "release is needed" (commitMessage, branch, pullRequest, skipEnvVar, publicationsComparatorsResults, releaseNeeded){
         given:
         underTest.setCommitMessage(commitMessage)
         underTest.setBranch(branch)
         underTest.setPullRequest(pullRequest)
+        def envPropertyAcceccor = Mock(EnvPropertyAccessor)
+        envPropertyAcceccor.getenv("SKIP_RELEASE") >> skipEnvVar
+        underTest.setEnvPropertyAccessor(envPropertyAcceccor)
         int i = 0;
         publicationsComparatorsResults.each{
             def task = tasks.create("" + i++, PublicationsComparatorTask)
@@ -26,23 +30,22 @@ class ReleaseNeededTaskTest extends Specification {
         underTest.setReleasableBranchRegex("master")
 
         expect:
-        underTest.releaseNeeded()
-        
-        underTest.isReleaseNotNeeded() == releaseNotNeeded
+        underTest.releaseNeeded() == releaseNeeded
 
         where:
-        commitMessage       | branch    | pullRequest | publicationsComparatorsResults || releaseNotNeeded
-        "message"           | "master"  | false       | [false, false]                 || false // base case (in all other cases only one parameter changes)
+        commitMessage       | branch    | pullRequest |skipEnvVar | publicationsComparatorsResults || releaseNeeded
+        "message"           | "master"  | false       | null      | [false, false]                 || true  // base case (in all other cases only one parameter changes)
 
-        null                | "master"  | false       | [false, false]                 || false // null commit msg
-        " "                 | "master"  | false       | [false, false]                 || false // only whitespaces in commit msg
-        "message"           | "master"  | false       | [true, false]                  || false  // not all publications equal
+        null                | "master"  | false       | null      | [false, false]                 || true  // null commit msg
+        " "                 | "master"  | false       | null      | [false, false]                 || true  // only whitespaces in commit msg
+        "message"           | "master"  | false       | null      | [true, false]                  || true  // not all publications equal
 
-        "[ci skip-release]" | "master"  | false       | [false, false]                 || true  // skip-release in commit msg
-        "message"           | "feature" | false       | [false, false]                 || true  // feature branch
-        "message"           | null      | false       | [false, false]                 || true  // null branch
-        "message"           | "master"  | true        | [false, false]                 || true  // pull request
-        "message"           | "master"  | false       | [true, true]                   || true  // all publications equal
+        "[ci skip-release]" | "master"  | false       | null      | [false, false]                 || false // skip-release in commit msg
+        "message"           | "feature" | false       | null      | [false, false]                 || false // feature branch
+        "message"           | null      | false       | null      | [false, false]                 || false // null branch
+        "message"           | "master"  | true        | null      | [false, false]                 || false // pull request
+        "message"           | "master"  | false       | "true"    | [false, false]                 || false // SKIP_RELEASE set
+        "message"           | "master"  | false       | null      | [true, true]                   || false // all publications equal
     }
 
     def "allPublicationsEqual should be false if no PublicationComparisonTasks"() {
@@ -102,10 +105,7 @@ class ReleaseNeededTaskTest extends Specification {
         underTest.setExplosive(false)
         underTest.setPullRequest(true) // pullRequest == true makes notNeeded == true
 
-        when:
-        underTest.releaseNeeded()
-
-        then:
-        underTest.isReleaseNotNeeded()
+        expect:
+        !underTest.releaseNeeded()
     }
 }

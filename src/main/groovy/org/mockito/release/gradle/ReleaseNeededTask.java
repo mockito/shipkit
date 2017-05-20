@@ -5,7 +5,9 @@ import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskAction;
+import org.mockito.release.internal.DefaultEnvPropertyAccessor;
 import org.mockito.release.internal.comparison.PublicationsComparatorTask;
+import org.mockito.release.internal.util.EnvPropertyAccessor;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -34,6 +36,7 @@ public class ReleaseNeededTask extends DefaultTask {
     private boolean pullRequest;
     private boolean explosive;
     private boolean releaseNotNeeded;
+    private EnvPropertyAccessor envPropertyAccessor = new DefaultEnvPropertyAccessor();
 
     /**
      * The branch we currently operate on
@@ -106,8 +109,8 @@ public class ReleaseNeededTask extends DefaultTask {
         return this;
     }
 
-    @TaskAction public void releaseNeeded() {
-        boolean skipEnvVariable = System.getenv(SKIP_RELEASE_ENV) != null;
+    @TaskAction public boolean releaseNeeded() {
+        boolean skipEnvVariable = envPropertyAccessor.getenv(SKIP_RELEASE_ENV) != null;
         LOG.lifecycle("  Environment variable {} present: {}", SKIP_RELEASE_ENV, skipEnvVariable);
 
         boolean commitMessageEmpty = commitMessage == null || commitMessage.trim().isEmpty();
@@ -135,6 +138,8 @@ public class ReleaseNeededTask extends DefaultTask {
         } else {
             LOG.lifecycle(message);
         }
+
+        return !releaseNotNeeded;
     }
 
     public void addPublicationsComparator(PublicationsComparatorTask task) {
@@ -156,7 +161,7 @@ public class ReleaseNeededTask extends DefaultTask {
         return allEqual;
     }
 
-    boolean isReleaseNotNeeded(){
-        return releaseNotNeeded;
+    void setEnvPropertyAccessor(EnvPropertyAccessor envPropertyAccessor){
+        this.envPropertyAccessor = envPropertyAccessor;
     }
 }
