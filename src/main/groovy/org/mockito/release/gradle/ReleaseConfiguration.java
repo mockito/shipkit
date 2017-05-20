@@ -27,7 +27,6 @@ public class ReleaseConfiguration {
     private final Git git = new Git();
     private final Team team = new Team();
 
-    private boolean notableRelease;
     private String previousReleaseVersion;
 
     public ReleaseConfiguration() {
@@ -73,21 +72,6 @@ public class ReleaseConfiguration {
 
     public Team getTeam() {
         return team;
-    }
-
-    /**
-     * See {@link #isNotableRelease()}
-     */
-    public void setNotableRelease(boolean notableRelease) {
-        this.notableRelease = notableRelease;
-    }
-
-    /**
-     * Informs if the release is considered 'notable' release.
-     * See {@link org.mockito.release.version.VersionInfo#isNotableRelease()}
-     */
-    public boolean isNotableRelease() {
-        return notableRelease;
     }
 
     /**
