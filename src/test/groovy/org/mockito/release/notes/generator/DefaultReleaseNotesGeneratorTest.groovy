@@ -1,7 +1,7 @@
 package org.mockito.release.notes.generator
 
 import org.mockito.release.notes.format.ReleaseNotesFormatters
-import spock.lang.Ignore
+import org.mockito.release.notes.vcs.DefaultCommitApprover
 import spock.lang.Specification
 
 class DefaultReleaseNotesGeneratorTest extends Specification {
@@ -12,7 +12,7 @@ class DefaultReleaseNotesGeneratorTest extends Specification {
         rootDir = new File("/Users/mkuster/work/mockito-release-tools-example")
 
         def authToken = "e7fe8fcdd6ffed5c38498c4c79b2a68e6f6ed1bb"
-        def gen = ReleaseNotesGenerators.releaseNotesGenerator(rootDir, "mockito/mockito-release-tools-example", authToken)
+        def gen = ReleaseNotesGenerators.releaseNotesGenerator(rootDir, "mockito/mockito-release-tools-example", authToken, new DefaultCommitApprover())
         def notes = gen.generateReleaseNotesData(null, ["0.10.0", "0.7.1", "0.0.1"], "v", ["noteworthy"], true)
 
         expect:

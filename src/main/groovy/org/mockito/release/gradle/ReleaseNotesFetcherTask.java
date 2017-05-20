@@ -9,6 +9,7 @@ import org.mockito.release.notes.generator.ReleaseNotesGenerator;
 import org.mockito.release.notes.generator.ReleaseNotesGenerators;
 import org.mockito.release.notes.model.ReleaseNotesData;
 import org.mockito.release.notes.util.IOUtil;
+import org.mockito.release.notes.vcs.DefaultCommitApprover;
 
 import java.io.File;
 import java.util.Collection;
@@ -163,7 +164,7 @@ public class ReleaseNotesFetcherTask extends DefaultTask {
     @TaskAction
     public void generateReleaseNotes() {
         ReleaseNotesGenerator generator = ReleaseNotesGenerators.releaseNotesGenerator(
-                gitWorkDir, gitHubRepository, gitHubReadOnlyAuthToken);
+                gitWorkDir, gitHubRepository, gitHubReadOnlyAuthToken, new DefaultCommitApprover());
 
         Collection<ReleaseNotesData> releaseNotes = generator.generateReleaseNotesData(
                 version, asList(previousVersion), tagPrefix, gitHubLabels, onlyPullRequests);
