@@ -36,6 +36,7 @@ public class ReleaseConfiguration {
         team.setContributors(Collections.<String>emptyList());
         team.setDevelopers(Collections.<String>emptyList());
         git.setCommitMessagePostfix("[ci skip]");
+        releaseNotes.setLabelMapping(Collections.<String, String>emptyMap());
     }
 
     //TODO currently it's not clear when to use class fields and when to use the 'configuration' map
