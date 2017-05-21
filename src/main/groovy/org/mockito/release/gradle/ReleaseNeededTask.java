@@ -5,10 +5,8 @@ import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.internal.impldep.com.google.gson.annotations.Expose;
-import org.mockito.release.internal.DefaultEnvPropertyAccessor;
+import org.mockito.release.internal.util.EnvVariables;
 import org.mockito.release.internal.comparison.PublicationsComparatorTask;
-import org.mockito.release.internal.util.EnvPropertyAccessor;
 import org.mockito.release.internal.util.ExposedForTesting;
 
 import java.util.LinkedList;
@@ -38,7 +36,7 @@ public class ReleaseNeededTask extends DefaultTask {
     private boolean pullRequest;
     private boolean explosive;
     private boolean releaseNotNeeded;
-    private EnvPropertyAccessor envPropertyAccessor = new DefaultEnvPropertyAccessor();
+    private EnvVariables envVariables = new EnvVariables();
 
     /**
      * The branch we currently operate on
@@ -112,7 +110,7 @@ public class ReleaseNeededTask extends DefaultTask {
     }
 
     @TaskAction public boolean releaseNeeded() {
-        boolean skipEnvVariable = envPropertyAccessor.getenv(SKIP_RELEASE_ENV) != null;
+        boolean skipEnvVariable = envVariables.getenv(SKIP_RELEASE_ENV) != null;
         LOG.lifecycle("  Environment variable {} present: {}", SKIP_RELEASE_ENV, skipEnvVariable);
 
         boolean commitMessageEmpty = commitMessage == null || commitMessage.trim().isEmpty();
@@ -165,7 +163,7 @@ public class ReleaseNeededTask extends DefaultTask {
     }
 
     @ExposedForTesting
-    void setEnvPropertyAccessor(EnvPropertyAccessor envPropertyAccessor){
-        this.envPropertyAccessor = envPropertyAccessor;
+    void setEnvVariables(EnvVariables envVariables){
+        this.envVariables = envVariables;
     }
 }
