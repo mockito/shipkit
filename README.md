@@ -49,26 +49,6 @@ As much as useful the toolkit was to drive Mockito releases, we needed to make i
 
 The roadmap is comming soon!
 
-### Testing
-
-#### Release notes
-
-To develop improvements in release notes automation and test with Mockito project follow the steps:
-
-1. Clone mockito-release-tools repo, make your changes, run './gradlew install' task.
- This will install the artifacts in local maven repository for easy sharing.
- Notice the version you're building in the build output.
-2. Clone mockito-release-tools-example repo and ensure that 'release-tools-example/build.gradle' file uses the correct version of mockito-release-tools (declared at the top of build.gradle).
- It should use the same version that was built in the previous step.
-3. Tests you can do in mockito-release-tools-example:
-  - run './gradlew testRelease'
-  - run './gradlew testNotableRelease'
-  - run './gradlew performRelease -m' (-m means dry run)
-  - edit the 'doc/release-notes.md' file.
-   Delete one or many versions from the top of the file so that release notes generation will regenerate them.
-   Run './gradlew previewReleaseNotes' and inspect the console output.
-  - run './gradlew tasks', experiment / test various tasks created by release automation
-
 ## Development guide
 
 See CONTRIBUTING.md
