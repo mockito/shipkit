@@ -30,6 +30,7 @@ public class ReleaseNotesFetcherTask extends DefaultTask {
     @Input private boolean onlyPullRequests;
     @Input private File gitWorkDir = getProject().getRootDir();
     @Input private Collection<String> gitHubLabels = Collections.emptyList();
+    @Input private String skipCommitMessagePostfix;
     @OutputFile private File outputFile;
 
     /**
@@ -161,10 +162,25 @@ public class ReleaseNotesFetcherTask extends DefaultTask {
         this.gitHubLabels = gitHubLabels;
     }
 
+    /**
+     * Configurable commit message postfix that will cause with commit skipping in release notes
+     * If empty, only default [ci skip] will be used
+     */
+    public String getSkipCommitMessagePostfix() {
+        return this.skipCommitMessagePostfix;
+    }
+
+    /**
+     * See {@link #getSkipCommitMessagePostfix()}
+     */
+    public void setSkipCommitMessagePostfix(String skipCommitMessagePostfix) {
+        this.skipCommitMessagePostfix = skipCommitMessagePostfix;
+    }
+
     @TaskAction
     public void generateReleaseNotes() {
         ReleaseNotesGenerator generator = ReleaseNotesGenerators.releaseNotesGenerator(
-                gitWorkDir, gitHubRepository, gitHubReadOnlyAuthToken, new DefaultCommitApprover());
+                gitWorkDir, gitHubRepository, gitHubReadOnlyAuthToken, new DefaultCommitApprover(skipCommitMessagePostfix));
 
         Collection<ReleaseNotesData> releaseNotes = generator.generateReleaseNotesData(
                 version, asList(previousVersion), tagPrefix, gitHubLabels, onlyPullRequests);

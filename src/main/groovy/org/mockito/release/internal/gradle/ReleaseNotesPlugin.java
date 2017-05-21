@@ -80,6 +80,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
                         t.setGitHubReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
                         t.setGitHubRepository(conf.getGitHub().getRepository());
                         t.setPreviousVersion(conf.getPreviousReleaseVersion());
+                        t.setSkipCommitMessagePostfix(conf.getGit().getCommitMessagePostfix());
                     }
                 });
             }
@@ -133,6 +134,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         gen.setOutputFile(project.file(conf.getReleaseNotes().getNotableFile()));
         gen.setVcsCommitsLinkTemplate("https://github.com/" + conf.getGitHub().getRepository() + "/compare/{0}...{1}");
         gen.setDetailedReleaseNotesLink(conf.getGitHub().getRepository() + "/blob/" + gitStatus.getBranch() + "/" + conf.getReleaseNotes().getNotableFile());
+        gen.setSkipCommitMessagePostfix(conf.getGit().getCommitMessagePostfix());
     }
 
     private static File getTemporaryReleaseNotesFile(Project project){

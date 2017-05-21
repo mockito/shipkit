@@ -61,7 +61,7 @@ public class ConfigureContributorsTask extends DefaultTask {
         ProjectContributorsSet all = new AllContributorsSerializer().deserialize(IOUtil.readFully(contributorsData));
         List<String> contributors = new LinkedList<String>();
         for (ProjectContributor c : all.getAllContributors()) {
-            contributors.add(c.getLogin() + ":" + (isEmpty(c.getName())? c.getLogin() : c.getName()));
+            contributors.add(c.getLogin() + ":" + (isEmpty(c.getName()) ? c.getLogin() : c.getName()));
         }
 
         LOG.lifecycle("  Configuring {} contributors into 'releasing.team.contributors' setting.",
