@@ -174,6 +174,24 @@ public class ReleaseNotesFetcherTask extends DefaultTask {
      * See {@link #getSkipCommitMessagePostfix()}
      */
     public void setSkipCommitMessagePostfix(String skipCommitMessagePostfix) {
+        /*
+
+        TODO mk - can you convert this to a list of ignored commit substrings?
+
+        I think the original design I put together has flaws.
+        commitMessagePostfix is dynamic and changes with every build because it contains Travis build number.
+        Therefore we cannot really depend on it to exclude commits reliably.
+
+        I suggest that we introduce a new setting to configure how to exclude commits from release generation.
+        This will make it explicit and easy to tweak by the user.
+        Suggested plan
+
+        1. New setting: "releasing.releaseNotes.ignoreCommitsContaining", Collection<String>
+        2. By default, we would configure it to: "ignoreCommitsContaining" = ['[ci skip]']
+        3. Users can tweak it. For example, in Mockito project, in "release.gradle" we would do:
+            releasing.releaseNotes.ignoreCommitsContaining = ['[ci skip]', '[ci skip-release]']
+
+         */
         this.skipCommitMessagePostfix = skipCommitMessagePostfix;
     }
 
