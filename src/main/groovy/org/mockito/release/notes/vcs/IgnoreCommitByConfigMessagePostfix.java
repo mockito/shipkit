@@ -12,7 +12,6 @@ public class IgnoreCommitByConfigMessagePostfix implements Predicate<Commit> {
 
     @Override
     public boolean isTrue(Commit commit) {
-        final int expectedPostfixIndex = commit.getMessage().length() - postfix.length();
-        return commit.getMessage().lastIndexOf(postfix) == expectedPostfixIndex;
+        return commit.getMessage().endsWith(postfix);
     }
 }
