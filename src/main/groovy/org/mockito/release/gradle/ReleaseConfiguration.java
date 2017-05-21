@@ -37,6 +37,8 @@ public class ReleaseConfiguration {
         team.setContributors(Collections.<String>emptyList());
         team.setDevelopers(Collections.<String>emptyList());
         git.setCommitMessagePostfix("[ci skip]");
+        releaseNotes.setFile("docs/release-notes.md");
+        releaseNotes.setNotableFile("docs/notable-release-notes.md");
     }
 
     //TODO currently it's not clear when to use class fields and when to use the 'configuration' map

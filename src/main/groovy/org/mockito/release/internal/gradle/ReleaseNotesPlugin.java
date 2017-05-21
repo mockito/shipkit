@@ -3,6 +3,7 @@ package org.mockito.release.internal.gradle;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.mockito.release.gradle.IncrementalReleaseNotes;
 import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.gradle.ReleaseNotesFetcherTask;
@@ -10,6 +11,7 @@ import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.version.VersionInfo;
 
 import java.io.File;
+import java.util.Arrays;
 
 import static java.util.Collections.singletonList;
 import static org.mockito.release.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
@@ -52,11 +54,12 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
 
         project.getTasks().create("updateNotableReleaseNotes", NotableReleaseNotesGeneratorTask.class,
                 new Action<NotableReleaseNotesGeneratorTask>() {
-            public void execute(NotableReleaseNotesGeneratorTask task) {
+            public void execute(final NotableReleaseNotesGeneratorTask task) {
                 final NotesGeneration gen = task.getNotesGeneration();
                 preconfigureNotableNotes(project, gen);
 
                 task.dependsOn("fetchNotableReleaseNotes");
+                addToCommittedChanges(project, task, project.file(conf.getReleaseNotes().getNotableFile()), "notable release notes updated");
 
                 lazyConfiguration(task, new Runnable() {
                     public void run() {
@@ -91,6 +94,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
             public void execute(final IncrementalReleaseNotes.UpdateTask t) {
                 t.setDescription("Updates release notes file.");
                 configureDetailedNotes(t, fetcher, project, conf);
+                addToCommittedChanges(project, t, project.file(conf.getReleaseNotes().getFile()), "release notes updated");
             }
         });
 
@@ -157,5 +161,17 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
             generatorTask.getNotesGeneration().setHeadVersion(project.getVersion().toString());
             fetcherTask.getNotesGeneration().setHeadVersion(project.getVersion().toString());
         }
+    }
+
+    private static void addToCommittedChanges(final Project project, final Task task, final File changedFile, final String message){
+        project.getPlugins().withType(GitPushPlugin.class, new Action<GitPushPlugin>() {
+            @Override
+            public void execute(GitPushPlugin gitPushPlugin) {
+                final GitCommitTask gitCommitTask = (GitCommitTask) project.getTasks().getByName(GitPushPlugin.GIT_COMMIT_TASK);
+                gitCommitTask.mustRunAfter(task);
+
+                gitCommitTask.addChange(Arrays.asList(changedFile), message, task);
+            }
+        });
     }
 }

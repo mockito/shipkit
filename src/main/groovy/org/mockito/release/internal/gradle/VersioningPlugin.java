@@ -12,6 +12,7 @@ import org.mockito.release.version.Version;
 import org.mockito.release.version.VersionInfo;
 
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * The plugin adds following tasks:
@@ -62,9 +63,16 @@ public class VersioningPlugin implements Plugin<Project> {
         });
 
         TaskMaker.task(project, BUMP_VERSION_FILE_TASK, BumpVersionFileTask.class, new Action<BumpVersionFileTask>() {
-            public void execute(BumpVersionFileTask t) {
+            public void execute(final BumpVersionFileTask t) {
                 t.setVersionFile(versionFile);
                 t.setDescription("Increments version number in " + versionFile.getName());
+                project.getPlugins().withType(GitPushPlugin.class, new Action<GitPushPlugin>() {
+                    @Override
+                    public void execute(GitPushPlugin gitPushPlugin) {
+                        GitCommitTask gitCommitTask = (GitCommitTask) project.getTasks().findByName(GitPushPlugin.GIT_COMMIT_TASK);
+                        gitCommitTask.addChange(Arrays.asList(versionFile), "version bumped", t);
+                    }
+                });
             }
         });
     }

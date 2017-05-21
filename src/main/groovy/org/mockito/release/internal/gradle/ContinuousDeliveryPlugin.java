@@ -4,12 +4,9 @@ import com.jfrog.bintray.gradle.BintrayExtension;
 import org.gradle.api.*;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.gradle.api.tasks.Exec;
 import org.mockito.release.gradle.BumpVersionFileTask;
 import org.mockito.release.gradle.IncrementalReleaseNotes;
 import org.mockito.release.gradle.ReleaseConfiguration;
-import org.mockito.release.gradle.ReleaseNeededTask;
-import org.mockito.release.internal.comparison.PublicationsComparatorTask;
 import org.mockito.release.internal.gradle.util.BintrayUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.version.VersionInfo;
@@ -26,6 +23,7 @@ import static org.mockito.release.internal.gradle.util.Specs.withName;
  *     <li>{@link ReleaseNotesPlugin}</li>
  *     <li>{@link VersioningPlugin}</li>
  *     <li>{@link GitPlugin}</li>
+ *     <li>{@link GitPushPlugin}</li>
  *     <li>{@link ContributorsPlugin}</li>
  *     <li>{@link TravisPlugin}</li>
  * </ul>
@@ -49,6 +47,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
         project.getPlugins().apply(ReleaseNotesPlugin.class);
         project.getPlugins().apply(AutoVersioningPlugin.class);
         project.getPlugins().apply(GitPlugin.class);
+        project.getPlugins().apply(GitPushPlugin.class);
         project.getPlugins().apply(ContributorsPlugin.class);
         project.getPlugins().apply(TravisPlugin.class);
         project.getPlugins().apply(ReleaseNeededPlugin.class);
@@ -81,27 +80,12 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
         //TODO we should have tasks from the same plugin to have the same group
         //let's have a task maker instance in a plugin that has sets the group accordingly
 
-        TaskMaker.execTask(project, "gitAddReleaseNotes", new Action<Exec>() {
-            public void execute(final Exec t) {
-                t.setDescription("Performs 'git add' for the release notes file");
-                t.mustRunAfter("updateReleaseNotes", "updateNotableReleaseNotes");
-                project.getTasks().getByName(GitPlugin.COMMIT_TASK).mustRunAfter(t);
-                t.doFirst(new Action<Task>() {
-                    public void execute(Task task) {
-                        //doFirst (execution time)
-                        // so that we can access user-configured properties
-                        t.commandLine("git", "add", conf.getReleaseNotes().getFile(), conf.getReleaseNotes().getNotableFile());
-                    }
-                });
-            }
-        });
-
         final Task bintrayUploadAll = TaskMaker.task(project, "bintrayUploadAll", new Action<Task>() {
             public void execute(Task t) {
                 t.setDescription("Depends on all 'bintrayUpload' tasks from all Gradle projects.");
                 //It is safer to run bintray upload after git push (hard to reverse operation)
                 //This way, when git push fails we don't publish jars to bintray
-                t.mustRunAfter(GitPlugin.PUSH_TASK);
+                t.mustRunAfter(GitPushPlugin.GIT_PUSH_TASK);
             }
         });
         //TODO can we make git push and bintray upload tasks to be last (expensive, hard to reverse tasks should go last)
@@ -146,12 +130,6 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
             }
         });
 
-        //commit task that is added by GitPlugin needs to run after the add bump version task added by AutoVersioningPlugin
-        //TODO: let's think about a way to avoid 'git add' tasks completely.
-        //      We can use git commit with paths to commit specific files without the need for 'add' operation
-        //      Using 'git add' adds complexity and causes weird bugs like #145
-        project.getTasks().getByName(GitPlugin.COMMIT_TASK).mustRunAfter(AutoVersioningPlugin.ADD_BUMP_VERSION_TASK);
-
         TaskMaker.task(project, "performRelease", new Action<Task>() {
             public void execute(final Task t) {
                 t.setDescription("Performs release. " +
@@ -159,8 +137,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                         "Test with: './gradlew testRelease'");
 
                 t.dependsOn(VersioningPlugin.BUMP_VERSION_FILE_TASK, "updateReleaseNotes", "updateNotableReleaseNotes");
-                t.dependsOn(AutoVersioningPlugin.ADD_BUMP_VERSION_TASK, "gitAddReleaseNotes", GitPlugin.COMMIT_TASK, GitPlugin.TAG_TASK);
-                t.dependsOn(GitPlugin.PUSH_TASK);
+                t.dependsOn(GitPushPlugin.PERFORM_GIT_PUSH_TASK);
                 t.dependsOn("bintrayUploadAll");
 
                 project.getTasks().getByName(GitPlugin.COMMIT_CLEANUP_TASK).mustRunAfter(t);
