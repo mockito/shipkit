@@ -1,7 +1,10 @@
 package org.mockito.release.internal.gradle;
 
+import org.gradle.api.Action;
+import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.plugins.ObjectConfigurationAction;
 import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.notes.util.IOUtil;
 import org.mockito.release.version.VersionInfo;
@@ -55,45 +58,37 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
     }
 
     private void loadShipKitConfigFile(Project rootProject) {
-        File configFile = rootProject.file(CONFIG_FILE_RELATIVE_PATH);
+        final File configFile = rootProject.file(CONFIG_FILE_RELATIVE_PATH);
         if (!configFile.exists()) {
             createShipKitConfigFile(configFile);
-            //throw new GradleException("Config file created at " + configFile.getAbsolutePath() + ". Please configure it and rerun task.");
+            throw new GradleException("Config file created at " + configFile.getAbsolutePath() + ". Please configure it and rerun the task.");
         } else {
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("from", configFile);
-            rootProject.apply(map);
+            rootProject.apply(new Action<ObjectConfigurationAction>() {
+                @Override
+                public void execute(ObjectConfigurationAction objectConfigurationAction) {
+                    objectConfigurationAction.from(configFile);
+                }
+            });
         }
     }
 
     private void createShipKitConfigFile(File configFile) {
         String content =
-                new ConfigurationFileBuilder("releasing")
-                    .withProperty("gitHub.repository", "mockito/mockito")
-                    .withProperty("gitHub.writeAuthUser", "wwilk")
-                    .withProperty("gitHub.writeAuthToken", new ConfigurationFileBuilder.Expression("System.getenv(\"GH_WRITE_TOKEN\")"))
+                new TemplateResolver(DEFAULT_SHIPKIT_CONFIG_FILE_CONTENT)
+                    .withProperty("gitHub.repository", "mockito/mockito-release-tools-example")
+                    .withProperty("gitHub.writeAuthUser", "shipkit")
                     .withProperty("gitHub.readOnlyAuthToken", "e7fe8fcfd6ffedac384c8c4c71b2a48e646ed1ab")
 
-                    .withProperty("git.user", "Mockito Release Tools")
-                    .withProperty("git.email", "<mockito.release.tools@gmail.com>")
-                    .withProperty("git.releasableBranchRegex", "master|release/.+")
+                    .withProperty("bintray.pkg.repo", "examples")
+                    .withProperty("bintray.pkg.user", "szczepiq")
+                    .withProperty("bintray.pkg.userOrg", "shipkit")
+                    .withProperty("bintray.pkg.name", "basic")
+                    .withProperty("bintray.pkg.licenses", "['MIT']")
+                    .withProperty("bintray.pkg.labels", "['continuous delivery', 'release automation', 'mockito']")
 
-                    .withProperty("releaseNotes.file", "docs/release-notes.md")
-                    .withProperty("releaseNotes.notableFile", "docs/notable-release-notes.md")
-                    .withProperty("releaseNotes.labelMapping", labelMapping())
-
-                    .withProperty("team.developers", asList("szczepiq:Szczepan Faber"))
-                    .withProperty("team.contributors", asList("mstachniuk:Marcin Stachniuk", "wwilk:Wojtek Wilk"))
-                    .build();
+                    .resolve();
 
         IOUtil.writeFile(configFile, content);
-    }
-
-    private Map<String, String> labelMapping(){
-        Map<String, String> result = new HashMap<String, String>();
-        result.put("noteworthy","Noteworthy");
-        result.put("bugfix","Bugfixes");
-        return result;
     }
 
     /**
@@ -102,4 +97,26 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
     public ReleaseConfiguration getConfiguration() {
         return configuration;
     }
+
+    static final String DEFAULT_SHIPKIT_CONFIG_FILE_CONTENT =
+            "releasing {\n"+
+            "   gitHub.repository = \"@gitHub.repository@\"\n"+
+            "   gitHub.readOnlyAuthToken = \"@gitHub.readOnlyAuthToken@\"\n"+
+            "   gitHub.writeAuthUser = \"@gitHub.writeAuthUser@\"\n"+
+            "}\n"+
+            "\n"+
+            "allprojects {\n"+
+            "   plugins.withId(\"org.mockito.mockito-release-tools.bintray\") {\n"+
+            "       bintray {\n"+
+            "           pkg {\n"+
+            "               repo = '@bintray.pkg.repo@'\n"+
+            "               user = '@bintray.pkg.user@'\n"+
+            "               userOrg = '@bintray.pkg.userOrg@'\n"+
+            "               name = '@bintray.pkg.name@'\n"+
+            "               licenses = @bintray.pkg.licenses@\n"+
+            "               labels = @bintray.pkg.labels@\n"+
+            "           }\n"+
+            "       }\n"+
+            "   }\n"+
+            "}\n";
 }

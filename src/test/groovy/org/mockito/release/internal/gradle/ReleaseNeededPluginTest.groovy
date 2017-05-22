@@ -1,11 +1,8 @@
 package org.mockito.release.internal.gradle
 
-import org.gradle.testfixtures.ProjectBuilder
-import spock.lang.Specification
+import testutil.PluginSpecification
 
-class ReleaseNeededPluginTest extends Specification {
-
-    def project = new ProjectBuilder().build()
+class ReleaseNeededPluginTest extends PluginSpecification {
 
     def "applies"() {
         expect:
