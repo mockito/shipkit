@@ -221,6 +221,20 @@ public class ReleaseConfiguration {
         public void setLabelMapping(Map<String, String> labelMapping) {
             configuration.put("releaseNotes.labelMapping", labelMapping);
         }
+
+        /**
+         * Collection of texts which will cause with commit skipping in release notes.
+         */
+        public Collection<String> getIgnoreCommitsContaining() {
+            return getCollection("releaseNotes.ignoreCommitsContaining");
+        }
+
+        /**
+         * See {@link #getIgnoreCommitsContaining()}
+         */
+        public void setIgnoreCommitsContaining(Collection<String> commitMessageParts) {
+            configuration.put("releaseNotes.ignoreCommitsContaining", commitMessageParts);
+        }
     }
 
     public class Git {
@@ -286,7 +300,6 @@ public class ReleaseConfiguration {
         public void setTagPrefix(String tagPrefix) {
             configuration.put("git.tagPrefix", tagPrefix);
         }
-
 
         /**
          * Text which will be included in the commit message for all commits automatically created by the release
@@ -367,7 +380,7 @@ public class ReleaseConfiguration {
     }
 
     private Map getMap(String key) {
-        return (Map) getValue(key, null,"Please configure 'releasing." + key + "' value (Map).");
+        return (Map) getValue(key, null, "Please configure 'releasing." + key + "' value (Map).");
     }
 
     private Collection<String> getCollection(String key) {
