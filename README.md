@@ -71,37 +71,7 @@ To develop improvements in release notes automation and test with Mockito projec
 
 ## Development guide
 
-### Public and internal api
-
-1. Top level package is "org.mockito.release".
-2. Public API are classes and interfaces that we guarantee compatibility after 1.0 release.
-    All public classes live under "org.mockito.release.*", nested accordingly for clarity.
-3. Internal API can change at any time, we don't guarantee compatibility.
-    Internal types live under "org.mockito.release.internal.*", nested accordingly for clarity.
-    Users are welcome to use internals for experimentation and working around gnarly use cases or bugs.
-    Please let us know if you need an internal type and why!
-    This way we can create public API for you to use!
-    Finally, keep in mind that internal types can change without notice.
-4. Gradle plugins are public and we guarantee compatibility of behavior after 1.0 release.
-    For example, we will not remove or rename a task that is added by a plugin.
-    Plugin implementation classes are considered "internal" because they don't have public facing API.
-    The plugin should be referred via the "plugin id", examples:
-
-```Groovy
-apply plugin: "org.mockito.mockito-release-tools.continuous-delivery"
-
-plugins.withId("org.mockito.mockito-release-tools.continuous-delivery") {
-   ...
-}
-```
-
-### Unit testing
-
-tbd
-
-### Integration testing
-
-tbd
+See CONTRIBUTING.md
 
 ## Project Execution
 

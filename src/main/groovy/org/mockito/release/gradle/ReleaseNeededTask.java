@@ -5,7 +5,9 @@ import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskAction;
+import org.mockito.release.internal.util.EnvVariables;
 import org.mockito.release.internal.comparison.PublicationsComparatorTask;
+import org.mockito.release.internal.util.ExposedForTesting;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -24,6 +26,9 @@ public class ReleaseNeededTask extends DefaultTask {
 
     private final static Logger LOG = Logging.getLogger(ReleaseNeededTask.class);
 
+    //We are using environment variable instead of system property or Gradle project property here
+    //It's easier to configure Travis CI matrix builds using env variables
+    //For reference, see the ".travis.yml" of Mockito project
     private final static String SKIP_RELEASE_ENV = "SKIP_RELEASE";
     private final static String SKIP_RELEASE_KEYWORD = "[ci skip-release]";
 
@@ -33,7 +38,7 @@ public class ReleaseNeededTask extends DefaultTask {
     private String commitMessage;
     private boolean pullRequest;
     private boolean explosive;
-    private boolean releaseNotNeeded;
+    private EnvVariables envVariables = new EnvVariables();
 
     /**
      * The branch we currently operate on
@@ -106,8 +111,8 @@ public class ReleaseNeededTask extends DefaultTask {
         return this;
     }
 
-    @TaskAction public void releaseNeeded() {
-        boolean skipEnvVariable = System.getenv(SKIP_RELEASE_ENV) != null;
+    @TaskAction public boolean releaseNeeded() {
+        boolean skipEnvVariable = envVariables.getenv(SKIP_RELEASE_ENV) != null;
         LOG.lifecycle("  Environment variable {} present: {}", SKIP_RELEASE_ENV, skipEnvVariable);
 
         boolean commitMessageEmpty = commitMessage == null || commitMessage.trim().isEmpty();
@@ -121,8 +126,7 @@ public class ReleaseNeededTask extends DefaultTask {
 
         boolean allPublicationsEqual = areAllPublicationsEqual();
 
-        // add unit tests for release not needed
-        releaseNotNeeded = allPublicationsEqual || skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
+        boolean releaseNotNeeded = allPublicationsEqual || skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
 
         String message = "  Release is needed: " + !releaseNotNeeded +
                 "\n    - skip by env variable: " + skipEnvVariable +
@@ -136,6 +140,8 @@ public class ReleaseNeededTask extends DefaultTask {
         } else {
             LOG.lifecycle(message);
         }
+
+        return !releaseNotNeeded;
     }
 
     public void addPublicationsComparator(PublicationsComparatorTask task) {
@@ -143,6 +149,7 @@ public class ReleaseNeededTask extends DefaultTask {
         publicationsComparators.add(task);
     }
 
+    @ExposedForTesting
     boolean areAllPublicationsEqual() {
         if (publicationsComparators.isEmpty()) {
             return false;
@@ -157,7 +164,8 @@ public class ReleaseNeededTask extends DefaultTask {
         return allEqual;
     }
 
-    boolean isReleaseNotNeeded(){
-        return releaseNotNeeded;
+    @ExposedForTesting
+    void setEnvVariables(EnvVariables envVariables){
+        this.envVariables = envVariables;
     }
 }
