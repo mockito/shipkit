@@ -21,13 +21,13 @@ import static org.mockito.release.internal.gradle.util.GitUtil.getTag;
  * Adds Git-specific tasks needed for the release process:
  *
  * <ul>
- *     <li><gitCommit/li>
- *     <li><gitTag/li>
- *     <li><gitPush/li>
- *     <li><performGitPush/li>
+ *     <li>gitCommit</li>
+ *     <li>gitTag</li>
+ *     <li>gitPush</li>
+ *     <li>performGitPush</li>
  *
- *     <li><gitCommitCleanUp/li>
- *     <li><gitTagCleanUp/li>
+ *     <li>gitCommitCleanUp</li>
+ *     <li>gitTagCleanUp</li>
  * </ul>
  */
 public class GitPlugin implements Plugin<Project> {
