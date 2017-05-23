@@ -12,8 +12,8 @@ public class Vcs {
     /**
      * Provides means to get contributions.
      */
-    public static ContributionsProvider getContributionsProvider(ProcessRunner runner, Predicate<Commit> commitIgnored) {
-        return new GitContributionsProvider(new GitLogProvider(runner), commitIgnored);
+    public static ContributionsProvider getContributionsProvider(ProcessRunner runner, Predicate<Commit> ignoredCommit) {
+        return new GitContributionsProvider(new GitLogProvider(runner), ignoredCommit);
     }
 
     /**

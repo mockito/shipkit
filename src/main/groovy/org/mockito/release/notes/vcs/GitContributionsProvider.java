@@ -13,11 +13,11 @@ class GitContributionsProvider implements ContributionsProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(GitContributionsProvider.class);
     private final GitLogProvider logProvider;
-    private final Predicate<Commit> commitIgnored;
+    private final Predicate<Commit> ignoredCommit;
 
-    GitContributionsProvider(GitLogProvider logProvider, Predicate<Commit> commitIgnored) {
+    GitContributionsProvider(GitLogProvider logProvider, Predicate<Commit> ignoredCommit) {
         this.logProvider = logProvider;
-        this.commitIgnored = commitIgnored;
+        this.ignoredCommit = ignoredCommit;
     }
 
     public ContributionSet getContributionsBetween(String fromRev, String toRev) {
@@ -27,7 +27,7 @@ class GitContributionsProvider implements ContributionsProvider {
 
         DefaultContributionSet contributions = new DefaultContributionSet();
         for (Commit commit : commits) {
-            if (!commitIgnored.isTrue(commit)) {
+            if (!ignoredCommit.isTrue(commit)) {
                 contributions.add(commit);
             }
         }

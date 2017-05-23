@@ -5,11 +5,11 @@ import org.mockito.release.notes.util.Predicate;
 
 import java.util.Collection;
 
-public class CommitIgnored implements Predicate<Commit> {
+public class IgnoredCommit implements Predicate<Commit> {
 
     private Collection<String> commitMessagePartsToIgnore;
 
-    public CommitIgnored(Collection<String> commitMessageParts) {
+    public IgnoredCommit(Collection<String> commitMessageParts) {
         this.commitMessagePartsToIgnore = commitMessageParts;
     }
 
