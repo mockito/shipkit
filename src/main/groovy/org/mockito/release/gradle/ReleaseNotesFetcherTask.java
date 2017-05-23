@@ -9,7 +9,7 @@ import org.mockito.release.notes.generator.ReleaseNotesGenerator;
 import org.mockito.release.notes.generator.ReleaseNotesGenerators;
 import org.mockito.release.notes.model.ReleaseNotesData;
 import org.mockito.release.notes.util.IOUtil;
-import org.mockito.release.notes.vcs.DefaultCommitApprover;
+import org.mockito.release.notes.vcs.CommitIgnored;
 
 import java.io.File;
 import java.util.Collection;
@@ -30,7 +30,7 @@ public class ReleaseNotesFetcherTask extends DefaultTask {
     @Input private boolean onlyPullRequests;
     @Input private File gitWorkDir = getProject().getRootDir();
     @Input private Collection<String> gitHubLabels = Collections.emptyList();
-    @Input private String skipCommitMessagePostfix;
+    @Input private Collection<String> ignoreCommitsContaining;
     @OutputFile private File outputFile;
 
     /**
@@ -163,42 +163,23 @@ public class ReleaseNotesFetcherTask extends DefaultTask {
     }
 
     /**
-     * Configurable commit message postfix that will cause with commit skipping in release notes
-     * If empty, only default [ci skip] will be used
+     * See {@link ReleaseConfiguration.ReleaseNotes#getIgnoreCommitsContaining()}
      */
-    public String getSkipCommitMessagePostfix() {
-        return this.skipCommitMessagePostfix;
+    public Collection<String> getIgnoreCommitsContaining() {
+        return ignoreCommitsContaining;
     }
 
     /**
-     * See {@link #getSkipCommitMessagePostfix()}
+     * See {@link #getIgnoreCommitsContaining()}
      */
-    public void setSkipCommitMessagePostfix(String skipCommitMessagePostfix) {
-        /*
-
-        TODO mk - can you convert this to a list of ignored commit substrings?
-
-        I think the original design I put together has flaws.
-        commitMessagePostfix is dynamic and changes with every build because it contains Travis build number.
-        Therefore we cannot really depend on it to exclude commits reliably.
-
-        I suggest that we introduce a new setting to configure how to exclude commits from release generation.
-        This will make it explicit and easy to tweak by the user.
-        Suggested plan
-
-        1. New setting: "releasing.releaseNotes.ignoreCommitsContaining", Collection<String>
-        2. By default, we would configure it to: "ignoreCommitsContaining" = ['[ci skip]']
-        3. Users can tweak it. For example, in Mockito project, in "release.gradle" we would do:
-            releasing.releaseNotes.ignoreCommitsContaining = ['[ci skip]', '[ci skip-release]']
-
-         */
-        this.skipCommitMessagePostfix = skipCommitMessagePostfix;
+    public void setIgnoreCommitsContaining(Collection<String> ignoreCommitsContaining) {
+        this.ignoreCommitsContaining = ignoreCommitsContaining;
     }
 
     @TaskAction
     public void generateReleaseNotes() {
         ReleaseNotesGenerator generator = ReleaseNotesGenerators.releaseNotesGenerator(
-                gitWorkDir, gitHubRepository, gitHubReadOnlyAuthToken, new DefaultCommitApprover(skipCommitMessagePostfix));
+                gitWorkDir, gitHubRepository, gitHubReadOnlyAuthToken, new CommitIgnored(ignoreCommitsContaining));
 
         Collection<ReleaseNotesData> releaseNotes = generator.generateReleaseNotesData(
                 version, asList(previousVersion), tagPrefix, gitHubLabels, onlyPullRequests);

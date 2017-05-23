@@ -6,8 +6,7 @@ import spock.lang.Subject
 class GitContributionsProviderTest extends Specification {
 
     def logProvider = Mock(GitLogProvider)
-    @Subject
-            provider = new GitContributionsProvider(logProvider, new DefaultCommitApprover())
+    @Subject provider = new GitContributionsProvider(logProvider, new CommitIgnored(["[ci skip]"]))
 
     def log = """a5797f9e6cfc06e2fa70ed12ee6c9571af8a7fc9@@info@@szczepiq@gmail.com@@info@@Szczepan Faber@@info@@Tidy-up in buildSrc
 next line

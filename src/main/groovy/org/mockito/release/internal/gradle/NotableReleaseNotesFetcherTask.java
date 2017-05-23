@@ -8,7 +8,7 @@ import org.mockito.release.notes.generator.ReleaseNotesGenerator;
 import org.mockito.release.notes.generator.ReleaseNotesGenerators;
 import org.mockito.release.notes.model.ReleaseNotesData;
 import org.mockito.release.notes.util.IOUtil;
-import org.mockito.release.notes.vcs.DefaultCommitApprover;
+import org.mockito.release.notes.vcs.CommitIgnored;
 
 import java.util.Collection;
 
@@ -25,7 +25,7 @@ public class NotableReleaseNotesFetcherTask extends DefaultTask {
     @TaskAction
     public void generateReleaseNotes() {
         ReleaseNotesGenerator generator = ReleaseNotesGenerators.releaseNotesGenerator(
-                notesGeneration.getGitWorkingDir(), notesGeneration.getGitHubRepository(), notesGeneration.getGitHubReadOnlyAuthToken(), new DefaultCommitApprover(notesGeneration.getSkipCommitMessagePostfix()));
+                notesGeneration.getGitWorkingDir(), notesGeneration.getGitHubRepository(), notesGeneration.getGitHubReadOnlyAuthToken(), new CommitIgnored(notesGeneration.getIgnoreCommitsContaining()));
         //TODO release notes generation should produce JSON data that we can keep between the builds in the cache
         //then, the markdown generation logic would parse the JSON and produce human readable notes
         Collection<ReleaseNotesData> releaseNotes = generator.generateReleaseNotesData(
