@@ -5,6 +5,10 @@ import org.mockito.release.internal.util.ArgumentValidation;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Utility class that can be used to replace expressions formatted like "@key@" with provided values
+ * in given template text
+ */
 public class TemplateResolver {
 
     private final String text;

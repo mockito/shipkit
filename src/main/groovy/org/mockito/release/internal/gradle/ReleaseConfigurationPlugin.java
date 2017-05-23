@@ -17,6 +17,9 @@ import static java.util.Arrays.asList;
 
 /**
  * Adds extension for configuring the release to the root project.
+ * Configuration properties are loaded from gradle/shipkit.gradle file when the plugin is applied.
+ * This mechanism assures that all properties are accessible during configuration phase.
+ * If such file is not present, it will be created automatically with required properties and example values.
  * Important: it will add to the root project because this is where the configuration belong to!
  * Adds following behavior:
  * <ul>
@@ -29,7 +32,7 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
 
     private ReleaseConfiguration configuration;
 
-    private static final String CONFIG_FILE_RELATIVE_PATH = "gradle/shipkit.gradle";
+    public static final String CONFIG_FILE_RELATIVE_PATH = "gradle/shipkit.gradle";
 
     public void apply(Project project) {
         if (project.getParent() == null) {
@@ -63,6 +66,7 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
             createShipKitConfigFile(configFile);
             throw new GradleException("Config file created at " + configFile.getAbsolutePath() + ". Please configure it and rerun the task.");
         } else {
+            // apply configuration properties from config file
             rootProject.apply(new Action<ObjectConfigurationAction>() {
                 @Override
                 public void execute(ObjectConfigurationAction objectConfigurationAction) {
@@ -99,6 +103,7 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
     }
 
     static final String DEFAULT_SHIPKIT_CONFIG_FILE_CONTENT =
+            "//This file was created automatically and is intented to be checked-in.\n" +
             "releasing {\n"+
             "   gitHub.repository = \"@gitHub.repository@\"\n"+
             "   gitHub.readOnlyAuthToken = \"@gitHub.readOnlyAuthToken@\"\n"+

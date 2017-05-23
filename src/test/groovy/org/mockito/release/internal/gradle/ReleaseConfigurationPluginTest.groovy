@@ -64,15 +64,17 @@ class ReleaseConfigurationPluginTest extends PluginSpecification {
 
     def "creates shitpkit.gradle file if it doesn't exist"() {
         given:
-        new File(tmp.root.absolutePath + "/gradle/shipkit.gradle").delete()
+        def configFile = new File(tmp.root.absolutePath + "/" + ReleaseConfigurationPlugin.CONFIG_FILE_RELATIVE_PATH)
+        configFile.delete()
 
         when:
         root.plugins.apply(ReleaseConfigurationPlugin)
 
         then:
         thrown(GradleException)
-        new File(tmp.root.absolutePath + "/gradle/shipkit.gradle").text ==
-"""releasing {
+        configFile.text ==
+"""//This file was created automatically and is intented to be checked-in.
+releasing {
    gitHub.repository = \"mockito/mockito-release-tools-example\"
    gitHub.readOnlyAuthToken = \"e7fe8fcfd6ffedac384c8c4c71b2a48e646ed1ab\"
    gitHub.writeAuthUser = \"shipkit\"
