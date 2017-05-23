@@ -44,4 +44,20 @@ public class DefaultProjectContributorsSet implements ProjectContributorsSet, Se
     public ProjectContributor findByName(String name) {
         return map.get(name);
     }
+
+    @Override
+    public Collection<String> toConfigNotation() {
+        List<String> result = new ArrayList<String>();
+        for (ProjectContributor contributor : sorted) {
+            // if someone doesn't set a name on GitHub, lets put login
+            String name = contributor.getName().isEmpty() ? contributor.getLogin() : contributor.getName();
+            result.add(contributor.getLogin() + ":" + name);
+        }
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return sorted.toString();
+    }
 }

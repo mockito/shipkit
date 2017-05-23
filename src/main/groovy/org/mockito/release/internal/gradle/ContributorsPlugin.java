@@ -7,7 +7,7 @@ import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 
 import static org.mockito.release.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
-import static org.mockito.release.internal.gradle.util.BuildConventions.outputFile;
+import static org.mockito.release.internal.gradle.util.BuildConventions.contributorsFile;
 
 /**
  * Adds and configures tasks for getting contributor git user to GitHub user mappings.
@@ -31,7 +31,7 @@ public class ContributorsPlugin implements Plugin<Project> {
             public void execute(final AllContributorsFetcherTask task) {
                 task.setGroup(TaskMaker.TASK_GROUP);
                 task.setDescription("Fetch info about all project contributors from GitHub and store it in file");
-                task.setOutputFile(outputFile(project, "all-contributors.json"));
+                task.setOutputFile(contributorsFile(project));
 
                 deferredConfiguration(project, new Runnable() {
                     @Override

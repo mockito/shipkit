@@ -54,4 +54,28 @@ class DefaultProjectContributorsSetTest extends Specification {
         set.findByName("b").name == "b"
         set.findByName("a").name == "a"
     }
+
+    def "empty to config notation"() {
+        expect:
+        set.toConfigNotation() == []
+    }
+
+    def "two contributors to config notation"() {
+        set.addAllContributors([
+                new DefaultProjectContributor("aa", "a", "a", 10),
+                new DefaultProjectContributor("bb", "b", "b", 5)
+        ])
+
+        expect:
+        set.toConfigNotation() == ["a:aa", "b:bb"]
+    }
+
+    def "empty GitHub name to config notation"() {
+        set.addAllContributors([
+                new DefaultProjectContributor("", "login", "a", 10),
+        ])
+
+        expect:
+        set.toConfigNotation() == ["login:login"]
+    }
 }
