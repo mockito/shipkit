@@ -69,6 +69,10 @@ class DefaultVersionInfo implements VersionInfo {
         return previousVersion;
     }
 
+    public DefaultVersionInfo bumpVersion() {
+        return bumpVersion(false);
+    }
+
     public DefaultVersionInfo bumpVersion(boolean updateNotable) {
         String content = IOUtil.readFully(versionFile);
         if (updateNotable) {
@@ -103,11 +107,8 @@ class DefaultVersionInfo implements VersionInfo {
     }
 
     public Collection<String> getNotableVersions() {
+        //TODO if by the end of Q3 (9/30/17) we don't find the concept of 'notable versions' useful
+        //we should delete 'notableVersions' code from this class
         return notableVersions;
-    }
-
-    public boolean isNotableRelease() {
-        //TODO also check for env variable here / commit message, we already check for 'TRAVIS_COMMIT_MESSAGE' elsewhere
-        return version.endsWith(".0") || version.endsWith(".0.0");
     }
 }

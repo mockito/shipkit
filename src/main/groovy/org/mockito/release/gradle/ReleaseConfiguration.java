@@ -27,18 +27,21 @@ public class ReleaseConfiguration {
     private final Git git = new Git();
     private final Team team = new Team();
 
-    private boolean notableRelease;
     private String previousReleaseVersion;
 
     public ReleaseConfiguration() {
         //Configure default values
         git.setTagPrefix("v"); //so that tags are "v1.0", "v2.3.4"
         git.setReleasableBranchRegex("master|release/.+");  // matches 'master', 'release/2.x', 'release/3.x', etc.
+        git.setCommitMessagePostfix("[ci skip]");
+        git.setUser("Mockito Release Tools");
+        git.setEmail("<mockito.release.tools@gmail.com>");
+
+        releaseNotes.setFile("docs/release-notes.md");
+        releaseNotes.setLabelMapping(Collections.<String, String>emptyMap());
+
         team.setContributors(Collections.<String>emptyList());
         team.setDevelopers(Collections.<String>emptyList());
-        git.setCommitMessagePostfix("[ci skip]");
-        releaseNotes.setFile("docs/release-notes.md");
-        releaseNotes.setNotableFile("docs/notable-release-notes.md");
     }
 
     //TODO currently it's not clear when to use class fields and when to use the 'configuration' map
@@ -75,21 +78,6 @@ public class ReleaseConfiguration {
 
     public Team getTeam() {
         return team;
-    }
-
-    /**
-     * See {@link #isNotableRelease()}
-     */
-    public void setNotableRelease(boolean notableRelease) {
-        this.notableRelease = notableRelease;
-    }
-
-    /**
-     * Informs if the release is considered 'notable' release.
-     * See {@link org.mockito.release.version.VersionInfo#isNotableRelease()}
-     */
-    public boolean isNotableRelease() {
-        return notableRelease;
     }
 
     /**
@@ -190,20 +178,6 @@ public class ReleaseConfiguration {
          */
         public void setFile(String file) {
             configuration.put("releaseNotes.file", file);
-        }
-
-        /**
-         * Notable release notes file, for example "docs/notable-release-notes.md"
-         */
-        public String getNotableFile() {
-            return getString("releaseNotes.notableFile");
-        }
-
-        /**
-         * See {@link #getNotableFile()}
-         */
-        public void setNotableFile(String notableFile) {
-            configuration.put("releaseNotes.notableFile", notableFile);
         }
 
         /**
@@ -389,5 +363,12 @@ public class ReleaseConfiguration {
             }
         }
         throw new GradleException(message);
+    }
+
+    private Map<String, String> defaultLabelMapping(){
+        Map<String, String> result = new HashMap<String, String>();
+        result.put("noteworthy","Noteworthy");
+        result.put("bugfix","Bugfixes");
+        return result;
     }
 }
