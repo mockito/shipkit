@@ -11,8 +11,6 @@ releasing {
     def buildNo = System.getenv("TRAVIS_BUILD_NUMBER")
     git.commitMessagePostfix = buildNo? " by CI build $buildNo [ci skip-release]" : " [ci skip-release]"
 
-    releaseNotes.ignoreCommitsContaining = ['[ci skip]']
-
     team.developers = ['szczepiq:Szczepan Faber']
     team.contributors = ['mstachniuk:Marcin Stachniuk', 'wwilk:Wojtek Wilk']
 }
