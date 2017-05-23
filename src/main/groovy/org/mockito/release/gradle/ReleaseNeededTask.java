@@ -26,6 +26,9 @@ public class ReleaseNeededTask extends DefaultTask {
 
     private final static Logger LOG = Logging.getLogger(ReleaseNeededTask.class);
 
+    //We are using environment variable instead of system property or Gradle project property here
+    //It's easier to configure Travis CI matrix builds using env variables
+    //For reference, see the ".travis.yml" of Mockito project
     private final static String SKIP_RELEASE_ENV = "SKIP_RELEASE";
     private final static String SKIP_RELEASE_KEYWORD = "[ci skip-release]";
 
@@ -35,7 +38,6 @@ public class ReleaseNeededTask extends DefaultTask {
     private String commitMessage;
     private boolean pullRequest;
     private boolean explosive;
-    private boolean releaseNotNeeded;
     private EnvVariables envVariables = new EnvVariables();
 
     /**
@@ -124,7 +126,7 @@ public class ReleaseNeededTask extends DefaultTask {
 
         boolean allPublicationsEqual = areAllPublicationsEqual();
 
-        releaseNotNeeded = allPublicationsEqual || skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
+        boolean releaseNotNeeded = allPublicationsEqual || skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
 
         String message = "  Release is needed: " + !releaseNotNeeded +
                 "\n    - skip by env variable: " + skipEnvVariable +

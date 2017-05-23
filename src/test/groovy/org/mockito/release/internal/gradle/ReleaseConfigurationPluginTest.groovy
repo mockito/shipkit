@@ -39,20 +39,4 @@ class ReleaseConfigurationPluginTest extends Specification {
         ""       | true
         null     | true
     }
-
-    def "knows if the release is not notable"() {
-        def conf = root.plugins.apply(ReleaseConfigurationPlugin).configuration
-
-        expect: !conf.notableRelease
-
-        when: conf.notableRelease = true
-        then: conf.notableRelease
-    }
-
-    def "knows if the release is notable"() {
-        root.file("version.properties") << "version=1.5.0"
-
-        expect:
-        root.plugins.apply(ReleaseConfigurationPlugin).configuration.notableRelease
-    }
 }

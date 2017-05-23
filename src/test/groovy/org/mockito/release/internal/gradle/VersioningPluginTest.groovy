@@ -68,6 +68,5 @@ class VersioningPluginTest extends Specification {
         versionInfo.versionFile == project.file(VersioningPlugin.VERSION_FILE_NAME)
         versionInfo.version == "1.0.0"
         versionInfo.notableVersions == ["0.1.0"] as LinkedList
-        versionInfo.notableRelease
     }
 }

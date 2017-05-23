@@ -27,7 +27,6 @@ public class ReleaseConfiguration {
     private final Git git = new Git();
     private final Team team = new Team();
 
-    private boolean notableRelease;
     private String previousReleaseVersion;
 
     public ReleaseConfiguration() {
@@ -37,6 +36,7 @@ public class ReleaseConfiguration {
         team.setContributors(Collections.<String>emptyList());
         team.setDevelopers(Collections.<String>emptyList());
         git.setCommitMessagePostfix("[ci skip]");
+        releaseNotes.setLabelMapping(Collections.<String, String>emptyMap());
     }
 
     //TODO currently it's not clear when to use class fields and when to use the 'configuration' map
@@ -73,21 +73,6 @@ public class ReleaseConfiguration {
 
     public Team getTeam() {
         return team;
-    }
-
-    /**
-     * See {@link #isNotableRelease()}
-     */
-    public void setNotableRelease(boolean notableRelease) {
-        this.notableRelease = notableRelease;
-    }
-
-    /**
-     * Informs if the release is considered 'notable' release.
-     * See {@link org.mockito.release.version.VersionInfo#isNotableRelease()}
-     */
-    public boolean isNotableRelease() {
-        return notableRelease;
     }
 
     /**
@@ -188,20 +173,6 @@ public class ReleaseConfiguration {
          */
         public void setFile(String file) {
             configuration.put("releaseNotes.file", file);
-        }
-
-        /**
-         * Notable release notes file, for example "docs/notable-release-notes.md"
-         */
-        public String getNotableFile() {
-            return getString("releaseNotes.notableFile");
-        }
-
-        /**
-         * See {@link #getNotableFile()}
-         */
-        public void setNotableFile(String notableFile) {
-            configuration.put("releaseNotes.notableFile", notableFile);
         }
 
         /**
