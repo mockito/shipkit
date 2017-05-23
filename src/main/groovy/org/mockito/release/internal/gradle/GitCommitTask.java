@@ -7,6 +7,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Commits all changes registered with {@link GitCommitTask#addChange} method
+ * Commit message is concatenated from all descriptions of registered changes
+ */
 public class GitCommitTask extends Exec{
 
     private List<File> filesToCommit = new ArrayList<File>();

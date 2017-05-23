@@ -18,7 +18,17 @@ import static org.mockito.release.internal.gradle.configuration.LazyConfiguratio
 import static org.mockito.release.internal.gradle.util.GitUtil.getTag;
 
 /**
- * Adds Git-specific tasks needed for the release process.
+ * Adds Git-specific tasks needed for the release process:
+ *
+ * <ul>
+ *     <li><gitCommit/li>
+ *     <li><gitTag/li>
+ *     <li><gitPush/li>
+ *     <li><performGitPush/li>
+ *
+ *     <li><gitCommitCleanUp/li>
+ *     <li><gitTagCleanUp/li>
+ * </ul>
  */
 public class GitPlugin implements Plugin<Project> {
 
@@ -27,7 +37,7 @@ public class GitPlugin implements Plugin<Project> {
     static final String GIT_TAG_TASK = "gitTag";
     static final String GIT_PUSH_TASK = "gitPush";
     static final String PERFORM_GIT_PUSH_TASK = "performGitPush";
-    static final String GIT_COMMIT_TASK = "gitCommit";
+    public static final String GIT_COMMIT_TASK = "gitCommit";
 
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();

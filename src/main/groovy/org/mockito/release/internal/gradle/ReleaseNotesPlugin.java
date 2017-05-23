@@ -7,6 +7,7 @@ import org.gradle.api.Task;
 import org.mockito.release.gradle.IncrementalReleaseNotes;
 import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.gradle.ReleaseNotesFetcherTask;
+import org.mockito.release.internal.gradle.util.GitPluginUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.version.VersionInfo;
 
@@ -24,6 +25,8 @@ import static org.mockito.release.internal.gradle.configuration.DeferredConfigur
  *     <li>previewReleaseNotes - prints incremental release notes to the console for preview,
  *          see {@link IncrementalReleaseNotes.PreviewTask}</li>
  * </ul>
+ *
+ * It also adds updates release notes changes if {@link GitPlugin} applied
  */
 public class ReleaseNotesPlugin implements Plugin<Project> {
 
@@ -59,7 +62,8 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
             public void execute(final IncrementalReleaseNotes.UpdateTask t) {
                 t.setDescription("Updates release notes file.");
                 configureDetailedNotes(t, fetcher, project, conf);
-                addToCommittedChanges(project, t, project.file(conf.getReleaseNotes().getFile()), "release notes updated");
+                GitPluginUtil.registerChangesIfGitPluginApplied(project,
+                        Arrays.asList(project.file(conf.getReleaseNotes().getFile())), "release notes updated", t);
             }
         });
 
@@ -83,16 +87,6 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
                 task.setReleaseNotesFile(project.file(conf.getReleaseNotes().getFile())); //TODO add sensible default
                 task.setGitHubRepository(conf.getGitHub().getRepository());
                 task.setPreviousVersion(project.getExtensions().getByType(VersionInfo.class).getPreviousVersion());
-            }
-        });
-    }
-
-    private static void addToCommittedChanges(final Project project, final Task task, final File changedFile, final String message){
-        project.getPlugins().withType(GitPlugin.class, new Action<GitPlugin>() {
-            @Override
-            public void execute(GitPlugin gitPushPlugin) {
-                final GitCommitTask gitCommitTask = (GitCommitTask) project.getTasks().getByName(GitPlugin.GIT_COMMIT_TASK);
-                gitCommitTask.addChange(Arrays.asList(changedFile), message, task);
             }
         });
     }

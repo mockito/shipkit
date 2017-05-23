@@ -7,9 +7,9 @@ import org.gradle.api.Task;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 
 /**
- * Plugin uses bumping version in version.properties file done by VersioningPlugin
- * and additionally commits and pushes changes to Github repo
- * You can use task "bumpVersionAndPush" to achieve all that
+ * Plugin uses bumping version in version.properties file done by {@link VersioningPlugin}
+ * and additionally applies {@link GitPlugin} so that bumped version changes can be committed
+ * You can use task "performVersionBump" to achieve all that
  *
  * Applies following plugins and preconfigures tasks provided by those plugins:
  *
