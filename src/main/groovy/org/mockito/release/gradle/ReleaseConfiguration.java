@@ -20,6 +20,8 @@ import static org.mockito.release.internal.gradle.util.team.TeamParser.validateT
  */
 public class ReleaseConfiguration {
 
+    private static final String NO_ENV_VARIABLE = null;
+
     private final Map<String, Object> configuration = new HashMap<String, Object>();
 
     private final GitHub gitHub = new GitHub();
@@ -338,7 +340,7 @@ public class ReleaseConfiguration {
     //1. Create wrapper type over 'configuration' map
     //2. Move handling to this new object and make it testable, along with env variables
     private String getString(String key) {
-        return getString(key, null);
+        return getString(key, NO_ENV_VARIABLE);
     }
 
     private Boolean getBoolean(String key) {
@@ -351,11 +353,11 @@ public class ReleaseConfiguration {
     }
 
     private Map getMap(String key) {
-        return (Map) getValue(key, null, "Please configure 'releasing." + key + "' value (Map).");
+        return (Map) getValue(key, NO_ENV_VARIABLE, "Please configure 'releasing." + key + "' value (Map).");
     }
 
     private Collection<String> getCollection(String key) {
-        return (Collection) getValue(key, null, "Please configure 'releasing." + key + "' value (Collection).");
+        return (Collection) getValue(key, NO_ENV_VARIABLE, "Please configure 'releasing." + key + "' value (Collection).");
     }
 
     private Object getValue(String key, String envVarName, String message) {
@@ -366,7 +368,7 @@ public class ReleaseConfiguration {
 
         if (envVarName != null) {
             value = System.getenv(envVarName);
-            if (value != null) {
+            if (value != NO_ENV_VARIABLE) {
                 return value;
             }
         }
