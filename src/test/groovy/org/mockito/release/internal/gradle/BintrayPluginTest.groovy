@@ -1,12 +1,9 @@
 package org.mockito.release.internal.gradle
 
-import org.gradle.testfixtures.ProjectBuilder
 import org.mockito.release.internal.gradle.configuration.LazyConfiguration
-import spock.lang.Specification
+import testutil.PluginSpecification
 
-class BintrayPluginTest extends Specification {
-
-    def project = new ProjectBuilder().build()
+class BintrayPluginTest extends PluginSpecification {
 
     def setup() {
         project.plugins.apply("org.mockito.mockito-release-tools.bintray")

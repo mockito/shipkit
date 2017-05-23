@@ -1,11 +1,8 @@
 package org.mockito.release.internal.gradle
 
-import org.gradle.testfixtures.ProjectBuilder
-import spock.lang.Specification
+import testutil.PluginSpecification
 
-class JavaLibraryPluginTest extends Specification {
-
-    def project = new ProjectBuilder().withParent().build()
+class JavaLibraryPluginTest extends PluginSpecification {
 
     def "applies"() {
         project.ext.bintray_repo = "my-repo"
