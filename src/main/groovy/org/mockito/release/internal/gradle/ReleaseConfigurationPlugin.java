@@ -12,7 +12,6 @@ import org.mockito.release.version.VersionInfo;
  * <ul>
  *     <li>Adds and preconfigures 'releasing' extension of type {@link ReleaseConfiguration}</li>
  *     <li>Configures 'releasing.dryRun' setting based on 'releasing.dryRun' Gradle project property</li>
- *     <li>Configures 'releasing.notableRelease' setting based on the version we are currently building</li>
  * </ul>
  */
 public class ReleaseConfigurationPlugin implements Plugin<Project> {
@@ -35,7 +34,6 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
                 //e.g. releasing.gitHub.repository is also a property
             }
 
-            configuration.setNotableRelease(info.isNotableRelease());
             configuration.setPreviousReleaseVersion(info.getPreviousVersion());
         } else {
             //not root project, get extension from root project
