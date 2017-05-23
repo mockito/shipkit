@@ -164,12 +164,10 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     }
 
     private static void addToCommittedChanges(final Project project, final Task task, final File changedFile, final String message){
-        project.getPlugins().withType(GitPushPlugin.class, new Action<GitPushPlugin>() {
+        project.getPlugins().withType(GitPlugin.class, new Action<GitPlugin>() {
             @Override
-            public void execute(GitPushPlugin gitPushPlugin) {
-                final GitCommitTask gitCommitTask = (GitCommitTask) project.getTasks().getByName(GitPushPlugin.GIT_COMMIT_TASK);
-                gitCommitTask.mustRunAfter(task);
-
+            public void execute(GitPlugin gitPushPlugin) {
+                final GitCommitTask gitCommitTask = (GitCommitTask) project.getTasks().getByName(GitPlugin.GIT_COMMIT_TASK);
                 gitCommitTask.addChange(Arrays.asList(changedFile), message, task);
             }
         });

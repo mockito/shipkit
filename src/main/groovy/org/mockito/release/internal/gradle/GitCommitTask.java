@@ -10,12 +10,12 @@ import java.util.List;
 public class GitCommitTask extends Exec{
 
     private List<File> filesToCommit = new ArrayList<File>();
-    private List<String> messages = new ArrayList<String>();
+    private List<String> descriptions = new ArrayList<String>();
 
-    public void addChange(List<File> files, String message, Task taskMakingChange){
+    public void addChange(List<File> files, String changeDescription, Task taskMakingChange){
         dependsOn(taskMakingChange);
         filesToCommit.addAll(files);
-        messages.add(message);
+        descriptions.add(changeDescription);
     }
 
     public List<String> getFiles() {
@@ -26,12 +26,12 @@ public class GitCommitTask extends Exec{
         return result;
     }
 
-    public String getAggregatedMessage(){
+    public String getAggregatedCommitMessage(){
         StringBuilder result = new StringBuilder();
-        for(String msg : messages){
+        for(String msg : descriptions){
             result.append(msg).append(" + ");
         }
-        if(!messages.isEmpty()){
+        if(!descriptions.isEmpty()){
             result.delete(result.length() - 3, result.length());
         }
         return result.toString();

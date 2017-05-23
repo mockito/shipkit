@@ -66,10 +66,10 @@ public class VersioningPlugin implements Plugin<Project> {
             public void execute(final BumpVersionFileTask t) {
                 t.setVersionFile(versionFile);
                 t.setDescription("Increments version number in " + versionFile.getName());
-                project.getPlugins().withType(GitPushPlugin.class, new Action<GitPushPlugin>() {
+                project.getPlugins().withType(GitPlugin.class, new Action<GitPlugin>() {
                     @Override
-                    public void execute(GitPushPlugin gitPushPlugin) {
-                        GitCommitTask gitCommitTask = (GitCommitTask) project.getTasks().findByName(GitPushPlugin.GIT_COMMIT_TASK);
+                    public void execute(GitPlugin gitPushPlugin) {
+                        GitCommitTask gitCommitTask = (GitCommitTask) project.getTasks().findByName(GitPlugin.GIT_COMMIT_TASK);
                         gitCommitTask.addChange(Arrays.asList(versionFile), "version bumped", t);
                     }
                 });

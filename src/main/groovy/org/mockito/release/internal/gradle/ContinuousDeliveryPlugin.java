@@ -23,7 +23,6 @@ import static org.mockito.release.internal.gradle.util.Specs.withName;
  *     <li>{@link ReleaseNotesPlugin}</li>
  *     <li>{@link VersioningPlugin}</li>
  *     <li>{@link GitPlugin}</li>
- *     <li>{@link GitPushPlugin}</li>
  *     <li>{@link ContributorsPlugin}</li>
  *     <li>{@link TravisPlugin}</li>
  * </ul>
@@ -47,7 +46,6 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
         project.getPlugins().apply(ReleaseNotesPlugin.class);
         project.getPlugins().apply(AutoVersioningPlugin.class);
         project.getPlugins().apply(GitPlugin.class);
-        project.getPlugins().apply(GitPushPlugin.class);
         project.getPlugins().apply(ContributorsPlugin.class);
         project.getPlugins().apply(TravisPlugin.class);
         project.getPlugins().apply(ReleaseNeededPlugin.class);
@@ -85,7 +83,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                 t.setDescription("Depends on all 'bintrayUpload' tasks from all Gradle projects.");
                 //It is safer to run bintray upload after git push (hard to reverse operation)
                 //This way, when git push fails we don't publish jars to bintray
-                t.mustRunAfter(GitPushPlugin.GIT_PUSH_TASK);
+                t.mustRunAfter(GitPlugin.GIT_PUSH_TASK);
             }
         });
         //TODO can we make git push and bintray upload tasks to be last (expensive, hard to reverse tasks should go last)
@@ -137,7 +135,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                         "Test with: './gradlew testRelease'");
 
                 t.dependsOn(VersioningPlugin.BUMP_VERSION_FILE_TASK, "updateReleaseNotes", "updateNotableReleaseNotes");
-                t.dependsOn(GitPushPlugin.PERFORM_GIT_PUSH_TASK);
+                t.dependsOn(GitPlugin.PERFORM_GIT_PUSH_TASK);
                 t.dependsOn("bintrayUploadAll");
 
                 project.getTasks().getByName(GitPlugin.COMMIT_CLEANUP_TASK).mustRunAfter(t);
