@@ -4,6 +4,8 @@ import org.mockito.release.gradle.ReleaseConfiguration
 import org.mockito.release.internal.gradle.util.team.TeamParser
 import spock.lang.Specification
 
+import static java.util.Arrays.asList
+
 class ReleaseConfigurationTest extends Specification {
 
     def conf = new ReleaseConfiguration()
@@ -29,9 +31,9 @@ class ReleaseConfigurationTest extends Specification {
         conf.team.developers = ["foo:bar"]
         conf.team.developers = ["foo:bar", "x:y"]
 
-        conf.team.contributors = []
-        conf.team.contributors = ["foo:bar"]
-        conf.team.contributors = ["foo:bar", "x:y"]
+        conf.team.addAllContributors([])
+        conf.team.addAllContributors(["foo:bar"])
+        conf.team.addAllContributors(["foo:bar", "x:y"])
 
         then:
         noExceptionThrown()
@@ -41,7 +43,20 @@ class ReleaseConfigurationTest extends Specification {
         when: conf.team.developers = [""]
         then: thrown(TeamParser.InvalidInput.class)
 
-        when: conf.team.contributors = ["ala:"]
+        when: conf.team.addAllContributors(["ala:"])
         then: thrown(TeamParser.InvalidInput.class)
+    }
+
+    def "contributors list should return always original reference because of global state"() {
+        given:
+        def contributors = conf.getTeam().getContributors()
+        def newContributors = asList("foo:bar", "fiz:buz")
+
+        when:
+        conf.getTeam().addAllContributors(newContributors)
+
+        then:
+        conf.getTeam().getContributors() == contributors    // check is the same reference
+        conf.getTeam().getContributors().containsAll(asList("foo:bar", "fiz:buz"))
     }
 }
