@@ -111,8 +111,4 @@ class DefaultVersionInfo implements VersionInfo {
         //we should delete 'notableVersions' code from this class
         return notableVersions;
     }
-
-    public boolean isNotableRelease() {
-        return version.endsWith(".0.0");
-    }
 }

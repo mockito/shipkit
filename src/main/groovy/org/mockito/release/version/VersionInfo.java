@@ -20,9 +20,4 @@ public interface VersionInfo {
      * and returns incremented version info instance.
      */
     VersionInfo bumpVersion();
-
-    /**
-     * Informs if the current version is a notable release
-     */
-    boolean isNotableRelease();
 }
