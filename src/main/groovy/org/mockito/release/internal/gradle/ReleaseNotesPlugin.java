@@ -135,6 +135,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         gen.setVcsCommitsLinkTemplate("https://github.com/" + conf.getGitHub().getRepository() + "/compare/{0}...{1}");
         gen.setDetailedReleaseNotesLink(conf.getGitHub().getRepository() + "/blob/" + gitStatus.getBranch() + "/" + conf.getReleaseNotes().getNotableFile());
         gen.setSkipCommitMessagePostfix(conf.getGit().getCommitMessagePostfix());
+        gen.setIgnoreCommitsContaining(conf.getReleaseNotes().getIgnoreCommitsContaining());
     }
 
     private static File getTemporaryReleaseNotesFile(Project project){
