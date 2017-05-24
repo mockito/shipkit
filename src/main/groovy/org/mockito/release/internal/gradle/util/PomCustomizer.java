@@ -9,10 +9,17 @@ import org.gradle.api.logging.Logging;
 import org.gradle.api.publish.maven.MavenPublication;
 import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.internal.gradle.util.team.TeamMember;
+import org.mockito.release.notes.contributors.AllContributorsSerializer;
+import org.mockito.release.notes.contributors.ProjectContributorsSet;
+import org.mockito.release.notes.util.IOUtil;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.mockito.release.internal.gradle.util.BuildConventions.contributorsFile;
 import static org.mockito.release.internal.gradle.util.team.TeamParser.parsePerson;
 
 /**
@@ -29,6 +36,12 @@ public class PomCustomizer {
         publication.getPom().withXml(new Action<XmlProvider>() {
             public void execute(XmlProvider xml) {
                 String archivesBaseName = (String) project.getProperties().get("archivesBaseName");
+                File contributorsFile = contributorsFile(project);
+                LOG.info("  Read project contributors from file: " + contributorsFile.getAbsolutePath());
+
+                // It can happens that contributorsFile doesn't exist e.g. when releasing.team.contributors is NOT empty
+                ProjectContributorsSet contributorsFromGitHub = new AllContributorsSerializer()
+                        .deserialize(IOUtil.readFullyOrDefault(contributorsFile, "[]"));
                 LOG.info("  Customizing pom for publication " + publication.getName() + " in " + project.toString() +
                         "\n   - Module name (project.archivesBaseName): " + archivesBaseName +
                         "\n   - Description (project.description): " + project.getDescription() +
@@ -37,8 +50,11 @@ public class PomCustomizer {
                         "\n   - Developers (project.rootProject.releasing.team.developers): "
                                 + StringUtil.join(conf.getTeam().getDevelopers(), ", ") +
                         "\n   - Contributors (project.rootProject.releasing.team.contributors): "
-                                + StringUtil.join(conf.getTeam().getContributors(), ", "));
-                customizePom(xml.asNode(), conf, archivesBaseName, project.getDescription());
+                                + StringUtil.join(conf.getTeam().getContributors(), ", ") +
+                        "\n   - Contributors read from GitHub: "
+                                + StringUtil.join(contributorsFromGitHub.toConfigNotation(), ", "));
+
+                customizePom(xml.asNode(), conf, archivesBaseName, project.getDescription(), contributorsFromGitHub);
             }
         });
     }
@@ -47,7 +63,8 @@ public class PomCustomizer {
      * Customizes pom xml based on the provide configuration and settings
      */
     static void customizePom(Node root, ReleaseConfiguration conf,
-                                    String projectName, String projectDescription) {
+                             String projectName, String projectDescription,
+                             ProjectContributorsSet contributorsFromGitHub) {
         //Assumes project has java plugin applied. Pretty safe assumption
         root.appendNode("name", projectName);
         root.appendNode("packaging", "jar");
@@ -83,10 +100,13 @@ public class PomCustomizer {
             }
         }
 
-        if (!conf.getTeam().getContributors().isEmpty()) {
+        if (!conf.getTeam().getContributors().isEmpty() || contributorsFromGitHub.size() != 0) {
             Set<String> devs = new HashSet<String>(conf.getTeam().getDevelopers());
             Node contributors = root.appendNode("contributors");
-            for (String notation : conf.getTeam().getContributors()) {
+            Collection<String> allContributors = new ArrayList<String>();
+            allContributors.addAll(conf.getTeam().getContributors());
+            allContributors.addAll(contributorsFromGitHub.toConfigNotation());
+            for (String notation : allContributors) {
                 if (!devs.contains(notation)) {
                     TeamMember person = parsePerson(notation);
                     Node d = contributors.appendNode("contributor");

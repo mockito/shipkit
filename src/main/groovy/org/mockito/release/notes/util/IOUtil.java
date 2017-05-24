@@ -21,6 +21,17 @@ public class IOUtil {
     }
 
     /**
+     * Reads string from the file or returns empty text if file doesn't exist or can't open
+     */
+    public static String readFullyOrDefault(File input, String defaultValue) {
+        try {
+            return readNow(new FileInputStream(input));
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
+    /**
      * Reads string from the stream and closes it
      */
     public static String readFully(InputStream stream) {

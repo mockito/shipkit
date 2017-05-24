@@ -10,9 +10,16 @@ import java.io.File;
 public class BuildConventions {
 
     /**
+     * Returns file object for storing contributors.
+     */
+    public static File contributorsFile(Project project) {
+        return outputFile(project.getRootProject(), "all-contributors.json");
+    }
+
+    /**
      * Returns file object in a standard location where we put other output files generated during the build.
      */
-    public static File outputFile(Project project, String fileName) {
+    private static File outputFile(Project project, String fileName) {
         return new File(project.getBuildDir(), "/release-tools/" + fileName);
     }
 }
