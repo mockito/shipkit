@@ -6,9 +6,9 @@ class IgnoredCommitTest extends Specification {
 
     def "should skip commits that contains given ignored substrings"() {
         def ignoredCommit = new IgnoredCommit(["[ci skip]", "[custom skip]"])
-        def commitWithCiSkip = new GitCommit("firstCommitId", "sample@email.com", "sampleAuthor", "sample [ci skip] commit message")
-        def commitWithCustomSkip = new GitCommit("thirdCommitId", "sample@email.com", "sampleAuthor", "sample [custom skip] commit message")
-        def commitWithoutSkipSubstringInMessage = new GitCommit("firstCommitId", "sample@email.com", "sampleAuthor", "sample commit message")
+        def commitWithCiSkip = createGitCommitWithMessage("sample [ci skip] commit message")
+        def commitWithCustomSkip = createGitCommitWithMessage("sample [custom skip] commit message")
+        def commitWithoutSkipSubstringInMessage = createGitCommitWithMessage("sample commit message")
 
         expect:
         ignoredCommit.isTrue(commitWithCiSkip)
@@ -22,5 +22,9 @@ class IgnoredCommitTest extends Specification {
 
         expect:
         ignoredCommit.isTrue(commitWithCiSkip) == false
+    }
+
+    private GitCommit createGitCommitWithMessage(message) {
+        new GitCommit("id", "sample@email.com", "sampleAuthor", message)
     }
 }
