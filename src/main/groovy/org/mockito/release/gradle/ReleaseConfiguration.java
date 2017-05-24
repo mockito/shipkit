@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static org.mockito.release.internal.gradle.util.team.TeamParser.validateTeamMembers;
 
 /**
@@ -39,6 +40,7 @@ public class ReleaseConfiguration {
         team.setDevelopers(Collections.<String>emptyList());
         git.setCommitMessagePostfix("[ci skip]");
         releaseNotes.setLabelMapping(Collections.<String, String>emptyMap());
+        releaseNotes.setIgnoreCommitsContaining(asList("[ci skip]"));
     }
 
     //TODO currently it's not clear when to use class fields and when to use the 'configuration' map
