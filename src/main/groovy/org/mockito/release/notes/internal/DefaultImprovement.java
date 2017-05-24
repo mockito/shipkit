@@ -87,4 +87,40 @@ public class DefaultImprovement implements Improvement {
     public void toJson(Writer writable) throws IOException {
         writable.append(toJson());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        DefaultImprovement that = (DefaultImprovement) o;
+
+        if (isPullRequest != that.isPullRequest) {
+            return false;
+        }
+        if (id != null ? !id.equals(that.id) : that.id != null) {
+            return false;
+        }
+        if (title != null ? !title.equals(that.title) : that.title != null) {
+            return false;
+        }
+        if (url != null ? !url.equals(that.url) : that.url != null) {
+            return false;
+        }
+        return labels != null ? labels.equals(that.labels) : that.labels == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (url != null ? url.hashCode() : 0);
+        result = 31 * result + (labels != null ? labels.hashCode() : 0);
+        result = 31 * result + (isPullRequest ? 1 : 0);
+        return result;
+    }
 }

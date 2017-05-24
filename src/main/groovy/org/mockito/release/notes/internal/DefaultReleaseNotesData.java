@@ -88,4 +88,56 @@ public class DefaultReleaseNotesData implements ReleaseNotesData {
     public void toJson(Writer writable) throws IOException {
         writable.append(toJson());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        DefaultReleaseNotesData that = (DefaultReleaseNotesData) o;
+
+        if (version != null ? !version.equals(that.version) : that.version != null) {
+            return false;
+        }
+        if (date != null ? !date.equals(that.date) : that.date != null) {
+            return false;
+        }
+        if (contributions != null ? !contributions.equals(that.contributions) : that.contributions != null) {
+            return false;
+        }
+        if (improvements != null ? !improvements.equals(that.improvements) : that.improvements != null) {
+            return false;
+        }
+        if (previousVersionTag != null ? !previousVersionTag.equals(that.previousVersionTag) : that.previousVersionTag != null) {
+            return false;
+        }
+        return thisVersionTag != null ? thisVersionTag.equals(that.thisVersionTag) : that.thisVersionTag == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = version != null ? version.hashCode() : 0;
+        result = 31 * result + (date != null ? date.hashCode() : 0);
+        result = 31 * result + (contributions != null ? contributions.hashCode() : 0);
+        result = 31 * result + (improvements != null ? improvements.hashCode() : 0);
+        result = 31 * result + (previousVersionTag != null ? previousVersionTag.hashCode() : 0);
+        result = 31 * result + (thisVersionTag != null ? thisVersionTag.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "DefaultReleaseNotesData{" +
+                "version='" + version + '\'' +
+                ", date=" + date +
+                ", contributions=" + contributions +
+                ", improvements=" + improvements +
+                ", previousVersionTag='" + previousVersionTag + '\'' +
+                ", thisVersionTag='" + thisVersionTag + '\'' +
+                '}';
+    }
 }

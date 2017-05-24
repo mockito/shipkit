@@ -76,4 +76,41 @@ class DefaultContributionSet implements ContributionSet {
     public void toJson(Writer writable) throws IOException {
         writable.append(toJson());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        DefaultContributionSet that = (DefaultContributionSet) o;
+
+        if (contributions != null ? !contributions.equals(that.contributions) : that.contributions != null) {
+            return false;
+        }
+        if (commits != null ? !commits.equals(that.commits) : that.commits != null) {
+            return false;
+        }
+        return tickets != null ? tickets.equals(that.tickets) : that.tickets == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = contributions != null ? contributions.hashCode() : 0;
+        result = 31 * result + (commits != null ? commits.hashCode() : 0);
+        result = 31 * result + (tickets != null ? tickets.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "DefaultContributionSet{" +
+                "contributions=" + contributions +
+                ", commits=" + commits +
+                ", tickets=" + tickets +
+                '}';
+    }
 }

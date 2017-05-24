@@ -6,6 +6,7 @@ import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
 import org.mockito.release.notes.model.Commit;
 
+//TODO: NagRock Is this class needed?
 public class DefaultContributionSerializer {
     private GitCommitSerializer gitCommitSerializer = new GitCommitSerializer();
 
@@ -38,7 +39,7 @@ public class DefaultContributionSerializer {
         final JsonObject firstCommit = (JsonObject) commits.get(0);
         DefaultContribution defaultContribution = new DefaultContribution(gitCommitSerializer.deserialize(firstCommit));
         for (int i = 1; i < commits.size(); i++) {
-            Commit commit = gitCommitSerializer.deserialize((JsonObject) commits.get(0));
+            Commit commit = gitCommitSerializer.deserialize((JsonObject) commits.get(i));
             defaultContribution.add(commit);
         }
         return defaultContribution;
