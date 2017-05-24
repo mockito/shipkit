@@ -10,6 +10,7 @@ import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.version.VersionInfo;
 
 import java.io.File;
+import java.util.Arrays;
 
 import static org.mockito.release.internal.gradle.ContributorsPlugin.FETCH_ALL_CONTRIBUTORS_TASK;
 import static org.mockito.release.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
@@ -23,6 +24,8 @@ import static org.mockito.release.internal.gradle.configuration.DeferredConfigur
  *     <li>previewReleaseNotes - prints incremental release notes to the console for preview,
  *          see {@link IncrementalReleaseNotes.PreviewTask}</li>
  * </ul>
+ *
+ * It also adds updates release notes changes if {@link GitPlugin} applied
  */
 public class ReleaseNotesPlugin implements Plugin<Project> {
 
@@ -61,6 +64,8 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
             public void execute(final IncrementalReleaseNotes.UpdateTask t) {
                 t.setDescription("Updates release notes file.");
                 configureDetailedNotes(t, releaseNotesFetcher, project, conf, contributorsFetcher);
+                GitPlugin.registerChangesForCommitIfApplied(
+                        Arrays.asList(project.file(conf.getReleaseNotes().getFile())), "release notes updated", t);
             }
         });
 

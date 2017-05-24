@@ -12,6 +12,7 @@ import org.mockito.release.version.Version;
 import org.mockito.release.version.VersionInfo;
 
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * The plugin adds following tasks:
@@ -32,6 +33,8 @@ import java.io.File;
  *
  * BEWARE! If version.properties doesn't exists, this plugin will create it automatically and set
  * version value to project.version
+ *
+ * Plugin adds bumped version changes if {@link GitPlugin} applied
  */
 public class VersioningPlugin implements Plugin<Project> {
 
@@ -62,9 +65,10 @@ public class VersioningPlugin implements Plugin<Project> {
         });
 
         TaskMaker.task(project, BUMP_VERSION_FILE_TASK, BumpVersionFileTask.class, new Action<BumpVersionFileTask>() {
-            public void execute(BumpVersionFileTask t) {
+            public void execute(final BumpVersionFileTask t) {
                 t.setVersionFile(versionFile);
                 t.setDescription("Increments version number in " + versionFile.getName());
+                GitPlugin.registerChangesForCommitIfApplied(Arrays.asList(versionFile), "version bumped", t);
             }
         });
     }

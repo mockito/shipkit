@@ -1,19 +1,9 @@
 package org.mockito.release.internal.gradle
 
-import org.gradle.testfixtures.ProjectBuilder
-import org.junit.Rule
-import org.junit.rules.TemporaryFolder
 import org.mockito.release.version.VersionInfo
-import spock.lang.Specification
+import testutil.PluginSpecification
 
-class VersioningPluginTest extends Specification {
-
-    @Rule TemporaryFolder tmp = new TemporaryFolder()
-    def project
-
-    def setup(){
-        project = new ProjectBuilder().withProjectDir(tmp.root).build()
-    }
+class VersioningPluginTest extends PluginSpecification {
 
     def "should generate version properties and use project.version if file doesn't exist and project.version specified"() {
         given:
@@ -68,5 +58,18 @@ class VersioningPluginTest extends Specification {
         versionInfo.versionFile == project.file(VersioningPlugin.VERSION_FILE_NAME)
         versionInfo.version == "1.0.0"
         versionInfo.notableVersions == ["0.1.0"] as LinkedList
+    }
+
+    def "adds version bumped changes to GitCommitTask if GitPlugin applied"() {
+        given:
+        project.plugins.apply(GitPlugin)
+
+        when:
+        project.plugins.apply(VersioningPlugin)
+
+        then:
+        GitCommitTask gitCommitTask = project.tasks.getByName(GitPlugin.GIT_COMMIT_TASK)
+        gitCommitTask.files.contains(project.file(VersioningPlugin.VERSION_FILE_NAME).absolutePath)
+        gitCommitTask.aggregatedCommitMessage.contains("version bumped")
     }
 }

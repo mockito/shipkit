@@ -1,5 +1,6 @@
 package testutil
 
+import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
@@ -18,7 +19,7 @@ class PluginSpecification extends Specification{
     @Rule
     TemporaryFolder tmp = new TemporaryFolder()
 
-    def project
+    def Project project
 
     void setup(){
         initProject()
