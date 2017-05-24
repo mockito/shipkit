@@ -47,14 +47,10 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
                 t.setDescription("Fetches release notes data from Git and GitHub and serializes them to a file");
                 t.setOutputFile(new File(project.getBuildDir(), "detailed-release-notes.ser"));
 
-                deferredConfiguration(project, new Runnable() {
-                    public void run() {
-                        t.setGitHubReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
-                        t.setGitHubRepository(conf.getGitHub().getRepository());
-                        t.setPreviousVersion(conf.getPreviousReleaseVersion());
-                        t.setIgnoreCommitsContaining(conf.getReleaseNotes().getIgnoreCommitsContaining());
-                    }
-                });
+                t.setGitHubReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
+                t.setGitHubRepository(conf.getGitHub().getRepository());
+                t.setPreviousVersion(conf.getPreviousReleaseVersion());
+                t.setIgnoreCommitsContaining(conf.getReleaseNotes().getIgnoreCommitsContaining());
             }
         });
 

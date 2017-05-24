@@ -127,7 +127,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                         "Ship with: './gradlew performRelease -Preleasing.dryRun=false'. " +
                         "Test with: './gradlew testRelease'");
 
-                t.dependsOn(VersioningPlugin.BUMP_VERSION_FILE_TASK, "updateReleaseNotes", "updateNotableReleaseNotes");
+                t.dependsOn(VersioningPlugin.BUMP_VERSION_FILE_TASK, "updateReleaseNotes");
                 t.dependsOn(GitPlugin.PERFORM_GIT_PUSH_TASK);
                 t.dependsOn("bintrayUploadAll");
 
