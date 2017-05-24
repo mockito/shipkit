@@ -36,11 +36,16 @@ public class ReleaseConfiguration {
         //Configure default values
         git.setTagPrefix("v"); //so that tags are "v1.0", "v2.3.4"
         git.setReleasableBranchRegex("master|release/.+");  // matches 'master', 'release/2.x', 'release/3.x', etc.
+        git.setCommitMessagePostfix("[ci skip]");
+        git.setUser("Mockito Release Tools");
+        git.setEmail("<mockito.release.tools@gmail.com>");
+
+        releaseNotes.setFile("docs/release-notes.md");
+        releaseNotes.setIgnoreCommitsContaining(asList("[ci skip]"));
+        releaseNotes.setLabelMapping(Collections.<String, String>emptyMap());
+
         team.setContributors(Collections.<String>emptyList());
         team.setDevelopers(Collections.<String>emptyList());
-        git.setCommitMessagePostfix("[ci skip]");
-        releaseNotes.setLabelMapping(Collections.<String, String>emptyMap());
-        releaseNotes.setIgnoreCommitsContaining(asList("[ci skip]"));
     }
 
     //TODO currently it's not clear when to use class fields and when to use the 'configuration' map

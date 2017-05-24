@@ -20,4 +20,9 @@ public interface ProjectContributorsSet {
      * Returns null if one cannot be found.
      */
     ProjectContributor findByName(String name);
+
+    /**
+     * Returns a collection of contributors in notation "GITHUB_USER:FULL_NAME".
+     */
+    Collection<String> toConfigNotation();
 }

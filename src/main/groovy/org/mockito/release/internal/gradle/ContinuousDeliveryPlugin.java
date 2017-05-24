@@ -11,6 +11,7 @@ import org.mockito.release.internal.gradle.util.BintrayUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 
 import static org.mockito.release.internal.gradle.BaseJavaLibraryPlugin.POM_TASK;
+import static org.mockito.release.internal.gradle.ContributorsPlugin.FETCH_ALL_CONTRIBUTORS_TASK;
 import static org.mockito.release.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
 import static org.mockito.release.internal.gradle.configuration.LazyConfiguration.lazyConfiguration;
 import static org.mockito.release.internal.gradle.util.Specs.withName;
@@ -55,12 +56,12 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                 subproject.getPlugins().withType(BaseJavaLibraryPlugin.class, new Action<BaseJavaLibraryPlugin>() {
                     @Override
                     public void execute(BaseJavaLibraryPlugin p) {
-                        final Task contributors = project.getTasks().getByName(ContributorsPlugin.CONFIGURE_CONTRIBUTORS_TASK);
+                        final Task fetcher = project.getTasks().getByName(FETCH_ALL_CONTRIBUTORS_TASK);
                         //Because maven-publish plugin uses new configuration model, we cannot get the task directly
                         //So we use 'matching' technique
                         subproject.getTasks().matching(withName(POM_TASK)).all(new Action<Task>() {
                             public void execute(Task t) {
-                                t.dependsOn(contributors);
+                                t.dependsOn(fetcher);
                             }
                         });
                     }

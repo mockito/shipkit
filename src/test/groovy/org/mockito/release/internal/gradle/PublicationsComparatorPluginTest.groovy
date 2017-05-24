@@ -2,21 +2,16 @@ package org.mockito.release.internal.gradle
 
 import com.jfrog.bintray.gradle.BintrayExtension
 import org.gradle.testfixtures.ProjectBuilder
-import org.junit.Rule
-import org.junit.rules.TemporaryFolder
 import org.mockito.release.gradle.ReleaseConfiguration
 import org.mockito.release.internal.comparison.DownloadPreviousReleaseArtifactsTask
 import org.mockito.release.internal.comparison.PublicationsComparatorTask
-import spock.lang.Specification
+import testutil.PluginSpecification
 
-class PublicationsComparatorPluginTest extends Specification {
-
-    @Rule
-    def TemporaryFolder tmp = new TemporaryFolder()
+class PublicationsComparatorPluginTest extends PluginSpecification {
 
     def "applies"() {
         expect:
-        new ProjectBuilder().build().plugins.apply("org.mockito.mockito-release-tools.publications-comparator")
+        project.plugins.apply("org.mockito.mockito-release-tools.publications-comparator")
     }
 
     def "configures comparePublications task correctly"() {
