@@ -12,6 +12,7 @@ class ReleaseConfigurationTest extends Specification {
         conf.team.developers.empty
         conf.team.contributors.empty
         conf.git.commitMessagePostfix == "[ci skip]"
+        conf.releaseNotes.ignoreCommitsContaining == ["[ci skip]"]
     }
 
     def "custom commitMessagePostfix"() {

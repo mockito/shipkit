@@ -9,6 +9,7 @@ import org.mockito.release.notes.generator.ReleaseNotesGenerator;
 import org.mockito.release.notes.generator.ReleaseNotesGenerators;
 import org.mockito.release.notes.model.ReleaseNotesData;
 import org.mockito.release.notes.util.IOUtil;
+import org.mockito.release.notes.vcs.IgnoredCommit;
 
 import java.io.File;
 import java.util.Collection;
@@ -29,6 +30,7 @@ public class ReleaseNotesFetcherTask extends DefaultTask {
     @Input private boolean onlyPullRequests;
     @Input private File gitWorkDir = getProject().getRootDir();
     @Input private Collection<String> gitHubLabels = Collections.emptyList();
+    @Input private Collection<String> ignoreCommitsContaining;
     @OutputFile private File outputFile;
 
     /**
@@ -160,10 +162,24 @@ public class ReleaseNotesFetcherTask extends DefaultTask {
         this.gitHubLabels = gitHubLabels;
     }
 
+    /**
+     * See {@link ReleaseConfiguration.ReleaseNotes#getIgnoreCommitsContaining()}
+     */
+    public Collection<String> getIgnoreCommitsContaining() {
+        return ignoreCommitsContaining;
+    }
+
+    /**
+     * See {@link #getIgnoreCommitsContaining()}
+     */
+    public void setIgnoreCommitsContaining(Collection<String> ignoreCommitsContaining) {
+        this.ignoreCommitsContaining = ignoreCommitsContaining;
+    }
+
     @TaskAction
     public void generateReleaseNotes() {
         ReleaseNotesGenerator generator = ReleaseNotesGenerators.releaseNotesGenerator(
-                gitWorkDir, gitHubRepository, gitHubReadOnlyAuthToken);
+                gitWorkDir, gitHubRepository, gitHubReadOnlyAuthToken, new IgnoredCommit(ignoreCommitsContaining));
 
         Collection<ReleaseNotesData> releaseNotes = generator.generateReleaseNotesData(
                 version, asList(previousVersion), tagPrefix, gitHubLabels, onlyPullRequests);

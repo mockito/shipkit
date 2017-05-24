@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static org.mockito.release.internal.gradle.util.team.TeamParser.validateTeamMembers;
 
 /**
@@ -19,6 +20,8 @@ import static org.mockito.release.internal.gradle.util.team.TeamParser.validateT
  * <a href="https://github.com/mockito/mockito-release-tools/issues/76">issue 76</a>
  */
 public class ReleaseConfiguration {
+
+    private static final String NO_ENV_VARIABLE = null;
 
     private final Map<String, Object> configuration = new HashMap<String, Object>();
 
@@ -38,6 +41,7 @@ public class ReleaseConfiguration {
         git.setEmail("<mockito.release.tools@gmail.com>");
 
         releaseNotes.setFile("docs/release-notes.md");
+        releaseNotes.setIgnoreCommitsContaining(asList("[ci skip]"));
         releaseNotes.setLabelMapping(Collections.<String, String>emptyMap());
 
         team.setContributors(Collections.<String>emptyList());
@@ -197,6 +201,22 @@ public class ReleaseConfiguration {
         public void setLabelMapping(Map<String, String> labelMapping) {
             configuration.put("releaseNotes.labelMapping", labelMapping);
         }
+
+        /**
+         * Release notes are generated based on information in commit messages.
+         * If a commit message contains any of texts from this collection,
+         * that commit will be ignored and not used for generating release notes.
+         */
+        public Collection<String> getIgnoreCommitsContaining() {
+            return getCollection("releaseNotes.ignoreCommitsContaining");
+        }
+
+        /**
+         * See {@link #getIgnoreCommitsContaining()}
+         */
+        public void setIgnoreCommitsContaining(Collection<String> commitMessageParts) {
+            configuration.put("releaseNotes.ignoreCommitsContaining", commitMessageParts);
+        }
     }
 
     public class Git {
@@ -262,7 +282,6 @@ public class ReleaseConfiguration {
         public void setTagPrefix(String tagPrefix) {
             configuration.put("git.tagPrefix", tagPrefix);
         }
-
 
         /**
          * Text which will be included in the commit message for all commits automatically created by the release
@@ -330,7 +349,7 @@ public class ReleaseConfiguration {
     //1. Create wrapper type over 'configuration' map
     //2. Move handling to this new object and make it testable, along with env variables
     private String getString(String key) {
-        return getString(key, null);
+        return getString(key, NO_ENV_VARIABLE);
     }
 
     private Boolean getBoolean(String key) {
@@ -343,11 +362,11 @@ public class ReleaseConfiguration {
     }
 
     private Map getMap(String key) {
-        return (Map) getValue(key, null,"Please configure 'releasing." + key + "' value (Map).");
+        return (Map) getValue(key, NO_ENV_VARIABLE, "Please configure 'releasing." + key + "' value (Map).");
     }
 
     private Collection<String> getCollection(String key) {
-        return (Collection) getValue(key, null, "Please configure 'releasing." + key + "' value (Collection).");
+        return (Collection) getValue(key, NO_ENV_VARIABLE, "Please configure 'releasing." + key + "' value (Collection).");
     }
 
     private Object getValue(String key, String envVarName, String message) {
@@ -358,17 +377,10 @@ public class ReleaseConfiguration {
 
         if (envVarName != null) {
             value = System.getenv(envVarName);
-            if (value != null) {
+            if (value != NO_ENV_VARIABLE) {
                 return value;
             }
         }
         throw new GradleException(message);
-    }
-
-    private Map<String, String> defaultLabelMapping(){
-        Map<String, String> result = new HashMap<String, String>();
-        result.put("noteworthy","Noteworthy");
-        result.put("bugfix","Bugfixes");
-        return result;
     }
 }

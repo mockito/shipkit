@@ -21,6 +21,8 @@ public class NotesGeneration {
     private String vcsCommitsLinkTemplate;
     private String headVersion;
     private File temporarySerializedNotesFile;
+    private String skipCommitMessagePostfix;
+    private Collection<String> ignoreCommitsContaining;
 
     public File getGitWorkingDir() {
         return gitWorkingDir;
@@ -126,5 +128,21 @@ public class NotesGeneration {
 
     public void setTemporarySerializedNotesFile(File temporarySerializedNotesFile) {
         this.temporarySerializedNotesFile = temporarySerializedNotesFile;
+    }
+
+    public String getSkipCommitMessagePostfix() {
+        return skipCommitMessagePostfix;
+    }
+
+    public void setSkipCommitMessagePostfix(String skipCommitMessagePostfix) {
+        this.skipCommitMessagePostfix = skipCommitMessagePostfix;
+    }
+
+    public Collection<String> getIgnoreCommitsContaining() {
+        return ignoreCommitsContaining;
+    }
+
+    public void setIgnoreCommitsContaining(Collection<String> ignoreCommitsContaining) {
+        this.ignoreCommitsContaining = ignoreCommitsContaining;
     }
 }
