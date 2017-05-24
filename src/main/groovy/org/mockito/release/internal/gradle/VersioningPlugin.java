@@ -6,7 +6,6 @@ import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.mockito.release.gradle.BumpVersionFileTask;
-import org.mockito.release.internal.gradle.util.GitPluginUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.notes.util.IOUtil;
 import org.mockito.release.version.Version;
@@ -69,7 +68,7 @@ public class VersioningPlugin implements Plugin<Project> {
             public void execute(final BumpVersionFileTask t) {
                 t.setVersionFile(versionFile);
                 t.setDescription("Increments version number in " + versionFile.getName());
-                GitPluginUtil.registerChangesIfGitPluginApplied(project, Arrays.asList(versionFile), "version bumped", t);
+                GitPlugin.registerChangesForCommitIfApplied(Arrays.asList(versionFile), "version bumped", t);
             }
         });
     }

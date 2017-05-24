@@ -3,11 +3,9 @@ package org.mockito.release.internal.gradle;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
 import org.mockito.release.gradle.IncrementalReleaseNotes;
 import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.gradle.ReleaseNotesFetcherTask;
-import org.mockito.release.internal.gradle.util.GitPluginUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 import org.mockito.release.version.VersionInfo;
 
@@ -62,7 +60,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
             public void execute(final IncrementalReleaseNotes.UpdateTask t) {
                 t.setDescription("Updates release notes file.");
                 configureDetailedNotes(t, fetcher, project, conf);
-                GitPluginUtil.registerChangesIfGitPluginApplied(project,
+                GitPlugin.registerChangesForCommitIfApplied(
                         Arrays.asList(project.file(conf.getReleaseNotes().getFile())), "release notes updated", t);
             }
         });

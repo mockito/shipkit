@@ -10,6 +10,7 @@ import org.mockito.release.gradle.SecureExecTask;
 import org.mockito.release.internal.gradle.util.GitUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,8 +97,8 @@ public class GitPlugin implements Plugin<Project> {
 
         TaskMaker.task(project, PERFORM_GIT_PUSH_TASK, Task.class, new Action<Task>() {
             public void execute(final Task t) {
-                t.setDescription("Pushes automatically created commits to remote repo.");
-                t.dependsOn(GIT_COMMIT_TASK, GIT_PUSH_TASK);
+                t.setDescription("Performs gitCommit, gitTag and gitPush tasks and all tasks dependent on them.");
+                t.dependsOn(GIT_COMMIT_TASK, GIT_TAG_TASK, GIT_PUSH_TASK);
             }
         });
 
@@ -113,6 +114,18 @@ public class GitPlugin implements Plugin<Project> {
             public void execute(final Exec t) {
                 t.setDescription("Deletes version tag '" + getTag(conf, project) + "'");
                 t.commandLine("git", "tag", "-d", getTag(conf, project));
+            }
+        });
+    }
+
+    public static void registerChangesForCommitIfApplied(final List<File> changedFiles,
+                                                         final String changeDescription, final Task changingTask){
+        final Project project = changingTask.getProject();
+        project.getPlugins().withType(GitPlugin.class, new Action<GitPlugin>() {
+            @Override
+            public void execute(GitPlugin gitPushPlugin) {
+                GitCommitTask gitCommitTask = (GitCommitTask) project.getTasks().findByName(GitPlugin.GIT_COMMIT_TASK);
+                gitCommitTask.addChange(changedFiles, changeDescription, changingTask);
             }
         });
     }
