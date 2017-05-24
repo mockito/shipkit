@@ -64,17 +64,28 @@ class GitCommit implements Commit {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         GitCommit gitCommit = (GitCommit) o;
 
-        if (commitId != null ? !commitId.equals(gitCommit.commitId) : gitCommit.commitId != null) return false;
-        if (email != null ? !email.equals(gitCommit.email) : gitCommit.email != null) return false;
-        if (author != null ? !author.equals(gitCommit.author) : gitCommit.author != null) return false;
-        if (message != null ? !message.equals(gitCommit.message) : gitCommit.message != null) return false;
+        if (commitId != null ? !commitId.equals(gitCommit.commitId) : gitCommit.commitId != null) {
+            return false;
+        }
+        if (email != null ? !email.equals(gitCommit.email) : gitCommit.email != null) {
+            return false;
+        }
+        if (author != null ? !author.equals(gitCommit.author) : gitCommit.author != null) {
+            return false;
+        }
+        if (message != null ? !message.equals(gitCommit.message) : gitCommit.message != null) {
+            return false;
+        }
         return tickets != null ? tickets.equals(gitCommit.tickets) : gitCommit.tickets == null;
-
     }
 
     @Override

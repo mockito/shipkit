@@ -1,6 +1,5 @@
 package org.mockito.release.notes.vcs
 
-import org.apache.commons.lang.builder.EqualsBuilder
 import spock.lang.Specification
 import spock.lang.Subject
 
