@@ -1,12 +1,11 @@
 package org.mockito.release.notes.contributors;
 
-import org.mockito.release.notes.model.Contributor;
 import org.mockito.release.notes.model.ProjectContributor;
 
 import java.io.Serializable;
 import java.util.*;
 
-class DefaultProjectContributorsSet implements ProjectContributorsSet, Serializable {
+public class DefaultProjectContributorsSet implements ProjectContributorsSet, Serializable {
 
     //This set is used to manage uniqueness of contributors:
     private final Set<ProjectContributor> contributors = new HashSet<ProjectContributor>();
@@ -44,5 +43,21 @@ class DefaultProjectContributorsSet implements ProjectContributorsSet, Serializa
     @Override
     public ProjectContributor findByName(String name) {
         return map.get(name);
+    }
+
+    @Override
+    public Collection<String> toConfigNotation() {
+        List<String> result = new ArrayList<String>();
+        for (ProjectContributor contributor : sorted) {
+            // if someone doesn't set a name on GitHub, lets put login
+            String name = contributor.getName().isEmpty() ? contributor.getLogin() : contributor.getName();
+            result.add(contributor.getLogin() + ":" + name);
+        }
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return sorted.toString();
     }
 }
