@@ -198,7 +198,9 @@ public class ReleaseConfiguration {
         }
 
         /**
-         * Collection of texts which will cause with commit skipping in release notes.
+         * Release notes are generated based on information in commit messages.
+         * If a commit message contains any of texts from this collection,
+         * that commit will be ignored and not used for generating release notes.
          */
         public Collection<String> getIgnoreCommitsContaining() {
             return getCollection("releaseNotes.ignoreCommitsContaining");
