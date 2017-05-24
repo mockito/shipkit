@@ -68,7 +68,7 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
             rootProject.apply(new Action<ObjectConfigurationAction>() {
                 @Override
                 public void execute(ObjectConfigurationAction objectConfigurationAction) {
-                    objectConfigurationAction.from(configFile);
+                    objectConfigurationAction.from(CONFIG_FILE_RELATIVE_PATH);
                 }
             });
         }

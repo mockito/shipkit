@@ -4,6 +4,12 @@ import testutil.PluginSpecification
 
 class ReleaseNotesPluginTest extends PluginSpecification {
 
+    void setup(){
+        def conf = project.plugins.apply(ReleaseConfigurationPlugin).configuration
+        conf.gitHub.readOnlyAuthToken = "token"
+        conf.gitHub.repository = "repo"
+    }
+
     def "applies cleanly"() {
         expect:
         project.plugins.apply("org.mockito.release-notes")
