@@ -35,6 +35,10 @@ public class CloneGitRepositoryTask extends DefaultTask {
 
         LOG.lifecycle("  Cloning repository {}\n    into {}", repository, targetDir);
 
+        if (targetDir.exists()) {
+            getProject().delete(targetDir);
+        }
+
         getProject().getBuildDir().mkdirs();    // build dir can be not created yet
         ProcessRunner processRunner = org.mockito.release.exec.Exec.getProcessRunner(getProject().getBuildDir());
         processRunner.run("git", "clone", repository, targetDir.getAbsolutePath());
