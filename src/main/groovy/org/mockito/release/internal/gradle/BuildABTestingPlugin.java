@@ -18,13 +18,13 @@ public class BuildABTestingPlugin implements Plugin<Project> {
     public void apply(final Project project) {
         //Step 1. Clone the repo for A/B testing
         CloneGitRepositoryTask clone = project.getTasks().create("cloneGitHubRepository", CloneGitRepositoryTask.class);
-        clone.setRepository("mockito/mockito");
+        clone.setRepository("https://github.com/mockito/mockito");
         clone.setTargetDir(new File(project.getBuildDir(), "abTesting/mockito/pristine"));
 
         //Step 2. Run A test
         RunTestTask runA = project.getTasks().create("runA", RunTestTask.class);
         runA.dependsOn(clone);
-        runA.setSourceDir(new File(clone.getTargetDir(),  "mockito"));
+        runA.setSourceDir(clone.getTargetDir());
         runA.setWorkDir(new File(project.getBuildDir(), "abTesting/mockito/testA-" + System.currentTimeMillis()));
         runA.commandLine("./gradlew", "build");
         runA.setOutputDir(new File(runA.getWorkDir(), "build"));
@@ -32,7 +32,7 @@ public class BuildABTestingPlugin implements Plugin<Project> {
         //Step 3. Run B test
         RunTestTask runB = project.getTasks().create("runB", RunTestTask.class);
         runB.dependsOn(clone);
-        runB.setSourceDir(new File(clone.getTargetDir(), "mockito"));
+        runB.setSourceDir(clone.getTargetDir());
         runB.setWorkDir(new File(project.getBuildDir(), "abTesting/mockito/testB-" + System.currentTimeMillis()));
         runB.commandLine("./gradlew", "build");
         runB.setOutputDir(new File(runB.getWorkDir(), "build"));
@@ -127,6 +127,9 @@ public class BuildABTestingPlugin implements Plugin<Project> {
 
         @TaskAction
         public void executeTestTask() {
+            if (sourceDir == null || !sourceDir.exists()) {
+                throw new RuntimeException("Invalid source dir '" + sourceDir + "' given!" );
+            }
             if (outputDir != null && !outputDir.exists()) {
                 outputDir.mkdirs();
             }
@@ -140,42 +143,6 @@ public class BuildABTestingPlugin implements Plugin<Project> {
     }
 
     public static class CompareABTask extends DefaultTask {
-    }
-
-    public static class CloneGitHubRepositoryTask extends DefaultTask {
-
-        private String repository;
-        private File targetDir;
-        private static final String REPO_BASE_URL = "https://github.com/";
-
-        @Input
-        public void setRepository(String repository) {
-            this.repository = repository;
-        }
-
-        public void setTargetDir(File targetDir) {
-            this.targetDir = targetDir;
-        }
-
-        @OutputDirectory
-        public File getTargetDir() {
-            return targetDir;
-        }
-
-        @TaskAction
-        public void cloneGit() {
-            if(targetDir != null && !targetDir.exists()) {
-                targetDir.mkdirs();
-            }
-
-            if (repository == null || repository.isEmpty()) {
-                throw new RuntimeException("Invalid repository '" + repository + "' given!");
-            }
-
-            String url = REPO_BASE_URL + repository;
-
-            new DefaultProcessRunner(targetDir).run("git", "clone", url);
-        }
     }
 
     public static class PrepareABTestingTask extends DefaultTask {
