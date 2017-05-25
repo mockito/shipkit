@@ -2,8 +2,7 @@ package org.mockito.release.internal.gradle
 
 import testutil.PluginSpecification
 
-class ContributorsPluginTest extends PluginSpecification {
-
+class AutoReleaseNotesPluginTest extends PluginSpecification {
     def "applies"() {
         given:
         def conf = applyReleaseConfiguration()
@@ -11,6 +10,7 @@ class ContributorsPluginTest extends PluginSpecification {
         conf.gitHub.repository = "repo"
 
         expect:
-        project.plugins.apply("org.mockito.release-tools.contributors")
+        project.plugins.apply("org.mockito.mockito-release-notes.auto-release-notes")
     }
+
 }
