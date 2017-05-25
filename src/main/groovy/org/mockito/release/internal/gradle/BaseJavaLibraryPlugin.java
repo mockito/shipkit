@@ -44,8 +44,8 @@ public class BaseJavaLibraryPlugin implements Plugin<Project> {
 
     final static String PUBLICATION_NAME = "javaLibrary";
     final static String POM_TASK = "generatePomFileFor" + capitalize(PUBLICATION_NAME) + "Publication";
-    public static final String SOURCES_JAR_TASK = "sourcesJar";
-
+    final static String MAVEN_LOCAL_TASK = "publish" + capitalize(PUBLICATION_NAME) + "PublicationToMavenLocal";
+    final static String SOURCES_JAR_TASK = "sourcesJar";
 
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();

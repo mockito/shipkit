@@ -18,6 +18,7 @@ class GradleSpecification extends Specification {
     final TemporaryFolder projectDir = new TemporaryFolder()
 
     File buildFile
+    File settingsFile
 
     private final static File CLASSES_DIR = findClassesDir();
     private final static File RESOURCES_DIR = findResourcesDir();
@@ -28,8 +29,15 @@ class GradleSpecification extends Specification {
             dependencies {
                 classpath files("${CLASSES_DIR.absolutePath}")
                 classpath files("${RESOURCES_DIR.absolutePath}")
+                classpath "com.github.cliftonlabs:json-simple:2.1.2"
+                classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3"
+            }
+            
+            repositories {
+                jcenter()
             }
         }"""
+        settingsFile = projectDir.newFile('settings.gradle')
     }
 
     /**
