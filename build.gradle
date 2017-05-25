@@ -6,7 +6,7 @@ buildscript {
     }
     dependencies {
         classpath "com.gradle.publish:plugin-publish-plugin:0.9.6"
-        classpath "gradle.plugin.org.mockito:mockito-release-tools:0.8.32"
+        classpath "gradle.plugin.org.mockito:mockito-release-tools:0.8.44"
     }
 }
 
@@ -20,7 +20,6 @@ apply plugin: 'org.mockito.mockito-release-tools.gradle-plugin-releasing'
 apply plugin: 'org.mockito.mockito-release-tools.release-needed'
 
 apply from: 'gradle/precommit.gradle'
-apply from: 'gradle/release.gradle'
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
@@ -88,12 +87,10 @@ pluginBundle {
 }
 
 task travisRelease {
-    dependsOn releaseNeeded
-    onlyIf { !releaseNeeded.releaseNotNeeded }
     doLast {
         logger.lifecycle("{} - Publishing to Gradle Plugin Portal...", path)
         exec {
-            commandLine "./gradlew", "publishPlugins", "bumpVersionAndPush", "-Preleasing.dryRun=false",
+            commandLine "./gradlew", "publishPlugins", "performVersionBump", "-Preleasing.dryRun=false",
                     "-Pgradle.publish.key=${System.getenv('GRADLE_PUBLISH_KEY')}",
                     "-Pgradle.publish.secret=${System.getenv('GRADLE_PUBLISH_SECRET')}"
         }

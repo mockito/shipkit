@@ -88,7 +88,7 @@ public class GitPlugin implements Plugin<Project> {
 
                 lazyConfiguration(t, new Runnable() {
                     public void run() {
-                        t.setCommandLine(GitUtil.getGitPushArgs(conf, gitStatus.getBranch()));
+                        t.setCommandLine(GitUtil.getGitPushArgsWithTag(conf, project, gitStatus.getBranch()));
                         t.setSecretValue(conf.getGitHub().getWriteAuthToken());
                     }
                 });
