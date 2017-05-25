@@ -27,6 +27,9 @@ class PomComparator implements FileComparator{
 
     public boolean areEqual(File previousFile, File currentFile) {
         notNull(previousFile, "previous pom to compare", currentFile, "current pom to compare");
+        LOG.info("About to compare pom files:\n\n " +
+            "  -- previousVersionFile: \n{}\n\n" +
+            "  -- currentVersionFile: \n{} \n", previousFile, currentFile);
         String previousContent = IOUtil.readFully(previousFile);
         String currentContent = IOUtil.readFully(currentFile);
 
