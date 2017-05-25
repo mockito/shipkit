@@ -80,16 +80,18 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
                                                final AllContributorsFetcherTask contributorsFetcher) {
         task.dependsOn(releaseNotesFetcher);
         task.dependsOn(contributorsFetcher);
+
+        task.setDevelopers(conf.getTeam().getDevelopers());
+        task.setContributors(conf.getTeam().getContributors());
+        task.setGitHubLabelMapping(conf.getReleaseNotes().getLabelMapping()); //TODO make it optional
+        task.setReleaseNotesFile(project.file(conf.getReleaseNotes().getFile())); //TODO add sensible defaul
+        task.setGitHubRepository(conf.getGitHub().getRepository());
+        task.setPreviousVersion(project.getExtensions().getByType(VersionInfo.class).getPreviousVersion());
+
         deferredConfiguration(project, new Runnable() {
             public void run() {
                 task.setReleaseNotesData(releaseNotesFetcher.getOutputFile());
-                task.setDevelopers(conf.getTeam().getDevelopers());
-                task.setContributors(conf.getTeam().getContributors());
                 task.setContributorsDataFile(contributorsFetcher.getOutputFile());
-                task.setGitHubLabelMapping(conf.getReleaseNotes().getLabelMapping()); //TODO make it optional
-                task.setReleaseNotesFile(project.file(conf.getReleaseNotes().getFile())); //TODO add sensible default
-                task.setGitHubRepository(conf.getGitHub().getRepository());
-                task.setPreviousVersion(project.getExtensions().getByType(VersionInfo.class).getPreviousVersion());
             }
         });
     }

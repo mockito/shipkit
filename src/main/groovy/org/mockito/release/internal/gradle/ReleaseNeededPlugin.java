@@ -9,7 +9,6 @@ import org.mockito.release.gradle.ReleaseNeededTask;
 import org.mockito.release.internal.comparison.PublicationsComparatorTask;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 
-import static org.mockito.release.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
 import static org.mockito.release.internal.gradle.configuration.LazyConfiguration.lazyConfiguration;
 
 /**
@@ -70,11 +69,8 @@ public class ReleaseNeededPlugin implements Plugin<Project> {
                     }
                 });
 
-                deferredConfiguration(project, new Runnable() {
-                    public void run() {
-                        t.setReleasableBranchRegex(conf.getGit().getReleasableBranchRegex());
-                    }
-                });
+                t.setReleasableBranchRegex(conf.getGit().getReleasableBranchRegex());
+
                 lazyConfiguration(t, new Runnable() {
                     public void run() {
                         //if the user or some other task have configured the branch, don't overwrite it
