@@ -31,7 +31,7 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
 
     @Override
     public String formatReleaseNotes(Collection<ReleaseNotesData> data) {
-        StringBuilder sb = new StringBuilder(introductionText == null? "": introductionText);
+        StringBuilder sb = new StringBuilder(introductionText == null ? "" : introductionText);
         if (data.isEmpty()) {
             sb.append("No release information.");
             return sb.toString();
@@ -40,7 +40,7 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         for (ReleaseNotesData d : data) {
             sb.append("**").append(d.getVersion()).append("** - ");
             String vcsCommitsLink = MessageFormat.format(vcsCommitsLinkTemplate, d.getPreviousVersionVcsTag(), d.getVcsTag());
-            sb.append(releaseSummary(d.getDate(), d.getContributions(), contributors, vcsCommitsLink, publicationRepository));
+            sb.append(releaseSummary(d.getVersion(), d.getDate(), d.getContributions(), contributors, vcsCommitsLink, publicationRepository));
 
             if (!d.getContributions().getContributions().isEmpty()) {
                 //no point printing any improvements information if there are no code changes
@@ -53,11 +53,18 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         return sb.toString().trim();
     }
 
-    static String releaseSummary(Date date, ContributionSet contributions, Map<String, Contributor> contributors,
+    static String releaseSummary(String version, Date date, ContributionSet contributions, Map<String, Contributor> contributors,
                                  String vcsCommitsLink, String publicationRepository) {
         return authorsSummary(contributions, contributors, vcsCommitsLink) +
-                " - *" + DateFormat.formatDate(date) + "*" + " - published to " + publicationRepository + "\n" +
+                " - *" + DateFormat.formatDate(date) + "*" + " - published to " + getBintrayBadge(version, publicationRepository) + "\n" +
                 authorsSummaryAppendix(contributions, contributors);
+    }
+
+    private static String getBintrayBadge(String version, String publicationRepository) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[![Bintray]").append("(https://img.shields.io/badge/Bintray-").append(version).append("-green.svg)]");
+        sb.append(publicationRepository).append("/").append(version);
+        return sb.toString();
     }
 
     private static String authorsSummaryAppendix(ContributionSet contributions, Map<String, Contributor> contributors) {
