@@ -9,6 +9,7 @@ import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.internal.gradle.util.BintrayUtil;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 
+import static org.mockito.release.internal.gradle.BaseJavaLibraryPlugin.MAVEN_LOCAL_TASK;
 import static org.mockito.release.internal.gradle.BaseJavaLibraryPlugin.POM_TASK;
 import static org.mockito.release.internal.gradle.ContributorsPlugin.FETCH_ALL_CONTRIBUTORS_TASK;
 import static org.mockito.release.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
@@ -76,20 +77,27 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                 t.setDescription("Depends on all 'bintrayUpload' tasks from all Gradle projects.");
                 //It is safer to run bintray upload after git push (hard to reverse operation)
                 //This way, when git push fails we don't publish jars to bintray
-                t.mustRunAfter(GitPlugin.GIT_PUSH_TASK);
+                t.shouldRunAfter(GitPlugin.GIT_PUSH_TASK);
             }
         });
-        //TODO can we make git push and bintray upload tasks to be last (expensive, hard to reverse tasks should go last)
 
         project.allprojects(new Action<Project>() {
-            public void execute(final Project p) {
-                p.getPlugins().withType(BintrayPlugin.class, new Action<BintrayPlugin>() {
-                    public void execute(BintrayPlugin bintrayPlugin) {
-                        Task bintrayUpload = p.getTasks().getByName(BintrayPlugin.BINTRAY_UPLOAD_TASK);
+            public void execute(final Project subproject) {
+                subproject.getPlugins().withType(JavaLibraryPlugin.class, new Action<JavaLibraryPlugin>() {
+                    public void execute(JavaLibraryPlugin plugin) {
+                        Task bintrayUpload = subproject.getTasks().getByName(BintrayPlugin.BINTRAY_UPLOAD_TASK);
                         bintrayUploadAll.dependsOn(bintrayUpload);
-                        final BintrayExtension bintray = p.getExtensions().getByType(BintrayExtension.class);
 
-                        deferredConfiguration(p, new Runnable() {
+                        //Making git push run as late as possible because it is an operation that is hard to reverse.
+                        //Git push will be executed after all tasks needed by bintrayUpload
+                        // but before bintrayUpload (configured elsewhere).
+                        //Using task path as String because the task comes from maven-publish new configuration model
+                        // and we cannot refer to it in a normal way.
+                        String mavenLocalTask = subproject.getPath() + ":" + MAVEN_LOCAL_TASK;
+                        project.getTasks().getByName(GitPlugin.GIT_PUSH_TASK).shouldRunAfter(mavenLocalTask);
+
+                        final BintrayExtension bintray = subproject.getExtensions().getByType(BintrayExtension.class);
+                        deferredConfiguration(subproject, new Runnable() {
                             public void run() {
                                 configurePublicationRepo(project, BintrayUtil.getMarkdownRepoLink(bintray));
                             }
