@@ -25,6 +25,7 @@ class PluginSpecification extends Specification{
     void setup(){
         initProject()
         createConfigFile()
+        configureReleaseConfigurationDefaults()
     }
 
     void initProject() {
@@ -40,5 +41,11 @@ class PluginSpecification extends Specification{
 
     ReleaseConfiguration applyReleaseConfiguration(){
         return project.plugins.apply(ReleaseConfigurationPlugin).configuration
+    }
+
+    void configureReleaseConfigurationDefaults(){
+        def conf = applyReleaseConfiguration()
+        conf.gitHub.readOnlyAuthToken = "token"
+        conf.gitHub.repository = "repo"
     }
 }
