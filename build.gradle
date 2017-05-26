@@ -55,6 +55,12 @@ pluginBundle {
             displayName = 'Mockito automated release notes generation plugin'
         }
 
+        autoReleaseNotesPlugin {
+            id = 'org.mockito.mockito-release-tools.auto-release-notes'
+            displayName = 'Mockito plugin for automated release notes generation and publishing released changes to VCS'
+            tags = ['mockito', 'continuous delivery', 'release notes', 'changelog']
+        }
+
         autoVersioningPlugin {
             id = 'org.mockito.release-tools.auto-versioning'
             displayName = 'Mockito automated versioning plugin'
