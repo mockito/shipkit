@@ -71,7 +71,9 @@ public class PomCustomizer {
 
         String repoLink = "https://github.com/" + conf.getGitHub().getRepository();
         root.appendNode("url", repoLink);
-        root.appendNode("description", projectDescription);
+        if(projectDescription != null) {
+            root.appendNode("description", projectDescription);
+        }
 
         Node license = root.appendNode("licenses").appendNode("license");
         license.appendNode("name", "The MIT License");
