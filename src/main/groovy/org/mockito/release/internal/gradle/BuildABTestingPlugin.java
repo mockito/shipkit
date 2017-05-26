@@ -5,10 +5,20 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.file.CopySpec;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.*;
+import org.json.simple.Jsonable;
+import org.json.simple.Jsoner;
 import org.mockito.release.exec.DefaultProcessRunner;
+import org.mockito.release.notes.util.IOUtil;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * See rationale and design at: https://github.com/mockito/mockito-release-tools/issues/113
@@ -17,7 +27,7 @@ public class BuildABTestingPlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
         //Step 1. Clone the repo for A/B testing
-        CloneGitRepositoryTask clone = project.getTasks().create("cloneGitHubRepository", CloneGitRepositoryTask.class);
+        CloneGitRepositoryTask clone = project.getTasks().create("cloneGitRepository", CloneGitRepositoryTask.class);
         clone.setRepository("https://github.com/mockito/mockito");
         clone.setTargetDir(new File(project.getBuildDir(), "abTesting/mockito/pristine"));
 
@@ -26,7 +36,8 @@ public class BuildABTestingPlugin implements Plugin<Project> {
         runA.dependsOn(clone);
         runA.setSourceDir(clone.getTargetDir());
         runA.setWorkDir(new File(project.getBuildDir(), "abTesting/mockito/testA-" + System.currentTimeMillis()));
-        runA.commandLine("./gradlew", "build");
+        // using assemble task for now in order to get different results
+        runA.commandLine("./gradlew", "assemble");
         runA.setOutputDir(new File(runA.getWorkDir(), "build"));
 
         //Step 3. Run B test
@@ -42,7 +53,7 @@ public class BuildABTestingPlugin implements Plugin<Project> {
         compare.dependsOn(runA, runB);
         compare.setDirA(runA.getOutputDir());
         compare.setDirB(runB.getOutputDir());
-        compare.setResultsFile(new File(project.getBuildDir(), "abTesting/mockito/results.ser")); //or JSON :)
+        compare.setResultsFile(new File(project.getBuildDir(), "abTesting/mockito/results.json")); //or JSON :)
 
         //Step 5. Analyze comparison results
         AnalyzeComparisonResultsTask analyze = project.getTasks().create("analyzeAB", AnalyzeComparisonResultsTask.class);
@@ -63,8 +74,16 @@ public class BuildABTestingPlugin implements Plugin<Project> {
         public void setComparisonResultsFile(File comparisonResultsFile) {
             this.comparisonResultsFile = comparisonResultsFile;
         }
+
+        @TaskAction
+        public void analyze() {
+
+        }
     }
 
+    /**
+     * A Task which compares two given directories. The result will be serialized to a result file.
+     */
     public static class CompareDirectoriesTask extends DefaultTask {
 
         private File dirA;
@@ -89,6 +108,137 @@ public class BuildABTestingPlugin implements Plugin<Project> {
         public File getResultsFile() {
             return resultsFile;
         }
+
+        @TaskAction
+        public void compareDirectories() {
+            if (resultsFile.exists()) {
+                getProject().delete(resultsFile);
+            }
+
+            CompareResult compareResult = new FileDifferenceProvider().getDifference(dirA, dirB);
+            IOUtil.writeFile(resultsFile, new CompareResultSerializer().serialize(compareResult));
+        }
+    }
+
+    public static class FileDifferenceProvider {
+
+        public CompareResult getDifference(File dirA, File dirB) {
+            List<File> dirAFiles = getFilesResursive(dirA.listFiles());
+            Collections.sort(dirAFiles);
+            List<File> dirBFiles = getFilesResursive(dirB.listFiles());
+            Collections.sort(dirBFiles);
+
+            List<File> onlyA = new ArrayList<File>();
+            List<File> onlyB = new ArrayList<File>();
+            List<File> bothButDifferent = new ArrayList<File>();
+
+            int i = 0;
+            int j = 0;
+
+            while (dirAFiles.size() > i && dirBFiles.size() > j) {
+                String dirASubPath = dirAFiles.get(i).getPath().substring(dirA.getPath().length());
+                String dirBSubPath = dirBFiles.get(j).getPath().substring(dirB.getPath().length());
+                int compareResult = dirASubPath.compareTo(dirBSubPath);
+
+                if (compareResult < 0) {
+                    onlyA.add(dirAFiles.get(i));
+                    i++;
+                } else if (compareResult > 0) {
+                    onlyB.add(dirBFiles.get(j));
+                    j++;
+                } else {
+                    boolean sameMd5 = true;
+                    // TODO md5 check
+
+                    if (dirAFiles.get(i).length() == dirBFiles.get(j).length() && sameMd5) {
+                        // nothing to do, both files are available
+                    } else {
+                        bothButDifferent.add(dirAFiles.get(i));
+                        bothButDifferent.add(dirBFiles.get(j));
+                    }
+                    i++;
+                    j++;
+                }
+            }
+
+            CompareResult result = new CompareResult();
+            result.setOnlyA(onlyA);
+            result.setOnlyB(onlyB);
+            result.setBothButDifferent(bothButDifferent);
+
+            return result;
+        }
+
+
+        private List<File> getFilesResursive(File[] files) {
+            List<File> filesRecursive = new ArrayList<File>();
+            for (File file : files) {
+                filesRecursive.add(file);
+                if (file.isDirectory()) {
+                    filesRecursive.addAll(getFilesResursive(file.listFiles()));
+                }
+            }
+            return filesRecursive;
+        }
+    }
+
+    public static class CompareResult implements Jsonable {
+
+        private static final String JSON_FORMAT = "{ \"onlyA\": \"%s\", \"onlyB\": \"%s\", " +
+                "\"both\": \"%s\" }";
+
+        private List<File> onlyA;
+        private List<File> onlyB;
+        private List<File> bothButDifferent;
+
+        public void setOnlyA(List<File> file) {
+            this.onlyA = file;
+        }
+
+        public void setOnlyB(List<File> file) {
+            this.onlyB = file;
+        }
+
+        public void setBothButDifferent(List<File> file) {
+            this.bothButDifferent = file;
+        }
+
+        @Override
+        public String toJson() {
+            return String.format(JSON_FORMAT,
+                    Jsoner.serialize(toStringList(onlyA)),
+                    Jsoner.serialize(toStringList(onlyB)),
+                    Jsoner.serialize(toStringList(bothButDifferent)));
+        }
+
+        private List<String> toStringList(List<File> files) {
+            List<String> ret = new ArrayList<String>();
+            for (File file : files) {
+                ret.add(file.getPath());
+            }
+            return ret;
+        }
+
+        @Override
+        public void toJson(Writer writable) throws IOException {
+            writable.append(toJson());
+        }
+    }
+
+    public static class CompareResultSerializer {
+
+        private static final Logger LOG = Logging.getLogger(CompareResultSerializer.class);
+
+        public String serialize(CompareResult compareResult) {
+            String json = Jsoner.serialize(compareResult);
+            LOG.info("Serialize compare result to: {}", json);
+            return json;
+        }
+
+        public CompareResult deserialize(String json) {
+            return null;
+        }
+
     }
 
     public static class RunTestTask extends DefaultTask {
@@ -145,13 +295,4 @@ public class BuildABTestingPlugin implements Plugin<Project> {
     public static class CompareABTask extends DefaultTask {
     }
 
-    public static class PrepareABTestingTask extends DefaultTask {
-
-        private File sourceDir;
-
-        @InputDirectory
-        public void setSourceDir(File sourceDir) {
-            this.sourceDir = sourceDir;
-        }
-    }
 }
