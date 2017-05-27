@@ -72,4 +72,9 @@ class VersioningPluginTest extends PluginSpecification {
         gitCommitTask.files.contains(project.file(VersioningPlugin.VERSION_FILE_NAME).absolutePath)
         gitCommitTask.aggregatedCommitMessage.contains("version bumped")
     }
+
+    @Override
+    void configureReleaseConfigurationDefaults(){
+        // ReleaseConfiguration is not needed in this test
+    }
 }

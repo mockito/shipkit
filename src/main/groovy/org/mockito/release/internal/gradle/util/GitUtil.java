@@ -13,22 +13,15 @@ import static java.util.Arrays.asList;
  * Git utilities
  */
 public class GitUtil {
-    //TODO unit testable
 
     /**
      * Quiet command line to be used to perform git push without exposing write token
      */
-    public static List<String> getGitPushArgsWithTag(ReleaseConfiguration conf, Project project, String branch) {
+    public static List<String> getGitPushArgs(ReleaseConfiguration conf, Project project, String branch) {
         ArrayList<String> args = getBaseGitPushArgs(conf, branch);
 
         args.add(getTag(conf, project));
 
-        addDryRunIfNeeded(conf, args);
-        return args;
-    }
-
-    public static List<String> getGitPushArgs(ReleaseConfiguration conf, String branch) {
-        ArrayList<String> args = getBaseGitPushArgs(conf, branch);
         addDryRunIfNeeded(conf, args);
         return args;
     }
@@ -57,6 +50,7 @@ public class GitUtil {
      * "Mockito Release Tools &lt;mockito.release.tools@gmail.com&gt;"
      */
     public static Object getGitGenericUserNotation(ReleaseConfiguration conf) {
+        //TODO unit test is missing
         return conf.getGit().getUser() + " <" + conf.getGit().getEmail() + ">";
     }
 
@@ -64,6 +58,7 @@ public class GitUtil {
      * Returns Git tag based on release configuration and project version
      */
     public static String getTag(ReleaseConfiguration conf, Project project) {
+        //TODO unit test is missing
         return conf.getGit().getTagPrefix() + project.getVersion();
     }
 

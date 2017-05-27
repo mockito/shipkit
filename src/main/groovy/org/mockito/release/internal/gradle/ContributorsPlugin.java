@@ -6,7 +6,6 @@ import org.gradle.api.Project;
 import org.mockito.release.gradle.ReleaseConfiguration;
 import org.mockito.release.internal.gradle.util.TaskMaker;
 
-import static org.mockito.release.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
 import static org.mockito.release.internal.gradle.util.BuildConventions.contributorsFile;
 
 /**
@@ -32,15 +31,9 @@ public class ContributorsPlugin implements Plugin<Project> {
                 task.setGroup(TaskMaker.TASK_GROUP);
                 task.setDescription("Fetch info about all project contributors from GitHub and store it in file");
                 task.setOutputFile(contributorsFile(project));
-
-                deferredConfiguration(project, new Runnable() {
-                    @Override
-                    public void run() {
-                        task.setReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
-                        task.setRepository(conf.getGitHub().getRepository());
-                        task.setEnabled(conf.getTeam().getContributors().isEmpty());
-                    }
-                });
+                task.setReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
+                task.setRepository(conf.getGitHub().getRepository());
+                task.setEnabled(conf.getTeam().getContributors().isEmpty());
             }
         });
 
