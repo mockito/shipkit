@@ -48,6 +48,27 @@ class FileDifferenceProviderTest extends Specification {
         result.bothButDifferent.isEmpty()
     }
 
+    def "another onlyA" () {
+        given:
+        createSomeSameContent()
+        File dirC = new File(dirA, 'b/c')
+        dirC.mkdirs()
+        File fileD = new File(dirC, 'd')
+        fileD << 'content of d'
+        File dirT = new File(dirA, 't')
+        dirT.mkdirs()
+        File fileU = new File(dirT, 'u')
+        fileU << 'content of u'
+
+        when:
+        BuildABTestingPlugin.CompareResult result = new FileDifferenceProvider().getDifference(dirA, dirB);
+
+        then:
+        result.onlyA == [dirC.parentFile, dirC, fileD, dirT, fileU]
+        result.onlyB.isEmpty()
+        result.bothButDifferent.isEmpty()
+    }
+
     def "onlyB" () {
         given:
         createSomeSameContent()

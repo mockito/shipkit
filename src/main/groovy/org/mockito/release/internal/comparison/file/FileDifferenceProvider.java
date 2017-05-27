@@ -56,6 +56,13 @@ public class FileDifferenceProvider {
             }
         }
 
+        if (dirBFiles.size() == j && dirAFiles.size() > i) {
+            while (i < dirAFiles.size()) {
+                onlyA.add(dirAFiles.get(i));
+                i++;
+            }
+        }
+
         BuildABTestingPlugin.CompareResult result = new BuildABTestingPlugin.CompareResult();
         result.setOnlyA(onlyA);
         result.setOnlyB(onlyB);
