@@ -1,14 +1,14 @@
 package org.mockito.release.internal.gradle
 
-import org.gradle.api.GradleException
+import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Unroll
 import testutil.PluginSpecification
 
 class ReleaseConfigurationPluginTest extends PluginSpecification {
 
-    def root
-    def subproject
+    Project root
+    Project subproject
 
     void setup(){
         root = new ProjectBuilder().withProjectDir(tmp.root).build()
@@ -46,38 +46,34 @@ class ReleaseConfigurationPluginTest extends PluginSpecification {
         null     | true
     }
 
-    def "creates shitpkit.gradle file if it doesn't exist"() {
-        given:
-        def configFile = new File(tmp.root.absolutePath + "/" + ReleaseConfigurationPlugin.CONFIG_FILE_RELATIVE_PATH)
-        configFile.delete()
-
+    def "configures initConfigFile task correctly"() {
         when:
         root.plugins.apply(ReleaseConfigurationPlugin)
 
         then:
-        thrown(GradleException)
-        configFile.text ==
-"""//This file was created automatically and is intented to be checked-in.
-releasing {
-   gitHub.repository = \"mockito/mockito-release-tools-example\"
-   gitHub.readOnlyAuthToken = \"e7fe8fcfd6ffedac384c8c4c71b2a48e646ed1ab\"
-   gitHub.writeAuthUser = \"shipkit\"
-}
+        InitConfigFileTask initConfigTask = root.tasks.findByName(ReleaseConfigurationPlugin.INIT_CONFIG_FILE_TASK)
+        initConfigTask.configFile == root.file(ReleaseConfigurationPlugin.CONFIG_FILE_RELATIVE_PATH)
+    }
 
-allprojects {
-   plugins.withId(\"org.mockito.mockito-release-tools.bintray\") {
-       bintray {
-           pkg {
-               repo = 'examples'
-               user = 'szczepiq'
-               userOrg = 'shipkit'
-               name = 'basic'
-               licenses = ['MIT']
-               labels = ['continuous delivery', 'release automation', 'mockito']
-           }
-       }
-   }
-}
-"""
+    def "loads default properties if config file does not exist"() {
+        given:
+        assert !root.file(ReleaseConfigurationPlugin.CONFIG_FILE_RELATIVE_PATH).exists()
+
+        when:
+        def conf = root.plugins.apply(ReleaseConfigurationPlugin).configuration
+
+        then:
+        conf.gitHub.repository == "mockito/mockito-release-tools"
+        conf.gitHub.readOnlyAuthToken == "e7fe8fcfd6ffedac384c8c4c71b2a48e646ed1ab"
+    }
+
+    @Override
+    void configureReleaseConfigurationDefaults(){
+        // default are not needed in this test
+    }
+
+    @Override
+    void createConfigFile(){
+        // config file created in setup is not needed in this test
     }
 }

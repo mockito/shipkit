@@ -41,20 +41,26 @@ public class BintrayPlugin implements Plugin<Project> {
         // this way we avoid version conflicts and any bintray dependencies for users who don't use bintray
         project.getPlugins().apply("com.jfrog.bintray");
 
+        //Configure some properties right away
+        final BintrayExtension bintray = project.getExtensions().getByType(BintrayExtension.class);
+        bintray.setPublish(true);
+
         final BintrayUploadTask bintrayUpload = (BintrayUploadTask) project.getTasks().getByName(BINTRAY_UPLOAD_TASK);
 
         bintrayUpload.doFirst(new Action<Task>() {
             public void execute(Task task) {
                 //TODO unit test
                 BintrayUploadTask t = (BintrayUploadTask) task;
+
+                //workaround for https://github.com/bintray/gradle-bintray-plugin/issues/170
+                notNull(bintray.getUser(), "Missing 'bintray.user' value.\n" +
+                      "  Please configure Bintray extension.");
+
                 String welcomeMessage = uploadWelcomeMessage(t);
                 LOGGER.lifecycle(welcomeMessage);
             }
         });
 
-        //Configure some properties right away
-        final BintrayExtension bintray = project.getExtensions().getByType(BintrayExtension.class);
-        bintray.setPublish(true);
 
         final BintrayExtension.PackageConfig pkg = bintray.getPkg();
         pkg.setPublicDownloadNumbers(true);
@@ -63,10 +69,6 @@ public class BintrayPlugin implements Plugin<Project> {
         //Defer configuration of other properties
         deferredConfiguration(project, new Runnable() {
             public void run() {
-                //workaround for https://github.com/bintray/gradle-bintray-plugin/issues/170
-                notNull(bintray.getUser(), "Missing 'bintray.user' value.\n" +
-                        "  Please configure Bintray extension.");
-
                 //Below overwrites prior value in case the user configured dry run directly on the bintray extension.
                 //It should be ok.
                 bintray.setDryRun(conf.isDryRun());

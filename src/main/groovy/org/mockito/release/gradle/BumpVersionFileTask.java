@@ -38,7 +38,10 @@ public class BumpVersionFileTask extends DefaultTask {
     /**
      * See {@link BumpVersionFileTask}
      */
-    @TaskAction public void bumpVersionFile() {
+    @TaskAction public VersionInfo bumpVersionFile() {
+        if(!versionFile.exists()){
+            throw new IllegalStateException("Cannot bump version. Version.properties file doesn't exist. Use initShipkit task to create it.");
+        }
         VersionInfo versionInfo = Version.versionInfo(this.versionFile);
         VersionInfo newVersion = versionInfo.bumpVersion();
         //TODO add unit test for the message.
@@ -49,5 +52,7 @@ public class BumpVersionFileTask extends DefaultTask {
                 getPath(), getProject().relativePath(this.versionFile),
                 newVersion.getVersion(),
                 newVersion.getPreviousVersion());
+
+        return newVersion;
     }
 }
