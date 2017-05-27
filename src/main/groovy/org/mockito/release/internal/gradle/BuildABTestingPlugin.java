@@ -5,20 +5,14 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.file.CopySpec;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.*;
-import org.json.simple.Jsonable;
-import org.json.simple.Jsoner;
 import org.mockito.release.exec.DefaultProcessRunner;
+import org.mockito.release.internal.comparison.file.CompareResult;
+import org.mockito.release.internal.comparison.file.CompareResultSerializer;
 import org.mockito.release.internal.comparison.file.FileDifferenceProvider;
 import org.mockito.release.notes.util.IOUtil;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * See rationale and design at: https://github.com/mockito/mockito-release-tools/issues/113
@@ -118,65 +112,6 @@ public class BuildABTestingPlugin implements Plugin<Project> {
             CompareResult compareResult = new FileDifferenceProvider().getDifference(dirA, dirB);
             IOUtil.writeFile(resultsFile, new CompareResultSerializer().serialize(compareResult));
         }
-    }
-
-    public static class CompareResult implements Jsonable {
-
-        private static final String JSON_FORMAT = "{ \"onlyA\": \"%s\", \"onlyB\": \"%s\", " +
-                "\"both\": \"%s\" }";
-
-        private List<File> onlyA;
-        private List<File> onlyB;
-        private List<File> bothButDifferent;
-
-        public void setOnlyA(List<File> file) {
-            this.onlyA = file;
-        }
-
-        public void setOnlyB(List<File> file) {
-            this.onlyB = file;
-        }
-
-        public void setBothButDifferent(List<File> file) {
-            this.bothButDifferent = file;
-        }
-
-        @Override
-        public String toJson() {
-            return String.format(JSON_FORMAT,
-                    Jsoner.serialize(toStringList(onlyA)),
-                    Jsoner.serialize(toStringList(onlyB)),
-                    Jsoner.serialize(toStringList(bothButDifferent)));
-        }
-
-        private List<String> toStringList(List<File> files) {
-            List<String> ret = new ArrayList<String>(files.size());
-            for (File file : files) {
-                ret.add(file.getPath());
-            }
-            return ret;
-        }
-
-        @Override
-        public void toJson(Writer writable) throws IOException {
-            writable.append(toJson());
-        }
-    }
-
-    public static class CompareResultSerializer {
-
-        private static final Logger LOG = Logging.getLogger(CompareResultSerializer.class);
-
-        public String serialize(CompareResult compareResult) {
-            String json = Jsoner.serialize(compareResult);
-            LOG.info("Serialize compare result to: {}", json);
-            return json;
-        }
-
-        public CompareResult deserialize(String json) {
-            return null;
-        }
-
     }
 
     public static class RunTestTask extends DefaultTask {

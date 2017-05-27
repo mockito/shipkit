@@ -1,7 +1,5 @@
 package org.mockito.release.internal.comparison.file;
 
-import org.mockito.release.internal.gradle.BuildABTestingPlugin;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,7 +8,7 @@ import java.util.List;
 
 public class FileDifferenceProvider {
 
-    public BuildABTestingPlugin.CompareResult getDifference(File dirA, File dirB) {
+    public CompareResult getDifference(File dirA, File dirB) {
         List<File> dirAFiles = getFilesResursive(dirA.listFiles());
         Collections.sort(dirAFiles);
         List<File> dirBFiles = getFilesResursive(dirB.listFiles());
@@ -63,7 +61,7 @@ public class FileDifferenceProvider {
             }
         }
 
-        BuildABTestingPlugin.CompareResult result = new BuildABTestingPlugin.CompareResult();
+        CompareResult result = new CompareResult();
         result.setOnlyA(onlyA);
         result.setOnlyB(onlyB);
         result.setBothButDifferent(bothButDifferent);

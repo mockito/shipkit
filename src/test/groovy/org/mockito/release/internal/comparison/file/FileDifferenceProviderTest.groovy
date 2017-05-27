@@ -2,7 +2,6 @@ package org.mockito.release.internal.comparison.file
 
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import org.mockito.release.internal.gradle.BuildABTestingPlugin
 import spock.lang.Ignore
 import spock.lang.Specification
 
@@ -24,7 +23,7 @@ class FileDifferenceProviderTest extends Specification {
         createSomeSameContent()
 
         when:
-        BuildABTestingPlugin.CompareResult result = new FileDifferenceProvider().getDifference(dirA, dirB);
+        CompareResult result = new FileDifferenceProvider().getDifference(dirA, dirB);
 
         then:
         result.onlyA.isEmpty()
@@ -41,7 +40,7 @@ class FileDifferenceProviderTest extends Specification {
         fileD << 'content of d'
 
         when:
-        BuildABTestingPlugin.CompareResult result = new FileDifferenceProvider().getDifference(dirA, dirB);
+        CompareResult result = new FileDifferenceProvider().getDifference(dirA, dirB);
 
         then:
         result.onlyA == [dirC.parentFile, dirC, fileD]
@@ -62,7 +61,7 @@ class FileDifferenceProviderTest extends Specification {
         fileU << 'content of u'
 
         when:
-        BuildABTestingPlugin.CompareResult result = new FileDifferenceProvider().getDifference(dirA, dirB);
+        CompareResult result = new FileDifferenceProvider().getDifference(dirA, dirB);
 
         then:
         result.onlyA == [dirC.parentFile, dirC, fileD, dirT, fileU]
@@ -79,7 +78,7 @@ class FileDifferenceProviderTest extends Specification {
         fileW << 'content of d'
 
         when:
-        BuildABTestingPlugin.CompareResult result = new FileDifferenceProvider().getDifference(dirA, dirB);
+        CompareResult result = new FileDifferenceProvider().getDifference(dirA, dirB);
 
         then:
         result.onlyA.isEmpty()
@@ -97,7 +96,7 @@ class FileDifferenceProviderTest extends Specification {
         dirBDifferentFile << 'differentContent'
 
         when:
-        BuildABTestingPlugin.CompareResult result = new FileDifferenceProvider().getDifference(dirA, dirB);
+        CompareResult result = new FileDifferenceProvider().getDifference(dirA, dirB);
 
         then:
         result.onlyA.isEmpty()
@@ -116,7 +115,7 @@ class FileDifferenceProviderTest extends Specification {
         dirBDifferentFile << 'content B'
 
         when:
-        BuildABTestingPlugin.CompareResult result = new FileDifferenceProvider().getDifference(dirA, dirB);
+        CompareResult result = new FileDifferenceProvider().getDifference(dirA, dirB);
 
         then:
         result.onlyA.isEmpty()
