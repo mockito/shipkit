@@ -3,6 +3,7 @@ package org.mockito.release.internal.comparison.file
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import org.mockito.release.internal.gradle.BuildABTestingPlugin
+import spock.lang.Ignore
 import spock.lang.Specification
 
 
@@ -86,10 +87,48 @@ class FileDifferenceProviderTest extends Specification {
         result.bothButDifferent.isEmpty()
     }
 
+    def "both but different"() {
+        given:
+        createSomeSameContent()
+
+        File dirADifferentFile = new File(dirA, 'different')
+        dirADifferentFile << "someContent"
+        File dirBDifferentFile = new File(dirB,'different')
+        dirBDifferentFile << 'differentContent'
+
+        when:
+        BuildABTestingPlugin.CompareResult result = new FileDifferenceProvider().getDifference(dirA, dirB);
+
+        then:
+        result.onlyA.isEmpty()
+        result.onlyB.isEmpty()
+        result.bothButDifferent == [dirADifferentFile, dirBDifferentFile]
+    }
+
+    @Ignore
+    def "both but different (same length)"() {
+        given:
+        createSomeSameContent()
+
+        File dirADifferentFile = new File(dirA, 'different')
+        dirADifferentFile << "content A"
+        File dirBDifferentFile = new File(dirB,'different')
+        dirBDifferentFile << 'content B'
+
+        when:
+        BuildABTestingPlugin.CompareResult result = new FileDifferenceProvider().getDifference(dirA, dirB);
+
+        then:
+        result.onlyA.isEmpty()
+        result.onlyB.isEmpty()
+        result.bothButDifferent == [dirADifferentFile, dirBDifferentFile]
+    }
+
     private void createSomeSameContent() {
         File dirAFile = new File(dirA, 'newFile')
         dirAFile << "someContent"
         File dirBFile = new File(dirB,'newFile')
         dirBFile << 'someContent'
     }
+
 }
