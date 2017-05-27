@@ -91,7 +91,7 @@ public class GitPlugin implements Plugin<Project> {
                         //Getting the branch during task execution time so that integ testing is easier
                         //TODO revisit. How can we make integ testing easy without using doFirst to configure tasks?
                         String branch = gitStatus.getBranch();
-                        t.setCommandLine(GitUtil.getGitPushArgsWithTag(conf, project, gitStatus.getBranch()));
+                        t.setCommandLine(GitUtil.getGitPushArgs(conf, project, branch));
                     }
                 });
                 lazyConfiguration(t, new Runnable() {
