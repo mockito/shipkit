@@ -61,10 +61,11 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
     }
 
     private static String getBintrayBadge(String version, String publicationRepository) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("[![Bintray]").append("(https://img.shields.io/badge/Bintray-").append(version).append("-green.svg)]");
-        sb.append(publicationRepository).append("/").append(version);
-        return sb.toString();
+        final String markdownPrefix = "[![Bintray](";
+        final String shieldsIoBadgeLink = "https://img.shields.io/badge/Bintray-" + version + "-green.svg";
+        final String markdownPostfix = ")]";
+        final String repositoryLinkWithVersion = publicationRepository + "/" + version;
+        return markdownPrefix + shieldsIoBadgeLink + markdownPostfix + "(" + repositoryLinkWithVersion + ")";
     }
 
     private static String authorsSummaryAppendix(ContributionSet contributions, Map<String, Contributor> contributors) {
