@@ -5,6 +5,7 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.TaskAction;
+import org.mockito.release.internal.gradle.BootstrapPlugin;
 import org.mockito.release.version.Version;
 import org.mockito.release.version.VersionInfo;
 
@@ -40,7 +41,8 @@ public class BumpVersionFileTask extends DefaultTask {
      */
     @TaskAction public VersionInfo bumpVersionFile() {
         if(!versionFile.exists()){
-            throw new IllegalStateException("Cannot bump version. Version.properties file doesn't exist. Use initShipkit task to create it.");
+            throw new IllegalStateException("Cannot bump version because '" + versionFile.getName() + "' file doesn't exist." +
+                    " Use '" + BootstrapPlugin.INIT_SHIPKIT_TASK + "' task to create it.");
         }
         VersionInfo versionInfo = Version.versionInfo(this.versionFile);
         VersionInfo newVersion = versionInfo.bumpVersion();
