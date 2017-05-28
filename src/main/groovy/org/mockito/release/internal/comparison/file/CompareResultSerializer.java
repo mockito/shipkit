@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-
+/**
+ * Json serializer for {@link CompareResult}s.
+ */
 public class CompareResultSerializer {
 
     private static final Logger LOG = Logging.getLogger(CompareResultSerializer.class);

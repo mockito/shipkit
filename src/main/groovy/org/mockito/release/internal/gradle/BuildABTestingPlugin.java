@@ -71,6 +71,11 @@ public class BuildABTestingPlugin implements Plugin<Project> {
         }
     }
 
+    /**
+     * Gradle task to run a given command line.
+     * Note: not yet migrated to RunTestReleaseTask because RunTestReleaseTask requires two separate checkout tasks
+     * which might take some time (e.g. if we are using a repo like mockito and the internet connection is not that fast.
+     */
     public static class RunTestTask extends DefaultTask {
 
         private File sourceDir;

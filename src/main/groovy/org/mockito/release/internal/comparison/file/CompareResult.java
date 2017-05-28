@@ -9,7 +9,10 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Holds the compare result of two directories. The result consists of files which are only available in dirA, files
+ * which are only available in dirB and files which are available in both directories and their content is different.
+ */
 public class CompareResult implements Jsonable {
 
     private static final String JSON_FORMAT = "{ \"onlyA\": %s, \"onlyB\": %s, " +
