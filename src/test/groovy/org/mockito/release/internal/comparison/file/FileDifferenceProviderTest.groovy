@@ -2,7 +2,6 @@ package org.mockito.release.internal.comparison.file
 
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import spock.lang.Ignore
 import spock.lang.Specification
 
 
@@ -104,7 +103,6 @@ class FileDifferenceProviderTest extends Specification {
         result.bothButDifferent == [dirADifferentFile, dirBDifferentFile]
     }
 
-    @Ignore
     def "both but different (same length)"() {
         given:
         createSomeSameContent()
@@ -121,6 +119,19 @@ class FileDifferenceProviderTest extends Specification {
         result.onlyA.isEmpty()
         result.onlyB.isEmpty()
         result.bothButDifferent == [dirADifferentFile, dirBDifferentFile]
+    }
+
+    def "same files and same content"() {
+        given:
+        createSomeSameContent()
+
+        when:
+        CompareResult result = new FileDifferenceProvider().getDifference(dirA, dirB);
+
+        then:
+        result.onlyA.isEmpty()
+        result.onlyB.isEmpty()
+        result.bothButDifferent.isEmpty()
     }
 
     private void createSomeSameContent() {

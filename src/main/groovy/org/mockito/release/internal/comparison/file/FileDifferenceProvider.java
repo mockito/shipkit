@@ -1,5 +1,7 @@
 package org.mockito.release.internal.comparison.file;
 
+import org.mockito.release.internal.util.Md5;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,7 +35,9 @@ public class FileDifferenceProvider {
                 onlyB.add(dirBFiles.get(j));
                 j++;
             } else {
-                boolean sameMd5 = true;
+                String md5A = Md5.calculate(dirAFiles.get(i));
+                String md5B = Md5.calculate(dirBFiles.get(j));
+                boolean sameMd5 = md5A.equals(md5B);
                 // TODO md5 check
 
                 if (dirAFiles.get(i).length() == dirBFiles.get(j).length() && sameMd5) {
