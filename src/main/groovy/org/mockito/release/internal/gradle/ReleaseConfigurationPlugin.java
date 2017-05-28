@@ -55,7 +55,7 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
             TaskMaker.task(project, INIT_CONFIG_FILE_TASK, InitConfigFileTask.class, new Action<InitConfigFileTask>() {
                 @Override
                 public void execute(InitConfigFileTask t) {
-                    t.setDescription("Creates config file if it doesn't exist");
+                    t.setDescription("Creates Shipkit configuration file unless it already exists");
                     t.setConfigFile(configFile);
 
                     project.getTasks().getByName(BootstrapPlugin.INIT_SHIPKIT_TASK).dependsOn(t);
