@@ -23,6 +23,11 @@ import static org.mockito.release.internal.gradle.configuration.LazyConfiguratio
  *     <li>{@link ReleaseConfigurationPlugin} to the root project</li>
  *     <li>"com.jfrog.bintray" to this project</li>
  * </ul>
+ *
+ * Conifgures "com.jfrog.bintray" plugin:
+ * <ul>
+ *     <li>Sets extension property: 'bintray.publish = true'</li>
+ * </ul>
  */
 public class BintrayPlugin implements Plugin<Project> {
 
