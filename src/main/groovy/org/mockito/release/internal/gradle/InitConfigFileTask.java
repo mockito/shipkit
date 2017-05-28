@@ -16,10 +16,10 @@ public class InitConfigFileTask extends DefaultTask{
 
     @TaskAction public void initShipkitConfigFile(){
         if(configFile.exists()){
-            LOG.lifecycle("  File {} already exists. Nothing to create.", configFile.getPath());
+            LOG.lifecycle("  Shipkit configuration already exists, nothing to do. Configuration file: {}", configFile.getPath());
         } else{
             createShipKitConfigFile();
-            LOG.lifecycle("  Created config file at {}. Please configure it.", configFile.getPath());
+            LOG.lifecycle("  Shipkit configuration created! Please review before committing: ", configFile.getPath());
         }
     }
 
