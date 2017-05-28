@@ -19,15 +19,15 @@ public class InitVersioningTask extends DefaultTask{
 
     @TaskAction public void initVersioning(){
         if(versionFile.exists()){
-            LOG.lifecycle("  File version.properties already exists, nothing to create.");
+            LOG.lifecycle("  File '{}' already exists, nothing to do.", versionFile.getName());
         } else{
             createVersionPropertiesFile(getProject(), versionFile);
         }
     }
 
     private void createVersionPropertiesFile(Project project, File versionFile) {
-        LOG.lifecycle("  Required file version.properties doesn't exist. Creating it automatically. Remember about checking it into VCS!");
-        LOG.lifecycle("  You shouldn't configure project.version in build.gradle anymore. Version from version.properties will be used instead.");
+        LOG.lifecycle("  Creating '{}' file. Remember to check it into VCS!", versionFile.getName());
+        LOG.lifecycle("  You shouldn't configure project.version in 'build.gradle' any more. Version from '{}' will be used instead.", versionFile.getName());
 
         String version = determineVersion(project);
 
@@ -40,10 +40,12 @@ public class InitVersioningTask extends DefaultTask{
 
     private String determineVersion(Project project){
         if("unspecified".equals(project.getVersion()) ){
-            LOG.lifecycle("  BEWARE! Project.version is unspecified. Version will be set to {}. You can change it manually in version.properties.", FALLBACK_INITIAL_VERSION);
+            LOG.lifecycle("  BEWARE! 'project.version' is unspecified. Version will be set to '{}'. You can change it in '{}'.",
+                    FALLBACK_INITIAL_VERSION, versionFile.getName());
             return FALLBACK_INITIAL_VERSION;
         } else{
-            LOG.lifecycle("  Initial project version in version.properties set to {} (taken from project.version property).", project.getVersion());
+            LOG.lifecycle("  Initial project version in '{}' set to '{}' (taken from 'project.version' property).",
+                    versionFile.getName(), project.getVersion());
             return project.getVersion().toString();
         }
     }
