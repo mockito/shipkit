@@ -99,7 +99,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                         final BintrayExtension bintray = subproject.getExtensions().getByType(BintrayExtension.class);
                         deferredConfiguration(subproject, new Runnable() {
                             public void run() {
-                                configurePublicationRepo(project, BintrayUtil.getMarkdownRepoLink(bintray));
+                                configurePublicationRepo(project, BintrayUtil.getRepoLink(bintray));
                             }
                         });
                     }

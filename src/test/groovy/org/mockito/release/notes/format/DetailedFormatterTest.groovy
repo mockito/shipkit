@@ -27,9 +27,9 @@ No release information."""
         expect:
         f.formatReleaseNotes([d1, d2]) == """Release notes:
 
-**2.0.0** - no code changes (no commits) - *2017-01-04* - published to Bintray
+**2.0.0** - no code changes (no commits) - *2017-01-04* - published to [![Bintray](https://img.shields.io/badge/Bintray-2.0.0-green.svg)](Bintray/2.0.0)
 
-**1.9.0** - no code changes (no commits) - *2016-12-30* - published to Bintray"""
+**1.9.0** - no code changes (no commits) - *2016-12-30* - published to [![Bintray](https://img.shields.io/badge/Bintray-1.9.0-green.svg)](Bintray/1.9.0)"""
     }
 
     def "no improvements"() {
@@ -46,7 +46,7 @@ No release information."""
         expect:
         f.formatReleaseNotes([d]) == """Release notes:
 
-**2.0.0** - [1 commit](http://commits/v1.9.0...v2.0.0) by Szczepan Faber - *2017-01-04* - published to Bintray
+**2.0.0** - [1 commit](http://commits/v1.9.0...v2.0.0) by Szczepan Faber - *2017-01-04* - published to [![Bintray](https://img.shields.io/badge/Bintray-2.0.0-green.svg)](Bintray/2.0.0)
  - No pull requests referenced in commit messages."""
     }
 
@@ -138,11 +138,11 @@ No release information."""
                                     c("Tim van der Lippe", 10)]
         }
 
-        def summary = DetailedFormatter.releaseSummary(new Date(1483500000000), c, [:], "link",
-                "Bintray repo")
+        def summary = DetailedFormatter.releaseSummary("1.2.3", new Date(1483500000000), c, [:], "link",
+                "https://bintray.com/shipkit")
 
         expect:
-        summary == """[100 commits](link) by 4 authors - *2017-01-04* - published to Bintray repo
+        summary == """[100 commits](link) by 4 authors - *2017-01-04* - published to [![Bintray](https://img.shields.io/badge/Bintray-1.2.3-green.svg)](https://bintray.com/shipkit/1.2.3)
  - Commits: Szczepan Faber (40), Brice Dutheil (30), Rafael Winterhalter (20), Tim van der Lippe (10)
 """
     }

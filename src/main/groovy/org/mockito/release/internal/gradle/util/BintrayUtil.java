@@ -8,21 +8,19 @@ import java.text.MessageFormat;
  * Bintray specific utilities
  */
 public class BintrayUtil {
-
     /**
-     * Constructs markdown link to bintray repo.
-     * Useful to print in release notes.
+     * Constructs link to bintray repository.
      *
      * @param bintray
-     * @return markdown link
+     * @return repository link
      */
-    public static String getMarkdownRepoLink(BintrayExtension bintray) {
+    public static String getRepoLink(BintrayExtension bintray) {
         String repo = bintray.getPkg().getRepo();
         String pkg = bintray.getPkg().getName();
         String org = bintray.getPkg().getUserOrg();
         if (org == null) {
             org = bintray.getUser();
         }
-        return MessageFormat.format("[{1}/{2}](https://bintray.com/{0}/{1}/{2})", org, repo, pkg);
+        return MessageFormat.format("https://bintray.com/{0}/{1}/{2}", org, repo, pkg);
     }
 }
