@@ -38,7 +38,6 @@ public class FileDifferenceProvider {
                 String md5A = Md5.calculate(dirAFiles.get(i));
                 String md5B = Md5.calculate(dirBFiles.get(j));
                 boolean sameMd5 = md5A.equals(md5B);
-                // TODO md5 check
 
                 if (dirAFiles.get(i).length() == dirBFiles.get(j).length() && sameMd5) {
                     // nothing to do, both files are available
