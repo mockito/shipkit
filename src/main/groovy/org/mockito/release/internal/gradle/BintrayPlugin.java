@@ -31,7 +31,7 @@ public class BintrayPlugin implements Plugin<Project> {
      */
     static final String BINTRAY_UPLOAD_TASK = "bintrayUpload";
 
-    private final static Logger LOGGER = Logging.getLogger(BintrayPlugin.class);
+    private final static Logger LOG = Logging.getLogger(BintrayPlugin.class);
 
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
@@ -43,6 +43,7 @@ public class BintrayPlugin implements Plugin<Project> {
 
         //Configure some properties right away
         final BintrayExtension bintray = project.getExtensions().getByType(BintrayExtension.class);
+        LOG.info("Configuring bintray plugin to publish automatically ({}.bintray.publish = true)", project.getPath());
         bintray.setPublish(true);
 
         final BintrayUploadTask bintrayUpload = (BintrayUploadTask) project.getTasks().getByName(BINTRAY_UPLOAD_TASK);
@@ -57,7 +58,7 @@ public class BintrayPlugin implements Plugin<Project> {
                       "  Please configure Bintray extension.");
 
                 String welcomeMessage = uploadWelcomeMessage(t);
-                LOGGER.lifecycle(welcomeMessage);
+                LOG.lifecycle(welcomeMessage);
             }
         });
 
