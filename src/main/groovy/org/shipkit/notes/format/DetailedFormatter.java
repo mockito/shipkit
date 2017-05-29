@@ -38,7 +38,7 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         }
 
         for (ReleaseNotesData d : data) {
-            sb.append("**").append(d.getVersion()).append("** - ");
+            sb.append("**").append(d.getVersion()).append(" (").append(DateFormat.formatDate(d.getDate())).append(")** - ");
             String vcsCommitsLink = MessageFormat.format(vcsCommitsLinkTemplate, d.getPreviousVersionVcsTag(), d.getVcsTag());
             sb.append(releaseSummary(d.getVersion(), d.getDate(), d.getContributions(), contributors, vcsCommitsLink, publicationRepository));
 
@@ -56,7 +56,7 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
     static String releaseSummary(String version, Date date, ContributionSet contributions, Map<String, Contributor> contributors,
                                  String vcsCommitsLink, String publicationRepository) {
         return authorsSummary(contributions, contributors, vcsCommitsLink) +
-                " - *" + DateFormat.formatDate(date) + "*" + " - published to " + getBintrayBadge(version, publicationRepository) + "\n" +
+                " - published to " + getBintrayBadge(version, publicationRepository) + "\n" +
                 authorsSummaryAppendix(contributions, contributors);
     }
 
