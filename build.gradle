@@ -16,8 +16,8 @@ apply plugin: 'groovy'
 apply plugin: 'com.gradle.plugin-publish'
 apply plugin: 'checkstyle'
 apply plugin: 'codenarc'
-apply plugin: 'org.mockito.mockito-release-tools.gradle-plugin-releasing'
-apply plugin: 'org.mockito.mockito-release-tools.release-needed'
+apply plugin: 'org.shipkit.gradle-plugin-releasing'
+apply plugin: 'org.shipkit.release-needed'
 
 apply from: 'gradle/precommit.gradle'
 
@@ -51,36 +51,36 @@ pluginBundle {
     plugins {
         //TODO update plugins
         releaseNotesPlugin {
-            id = 'org.mockito.release-notes'
+            id = 'org.shipkit.release-notes'
             displayName = 'Mockito automated release notes generation plugin'
         }
 
         autoReleaseNotesPlugin {
-            id = 'org.mockito.mockito-release-tools.auto-release-notes'
+            id = 'org.shipkit.auto-release-notes'
             displayName = 'Mockito plugin for automated release notes generation and publishing released changes to VCS'
             tags = ['mockito', 'continuous delivery', 'release notes', 'changelog']
         }
 
         autoVersioningPlugin {
-            id = 'org.mockito.release-tools.auto-versioning'
+            id = 'org.shipkit.auto-versioning'
             displayName = 'Mockito automated versioning plugin'
             tags = ['mockito', 'continuous delivery', 'release', 'versioning', 'auto-versioning', 'semantic-versioning']
         }
 
         gradlePluginReleasingPlugin {
-            id = 'org.mockito.mockito-release-tools.gradle-plugin-releasing'
+            id = 'org.shipkit.gradle-plugin-releasing'
             displayName = 'Mockito automated versioning and Travis CI integration'
             tags = ['mockito', 'continuous delivery', 'release', 'versioning', 'auto-versioning', 'semantic-versioning', 'travis']
         }
 
         releaseNeededPlugin {
-            id = 'org.mockito.mockito-release-tools.release-needed'
+            id = 'org.shipkit.release-needed'
             displayName = 'Mockito plugin for checking if release is needed'
             tags = ['mockito', 'continuous delivery', 'release']
         }
 
         e2eTestPlugin {
-            id = 'org.mockito.mockito-release-tools.e2e-test'
+            id = 'org.shipkit.e2e-test'
             displayName = 'Mockito e2e tests plugin'
             tags = ['mockito', 'continuous delivery', 'release', 'e2e', 'end-to-end', 'end-2-end', 'test']
         }
