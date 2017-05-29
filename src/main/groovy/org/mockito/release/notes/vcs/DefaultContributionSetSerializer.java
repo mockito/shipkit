@@ -39,7 +39,7 @@ public class DefaultContributionSetSerializer {
 
     private DefaultContributionSet addCommits(DefaultContributionSet defaultContributionSet, JsonArray commits) {
         for (int i = 0; i < commits.size(); i++) {
-            Commit commit = gitCommitSerializer.deserialize((JsonObject) commits.get(0));
+            Commit commit = gitCommitSerializer.deserialize((JsonObject) commits.get(i));
             defaultContributionSet.add(commit);
         }
         return defaultContributionSet;
