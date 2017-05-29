@@ -8,7 +8,7 @@ class E2ETestingPluginTest extends Specification {
     def project = new ProjectBuilder().build()
 
     def "e2e with example project by default"() {
-        project.plugins.apply("org.mockito.mockito-release-tools.e2e-test")
+        project.plugins.apply("org.shipkit.e2e-test")
 
         expect:
         project.tasks.'runTestReleaseMockito-release-tools-example'

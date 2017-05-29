@@ -6,13 +6,13 @@ import testutil.PluginSpecification
 class BintrayPluginTest extends PluginSpecification {
 
     def setup() {
-        project.plugins.apply("org.mockito.mockito-release-tools.bintray")
+        project.plugins.apply("org.shipkit.bintray")
     }
 
     def "deferred configuration"() {
         project.version = "1.0"
         project.description = "some proj"
-        project.plugins.apply("org.mockito.mockito-release-tools.bintray")
+        project.plugins.apply("org.shipkit.bintray")
 
         project.releasing.dryRun = true
         project.releasing.gitHub.repository = 'repo'
@@ -33,7 +33,7 @@ class BintrayPluginTest extends PluginSpecification {
     def "deferred configuration honors user settings"() {
         project.version = "1.0"
         project.description = "some proj"
-        project.plugins.apply("org.mockito.mockito-release-tools.bintray")
+        project.plugins.apply("org.shipkit.bintray")
 
         project.releasing.dryRun = true
         project.releasing.gitHub.repository = 'repo'

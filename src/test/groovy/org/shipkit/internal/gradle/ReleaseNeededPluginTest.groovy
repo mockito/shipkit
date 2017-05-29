@@ -6,6 +6,6 @@ class ReleaseNeededPluginTest extends PluginSpecification {
 
     def "applies"() {
         expect:
-        project.plugins.apply("org.mockito.mockito-release-tools.release-needed")
+        project.plugins.apply("org.shipkit.release-needed")
     }
 }

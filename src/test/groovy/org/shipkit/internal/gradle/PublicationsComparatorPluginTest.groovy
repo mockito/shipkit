@@ -11,7 +11,7 @@ class PublicationsComparatorPluginTest extends PluginSpecification {
 
     def "applies"() {
         expect:
-        project.plugins.apply("org.mockito.mockito-release-tools.publications-comparator")
+        project.plugins.apply("org.shipkit.publications-comparator")
     }
 
     def "configures comparePublications task correctly"() {
@@ -26,7 +26,7 @@ class PublicationsComparatorPluginTest extends PluginSpecification {
         }
 
         when:
-        child.plugins.apply("org.mockito.mockito-release-tools.publications-comparator")
+        child.plugins.apply("org.shipkit.publications-comparator")
         child.evaluate()
 
         then:
@@ -47,7 +47,7 @@ class PublicationsComparatorPluginTest extends PluginSpecification {
         parent.plugins.apply(VersioningPlugin)
 
         when:
-        child.plugins.apply("org.mockito.mockito-release-tools.publications-comparator")
+        child.plugins.apply("org.shipkit.publications-comparator")
 
         then:
         PublicationsComparatorTask task = child.getTasks().getByName(PublicationsComparatorPlugin.COMPARE_PUBLICATIONS_TASK);
@@ -68,7 +68,7 @@ class PublicationsComparatorPluginTest extends PluginSpecification {
         releaseConfig.gitHub.repository = "repo"
 
         when:
-        child.plugins.apply("org.mockito.mockito-release-tools.publications-comparator")
+        child.plugins.apply("org.shipkit.publications-comparator")
         child.evaluate()
 
         then:
@@ -85,7 +85,7 @@ class PublicationsComparatorPluginTest extends PluginSpecification {
         def child = new ProjectBuilder().withName("child").withParent(parent).build()
 
         when:
-        child.plugins.apply("org.mockito.mockito-release-tools.publications-comparator")
+        child.plugins.apply("org.shipkit.publications-comparator")
         child.evaluate()
 
         then:
@@ -106,7 +106,7 @@ class PublicationsComparatorPluginTest extends PluginSpecification {
         conf.setPreviousReleaseVersion("1.0.0")
 
         when:
-        child.plugins.apply("org.mockito.mockito-release-tools.publications-comparator")
+        child.plugins.apply("org.shipkit.publications-comparator")
         child.evaluate()
 
         then:

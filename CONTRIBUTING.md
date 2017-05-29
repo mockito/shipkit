@@ -88,9 +88,9 @@ Gradle will throw an exception during configuration time: "task clean cannot be 
     The plugin should be referred via the "plugin id", examples:
 
 ```Groovy
-apply plugin: "org.mockito.mockito-release-tools.continuous-delivery"
+apply plugin: "org.shipkit.continuous-delivery"
 
-plugins.withId("org.mockito.mockito-release-tools.continuous-delivery") {
+plugins.withId("org.shipkit.continuous-delivery") {
    ...
 }
 ```

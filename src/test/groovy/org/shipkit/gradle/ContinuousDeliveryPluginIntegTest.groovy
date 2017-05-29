@@ -30,7 +30,7 @@ class ContinuousDeliveryPluginIntegTest extends GradleSpecification {
             }
             
             allprojects {
-                plugins.withId("org.mockito.mockito-release-tools.java-library") {
+                plugins.withId("org.shipkit.java-library") {
                     bintray {
                         user = "szczepiq"
                         key = "secret"
@@ -40,15 +40,15 @@ class ContinuousDeliveryPluginIntegTest extends GradleSpecification {
         """
 
         buildFile << """
-            apply plugin: "org.mockito.mockito-release-tools.continuous-delivery"
+            apply plugin: "org.shipkit.continuous-delivery"
         """
 
         settingsFile << "include 'api', 'impl'"
         projectDir.newFile("version.properties") << "version=1.0.0"
         projectDir.newFolder('api')
         projectDir.newFolder('impl')
-        projectDir.newFile('api/build.gradle') << "apply plugin: 'org.mockito.mockito-release-tools.java-library'"
-        projectDir.newFile('impl/build.gradle') << "apply plugin: 'org.mockito.mockito-release-tools.java-library'"
+        projectDir.newFile('api/build.gradle') << "apply plugin: 'org.shipkit.java-library'"
+        projectDir.newFile('impl/build.gradle') << "apply plugin: 'org.shipkit.java-library'"
 
         expect:
         def result = pass("performRelease", "-m")

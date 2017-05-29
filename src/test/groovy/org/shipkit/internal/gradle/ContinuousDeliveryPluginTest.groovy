@@ -6,6 +6,6 @@ class ContinuousDeliveryPluginTest extends PluginSpecification {
 
     def "applies"() {
         expect:
-        project.plugins.apply("org.mockito.mockito-release-tools.continuous-delivery")
+        project.plugins.apply("org.shipkit.continuous-delivery")
     }
 }

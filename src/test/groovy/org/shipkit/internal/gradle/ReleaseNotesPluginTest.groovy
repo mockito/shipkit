@@ -6,7 +6,7 @@ class ReleaseNotesPluginTest extends PluginSpecification {
 
     def "applies cleanly"() {
         expect:
-        project.plugins.apply("org.mockito.release-notes")
+        project.plugins.apply("org.shipkit.release-notes")
     }
 
     def "adds updates release notes to GitCommitTask if GitPlugin applied"() {
@@ -14,7 +14,7 @@ class ReleaseNotesPluginTest extends PluginSpecification {
         project.plugins.apply(GitPlugin)
 
         when:
-        project.plugins.apply("org.mockito.release-notes")
+        project.plugins.apply("org.shipkit.release-notes")
 
         then:
         GitCommitTask gitCommitTask = project.tasks.getByName(GitPlugin.GIT_COMMIT_TASK)

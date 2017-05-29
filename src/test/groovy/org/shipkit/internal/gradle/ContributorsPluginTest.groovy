@@ -6,6 +6,6 @@ class ContributorsPluginTest extends PluginSpecification {
 
     def "applies"() {
         expect:
-        project.plugins.apply("org.mockito.release-tools.contributors")
+        project.plugins.apply("org.shipkit.contributors")
     }
 }

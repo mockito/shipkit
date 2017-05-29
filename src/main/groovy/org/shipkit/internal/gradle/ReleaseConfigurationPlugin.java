@@ -105,7 +105,7 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
             "}\n"+
             "\n"+
             "allprojects {\n"+
-            "   plugins.withId(\"org.mockito.mockito-release-tools.bintray\") {\n"+
+            "   plugins.withId(\"org.shipkit.bintray\") {\n"+
             "       bintray {\n"+
             "           pkg {\n"+
             "               repo = '@bintray.pkg.repo@'\n"+

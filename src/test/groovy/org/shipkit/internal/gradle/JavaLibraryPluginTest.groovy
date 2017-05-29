@@ -9,6 +9,6 @@ class JavaLibraryPluginTest extends PluginSpecification {
         project.ext.bintray_pkg = "my-pkg"
 
         expect:
-        project.plugins.apply("org.mockito.mockito-release-tools.java-library")
+        project.plugins.apply("org.shipkit.java-library")
     }
 }

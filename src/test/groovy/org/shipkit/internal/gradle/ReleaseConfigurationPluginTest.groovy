@@ -65,7 +65,7 @@ releasing {
 }
 
 allprojects {
-   plugins.withId(\"org.mockito.mockito-release-tools.bintray\") {
+   plugins.withId(\"org.shipkit.bintray\") {
        bintray {
            pkg {
                repo = 'examples'

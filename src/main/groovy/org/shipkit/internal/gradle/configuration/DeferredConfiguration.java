@@ -24,7 +24,7 @@ public class DeferredConfiguration {
      * Example "build.gradle" file:
      * <pre>
      *     //plugin gets applied and the tasks and extension object are added:
-     *     apply plugin: "org.mockito.mockito-release-tools.continuous-delivery"
+     *     apply plugin: "org.shipkit.continuous-delivery"
      *
      *     //the plugin was already applied but the user only now can configure the extension object:
      *     releasing {
