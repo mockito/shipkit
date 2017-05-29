@@ -20,13 +20,13 @@ class ContinuousDeliveryPluginIntegTest extends GradleSpecification {
 
         projectDir.newFolder("gradle")
         projectDir.newFile("gradle/shipkit.gradle") << """
-            releasing {
+            shipkit {
                 gitHub.readOnlyAuthToken = "foo"
                 gitHub.writeAuthToken = "secret"
-                releasing.releaseNotes.file = "CHANGELOG.md"
-                releasing.git.user = "shipkit"
-                releasing.git.email = "shipkit@gmail.com"
-                releasing.gitHub.repository = "repo"
+                releaseNotes.file = "CHANGELOG.md"
+                git.user = "shipkit"
+                git.email = "shipkit@gmail.com"
+                gitHub.repository = "repo"
             }
             
             allprojects {

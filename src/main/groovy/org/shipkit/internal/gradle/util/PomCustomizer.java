@@ -39,17 +39,17 @@ public class PomCustomizer {
                 File contributorsFile = contributorsFile(project);
                 LOG.info("  Read project contributors from file: " + contributorsFile.getAbsolutePath());
 
-                // It can happens that contributorsFile doesn't exist e.g. when releasing.team.contributors is NOT empty
+                // It can happens that contributorsFile doesn't exist e.g. when shipkit.team.contributors is NOT empty
                 ProjectContributorsSet contributorsFromGitHub = new AllContributorsSerializer()
                         .deserialize(IOUtil.readFullyOrDefault(contributorsFile, "[]"));
                 LOG.info("  Customizing pom for publication " + publication.getName() + " in " + project.toString() +
                         "\n   - Module name (project.archivesBaseName): " + archivesBaseName +
                         "\n   - Description (project.description): " + project.getDescription() +
-                        "\n   - GitHub repository (project.rootProject.releasing.gitHub.repository): "
+                        "\n   - GitHub repository (project.rootProject.shipkit.gitHub.repository): "
                                 + conf.getGitHub().getRepository() +
-                        "\n   - Developers (project.rootProject.releasing.team.developers): "
+                        "\n   - Developers (project.rootProject.shipkit.team.developers): "
                                 + StringUtil.join(conf.getTeam().getDevelopers(), ", ") +
-                        "\n   - Contributors (project.rootProject.releasing.team.contributors): "
+                        "\n   - Contributors (project.rootProject.shipkit.team.contributors): "
                                 + StringUtil.join(conf.getTeam().getContributors(), ", ") +
                         "\n   - Contributors read from GitHub: "
                                 + StringUtil.join(contributorsFromGitHub.toConfigNotation(), ", "));

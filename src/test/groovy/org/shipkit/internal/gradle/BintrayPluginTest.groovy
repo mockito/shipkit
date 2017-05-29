@@ -14,8 +14,8 @@ class BintrayPluginTest extends PluginSpecification {
         project.description = "some proj"
         project.plugins.apply("org.shipkit.bintray")
 
-        project.releasing.dryRun = true
-        project.releasing.gitHub.repository = 'repo'
+        project.shipkit.dryRun = true
+        project.shipkit.gitHub.repository = 'repo'
         project.bintray.user = 'szczepiq'
 
         when:
@@ -35,8 +35,8 @@ class BintrayPluginTest extends PluginSpecification {
         project.description = "some proj"
         project.plugins.apply("org.shipkit.bintray")
 
-        project.releasing.dryRun = true
-        project.releasing.gitHub.repository = 'repo'
+        project.shipkit.dryRun = true
+        project.shipkit.gitHub.repository = 'repo'
 
         project.bintray.dryRun = false //this one is not honored at the moment, we're ok with this
         project.bintray.user = 'szczepiq'

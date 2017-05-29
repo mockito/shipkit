@@ -27,7 +27,7 @@ public class DeferredConfiguration {
      *     apply plugin: "org.shipkit.continuous-delivery"
      *
      *     //the plugin was already applied but the user only now can configure the extension object:
-     *     releasing {
+     *     shipkit {
      *         releaseNotes {
      *             file = file("CHANGELOG.md")
      *         }

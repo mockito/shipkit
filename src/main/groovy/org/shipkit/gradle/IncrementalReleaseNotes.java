@@ -211,7 +211,7 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
 
         ProjectContributorsSet contributorsFromGitHub;
         if(!contributors.isEmpty()) {
-            // if contributors are defined in releasing.team.contributors don't deserialize them from file
+            // if contributors are defined in shipkit.team.contributors don't deserialize them from file
             contributorsFromGitHub = new DefaultProjectContributorsSet();
         } else {
             LOG.info("  Read project contributors from file " + contributorsDataFile.getAbsolutePath());

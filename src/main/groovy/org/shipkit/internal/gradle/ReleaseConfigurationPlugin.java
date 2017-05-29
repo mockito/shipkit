@@ -19,8 +19,8 @@ import java.io.File;
  * Important: it will add to the root project because this is where the configuration belong to!
  * Adds following behavior:
  * <ul>
- *     <li>Adds and preconfigures 'releasing' extension of type {@link ReleaseConfiguration}</li>
- *     <li>Configures 'releasing.dryRun' setting based on 'releasing.dryRun' Gradle project property</li>
+ *     <li>Adds and preconfigures 'shipkit' extension of type {@link ReleaseConfiguration}</li>
+ *     <li>Configures 'shipkit.dryRun' setting based on 'shipkit.dryRun' Gradle project property</li>
  * </ul>
  */
 public class ReleaseConfigurationPlugin implements Plugin<Project> {
@@ -36,15 +36,15 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
             VersionInfo info = project.getExtensions().getByType(VersionInfo.class);
 
             configuration = project.getRootProject().getExtensions()
-                    .create("releasing", ReleaseConfiguration.class);
+                    .create("shipkit", ReleaseConfiguration.class);
 
             loadShipKitConfigFile(project.getRootProject());
 
-            if (project.hasProperty("releasing.dryRun")) {
-                Object value = project.getProperties().get("releasing.dryRun");
+            if (project.hasProperty("shipkit.dryRun")) {
+                Object value = project.getProperties().get("shipkit.dryRun");
                 configuration.setDryRun(!"false".equals(value));
                 //TODO we can actually implement it so that we automatically preconfigure everything by command line parameters
-                //e.g. releasing.gitHub.repository is also a property
+                //e.g. shipkit.gitHub.repository is also a property
             }
 
             configuration.setPreviousReleaseVersion(info.getPreviousVersion());
@@ -98,7 +98,7 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
 
     static final String DEFAULT_SHIPKIT_CONFIG_FILE_CONTENT =
             "//This file was created automatically and is intented to be checked-in.\n" +
-            "releasing {\n"+
+            "shipkit {\n"+
             "   gitHub.repository = \"@gitHub.repository@\"\n"+
             "   gitHub.readOnlyAuthToken = \"@gitHub.readOnlyAuthToken@\"\n"+
             "   gitHub.writeAuthUser = \"@gitHub.writeAuthUser@\"\n"+

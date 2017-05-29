@@ -33,7 +33,7 @@ class ReleaseConfigurationPluginTest extends PluginSpecification {
     @Unroll
     def "configures dry run to #setting when project property is #property"() {
         when:
-        root.ext.'releasing.dryRun' = property
+        root.ext.'shipkit.dryRun' = property
 
         then:
         root.plugins.apply(ReleaseConfigurationPlugin).configuration.dryRun == setting
@@ -58,7 +58,7 @@ class ReleaseConfigurationPluginTest extends PluginSpecification {
         thrown(GradleException)
         configFile.text ==
 """//This file was created automatically and is intented to be checked-in.
-releasing {
+shipkit {
    gitHub.repository = \"mockito/mockito-release-tools-example\"
    gitHub.readOnlyAuthToken = \"e7fe8fcfd6ffedac384c8c4c71b2a48e646ed1ab\"
    gitHub.writeAuthUser = \"shipkit\"

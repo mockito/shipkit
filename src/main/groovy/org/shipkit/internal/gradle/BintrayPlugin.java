@@ -16,7 +16,7 @@ import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.de
 
 /**
  * Applies and configures "com.jfrog.bintray" plugin based on sensible defaults
- * and user-defined values in "releasing" extension ({@link ReleaseConfiguration}).
+ * and user-defined values in "shipkit" extension ({@link ReleaseConfiguration}).
  *
  * Applies plugins:
  * <ul>

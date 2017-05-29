@@ -121,7 +121,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                     public void run() {
                         if (!conf.isDryRun()) {
                             throw new GradleException("When '" + t.getName() + "' task is executed" +
-                                    " 'releasing.dryRun' must be set to 'true'.\n" +
+                                    " 'shipkit.dryRun' must be set to 'true'.\n" +
                                     "See Javadoc for ReleaseConfigurationPlugin.");
                         }
                     }
@@ -132,7 +132,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
         TaskMaker.task(project, "performRelease", new Action<Task>() {
             public void execute(final Task t) {
                 t.setDescription("Performs release. " +
-                        "Ship with: './gradlew performRelease -Preleasing.dryRun=false'. " +
+                        "Ship with: './gradlew performRelease -Pshipkit.dryRun=false'. " +
                         "Test with: './gradlew testRelease'");
 
                 t.dependsOn(VersioningPlugin.BUMP_VERSION_FILE_TASK, "updateReleaseNotes");

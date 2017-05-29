@@ -36,7 +36,7 @@ class PluginSpecification extends Specification{
         def rootPath = tmp.root.absolutePath
         def configFile = new File(rootPath + "/" + ReleaseConfigurationPlugin.CONFIG_FILE_RELATIVE_PATH);
         IOUtil.createParentDirectory(configFile)
-        configFile << "releasing { }"
+        configFile << "shipkit { }"
     }
 
     ReleaseConfiguration applyReleaseConfiguration(){

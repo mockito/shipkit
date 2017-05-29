@@ -158,10 +158,10 @@ public class ReleaseConfiguration {
         public String getWriteAuthToken() {
             return (String) getValue("gitHub.writeAuthToken", "GH_WRITE_TOKEN",
                     "Please export 'GH_WRITE_TOKEN' env variable first!\n" +
-                    "  The value of that variable is automatically used for 'releasing.gitHub.writeAuthToken' setting.\n" +
+                    "  The value of that variable is automatically used for 'shipkit.gitHub.writeAuthToken' setting.\n" +
                     "  It is highly recommended to keep write token secure and store env variable with your CI configuration.\n" +
                     "  Alternatively, you can configure the write token explicitly in the *.gradle file:\n" +
-                    "    releasing.gitHub.writeAuthToken = 'secret'");
+                    "    shipkit.gitHub.writeAuthToken = 'secret'");
         }
 
         public void setWriteAuthToken(String writeAuthToken) {
@@ -359,15 +359,15 @@ public class ReleaseConfiguration {
     }
 
     private String getString(String key, String envVarName) {
-        return (String) getValue(key, envVarName, "Please configure 'releasing." + key + "' value (String).");
+        return (String) getValue(key, envVarName, "Please configure 'shipkit." + key + "' value (String).");
     }
 
     private Map getMap(String key) {
-        return (Map) getValue(key, NO_ENV_VARIABLE, "Please configure 'releasing." + key + "' value (Map).");
+        return (Map) getValue(key, NO_ENV_VARIABLE, "Please configure 'shipkit." + key + "' value (Map).");
     }
 
     private Collection<String> getCollection(String key) {
-        return (Collection) getValue(key, NO_ENV_VARIABLE, "Please configure 'releasing." + key + "' value (Collection).");
+        return (Collection) getValue(key, NO_ENV_VARIABLE, "Please configure 'shipkit." + key + "' value (Collection).");
     }
 
     private Object getValue(String key, String envVarName, String message) {

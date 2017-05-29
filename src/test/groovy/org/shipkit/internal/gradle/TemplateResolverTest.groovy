@@ -5,7 +5,7 @@ import spock.lang.Specification
 class TemplateResolverTest extends Specification {
 
     def input = """
-    releasing {
+    shipkit {
         gitHub.repository = "@gitHub.repository@"
         pkg.licenses = @pkg.licenses@
         buildNo = @buildNo@
@@ -13,7 +13,7 @@ class TemplateResolverTest extends Specification {
 """
 
     def output = """
-    releasing {
+    shipkit {
         gitHub.repository = "mockito/mockito-release-tools-example"
         pkg.licenses = ['MIT']
         buildNo = System.getenv("TRAVIS_BUILD_NUMBER")
