@@ -25,7 +25,7 @@ class ContinuousDeliveryPluginIntegTest extends GradleSpecification {
                 gitHub.writeAuthToken = "secret"
                 releaseNotes.file = "CHANGELOG.md"
                 git.user = "shipkit"
-                git.email = "shipkit@gmail.com"
+                git.email = "shipkit.org@gmail.com"
                 gitHub.repository = "repo"
             }
             

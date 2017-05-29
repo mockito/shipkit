@@ -39,7 +39,7 @@ public class ReleaseConfiguration {
         git.setReleasableBranchRegex("master|release/.+");  // matches 'master', 'release/2.x', 'release/3.x', etc.
         git.setCommitMessagePostfix("[ci skip]");
         git.setUser("Shipkit");
-        git.setEmail("<shipkit@gmail.com>");
+        git.setEmail("<shipkit.org@gmail.com>");
 
         releaseNotes.setFile("docs/release-notes.md");
         releaseNotes.setIgnoreCommitsContaining(asList("[ci skip]"));
@@ -241,7 +241,7 @@ public class ReleaseConfiguration {
         /**
          * Git email to be used for automated commits made by release automation
          * (version bumps, release notes commits, etc.).
-         * For example "shipkit@gmail.com"
+         * For example "shipkit.org@gmail.com"
          */
         public String getEmail() {
             return getString("git.email");
