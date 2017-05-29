@@ -1,4 +1,4 @@
-shipkit {
+releasing {
     gitHub.repository = "mockito/mockito-release-tools"
     gitHub.writeAuthUser = "mockito"
     gitHub.writeAuthToken = System.getenv("GH_WRITE_TOKEN")
