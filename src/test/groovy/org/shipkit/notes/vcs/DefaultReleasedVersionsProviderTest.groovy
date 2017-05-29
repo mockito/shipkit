@@ -7,7 +7,7 @@ import spock.lang.Unroll
 
 class DefaultReleasedVersionsProviderTest extends Specification {
 
-    def dateProvider = Mock(org.shipkit.notes.vcs.RevisionDateProvider)
+    def dateProvider = Mock(RevisionDateProvider)
     def provider = new DefaultReleasedVersionsProvider(dateProvider)
     def someDate = new Date(1491100000000)
 
