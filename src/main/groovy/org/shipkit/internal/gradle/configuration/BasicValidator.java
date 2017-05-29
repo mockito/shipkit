@@ -50,7 +50,7 @@ public class BasicValidator {
             LOGGER.info("Environment variable '" + envVariable + "' was not found.");
         }
 
-        //TODO we should consider prefixing all exceptions emitted by mockito release tools
+        //TODO we should consider prefixing all exceptions emitted by Shipkit
         //otherwise it's hard to figure out what is failing, whether it's Bintray's task that fails or something else
         //Perhaps '[shipkit]' prefix in exception message?
         throw new GradleException(message);

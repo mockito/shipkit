@@ -46,43 +46,43 @@ pluginBundle {
     website = 'http://mockito.org/'
     vcsUrl = 'https://github.com/mockito/mockito-release-tools'
     description = 'Release tools and Gradle plugins that automate Mockito continuous delivery.'
-    tags = ['mockito', 'continuous delivery', 'release']
+    tags = ['shipkit', 'continuous delivery', 'release']
 
     plugins {
         //TODO update plugins
         releaseNotesPlugin {
             id = 'org.shipkit.release-notes'
-            displayName = 'Mockito automated release notes generation plugin'
+            displayName = 'Shipkit automated release notes generation plugin'
         }
 
         autoReleaseNotesPlugin {
             id = 'org.shipkit.auto-release-notes'
-            displayName = 'Mockito plugin for automated release notes generation and publishing released changes to VCS'
-            tags = ['mockito', 'continuous delivery', 'release notes', 'changelog']
+            displayName = 'Shipkit plugin for automated release notes generation and publishing released changes to VCS'
+            tags = ['shipkit', 'continuous delivery', 'release notes', 'changelog']
         }
 
         autoVersioningPlugin {
             id = 'org.shipkit.auto-versioning'
-            displayName = 'Mockito automated versioning plugin'
-            tags = ['mockito', 'continuous delivery', 'release', 'versioning', 'auto-versioning', 'semantic-versioning']
+            displayName = 'Shipkit automated versioning plugin'
+            tags = ['shipkit', 'continuous delivery', 'release', 'versioning', 'auto-versioning', 'semantic-versioning']
         }
 
         gradlePluginReleasingPlugin {
             id = 'org.shipkit.gradle-plugin-releasing'
-            displayName = 'Mockito automated versioning and Travis CI integration'
-            tags = ['mockito', 'continuous delivery', 'release', 'versioning', 'auto-versioning', 'semantic-versioning', 'travis']
+            displayName = 'Shipkit automated versioning and Travis CI integration'
+            tags = ['shipkit', 'continuous delivery', 'release', 'versioning', 'auto-versioning', 'semantic-versioning', 'travis']
         }
 
         releaseNeededPlugin {
             id = 'org.shipkit.release-needed'
-            displayName = 'Mockito plugin for checking if release is needed'
-            tags = ['mockito', 'continuous delivery', 'release']
+            displayName = 'Shipkit plugin for checking if release is needed'
+            tags = ['shipkit', 'continuous delivery', 'release']
         }
 
         e2eTestPlugin {
             id = 'org.shipkit.e2e-test'
-            displayName = 'Mockito e2e tests plugin'
-            tags = ['mockito', 'continuous delivery', 'release', 'e2e', 'end-to-end', 'end-2-end', 'test']
+            displayName = 'Shipkit e2e tests plugin'
+            tags = ['shipkit', 'continuous delivery', 'release', 'e2e', 'end-to-end', 'end-2-end', 'test']
         }
     }
 

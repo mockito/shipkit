@@ -38,8 +38,8 @@ public class ReleaseConfiguration {
         git.setTagPrefix("v"); //so that tags are "v1.0", "v2.3.4"
         git.setReleasableBranchRegex("master|release/.+");  // matches 'master', 'release/2.x', 'release/3.x', etc.
         git.setCommitMessagePostfix("[ci skip]");
-        git.setUser("Mockito Release Tools");
-        git.setEmail("<mockito.release.tools@gmail.com>");
+        git.setUser("Shipkit");
+        git.setEmail("<shipkit@gmail.com>");
 
         releaseNotes.setFile("docs/release-notes.md");
         releaseNotes.setIgnoreCommitsContaining(asList("[ci skip]"));
@@ -103,7 +103,7 @@ public class ReleaseConfiguration {
     public class GitHub {
 
         /**
-         * GitHub repository name, for example: "mockito/mockito"
+         * GitHub repository name, for example: "mockito/shipkit"
          */
         public String getRepository() {
             return getString("gitHub.repository");
@@ -112,7 +112,7 @@ public class ReleaseConfiguration {
         /**
          * See {@link #getRepository()}
          *
-         * @param repository name of the repo, including user or organization section, for example: "mockito/mockito"
+         * @param repository name of the repo, including user or organization section, for example: "mockito/shipkit"
          */
         public void setRepository(String repository) {
             configuration.put("gitHub.repository", repository);
@@ -225,7 +225,7 @@ public class ReleaseConfiguration {
         /**
          * Git user to be used for automated commits made by release automation
          * (version bumps, release notes commits, etc.).
-         * For example: "mockito.release.tools"
+         * For example: "shipkit"
          */
         public String getUser() {
             return getString("git.user");
@@ -241,7 +241,7 @@ public class ReleaseConfiguration {
         /**
          * Git email to be used for automated commits made by release automation
          * (version bumps, release notes commits, etc.).
-         * For example "mockito.release.tools@gmail.com"
+         * For example "shipkit@gmail.com"
          */
         public String getEmail() {
             return getString("git.email");
