@@ -13,10 +13,6 @@ public class DefaultContributionSetSerializer {
     public DefaultContributionSetSerializer() {
     }
 
-    public DefaultContributionSetSerializer(GitCommitSerializer gitCommitSerializer) {
-        this.gitCommitSerializer = gitCommitSerializer;
-    }
-
     public String serialize(DefaultContributionSet defaultContributionSet) {
         return defaultContributionSet.toJson();
     }
@@ -38,9 +34,9 @@ public class DefaultContributionSetSerializer {
     }
 
     private DefaultContributionSet addCommits(DefaultContributionSet defaultContributionSet, JsonArray commits) {
-        for (int i = 0; i < commits.size(); i++) {
-            Commit commit = gitCommitSerializer.deserialize((JsonObject) commits.get(0));
-            defaultContributionSet.add(commit);
+        for (Object commit : commits) {
+            Commit gitCommit = gitCommitSerializer.deserialize((JsonObject) commit);
+            defaultContributionSet.add(gitCommit);
         }
         return defaultContributionSet;
     }

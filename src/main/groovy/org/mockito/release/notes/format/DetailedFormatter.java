@@ -140,7 +140,7 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
     }
 
     private static String allAuthors(ContributionSet contributions, Map<String, Contributor> contributors) {
-        if (contributions.getContributions().size() <= MAX_AUTHORS) {
+        if (contributions.getAuthorCount() <= MAX_AUTHORS) {
             //if there is little authors, we just print them by name
             return itemizedAuthors(contributions, contributors);
         }

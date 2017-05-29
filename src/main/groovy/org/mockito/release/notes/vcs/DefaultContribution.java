@@ -63,4 +63,32 @@ class DefaultContribution implements Contribution, Comparable<DefaultContributio
     public void toJson(Writer writable) throws IOException {
         writable.append(toJson());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        DefaultContribution that = (DefaultContribution) o;
+
+        if (authorEmail != null ? !authorEmail.equals(that.authorEmail) : that.authorEmail != null) {
+            return false;
+        }
+        if (authorName != null ? !authorName.equals(that.authorName) : that.authorName != null) {
+            return false;
+        }
+        return commits != null ? commits.equals(that.commits) : that.commits == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = authorEmail != null ? authorEmail.hashCode() : 0;
+        result = 31 * result + (authorName != null ? authorName.hashCode() : 0);
+        result = 31 * result + (commits != null ? commits.hashCode() : 0);
+        return result;
+    }
 }
