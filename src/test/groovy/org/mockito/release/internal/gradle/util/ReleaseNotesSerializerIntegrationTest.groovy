@@ -35,5 +35,6 @@ class ReleaseNotesSerializerIntegrationTest extends Specification {
 
         then:
         result.get(0) == releaseNote
+        result.size() == 1
     }
 }
