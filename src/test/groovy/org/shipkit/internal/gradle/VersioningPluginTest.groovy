@@ -1,6 +1,6 @@
 package org.shipkit.internal.gradle
 
-import org.shipkit.version.VersionInfo
+import org.shipkit.internal.version.VersionInfo
 import testutil.PluginSpecification
 
 class VersioningPluginTest extends PluginSpecification {

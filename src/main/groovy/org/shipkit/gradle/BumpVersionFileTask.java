@@ -5,8 +5,8 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.version.Version;
-import org.shipkit.version.VersionInfo;
+import org.shipkit.internal.version.Version;
+import org.shipkit.internal.version.VersionInfo;
 
 import java.io.File;
 

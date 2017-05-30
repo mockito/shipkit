@@ -4,7 +4,7 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.*;
-import org.shipkit.notes.util.IOUtil;
+import org.shipkit.internal.notes.util.IOUtil;
 
 import java.io.File;
 

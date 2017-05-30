@@ -7,7 +7,7 @@ import org.shipkit.gradle.IncrementalReleaseNotes;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.ReleaseNotesFetcherTask;
 import org.shipkit.internal.gradle.util.TaskMaker;
-import org.shipkit.version.VersionInfo;
+import org.shipkit.internal.version.VersionInfo;
 
 import java.io.File;
 import java.util.Arrays;

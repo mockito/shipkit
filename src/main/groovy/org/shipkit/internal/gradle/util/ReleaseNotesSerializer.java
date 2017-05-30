@@ -4,12 +4,12 @@ import org.json.simple.DeserializationException;
 import org.json.simple.JsonArray;
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
-import org.shipkit.notes.internal.DefaultImprovementSerializer;
-import org.shipkit.notes.internal.DefaultReleaseNotesData;
-import org.shipkit.notes.model.ContributionSet;
-import org.shipkit.notes.model.Improvement;
-import org.shipkit.notes.model.ReleaseNotesData;
-import org.shipkit.notes.vcs.DefaultContributionSetSerializer;
+import org.shipkit.internal.notes.internal.DefaultImprovementSerializer;
+import org.shipkit.internal.notes.internal.DefaultReleaseNotesData;
+import org.shipkit.internal.notes.model.ContributionSet;
+import org.shipkit.internal.notes.model.Improvement;
+import org.shipkit.internal.notes.model.ReleaseNotesData;
+import org.shipkit.internal.notes.vcs.DefaultContributionSetSerializer;
 
 import java.util.Collection;
 import java.util.Date;

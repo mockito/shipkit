@@ -7,9 +7,9 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.BumpVersionFileTask;
 import org.shipkit.internal.gradle.util.TaskMaker;
-import org.shipkit.notes.util.IOUtil;
-import org.shipkit.version.Version;
-import org.shipkit.version.VersionInfo;
+import org.shipkit.internal.notes.util.IOUtil;
+import org.shipkit.internal.version.Version;
+import org.shipkit.internal.version.VersionInfo;
 
 import java.io.File;
 import java.util.Arrays;

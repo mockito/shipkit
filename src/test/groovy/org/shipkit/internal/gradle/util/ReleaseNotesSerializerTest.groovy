@@ -1,12 +1,12 @@
 package org.shipkit.internal.gradle.util
 
 import org.apache.commons.lang.builder.EqualsBuilder
-import org.shipkit.notes.internal.DefaultImprovement
-import org.shipkit.notes.internal.DefaultImprovementSerializer
-import org.shipkit.notes.internal.DefaultReleaseNotesData
-import org.shipkit.notes.model.Improvement
-import org.shipkit.notes.vcs.DefaultContributionSet
-import org.shipkit.notes.vcs.DefaultContributionSetSerializer
+import org.shipkit.internal.notes.internal.DefaultImprovement
+import org.shipkit.internal.notes.internal.DefaultImprovementSerializer
+import org.shipkit.internal.notes.internal.DefaultReleaseNotesData
+import org.shipkit.internal.notes.model.Improvement
+import org.shipkit.internal.notes.vcs.DefaultContributionSet
+import org.shipkit.internal.notes.vcs.DefaultContributionSetSerializer
 import spock.lang.Specification
 import spock.lang.Subject
 

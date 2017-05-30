@@ -1,7 +1,7 @@
 package org.shipkit.gradle;
 
 import org.gradle.api.GradleException;
-import org.shipkit.version.VersionInfo;
+import org.shipkit.internal.version.VersionInfo;
 
 import java.util.Collection;
 import java.util.Collections;
