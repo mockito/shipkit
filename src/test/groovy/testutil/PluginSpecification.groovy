@@ -4,9 +4,9 @@ import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import org.mockito.release.gradle.ReleaseConfiguration
-import org.mockito.release.internal.gradle.ReleaseConfigurationPlugin
-import org.mockito.release.notes.util.IOUtil
+import org.shipkit.gradle.ReleaseConfiguration
+import org.shipkit.internal.gradle.ReleaseConfigurationPlugin
+import org.shipkit.notes.util.IOUtil
 import spock.lang.Specification
 
 /**
@@ -36,7 +36,7 @@ class PluginSpecification extends Specification{
         def rootPath = tmp.root.absolutePath
         def configFile = new File(rootPath + "/" + ReleaseConfigurationPlugin.CONFIG_FILE_RELATIVE_PATH);
         IOUtil.createParentDirectory(configFile)
-        configFile << "releasing { }"
+        configFile << "shipkit { }"
     }
 
     ReleaseConfiguration applyReleaseConfiguration(){
