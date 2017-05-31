@@ -131,7 +131,7 @@ public class PublicationsComparatorPlugin implements Plugin<Project> {
 
     private String getDefaultIfNull(String url, String variableName, String extension, DefaultArtifactUrlResolver defaultArtifactUrlResolver) {
         if(url == null){
-            /**
+            /*
              * it's null when {@link DefaultArtifactUrlResolverFactory} can't find any implementation suitable for the current implementation
              */
             if(defaultArtifactUrlResolver == null){
