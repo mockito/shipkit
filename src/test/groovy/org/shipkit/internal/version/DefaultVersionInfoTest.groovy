@@ -10,7 +10,7 @@ class DefaultVersionInfoTest extends Specification {
 
     def "does not support files without 'version' property"() {
         def f = dir.newFile() << "asdf"
-        when: org.shipkit.internal.version.DefaultVersionInfo.fromFile(f)
+        when: DefaultVersionInfo.fromFile(f)
         then: thrown(IllegalArgumentException)
     }
 
@@ -22,7 +22,7 @@ version=2.0.0
 x
 """
         expect:
-        org.shipkit.internal.version.DefaultVersionInfo.fromFile(f).version == "2.0.0"
+        DefaultVersionInfo.fromFile(f).version == "2.0.0"
     }
 
     def "increments version in file"() {
@@ -34,7 +34,7 @@ x
 """
 
         when:
-        def v = org.shipkit.internal.version.DefaultVersionInfo.fromFile(f)
+        def v = DefaultVersionInfo.fromFile(f)
         def v2 = v.bumpVersion(false)
 
         then:
@@ -53,7 +53,7 @@ previousVersion=2.0.0
         def f = dir.newFile() << "foo=bar\nversion=2.0.0"
 
         when:
-        org.shipkit.internal.version.DefaultVersionInfo.fromFile(f).bumpVersion(false)
+        DefaultVersionInfo.fromFile(f).bumpVersion(false)
 
         then:
         f.text == "foo=bar\nversion=2.0.1\npreviousVersion=2.0.0\n"
@@ -62,7 +62,7 @@ previousVersion=2.0.0
     def "knows notable versions"() {
         expect:
         def f = dir.newFile() << "version=1.0\n" + file
-        org.shipkit.internal.version.DefaultVersionInfo.fromFile(f).notableVersions.toString() == versions.toString()
+        DefaultVersionInfo.fromFile(f).notableVersions.toString() == versions.toString()
 
         where:
         file                                       | versions
@@ -78,7 +78,7 @@ notableVersions=1.0.0
 """
 
         when:
-        def v = org.shipkit.internal.version.DefaultVersionInfo.fromFile(f)
+        def v = DefaultVersionInfo.fromFile(f)
         v.bumpVersion(true)
 
         then:
@@ -94,7 +94,7 @@ previousVersion=2.0.0
         def f = dir.newFile() << "version=1.0.0"
 
         when:
-        def v = org.shipkit.internal.version.DefaultVersionInfo.fromFile(f)
+        def v = DefaultVersionInfo.fromFile(f)
         v.bumpVersion(true)
 
         then:
@@ -109,7 +109,7 @@ previousVersion=1.0.0
         def f = dir.newFile() << "version=1.0.0"
 
         when:
-        def v = org.shipkit.internal.version.DefaultVersionInfo.fromFile(f)
+        def v = DefaultVersionInfo.fromFile(f)
         v.bumpVersion(true)
 
         then:
@@ -127,7 +127,7 @@ previousVersion=1.0.1
 """
 
         when:
-        def beforeBump = org.shipkit.internal.version.DefaultVersionInfo.fromFile(f)
+        def beforeBump = DefaultVersionInfo.fromFile(f)
         def afterBump = beforeBump.bumpVersion(false)
 
         then:
@@ -145,7 +145,7 @@ version=1.0.0
 """
 
         when:
-        def beforeBump = org.shipkit.internal.version.DefaultVersionInfo.fromFile(f)
+        def beforeBump = DefaultVersionInfo.fromFile(f)
         def afterBump = beforeBump.bumpVersion(false)
 
         then:
