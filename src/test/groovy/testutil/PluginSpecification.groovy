@@ -20,7 +20,7 @@ class PluginSpecification extends Specification{
     @Rule
     TemporaryFolder tmp = new TemporaryFolder()
 
-    def Project project
+    Project project
 
     void setup(){
         initProject()
