@@ -14,15 +14,17 @@ Be pragmatic, all rules have exceptions given good reasons.
 
 ### Local development
 
-1. Clone mockito-release-tools repo, make your changes, then run ```./gradlew fastInstall```
+1. Clone shipkit repo, make your changes, then run ```./gradlew fastInstall```
 This will install the artifacts in local maven repository for easy sharing.
 Notice the version you're building in the build output.
-2. Clone mockito-release-tools-example repo and ensure that 'release-tools-example/build.gradle' file uses the correct version of mockito-release-tools (declared at the top of build.gradle).
+2. Clone mockito-release-tools-example repo and ensure that 'release-tools-example/build.gradle' file uses the correct version of shipkit (declared at the top of build.gradle).
 It should use the same version that was built in the previous step.
 3. Basic testing (for most contributors):
  - Smoke test (no tasks are run): ```./gradlew testRelease -m```
  - Test most things, without actually making any code pushes/publications: ```./gradlew testRelease -x gitPush -x bintrayUpload```
  - Release notes content: ```./gradlew previewReleaseNotes```
+    To generate sizable release notes content, before running 'previewReleaseNotes' you can downgrade the 'previousVersion' in 'version.properties'.
+    Release notes are generated from 'previousVersion' to current 'version' as declared in 'version.properties' file.
 4. Advanced testing (occasionally, for core developers, edge cases):
  - Release notes in file: ```./gradlew previewReleaseNotes```, then inspect updated file
  - Test release needed task: ```./gradlew assertReleaseNeeded```
@@ -73,11 +75,11 @@ Gradle will throw an exception during configuration time: "task clean cannot be 
 
 ### Public and internal api
 
-1. Top level package is "org.mockito.release".
+1. Top level package is "org.shipkit".
 2. Public API are classes and interfaces that we guarantee compatibility after 1.0 release.
-    All public classes live under "org.mockito.release.*", nested accordingly for clarity.
+    All public classes live under "org.shipkit.*", nested accordingly for clarity.
 3. Internal API can change at any time, we don't guarantee compatibility.
-    Internal types live under "org.mockito.release.internal.*", nested accordingly for clarity.
+    Internal types live under "org.shipkit.internal.*", nested accordingly for clarity.
     Users are welcome to use internals for experimentation and working around gnarly use cases or bugs.
     Please let us know if you need an internal type and why!
     This way we can create public API for you to use!
@@ -88,9 +90,9 @@ Gradle will throw an exception during configuration time: "task clean cannot be 
     The plugin should be referred via the "plugin id", examples:
 
 ```Groovy
-apply plugin: "org.mockito.mockito-release-tools.continuous-delivery"
+apply plugin: "org.shipkit.continuous-delivery"
 
-plugins.withId("org.mockito.mockito-release-tools.continuous-delivery") {
+plugins.withId("org.shipkit.continuous-delivery") {
    ...
 }
 ```

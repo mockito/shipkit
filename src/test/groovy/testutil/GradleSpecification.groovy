@@ -4,7 +4,7 @@ import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import org.mockito.release.internal.gradle.ContinuousDeliveryPlugin
+import org.shipkit.internal.gradle.ContinuousDeliveryPlugin
 import spock.lang.Specification
 
 /**
