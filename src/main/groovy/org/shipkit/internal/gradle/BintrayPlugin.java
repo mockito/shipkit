@@ -24,7 +24,7 @@ import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.de
  *     <li>"com.jfrog.bintray" to this project</li>
  * </ul>
  *
- * Conifgures "com.jfrog.bintray" plugin:
+ * Configures "com.jfrog.bintray" plugin:
  * <ul>
  *     <li>Sets extension property: 'bintray.publish = true'</li>
  * </ul>
@@ -57,10 +57,6 @@ public class BintrayPlugin implements Plugin<Project> {
             public void execute(Task task) {
                 //TODO unit test
                 BintrayUploadTask t = (BintrayUploadTask) task;
-
-                //workaround for https://github.com/bintray/gradle-bintray-plugin/issues/170
-                notNull(bintray.getUser(), "Missing 'bintray.user' value.\n" +
-                      "  Please configure Bintray extension.");
 
                 String welcomeMessage = uploadWelcomeMessage(t);
                 LOG.lifecycle(welcomeMessage);
@@ -108,6 +104,10 @@ public class BintrayPlugin implements Plugin<Project> {
                         "Missing 'bintray.key' value.\n" +
                         "  Please configure Bintray extension or export 'BINTRAY_API_KEY' env variable.");
                 bintray.setKey(key);
+
+                //workaround for https://github.com/bintray/gradle-bintray-plugin/issues/170
+                notNull(bintray.getUser(), "Missing 'bintray.user' value.\n" +
+                        "  Please configure Bintray extension.");
             }
         });
     }

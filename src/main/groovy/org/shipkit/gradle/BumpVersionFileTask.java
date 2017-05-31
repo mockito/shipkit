@@ -5,7 +5,7 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.internal.gradle.BootstrapPlugin;
+import org.shipkit.internal.gradle.InitPlugin;
 import org.shipkit.internal.version.Version;
 import org.shipkit.internal.version.VersionInfo;
 
@@ -42,7 +42,7 @@ public class BumpVersionFileTask extends DefaultTask {
     @TaskAction public VersionInfo bumpVersionFile() {
         if(!versionFile.exists()){
             throw new IllegalStateException("Cannot bump version because '" + versionFile.getName() + "' file doesn't exist." +
-                    " Use '" + BootstrapPlugin.INIT_SHIPKIT_TASK + "' task to create it.");
+                    " Use '" + InitPlugin.INIT_SHIPKIT_TASK + "' task to create it.");
         }
         VersionInfo versionInfo = Version.versionInfo(this.versionFile);
         VersionInfo newVersion = versionInfo.bumpVersion();

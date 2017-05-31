@@ -22,6 +22,13 @@ import java.io.File;
  *     <li>Adds and preconfigures 'shipkit' extension of type {@link ReleaseConfiguration}</li>
  *     <li>Configures 'shipkit.dryRun' setting based on 'shipkit.dryRun' Gradle project property</li>
  * </ul>
+ *
+ * Applies following plugins and preconfigures tasks provided by those plugins:
+ *
+ * <ul>
+ *     <li>{@link InitPlugin}</li>
+ *     <li>{@link VersioningPlugin}</li>
+ * </ul>
  */
 public class ReleaseConfigurationPlugin implements Plugin<Project> {
 
@@ -33,7 +40,7 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
     public void apply(final Project project) {
         if (project.getParent() == null) {
             //root project, add the extension
-            project.getPlugins().apply(BootstrapPlugin.class);
+            project.getPlugins().apply(InitPlugin.class);
             project.getPlugins().apply(VersioningPlugin.class);
             VersionInfo info = project.getExtensions().getByType(VersionInfo.class);
 
@@ -59,7 +66,7 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
                     t.setDescription("Creates Shipkit configuration file unless it already exists");
                     t.setConfigFile(configFile);
 
-                    project.getTasks().getByName(BootstrapPlugin.INIT_SHIPKIT_TASK).dependsOn(t);
+                    project.getTasks().getByName(InitPlugin.INIT_SHIPKIT_TASK).dependsOn(t);
                 }
             });
 

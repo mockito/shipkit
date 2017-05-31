@@ -10,7 +10,7 @@ import org.shipkit.internal.gradle.util.TaskMaker;
  * Creates task initShipkit that all other init tasks should depend on
  * so that running it would create all configuration needed to start Shipkit
  */
-public class BootstrapPlugin implements Plugin<Project> {
+public class InitPlugin implements Plugin<Project> {
 
     public static final String INIT_SHIPKIT_TASK = "initShipkit";
 
@@ -20,7 +20,7 @@ public class BootstrapPlugin implements Plugin<Project> {
         TaskMaker.task(project, INIT_SHIPKIT_TASK, new Action<Task>() {
             @Override
             public void execute(Task t) {
-                t.setDescription("Initializes shipkit");
+                t.setDescription("Initializes Shipkit");
             }
         });
     }

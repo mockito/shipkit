@@ -45,7 +45,7 @@ public class VersioningPlugin implements Plugin<Project> {
     static final String INIT_VERSIONING_TASK = "initVersioning";
 
     public void apply(final Project project) {
-        project.getPlugins().apply(BootstrapPlugin.class);
+        project.getPlugins().apply(InitPlugin.class);
 
         final File versionFile = project.file(VERSION_FILE_NAME);
 
@@ -78,7 +78,7 @@ public class VersioningPlugin implements Plugin<Project> {
             public void execute(InitVersioningTask t) {
                 t.setDescription("Creates version.properties file if it doesn't exist");
                 t.setVersionFile(versionFile);
-                project.getTasks().getByName(BootstrapPlugin.INIT_SHIPKIT_TASK).dependsOn(t);
+                project.getTasks().getByName(InitPlugin.INIT_SHIPKIT_TASK).dependsOn(t);
             }
         });
     }
