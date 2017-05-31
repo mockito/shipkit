@@ -1,6 +1,5 @@
 package org.shipkit.internal.notes.contributors
 
-import org.shipkit.internal.notes.model.Contributor
 import spock.lang.Specification
 import spock.lang.Subject
 
