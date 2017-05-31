@@ -70,7 +70,7 @@ public class DefaultImprovement implements Improvement {
         final StringBuilder labelsBuilder = new StringBuilder();
         final Iterator<String> iterator = labels.iterator();
         while (iterator.hasNext()) {
-            labelsBuilder.append("\"" + Jsoner.escape(iterator.next()) + "\"");
+            labelsBuilder.append("\"").append(Jsoner.escape(iterator.next())).append("\"");
             if (iterator.hasNext()) {
                 labelsBuilder.append(",");
             }
