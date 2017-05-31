@@ -14,7 +14,7 @@ class GitHubImprovementsJSONTest extends Specification {
         issue.put("labels", labels)
 
         when:
-        def i = org.shipkit.internal.notes.improvements.GitHubImprovementsJSON.toImprovement(issue)
+        def i = GitHubImprovementsJSON.toImprovement(issue)
 
         then:
         i.id == 100L
@@ -29,7 +29,7 @@ class GitHubImprovementsJSONTest extends Specification {
         issue.put("labels", new JsonArray())
 
         when:
-        def i = org.shipkit.internal.notes.improvements.GitHubImprovementsJSON.toImprovement(issue)
+        def i = GitHubImprovementsJSON.toImprovement(issue)
 
         then:
         i.id == 100L
