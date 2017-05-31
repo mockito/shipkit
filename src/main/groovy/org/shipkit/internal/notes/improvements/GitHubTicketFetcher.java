@@ -2,6 +2,7 @@ package org.shipkit.internal.notes.improvements;
 
 import org.json.simple.DeserializationException;
 import org.json.simple.JsonObject;
+import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.notes.model.Improvement;
 import org.shipkit.internal.notes.util.GitHubListFetcher;
 import org.slf4j.Logger;
@@ -28,7 +29,7 @@ class GitHubTicketFetcher {
         try {
             GitHubIssues issues = GitHubIssues.forRepo(repository, readOnlyAuthToken)
                     .state("closed")
-                    .labels(CommaSeparated.commaSeparated(labels))
+                    .labels(StringUtil.join(labels, ","))
                     .filter("all")
                     .direction("desc")
                     .browse();
