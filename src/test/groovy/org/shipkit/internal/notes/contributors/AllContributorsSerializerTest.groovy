@@ -64,7 +64,7 @@ class AllContributorsSerializerTest extends Specification {
         contributors.getAllContributors().containsAll(actual.getAllContributors())
     }
 
-    def "serialization and deserialization contributor with emty name"() {
+    def "serialization and deserialization contributor with empty name"() {
         def contributors = new DefaultProjectContributorsSet()
         def contributor = new DefaultProjectContributor("", "myLogin", "myProfileUrl", 5)
         contributors.addContributor(contributor)
