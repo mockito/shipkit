@@ -41,7 +41,7 @@ class GitCommitTaskTest extends Specification {
         gitCommitTask.files == [basePath + "/test", basePath + "/test2", basePath + "/test3"]
     }
 
-    def Task anyTask(){
+    Task anyTask(){
         return tasksContainer.create(RandomStringUtils.random(15), DefaultTask)
     }
 }
