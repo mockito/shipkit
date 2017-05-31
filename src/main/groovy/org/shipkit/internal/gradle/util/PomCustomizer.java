@@ -9,9 +9,9 @@ import org.gradle.api.logging.Logging;
 import org.gradle.api.publish.maven.MavenPublication;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.internal.gradle.util.team.TeamMember;
-import org.shipkit.notes.contributors.AllContributorsSerializer;
-import org.shipkit.notes.contributors.ProjectContributorsSet;
-import org.shipkit.notes.util.IOUtil;
+import org.shipkit.internal.notes.contributors.AllContributorsSerializer;
+import org.shipkit.internal.notes.contributors.ProjectContributorsSet;
+import org.shipkit.internal.notes.util.IOUtil;
 
 import java.io.File;
 import java.util.ArrayList;

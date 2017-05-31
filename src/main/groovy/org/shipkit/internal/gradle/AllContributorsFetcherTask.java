@@ -7,11 +7,11 @@ import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.gradle.ReleaseConfiguration;
-import org.shipkit.notes.contributors.AllContributorsSerializer;
-import org.shipkit.notes.contributors.Contributors;
-import org.shipkit.notes.contributors.GitHubContributorsProvider;
-import org.shipkit.notes.contributors.ProjectContributorsSet;
-import org.shipkit.notes.util.IOUtil;
+import org.shipkit.internal.notes.contributors.AllContributorsSerializer;
+import org.shipkit.internal.notes.contributors.Contributors;
+import org.shipkit.internal.notes.contributors.GitHubContributorsProvider;
+import org.shipkit.internal.notes.contributors.ProjectContributorsSet;
+import org.shipkit.internal.notes.util.IOUtil;
 
 import java.io.File;
 

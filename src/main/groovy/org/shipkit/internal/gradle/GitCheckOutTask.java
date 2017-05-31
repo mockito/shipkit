@@ -3,7 +3,7 @@ package org.shipkit.internal.gradle;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.exec.DefaultProcessRunner;
+import org.shipkit.internal.exec.DefaultProcessRunner;
 
 /**
  * This task will checkout a certain revision.

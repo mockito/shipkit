@@ -3,9 +3,9 @@ package org.shipkit.internal.gradle;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.internal.gradle.util.ReleaseNotesSerializer;
-import org.shipkit.notes.format.ReleaseNotesFormatters;
-import org.shipkit.notes.model.ReleaseNotesData;
-import org.shipkit.notes.util.IOUtil;
+import org.shipkit.internal.notes.format.ReleaseNotesFormatters;
+import org.shipkit.internal.notes.model.ReleaseNotesData;
+import org.shipkit.internal.notes.util.IOUtil;
 
 import java.util.Collection;
 

@@ -2,7 +2,7 @@ package org.shipkit.gradle;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.exec.DefaultProcessRunner;
+import org.shipkit.internal.exec.DefaultProcessRunner;
 
 import java.util.LinkedList;
 import java.util.List;

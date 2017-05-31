@@ -6,7 +6,7 @@ import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import org.shipkit.gradle.ReleaseConfiguration
 import org.shipkit.internal.gradle.ReleaseConfigurationPlugin
-import org.shipkit.notes.util.IOUtil
+import org.shipkit.internal.notes.util.IOUtil
 import spock.lang.Specification
 
 /**

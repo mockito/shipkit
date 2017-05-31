@@ -6,8 +6,8 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ObjectConfigurationAction;
 import org.shipkit.gradle.ReleaseConfiguration;
-import org.shipkit.notes.util.IOUtil;
-import org.shipkit.version.VersionInfo;
+import org.shipkit.internal.notes.util.IOUtil;
+import org.shipkit.internal.version.VersionInfo;
 
 import java.io.File;
 

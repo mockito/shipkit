@@ -1,9 +1,9 @@
 package org.shipkit.internal.gradle.util
 
-import org.shipkit.notes.internal.DefaultImprovement
-import org.shipkit.notes.internal.DefaultReleaseNotesData
-import org.shipkit.notes.vcs.DefaultContributionSet
-import org.shipkit.notes.vcs.GitCommit
+import org.shipkit.internal.notes.internal.DefaultImprovement
+import org.shipkit.internal.notes.internal.DefaultReleaseNotesData
+import org.shipkit.internal.notes.vcs.DefaultContributionSet
+import org.shipkit.internal.notes.vcs.GitCommit
 import spock.lang.Specification
 
 class ReleaseNotesSerializerIntegrationTest extends Specification {

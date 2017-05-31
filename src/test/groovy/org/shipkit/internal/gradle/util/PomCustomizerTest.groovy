@@ -3,8 +3,8 @@ package org.shipkit.internal.gradle.util
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.testfixtures.ProjectBuilder
 import org.shipkit.gradle.ReleaseConfiguration
-import org.shipkit.notes.contributors.DefaultProjectContributor
-import org.shipkit.notes.contributors.DefaultProjectContributorsSet
+import org.shipkit.internal.notes.contributors.DefaultProjectContributor
+import org.shipkit.internal.notes.contributors.DefaultProjectContributorsSet
 import spock.lang.Specification
 
 class PomCustomizerTest extends Specification {

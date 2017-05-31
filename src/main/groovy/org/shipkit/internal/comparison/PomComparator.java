@@ -2,7 +2,7 @@ package org.shipkit.internal.comparison;
 
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.shipkit.notes.util.IOUtil;
+import org.shipkit.internal.notes.util.IOUtil;
 
 import java.io.File;
 

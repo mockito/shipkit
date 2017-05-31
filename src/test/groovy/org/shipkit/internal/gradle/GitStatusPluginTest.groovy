@@ -1,6 +1,6 @@
 package org.shipkit.internal.gradle
 
-import org.shipkit.exec.ProcessRunner
+import org.shipkit.internal.exec.ProcessRunner
 import spock.lang.Specification
 
 class GitStatusPluginTest extends Specification {

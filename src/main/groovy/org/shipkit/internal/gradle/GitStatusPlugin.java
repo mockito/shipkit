@@ -5,8 +5,8 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.shipkit.exec.Exec;
-import org.shipkit.exec.ProcessRunner;
+import org.shipkit.internal.exec.Exec;
+import org.shipkit.internal.exec.ProcessRunner;
 
 /**
  * Adds extension {@link GitStatus} to the root project.

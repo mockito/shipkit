@@ -4,11 +4,11 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.internal.gradle.util.ReleaseNotesSerializer;
-import org.shipkit.notes.generator.ReleaseNotesGenerator;
-import org.shipkit.notes.generator.ReleaseNotesGenerators;
-import org.shipkit.notes.model.ReleaseNotesData;
-import org.shipkit.notes.util.IOUtil;
-import org.shipkit.notes.vcs.IgnoredCommit;
+import org.shipkit.internal.notes.generator.ReleaseNotesGenerator;
+import org.shipkit.internal.notes.generator.ReleaseNotesGenerators;
+import org.shipkit.internal.notes.model.ReleaseNotesData;
+import org.shipkit.internal.notes.util.IOUtil;
+import org.shipkit.internal.notes.vcs.IgnoredCommit;
 
 import java.util.Collection;
 
