@@ -2,7 +2,7 @@ package org.shipkit.gradle
 
 import testutil.GradleSpecification
 
-class ContinuousDeliveryPluginIntegTest extends GradleSpecification {
+class ShipkitJavaPluginIntegTest extends GradleSpecification {
 
     def "all tasks in dry run"() {
 
@@ -40,7 +40,7 @@ class ContinuousDeliveryPluginIntegTest extends GradleSpecification {
         """
 
         buildFile << """
-            apply plugin: "org.shipkit.continuous-delivery"
+            apply plugin: "org.shipkit.java"
         """
 
         settingsFile << "include 'api', 'impl'"
