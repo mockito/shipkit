@@ -40,7 +40,7 @@ class ContinuousDeliveryPluginIntegTest extends GradleSpecification {
         """
 
         buildFile << """
-            apply plugin: "org.shipkit.continuous-delivery"
+            apply plugin: "org.shipkit.java"
         """
 
         settingsFile << "include 'api', 'impl'"
