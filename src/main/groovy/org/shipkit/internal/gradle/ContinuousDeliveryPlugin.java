@@ -52,19 +52,14 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
 
         project.allprojects(new Action<Project>() {
             @Override
-            public void execute(final Project project) {
-                project.getPlugins().withId("java", new Action<Plugin>() {
+            public void execute(final Project subproject) {
+                subproject.getPlugins().withId("java", new Action<Plugin>() {
                     @Override
                     public void execute(Plugin plugin) {
                         project.getPlugins().apply(JavaLibraryPlugin.class);
                     }
                 });
-            }
-        });
 
-        project.allprojects(new Action<Project>() {
-            @Override
-            public void execute(final Project subproject) {
                 subproject.getPlugins().withType(BaseJavaLibraryPlugin.class, new Action<BaseJavaLibraryPlugin>() {
                     @Override
                     public void execute(BaseJavaLibraryPlugin p) {
