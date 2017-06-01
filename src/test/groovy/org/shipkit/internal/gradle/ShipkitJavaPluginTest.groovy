@@ -2,7 +2,7 @@ package org.shipkit.internal.gradle
 
 import testutil.PluginSpecification
 
-class ContinuousDeliveryPluginTest extends PluginSpecification {
+class ShipkitJavaPluginTest extends PluginSpecification {
 
     def "applies"() {
         expect:

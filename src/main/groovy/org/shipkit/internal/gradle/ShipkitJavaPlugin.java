@@ -33,14 +33,14 @@ import static org.shipkit.internal.gradle.util.Specs.withName;
  *     <li>TODO document all</li>
  * </ul>
  */
-public class ContinuousDeliveryPlugin implements Plugin<Project> {
+public class ShipkitJavaPlugin implements Plugin<Project> {
 
-    private static final Logger LOG = Logging.getLogger(ContinuousDeliveryPlugin.class);
+    private static final Logger LOG = Logging.getLogger(ShipkitJavaPlugin.class);
 
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
 
-        //TODO ContinuousDeliveryPlugin should have no code but only apply other plugins
+        //TODO ShipkitJavaPlugin should have no code but only apply other plugins
         //This way it will be easy for others to put together setup for other tools / build systems
 
         project.getPlugins().apply(ReleaseNotesPlugin.class);
@@ -56,7 +56,7 @@ public class ContinuousDeliveryPlugin implements Plugin<Project> {
                 subproject.getPlugins().withId("java", new Action<Plugin>() {
                     @Override
                     public void execute(Plugin plugin) {
-                        project.getPlugins().apply(JavaLibraryPlugin.class);
+                        subproject.getPlugins().apply(JavaLibraryPlugin.class);
                     }
                 });
 

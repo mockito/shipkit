@@ -2,7 +2,7 @@ package org.shipkit.gradle
 
 import testutil.GradleSpecification
 
-class ContinuousDeliveryPluginIntegTest extends GradleSpecification {
+class ShipkitJavaPluginIntegTest extends GradleSpecification {
 
     def "all tasks in dry run"() {
 
