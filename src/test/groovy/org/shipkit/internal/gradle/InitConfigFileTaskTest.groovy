@@ -3,6 +3,7 @@ package org.shipkit.internal.gradle
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
+import org.shipkit.internal.config.GitOriginRepoProvider
 import spock.lang.Specification
 
 class InitConfigFileTaskTest extends Specification {
@@ -29,6 +30,9 @@ class InitConfigFileTaskTest extends Specification {
         given:
         def configFile = new File("${tmp.root.absolutePath}/shipkit.gradle")
         task.configFile = configFile
+        def gitOriginRepoProvider = Mock(GitOriginRepoProvider)
+        task.setGitOriginRepoProvider(gitOriginRepoProvider)
+        gitOriginRepoProvider.originGitRepo >> "mockito/mockito-release-tools-example"
 
         when:
         task.initShipkitConfigFile()

@@ -4,6 +4,9 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskAction;
+import org.shipkit.internal.config.GitOriginRepoProvider;
+import org.shipkit.internal.exec.DefaultProcessRunner;
+import org.shipkit.internal.exec.ProcessRunner;
 import org.shipkit.internal.notes.util.IOUtil;
 
 import java.io.File;
@@ -13,6 +16,12 @@ public class InitConfigFileTask extends DefaultTask{
     private static final Logger LOG = Logging.getLogger(InitConfigFileTask.class);
 
     private File configFile;
+    private GitOriginRepoProvider gitOriginRepoProvider;
+
+    public InitConfigFileTask(){
+        ProcessRunner runner = new DefaultProcessRunner(getProject().getProjectDir());
+        gitOriginRepoProvider = new GitOriginRepoProvider(runner);
+    }
 
     @TaskAction public void initShipkitConfigFile(){
         if(configFile.exists()){
@@ -24,9 +33,10 @@ public class InitConfigFileTask extends DefaultTask{
     }
 
     private void createShipKitConfigFile() {
+        String defaultGitRepo = gitOriginRepoProvider.getOriginGitRepo();
         String content =
                 new TemplateResolver(DEFAULT_SHIPKIT_CONFIG_FILE_CONTENT)
-                        .withProperty("gitHub.repository", "mockito/mockito-release-tools-example")
+                        .withProperty("gitHub.repository", defaultGitRepo)
                         .withProperty("gitHub.writeAuthUser", "shipkit")
                         .withProperty("gitHub.readOnlyAuthToken", "e7fe8fcfd6ffedac384c8c4c71b2a48e646ed1ab")
 
@@ -48,6 +58,10 @@ public class InitConfigFileTask extends DefaultTask{
 
     public void setConfigFile(File configFile) {
         this.configFile = configFile;
+    }
+
+    public void setGitOriginRepoProvider(GitOriginRepoProvider gitOriginRepoProvider) {
+        this.gitOriginRepoProvider = gitOriginRepoProvider;
     }
 
     static final String DEFAULT_SHIPKIT_CONFIG_FILE_CONTENT =
