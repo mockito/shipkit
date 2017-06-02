@@ -1,5 +1,6 @@
 package org.shipkit.internal.gradle
 
+import org.gradle.api.GradleException
 import org.shipkit.internal.gradle.configuration.LazyConfiguration
 import testutil.PluginSpecification
 
@@ -59,5 +60,21 @@ class BintrayPluginTest extends PluginSpecification {
         project.bintray.pkg.websiteUrl == "website"
         project.bintray.pkg.desc == "my desc"
         project.bintray.pkg.version.vcsTag == "v4.0"
+    }
+
+    def "fails if bintray.user is not set"() {
+        project.plugins.apply("org.shipkit.bintray")
+
+        project.bintray.key = 'xyz'
+
+        when:
+        project.evaluate()
+        LazyConfiguration.forceConfiguration(project.tasks.bintrayUpload)
+
+        then:
+        def ex = thrown(GradleException)
+        ex.message ==
+                "Missing 'bintray.user' value.\n" +
+                "  Please configure Bintray extension."
     }
 }

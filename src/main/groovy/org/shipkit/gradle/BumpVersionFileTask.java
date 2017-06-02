@@ -5,6 +5,7 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.TaskAction;
+import org.shipkit.internal.gradle.InitPlugin;
 import org.shipkit.internal.version.Version;
 import org.shipkit.internal.version.VersionInfo;
 
@@ -38,7 +39,7 @@ public class BumpVersionFileTask extends DefaultTask {
     /**
      * See {@link BumpVersionFileTask}
      */
-    @TaskAction public void bumpVersionFile() {
+    @TaskAction public VersionInfo bumpVersionFile() {
         VersionInfo versionInfo = Version.versionInfo(this.versionFile);
         VersionInfo newVersion = versionInfo.bumpVersion();
         //TODO add unit test for the message.
@@ -49,5 +50,7 @@ public class BumpVersionFileTask extends DefaultTask {
                 getPath(), getProject().relativePath(this.versionFile),
                 newVersion.getVersion(),
                 newVersion.getPreviousVersion());
+
+        return newVersion;
     }
 }

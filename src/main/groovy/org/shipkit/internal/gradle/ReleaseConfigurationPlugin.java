@@ -1,12 +1,12 @@
 package org.shipkit.internal.gradle;
 
 import org.gradle.api.Action;
-import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ObjectConfigurationAction;
+
 import org.shipkit.gradle.ReleaseConfiguration;
-import org.shipkit.internal.notes.util.IOUtil;
+import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.version.VersionInfo;
 
 import java.io.File;
@@ -22,23 +22,34 @@ import java.io.File;
  *     <li>Adds and preconfigures 'shipkit' extension of type {@link ReleaseConfiguration}</li>
  *     <li>Configures 'shipkit.dryRun' setting based on 'shipkit.dryRun' Gradle project property</li>
  * </ul>
+ *
+ * Applies following plugins and preconfigures tasks provided by those plugins:
+ *
+ * <ul>
+ *     <li>{@link InitPlugin}</li>
+ *     <li>{@link VersioningPlugin}</li>
+ * </ul>
  */
 public class ReleaseConfigurationPlugin implements Plugin<Project> {
 
     private ReleaseConfiguration configuration;
 
     public static final String CONFIG_FILE_RELATIVE_PATH = "gradle/shipkit.gradle";
+    static final String INIT_CONFIG_FILE_TASK = "initConfigFile";
 
-    public void apply(Project project) {
+    public void apply(final Project project) {
         if (project.getParent() == null) {
             //root project, add the extension
+            project.getPlugins().apply(InitPlugin.class);
             project.getPlugins().apply(VersioningPlugin.class);
             VersionInfo info = project.getExtensions().getByType(VersionInfo.class);
 
             configuration = project.getRootProject().getExtensions()
                     .create("shipkit", ReleaseConfiguration.class);
 
-            loadShipKitConfigFile(project.getRootProject());
+            final File configFile = project.file(CONFIG_FILE_RELATIVE_PATH);
+
+            loadConfigFromFile(project.getRootProject(), configFile);
 
             if (project.hasProperty("shipkit.dryRun")) {
                 Object value = project.getProperties().get("shipkit.dryRun");
@@ -48,17 +59,30 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
             }
 
             configuration.setPreviousReleaseVersion(info.getPreviousVersion());
+
+            TaskMaker.task(project, INIT_CONFIG_FILE_TASK, InitConfigFileTask.class, new Action<InitConfigFileTask>() {
+                @Override
+                public void execute(InitConfigFileTask t) {
+                    t.setDescription("Creates Shipkit configuration file unless it already exists");
+                    t.setConfigFile(configFile);
+
+                    project.getTasks().getByName(InitPlugin.INIT_SHIPKIT_TASK).dependsOn(t);
+                }
+            });
+
         } else {
             //not root project, get extension from root project
             configuration = project.getRootProject().getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
         }
     }
 
-    private void loadShipKitConfigFile(Project rootProject) {
-        final File configFile = rootProject.file(CONFIG_FILE_RELATIVE_PATH);
+    private void loadConfigFromFile(Project rootProject, File configFile) {
         if (!configFile.exists()) {
-            createShipKitConfigFile(configFile);
-            throw new GradleException("Config file created at " + configFile.getAbsolutePath() + ". Please configure it and rerun the task.");
+            // sets some defaults so that they can't be used to run any task (except for bootstrap ones)
+            // but also configuration doesn't fail when running Shipkit for the first time
+            // and configuration files are not created yet
+            configuration.getGitHub().setRepository("mockito/mockito-release-tools");
+            configuration.getGitHub().setReadOnlyAuthToken("e7fe8fcfd6ffedac384c8c4c71b2a48e646ed1ab");
         } else {
             // apply configuration properties from config file
             rootProject.apply(new Action<ObjectConfigurationAction>() {
@@ -70,52 +94,10 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
         }
     }
 
-    private void createShipKitConfigFile(File configFile) {
-        String content =
-                new TemplateResolver(DEFAULT_SHIPKIT_CONFIG_FILE_CONTENT)
-                    .withProperty("gitHub.repository", "mockito/mockito-release-tools-example")
-                    .withProperty("gitHub.writeAuthUser", "shipkit")
-                    .withProperty("gitHub.readOnlyAuthToken", "e7fe8fcfd6ffedac384c8c4c71b2a48e646ed1ab")
-
-                    .withProperty("bintray.pkg.repo", "examples")
-                    .withProperty("bintray.pkg.user", "szczepiq")
-                    .withProperty("bintray.pkg.userOrg", "shipkit")
-                    .withProperty("bintray.pkg.name", "basic")
-                    .withProperty("bintray.pkg.licenses", "['MIT']")
-                    .withProperty("bintray.pkg.labels", "['continuous delivery', 'release automation', 'mockito']")
-
-                    .resolve();
-
-        IOUtil.writeFile(configFile, content);
-    }
-
     /**
      * Returns the release configuration instance that is hooked up to the root project
      */
     public ReleaseConfiguration getConfiguration() {
         return configuration;
     }
-
-    static final String DEFAULT_SHIPKIT_CONFIG_FILE_CONTENT =
-            "//This file was created automatically and is intented to be checked-in.\n" +
-            "shipkit {\n"+
-            "   gitHub.repository = \"@gitHub.repository@\"\n"+
-            "   gitHub.readOnlyAuthToken = \"@gitHub.readOnlyAuthToken@\"\n"+
-            "   gitHub.writeAuthUser = \"@gitHub.writeAuthUser@\"\n"+
-            "}\n"+
-            "\n"+
-            "allprojects {\n"+
-            "   plugins.withId(\"org.shipkit.bintray\") {\n"+
-            "       bintray {\n"+
-            "           pkg {\n"+
-            "               repo = '@bintray.pkg.repo@'\n"+
-            "               user = '@bintray.pkg.user@'\n"+
-            "               userOrg = '@bintray.pkg.userOrg@'\n"+
-            "               name = '@bintray.pkg.name@'\n"+
-            "               licenses = @bintray.pkg.licenses@\n"+
-            "               labels = @bintray.pkg.labels@\n"+
-            "           }\n"+
-            "       }\n"+
-            "   }\n"+
-            "}\n";
 }

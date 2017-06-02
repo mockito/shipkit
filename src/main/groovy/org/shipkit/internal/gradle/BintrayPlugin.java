@@ -23,6 +23,11 @@ import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.de
  *     <li>{@link ReleaseConfigurationPlugin} to the root project</li>
  *     <li>"com.jfrog.bintray" to this project</li>
  * </ul>
+ *
+ * Configures "com.jfrog.bintray" plugin:
+ * <ul>
+ *     <li>Sets extension property: 'bintray.publish = true'</li>
+ * </ul>
  */
 public class BintrayPlugin implements Plugin<Project> {
 
@@ -31,7 +36,7 @@ public class BintrayPlugin implements Plugin<Project> {
      */
     static final String BINTRAY_UPLOAD_TASK = "bintrayUpload";
 
-    private final static Logger LOGGER = Logging.getLogger(BintrayPlugin.class);
+    private final static Logger LOG = Logging.getLogger(BintrayPlugin.class);
 
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
@@ -41,20 +46,23 @@ public class BintrayPlugin implements Plugin<Project> {
         // this way we avoid version conflicts and any bintray dependencies for users who don't use bintray
         project.getPlugins().apply("com.jfrog.bintray");
 
+        //Configure some properties right away
+        final BintrayExtension bintray = project.getExtensions().getByType(BintrayExtension.class);
+        LOG.info("Configuring bintray plugin to publish automatically ({}.bintray.publish = true)", project.getPath());
+        bintray.setPublish(true);
+
         final BintrayUploadTask bintrayUpload = (BintrayUploadTask) project.getTasks().getByName(BINTRAY_UPLOAD_TASK);
 
         bintrayUpload.doFirst(new Action<Task>() {
             public void execute(Task task) {
                 //TODO unit test
                 BintrayUploadTask t = (BintrayUploadTask) task;
+
                 String welcomeMessage = uploadWelcomeMessage(t);
-                LOGGER.lifecycle(welcomeMessage);
+                LOG.lifecycle(welcomeMessage);
             }
         });
 
-        //Configure some properties right away
-        final BintrayExtension bintray = project.getExtensions().getByType(BintrayExtension.class);
-        bintray.setPublish(true);
 
         final BintrayExtension.PackageConfig pkg = bintray.getPkg();
         pkg.setPublicDownloadNumbers(true);
@@ -63,10 +71,6 @@ public class BintrayPlugin implements Plugin<Project> {
         //Defer configuration of other properties
         deferredConfiguration(project, new Runnable() {
             public void run() {
-                //workaround for https://github.com/bintray/gradle-bintray-plugin/issues/170
-                notNull(bintray.getUser(), "Missing 'bintray.user' value.\n" +
-                        "  Please configure Bintray extension.");
-
                 //Below overwrites prior value in case the user configured dry run directly on the bintray extension.
                 //It should be ok.
                 bintray.setDryRun(conf.isDryRun());
@@ -100,6 +104,10 @@ public class BintrayPlugin implements Plugin<Project> {
                         "Missing 'bintray.key' value.\n" +
                         "  Please configure Bintray extension or export 'BINTRAY_API_KEY' env variable.");
                 bintray.setKey(key);
+
+                //workaround for https://github.com/bintray/gradle-bintray-plugin/issues/170
+                notNull(bintray.getUser(), "Missing 'bintray.user' value.\n" +
+                        "  Please configure Bintray extension.");
             }
         });
     }
