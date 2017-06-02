@@ -76,9 +76,17 @@ public class ShipkitJavaPlugin implements Plugin<Project> {
             }
         });
 
-        final Task bintrayUploadAll = TaskMaker.task(project, "bintrayUploadAll", new Action<Task>() {
-            public void execute(Task t) {
-                t.setDescription("Depends on all 'bintrayUpload' tasks from all Gradle projects.");
+        final Task performRelease = TaskMaker.task(project, "performRelease", new Action<Task>() {
+            public void execute(final Task t) {
+                t.setDescription("Performs release. " +
+                        "Ship with: './gradlew performRelease -Pshipkit.dryRun=false'. " +
+                        "Test with: './gradlew testRelease'");
+
+                t.dependsOn(VersioningPlugin.BUMP_VERSION_FILE_TASK, "updateReleaseNotes");
+                t.dependsOn(GitPlugin.PERFORM_GIT_PUSH_TASK);
+
+                project.getTasks().getByName(GitPlugin.COMMIT_CLEANUP_TASK).mustRunAfter(t);
+                project.getTasks().getByName(GitPlugin.TAG_CLEANUP_TASK).mustRunAfter(t);
             }
         });
 
@@ -87,7 +95,7 @@ public class ShipkitJavaPlugin implements Plugin<Project> {
                 subproject.getPlugins().withType(JavaLibraryPlugin.class, new Action<JavaLibraryPlugin>() {
                     public void execute(JavaLibraryPlugin plugin) {
                         Task bintrayUpload = subproject.getTasks().getByName(BintrayPlugin.BINTRAY_UPLOAD_TASK);
-                        bintrayUploadAll.dependsOn(bintrayUpload);
+                        performRelease.dependsOn(bintrayUpload);
 
                         //Making git push run as late as possible because it is an operation that is hard to reverse.
                         //Git push will be executed after all tasks needed by bintrayUpload
@@ -131,21 +139,6 @@ public class ShipkitJavaPlugin implements Plugin<Project> {
                         }
                     }
                 });
-            }
-        });
-
-        TaskMaker.task(project, "performRelease", new Action<Task>() {
-            public void execute(final Task t) {
-                t.setDescription("Performs release. " +
-                        "Ship with: './gradlew performRelease -Pshipkit.dryRun=false'. " +
-                        "Test with: './gradlew testRelease'");
-
-                t.dependsOn(VersioningPlugin.BUMP_VERSION_FILE_TASK, "updateReleaseNotes");
-                t.dependsOn(GitPlugin.PERFORM_GIT_PUSH_TASK);
-                t.dependsOn("bintrayUploadAll");
-
-                project.getTasks().getByName(GitPlugin.COMMIT_CLEANUP_TASK).mustRunAfter(t);
-                project.getTasks().getByName(GitPlugin.TAG_CLEANUP_TASK).mustRunAfter(t);
             }
         });
 

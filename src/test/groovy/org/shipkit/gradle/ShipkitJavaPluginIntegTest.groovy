@@ -80,7 +80,6 @@ class ShipkitJavaPluginIntegTest extends GradleSpecification {
 :gitPush=SKIPPED
 :api:bintrayUpload=SKIPPED
 :impl:bintrayUpload=SKIPPED
-:bintrayUploadAll=SKIPPED
 :performGitPush=SKIPPED
 :performRelease=SKIPPED"""
     }
