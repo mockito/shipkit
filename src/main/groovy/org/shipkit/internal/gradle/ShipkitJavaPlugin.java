@@ -110,6 +110,8 @@ public class ShipkitJavaPlugin implements Plugin<Project> {
                         bintrayUpload.mustRunAfter(gitPush);
 
                         final BintrayExtension bintray = subproject.getExtensions().getByType(BintrayExtension.class);
+                        //TODO clean up below. We don't need 'deferredConfiguration' because at this point
+                        // shipkit file was already loaded and java library plugin applied on the subproject
                         deferredConfiguration(subproject, new Runnable() {
                             public void run() {
                                 configurePublicationRepo(project, BintrayUtil.getRepoLink(bintray));
