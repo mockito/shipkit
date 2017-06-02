@@ -79,9 +79,6 @@ public class ShipkitJavaPlugin implements Plugin<Project> {
         final Task bintrayUploadAll = TaskMaker.task(project, "bintrayUploadAll", new Action<Task>() {
             public void execute(Task t) {
                 t.setDescription("Depends on all 'bintrayUpload' tasks from all Gradle projects.");
-                //It is safer to run bintray upload after git push (hard to reverse operation)
-                //This way, when git push fails we don't publish jars to bintray
-                t.shouldRunAfter(GitPlugin.GIT_PUSH_TASK);
             }
         });
 
@@ -98,7 +95,11 @@ public class ShipkitJavaPlugin implements Plugin<Project> {
                         //Using task path as String because the task comes from maven-publish new configuration model
                         // and we cannot refer to it in a normal way.
                         String mavenLocalTask = subproject.getPath() + ":" + MAVEN_LOCAL_TASK;
-                        project.getTasks().getByName(GitPlugin.GIT_PUSH_TASK).shouldRunAfter(mavenLocalTask);
+                        Task gitPush = project.getTasks().getByName(GitPlugin.GIT_PUSH_TASK);
+                        gitPush.shouldRunAfter(mavenLocalTask);
+                        //It is safer to run bintray upload after git push (hard to reverse operation)
+                        //This way, when git push fails we don't publish jars to bintray
+                        bintrayUpload.shouldRunAfter(gitPush);
 
                         final BintrayExtension bintray = subproject.getExtensions().getByType(BintrayExtension.class);
                         deferredConfiguration(subproject, new Runnable() {
