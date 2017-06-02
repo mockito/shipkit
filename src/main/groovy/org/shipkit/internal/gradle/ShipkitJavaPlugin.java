@@ -76,9 +76,6 @@ public class ShipkitJavaPlugin implements Plugin<Project> {
             }
         });
 
-        //TODO we should have tasks from the same plugin to have the same group
-        //let's have a task maker instance in a plugin that has sets the group accordingly
-
         final Task bintrayUploadAll = TaskMaker.task(project, "bintrayUploadAll", new Action<Task>() {
             public void execute(Task t) {
                 t.setDescription("Depends on all 'bintrayUpload' tasks from all Gradle projects.");
