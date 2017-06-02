@@ -16,8 +16,6 @@ import java.io.File;
 
 public class ReleaseNotesGenerators {
 
-    //TODO move entire "org.mockito.release.notes" -> "org.mockito.release.internal.notes"
-
     /**
      * @param workDir the working directory where 'git' operations will be executed
      * @param gitHubRepository GitHub gitHubRepository in format USER|COMPANY/REPO_NAME, for example: mockito/mockito
