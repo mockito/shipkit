@@ -40,10 +40,6 @@ public class BumpVersionFileTask extends DefaultTask {
      * See {@link BumpVersionFileTask}
      */
     @TaskAction public VersionInfo bumpVersionFile() {
-        if(!versionFile.exists()){
-            throw new IllegalStateException("Cannot bump version because '" + versionFile.getName() + "' file doesn't exist." +
-                    " Use '" + InitPlugin.INIT_SHIPKIT_TASK + "' task to create it.");
-        }
         VersionInfo versionInfo = Version.versionInfo(this.versionFile);
         VersionInfo newVersion = versionInfo.bumpVersion();
         //TODO add unit test for the message.

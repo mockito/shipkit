@@ -12,18 +12,6 @@ class BumpVersionFileTaskTest extends Specification {
 
     def task = new ProjectBuilder().build().tasks.create("bumpVersionFile", BumpVersionFileTask)
 
-    def "fails if version.properties file doesn't exist"() {
-        given:
-        task.setVersionFile(new File("${tmp.root.absolutePath}/version.properties"))
-
-        when:
-        task.bumpVersionFile()
-
-        then:
-        def ex = thrown(IllegalStateException)
-        ex.message == "Cannot bump version because 'version.properties' file doesn't exist. Use 'initShipkit' task to create it."
-    }
-
     def "bumps version if version.properties file exists"() {
         given:
         def versionFile = tmp.newFile("version.properties")
