@@ -91,15 +91,15 @@ public class ShipkitJavaPlugin implements Plugin<Project> {
 
                         //Making git push run as late as possible because it is an operation that is hard to reverse.
                         //Git push will be executed after all tasks needed by bintrayUpload
-                        // but before bintrayUpload (configured elsewhere).
+                        // but before bintrayUpload.
                         //Using task path as String because the task comes from maven-publish new configuration model
-                        // and we cannot refer to it in a normal way.
+                        // and we cannot refer to it in a normal way, by task instance.
                         String mavenLocalTask = subproject.getPath() + ":" + MAVEN_LOCAL_TASK;
                         Task gitPush = project.getTasks().getByName(GitPlugin.GIT_PUSH_TASK);
-                        gitPush.shouldRunAfter(mavenLocalTask);
-                        //It is safer to run bintray upload after git push (hard to reverse operation)
-                        //This way, when git push fails we don't publish jars to bintray
-                        bintrayUpload.shouldRunAfter(gitPush);
+                        gitPush.mustRunAfter(mavenLocalTask);
+                        //bintray upload after git push so that when git push fails we don't publish jars to bintray
+                        //git push is easier to undo than deleting published jars (not possible with Central)
+                        bintrayUpload.mustRunAfter(gitPush);
 
                         final BintrayExtension bintray = subproject.getExtensions().getByType(BintrayExtension.class);
                         deferredConfiguration(subproject, new Runnable() {
