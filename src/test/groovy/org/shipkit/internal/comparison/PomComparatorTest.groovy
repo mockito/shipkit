@@ -27,7 +27,7 @@ class PomComparatorTest extends Specification {
         remover.filter(rightContent) >> rightParsedContent
 
         expect:
-        pomComparator.areEqual(leftFile, rightFile).areFilesEqual() == expectedResult
+        pomComparator.areEqual(leftFile, rightFile) == expectedResult
 
         where:
         leftParsedContent | rightParsedContent    | expectedResult

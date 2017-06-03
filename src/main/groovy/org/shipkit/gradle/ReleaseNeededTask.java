@@ -5,7 +5,6 @@ import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.internal.comparison.diff.Diff;
 import org.shipkit.internal.util.EnvVariables;
 import org.shipkit.internal.comparison.PublicationsComparatorTask;
 import org.shipkit.internal.util.ExposedForTesting;
@@ -127,8 +126,6 @@ public class ReleaseNeededTask extends DefaultTask {
 
         boolean allPublicationsEqual = areAllPublicationsEqual();
 
-       logDifferencesBetweenPublications();
-
         boolean releaseNotNeeded = allPublicationsEqual || skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
 
         String message = "  Release is needed: " + !releaseNotNeeded +
@@ -145,26 +142,6 @@ public class ReleaseNeededTask extends DefaultTask {
         }
 
         return !releaseNotNeeded;
-    }
-
-    private void logDifferencesBetweenPublications() {
-        if(publicationsComparators.isEmpty()){
-           return; // no differences to log
-        }
-        LOG.lifecycle("\n  Results of publications comparison:\n");
-        for(PublicationsComparatorTask task : publicationsComparators){
-            for(Diff diff : task.getDifferences()){
-                if(!diff.areFilesEqual()) {
-                    LOG.lifecycle("  Difference between files:\n"
-                                + "  --- {}\n"
-                                + "  +++ {}\n\n{}\n",
-                            diff.getPreviousFile(),
-                            diff.getCurrentFile(),
-                            diff.getDiffOutput());
-                }
-            }
-        }
-
     }
 
     public void addPublicationsComparator(PublicationsComparatorTask task) {
