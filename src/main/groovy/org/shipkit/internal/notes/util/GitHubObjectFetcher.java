@@ -13,7 +13,7 @@ import java.net.URLConnection;
 import java.util.Date;
 
 /**
- * This class contains a standerd operation for fetching single page for GitHub.
+ * This class contains a standard operation for fetching single page for GitHub.
  */
 public class GitHubObjectFetcher {
 
