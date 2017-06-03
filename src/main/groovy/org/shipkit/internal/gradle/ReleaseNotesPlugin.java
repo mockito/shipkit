@@ -83,7 +83,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         task.setDevelopers(conf.getTeam().getDevelopers());
         task.setContributors(conf.getTeam().getContributors());
         task.setGitHubLabelMapping(conf.getReleaseNotes().getLabelMapping()); //TODO make it optional
-        task.setReleaseNotesFile(project.file(conf.getReleaseNotes().getFile())); //TODO add sensible defaul
+        task.setReleaseNotesFile(project.file(conf.getReleaseNotes().getFile())); //TODO add sensible default
         task.setGitHubRepository(conf.getGitHub().getRepository());
         task.setPreviousVersion(project.getExtensions().getByType(VersionInfo.class).getPreviousVersion());
 
