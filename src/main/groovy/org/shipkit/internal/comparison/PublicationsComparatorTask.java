@@ -4,9 +4,12 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.publish.maven.tasks.GenerateMavenPom;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.bundling.Jar;
+import org.shipkit.internal.comparison.diff.Diff;
 import org.shipkit.internal.util.ExposedForTesting;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Compares sources jars and pom files produced by the build with analogical artifacts
@@ -16,6 +19,7 @@ import java.io.*;
 public class PublicationsComparatorTask extends DefaultTask {
 
     private Boolean publicationsEqual;
+    private List<Diff> differences = new ArrayList<Diff>();
 
     private String projectGroup;
     private String currentVersion;
@@ -32,6 +36,13 @@ public class PublicationsComparatorTask extends DefaultTask {
     public boolean isPublicationsEqual() {
         assert publicationsEqual != null : "Comparison task was not executed yet, the 'publicationsEqual' information not available.";
         return publicationsEqual;
+    }
+
+    /**
+     * @return differences between compared files
+     */
+    public List<Diff> getDifferences() {
+        return differences;
     }
 
     @TaskAction public void comparePublications() {
@@ -54,14 +65,17 @@ public class PublicationsComparatorTask extends DefaultTask {
                     getPath(), previousVersion, currentVersion);
 
         PomComparator pomComparator = new PomComparator(projectGroup, previousVersion, currentVersion);
-        boolean poms = pomComparator.areEqual(previousVersionPomFile, currentVersionPomFile);
-        getLogger().lifecycle("{} - pom files equal: {}", getPath(), poms);
+        Diff pomsDiff = pomComparator.areEqual(previousVersionPomFile, currentVersionPomFile);
+        getLogger().lifecycle("{} - pom files equal: {}", getPath(), pomsDiff.areFilesEqual());
 
         ZipComparator sourcesJarComparator = new ZipComparator();
-        boolean jars = sourcesJarComparator.areEqual(previousVersionSourcesJarFile, currentVersionSourcesJarFile);
-        getLogger().lifecycle("{} - source jars equal: {}", getPath(), jars);
+        Diff jarsDiff = sourcesJarComparator.areEqual(previousVersionSourcesJarFile, currentVersionSourcesJarFile);
+        getLogger().lifecycle("{} - source jars equal: {}", getPath(), jarsDiff.areFilesEqual());
 
-        this.publicationsEqual = jars && poms;
+        differences.add(jarsDiff);
+        differences.add(pomsDiff);
+
+        this.publicationsEqual = jarsDiff.areFilesEqual() && pomsDiff.areFilesEqual();
     }
 
     public void compareSourcesJar(Jar sourcesJar) {

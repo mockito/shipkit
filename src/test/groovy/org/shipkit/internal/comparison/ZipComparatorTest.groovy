@@ -2,6 +2,7 @@ package org.shipkit.internal.comparison
 
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
+import org.shipkit.internal.comparison.diff.DirectoryDiffGenerator
 import spock.lang.Specification
 import testutil.ZipMaker
 
@@ -33,8 +34,32 @@ class ZipComparatorTest extends Specification {
         ex.message.contains("foox")
     }
 
+    def "passes added/removed/modified files to diff generator"() {
+        given:
+        ZipMaker zip = new ZipMaker(tmp.newFolder())
+        File zip1 = zip.newZip("1.txt", "1",
+                               "2.txt", "2",
+                               "3.txt", "3",
+                               "4.txt", "4",
+                               "5.txt", "5")
+
+        File zip2 = zip.newZip("2.txt", "changed",
+                               "3.txt", "3",
+                               "4.txt", "4",
+                               "6.txt", "added file")
+        def directoryDiffGenerator = Mock(DirectoryDiffGenerator)
+
+        def zipComparator = new ZipComparator(directoryDiffGenerator)
+        when:
+        zipComparator.areEqual(zip1, zip2)
+
+        then:
+        1 * directoryDiffGenerator.generateDiffOutput(["6.txt"], ["1.txt", "5.txt"], ["2.txt"])
+
+    }
+
     private static boolean eq(File z1, File z2) {
-        new ZipComparator().areEqual(z1, z2) &&
-                new ZipComparator().areEqual(z2, z1)
+        new ZipComparator().areEqual(z1, z2).areFilesEqual() &&
+                new ZipComparator().areEqual(z2, z1).areFilesEqual()
     }
 }
