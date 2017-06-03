@@ -2,69 +2,82 @@ package org.shipkit.internal.comparison;
 
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
+import org.shipkit.internal.comparison.diff.Diff;
+import org.shipkit.internal.comparison.diff.DirectoryDiffGenerator;
+import org.shipkit.internal.util.ExposedForTesting;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Enumeration;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import static java.lang.String.format;
 import static org.shipkit.internal.util.ArgumentValidation.notNull;
 
-class ZipComparator implements FileComparator{
+class ZipComparator{
 
-    private final static Logger LOG = Logging.getLogger(ZipComparator.class);
+    private final DirectoryDiffGenerator directoryDiffGenerator;
+
 
     ZipComparator() {
+        directoryDiffGenerator = new DirectoryDiffGenerator();
     }
 
-    public boolean areEqual(File file1, File file2) {
-        notNull(file1, "zip/jar file to compare", file2, "zip/jar file to compare");
-        return compareZips(file1.getAbsolutePath(), file2.getAbsolutePath());
+    @ExposedForTesting
+    ZipComparator(DirectoryDiffGenerator directoryDiffGenerator){
+        this.directoryDiffGenerator = directoryDiffGenerator;
     }
 
-    boolean compareZips(String filePath1, String filePath2) {
-        ZipFile file1 = openZipFile(filePath1);
-        ZipFile file2 = openZipFile(filePath2);
+    public Diff areEqual(File previousFile, File currentFile) {
+        notNull(previousFile, "previous version file to compare", currentFile, "current version file to compare");
+        return compareZips(previousFile, currentFile);
+    }
 
-        Set<String> set1 = extractEntries(file1);
-        Set<String> set2 = extractEntries(file2);
+    Diff compareZips(File previousFile, File currentFile) {
+        ZipFile file1 = openZipFile(previousFile.getAbsolutePath());
+        ZipFile file2 = openZipFile(currentFile.getAbsolutePath());
 
-        int errcount = 0;
-        int filecount = 0;
-        for (String name : set1) {
-            if (!set2.contains(name)) {
-                LOG.info(name + " not found in " + filePath2);
-                errcount += 1;
+        Set<String> previous = extractEntries(file1);
+        Set<String> current = extractEntries(file2);
+
+        int differences = 0;
+
+        List<String> addedFiles = new ArrayList<String>();
+        List<String> removedFiles = new ArrayList<String>();
+        List<String> changedFiles = new ArrayList<String>();
+
+        for (String name : previous) {
+            if (!current.contains(name)) {
+                removedFiles.add(name);
+                differences += 1;
                 continue;
             }
             try {
-                set2.remove(name);
+                current.remove(name);
                 if (!streamsEqual(file1.getInputStream(file1.getEntry(name)), file2.getInputStream(file2
                         .getEntry(name)))) {
-                    LOG.info(name + " does not match");
-                    errcount += 1;
+                    changedFiles.add(name);
+                    differences += 1;
                     continue;
                 }
             } catch (Exception e) {
-                throw new ZipCompareException(format("Unable to compare zip entry '%s' found in '%s' with '%s'", name, filePath1, filePath2), e);
+                throw new ZipCompareException(format("Unable to compare zip entry '%s' found in '%s' with '%s'",
+                      name, previousFile.getAbsolutePath(), currentFile.getAbsolutePath()), e);
             }
-            filecount += 1;
         }
-        for (String name : set2) {
-            LOG.info(name + " not found in " + filePath1);
-            errcount += 1;
+        for (String name : current) {
+            addedFiles.add(name);
+            differences += 1;
         }
-        LOG.info(filecount + " entries matched");
-        if (errcount > 0) {
-            LOG.info(errcount + " entries did not match");
-            return false;
+
+        String diffOutput = directoryDiffGenerator.generateDiffOutput(addedFiles, removedFiles, changedFiles);
+
+        if (differences > 0) {
+            return Diff.ofDifferentFiles(previousFile, currentFile, diffOutput);
         }
-        return true;
+        return Diff.ofEqualFiles(previousFile, currentFile);
     }
 
     private Set<String> extractEntries(ZipFile file1) {
