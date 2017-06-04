@@ -68,8 +68,7 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
     }
 
     /**
-     * See {@link #setVersion(String)}
-     * @param version
+     * See {@link #getVersion()}
      */
     public void setVersion(String version) {
         this.version = version;
@@ -83,6 +82,9 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
         return tagPrefix;
     }
 
+    /**
+     * See {@link #getTagPrefix()}
+     */
     public void setTagPrefix(String tagPrefix) {
         this.tagPrefix = tagPrefix;
     }
