@@ -11,7 +11,7 @@ import spock.lang.Specification
 class DetailedFormatterTest extends Specification {
 
     def f = new DetailedFormatter("Release notes:\n\n", ["noteworthy": "Noteworthy", "bug": "Bugfixes"],
-            "http://commits/{0}...{1}", "Bintray", [:])
+            "http://commits/{0}...{1}", "Bintray", [:], false)
 
     def "no releases"() {
         expect:
@@ -48,6 +48,16 @@ No release information."""
 
 **2.0.0 (2017-01-04)** - [1 commit](http://commits/v1.9.0...v2.0.0) by Szczepan Faber - published to [![Bintray](https://img.shields.io/badge/Bintray-2.0.0-green.svg)](Bintray/2.0.0)
  - No pull requests referenced in commit messages."""
+    }
+
+    def "formats header when emphasized version"() {
+        expect:
+        DetailedFormatter.header("v0.1.0", new Date(1483500000000), false) == "**v0.1.0 (2017-01-04)** - "
+    }
+
+    def "formats header when regular version"() {
+        expect:
+        DetailedFormatter.header("v0.1.0", new Date(1483500000000), true) == "# v0.1.0 (2017-01-04) - "
     }
 
     def "formats no improvements"() {

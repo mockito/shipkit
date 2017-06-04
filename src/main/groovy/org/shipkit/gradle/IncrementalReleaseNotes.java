@@ -40,6 +40,7 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
     private Collection<String> developers;
     private Collection<String> contributors;
     private File contributorsDataFile;
+    private boolean emphasizeVersion = false;
 
     /**
      * Release notes file this task operates on.
@@ -183,6 +184,20 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
         return contributorsDataFile;
     }
 
+    /**
+     * {@link #isEmphasizeVersion()}
+     */
+    public void setEmphasizeVersion(boolean emphasizeVersion) {
+        this.emphasizeVersion = emphasizeVersion;
+    }
+
+    /**
+     * Should current version be emphasized in release notes
+     */
+    public boolean isEmphasizeVersion() {
+        return emphasizeVersion;
+    }
+
     private void assertConfigured() {
         //TODO SF unit test coverage
         if (releaseNotesFile == null || !releaseNotesFile.isFile()) {
@@ -220,7 +235,7 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
 
         Map<String, Contributor> contributorsMap = contributorsMap(contributors, contributorsFromGitHub, developers);
         String notes = ReleaseNotesFormatters.detailedFormatter(
-                "", gitHubLabelMapping, vcsCommitTemplate, publicationRepository, contributorsMap)
+                "", gitHubLabelMapping, vcsCommitTemplate, publicationRepository, contributorsMap, emphasizeVersion)
                 .formatReleaseNotes(data);
 
         return notes + "\n\n";
