@@ -40,7 +40,7 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
     private Collection<String> developers;
     private Collection<String> contributors;
     private File contributorsDataFile;
-    private boolean emphasizeVersion = false;
+    private boolean emphasizeVersion;
 
     /**
      * Release notes file this task operates on.
