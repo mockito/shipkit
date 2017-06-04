@@ -4,10 +4,11 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.internal.config.GitOriginRepoProvider;
+import org.shipkit.internal.notes.vcs.GitOriginRepoProvider;
 import org.shipkit.internal.exec.DefaultProcessRunner;
 import org.shipkit.internal.exec.ProcessRunner;
 import org.shipkit.internal.notes.util.IOUtil;
+import org.shipkit.internal.util.ExposedForTesting;
 
 import java.io.File;
 
@@ -17,6 +18,7 @@ public class InitConfigFileTask extends DefaultTask{
 
     private File configFile;
     private GitOriginRepoProvider gitOriginRepoProvider;
+    public static final String FALLBACK_GITHUB_REPO = "mockito/mockito-release-tools-example";
 
     public InitConfigFileTask(){
         ProcessRunner runner = new DefaultProcessRunner(getProject().getProjectDir());
@@ -33,7 +35,7 @@ public class InitConfigFileTask extends DefaultTask{
     }
 
     private void createShipKitConfigFile() {
-        String defaultGitRepo = gitOriginRepoProvider.getOriginGitRepo();
+        String defaultGitRepo = getOriginGitRepo();
         String content =
                 new TemplateResolver(DEFAULT_SHIPKIT_CONFIG_FILE_CONTENT)
                         .withProperty("gitHub.repository", defaultGitRepo)
@@ -52,6 +54,16 @@ public class InitConfigFileTask extends DefaultTask{
         IOUtil.writeFile(configFile, content);
     }
 
+    private String getOriginGitRepo() {
+        try {
+            return gitOriginRepoProvider.getOriginGitRepo();
+        } catch(Exception e){
+            LOG.error("Failed to get url of git remote origin. Using fallback '" + FALLBACK_GITHUB_REPO + "' instead.\n" +
+                    "You can change GitHub repository manually in " + configFile, e);
+            return FALLBACK_GITHUB_REPO;
+        }
+    }
+
     public File getConfigFile() {
         return configFile;
     }
@@ -60,13 +72,14 @@ public class InitConfigFileTask extends DefaultTask{
         this.configFile = configFile;
     }
 
+    @ExposedForTesting
     public void setGitOriginRepoProvider(GitOriginRepoProvider gitOriginRepoProvider) {
         this.gitOriginRepoProvider = gitOriginRepoProvider;
     }
 
     static final String DEFAULT_SHIPKIT_CONFIG_FILE_CONTENT =
             "//This file was created automatically and is intended to be checked-in.\n" +
-                    "releasing {\n"+
+                    "shipkit {\n"+
                     "   gitHub.repository = \"@gitHub.repository@\"\n"+
                     "   gitHub.readOnlyAuthToken = \"@gitHub.readOnlyAuthToken@\"\n"+
                     "   gitHub.writeAuthUser = \"@gitHub.writeAuthUser@\"\n"+

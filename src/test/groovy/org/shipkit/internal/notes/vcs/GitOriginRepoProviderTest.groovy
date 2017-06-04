@@ -1,4 +1,4 @@
-package org.shipkit.internal.config
+package org.shipkit.internal.notes.vcs
 
 import org.shipkit.internal.exec.ProcessRunner
 import spock.lang.Specification
@@ -11,14 +11,6 @@ class GitOriginRepoProviderTest extends Specification {
     void setup(){
         runner = Mock(ProcessRunner)
         underTest = new GitOriginRepoProvider(runner)
-    }
-
-    def "should return fallback value if git remote throws any exception" (){
-        given:
-        runner.run(_) >> { throw new RuntimeException()}
-
-        expect:
-        underTest.originGitRepo == "mockito/mockito-release-tools-example"
     }
 
     def "should return git remote correctly" (){

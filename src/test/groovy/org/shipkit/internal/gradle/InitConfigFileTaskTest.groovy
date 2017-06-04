@@ -3,7 +3,7 @@ package org.shipkit.internal.gradle
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import org.shipkit.internal.config.GitOriginRepoProvider
+import org.shipkit.internal.notes.vcs.GitOriginRepoProvider
 import spock.lang.Specification
 
 class InitConfigFileTaskTest extends Specification {
@@ -26,13 +26,28 @@ class InitConfigFileTaskTest extends Specification {
         task.configFile.text == configFileContent
     }
 
+    def "uses fallback repo if call to gitOriginRepoProvider fails"() {
+        given:
+        def configFile = new File("${tmp.root.absolutePath}/shipkit.gradle")
+        task.configFile = configFile
+        def gitOriginRepoProvider = Mock(GitOriginRepoProvider)
+        task.setGitOriginRepoProvider(gitOriginRepoProvider)
+        gitOriginRepoProvider.getOriginGitRepo() >> {throw new RuntimeException()}
+
+        when:
+        task.initShipkitConfigFile()
+
+        then:
+        task.configFile.text.contains('gitHub.repository = "mockito/mockito-release-tools-example"')
+    }
+
     def "creates default shipkit config file if it does not exist"() {
         given:
         def configFile = new File("${tmp.root.absolutePath}/shipkit.gradle")
         task.configFile = configFile
         def gitOriginRepoProvider = Mock(GitOriginRepoProvider)
         task.setGitOriginRepoProvider(gitOriginRepoProvider)
-        gitOriginRepoProvider.originGitRepo >> "mockito/mockito-release-tools-example"
+        gitOriginRepoProvider.getOriginGitRepo() >> "mockito/mockito"
 
         when:
         task.initShipkitConfigFile()
@@ -40,8 +55,8 @@ class InitConfigFileTaskTest extends Specification {
         then:
         task.configFile.text ==
                 """//This file was created automatically and is intended to be checked-in.
-releasing {
-   gitHub.repository = \"mockito/mockito-release-tools-example\"
+shipkit {
+   gitHub.repository = \"mockito/mockito\"
    gitHub.readOnlyAuthToken = \"e7fe8fcfd6ffedac384c8c4c71b2a48e646ed1ab\"
    gitHub.writeAuthUser = \"shipkit\"
 }
