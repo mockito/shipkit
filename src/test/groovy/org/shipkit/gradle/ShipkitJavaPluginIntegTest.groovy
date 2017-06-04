@@ -53,7 +53,12 @@ class ShipkitJavaPluginIntegTest extends GradleSpecification {
         expect:
         def result = pass("performRelease", "-m")
         //git push and bintray upload tasks should run as late as possible
-        result.tasks.join("\n") == """:fetchAllContributors=SKIPPED
+        result.tasks.join("\n") == """:bumpVersionFile=SKIPPED
+:fetchAllContributors=SKIPPED
+:fetchReleaseNotes=SKIPPED
+:updateReleaseNotes=SKIPPED
+:gitCommit=SKIPPED
+:gitTag=SKIPPED
 :api:generatePomFileForJavaLibraryPublication=SKIPPED
 :api:compileJava=SKIPPED
 :api:processResources=SKIPPED
@@ -72,16 +77,10 @@ class ShipkitJavaPluginIntegTest extends GradleSpecification {
 :impl:javadocJar=SKIPPED
 :impl:sourcesJar=SKIPPED
 :impl:publishJavaLibraryPublicationToMavenLocal=SKIPPED
-:bumpVersionFile=SKIPPED
-:fetchReleaseNotes=SKIPPED
-:updateReleaseNotes=SKIPPED
-:gitCommit=SKIPPED
-:gitTag=SKIPPED
 :gitPush=SKIPPED
+:performGitPush=SKIPPED
 :api:bintrayUpload=SKIPPED
 :impl:bintrayUpload=SKIPPED
-:bintrayUploadAll=SKIPPED
-:performGitPush=SKIPPED
 :performRelease=SKIPPED"""
     }
 }
