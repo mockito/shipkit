@@ -56,11 +56,11 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
     }
 
     static String header(String version, Date date, boolean emphasizeVersion){
-        return emphasizeVersion ? headerHelper(version, date, "# ", "")
-                : headerHelper(version, date, "**", "**");
+        return emphasizeVersion ? buildHeader(version, date, "# ", "")
+                : buildHeader(version, date, "**", "**");
     }
 
-    private static String headerHelper(String version, Date date, String prefix, String postfix){
+    private static String buildHeader(String version, Date date, String prefix, String postfix){
         return prefix + version + " (" + DateFormat.formatDate(date) + ")" + postfix + " - ";
     }
 
