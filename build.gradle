@@ -87,8 +87,8 @@ pluginBundle {
     }
 
     mavenCoordinates {
-        groupId = 'gradle.plugin.org.mockito'
-        artifactId = "mockito-release-tools"
+        groupId = 'gradle.plugin.org.shipkit'
+        artifactId = 'shipkit'
     }
 }
 
