@@ -78,8 +78,8 @@ public class ReleaseConfiguration {
     }
 
     /**
-     * org.shipkit.java-library plugin will be applied to every java subproject if this boolean
-     * is <code>true</code>.
+     * org.shipkit.java-library plugin will be applied to every java subproject (project that applies Gradle's 'java'
+     * plugin) if this boolean is <code>true</code>.
      */
     public boolean isReleaseAllJavaModules() {
         return releaseAllJavaModules;
