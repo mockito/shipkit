@@ -19,14 +19,16 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
     private final String vcsCommitsLinkTemplate;
     private final String publicationRepository;
     private final Map<String, Contributor> contributors;
+    private final boolean emphasizeVersion;
 
     DetailedFormatter(String introductionText, Map<String, String> labelMapping, String vcsCommitsLinkTemplate,
-                      String publicationRepository, Map<String, Contributor> contributors) {
+                      String publicationRepository, Map<String, Contributor> contributors, boolean emphasizeVersion) {
         this.introductionText = introductionText;
         this.labelMapping = labelMapping;
         this.vcsCommitsLinkTemplate = vcsCommitsLinkTemplate;
         this.publicationRepository = publicationRepository;
         this.contributors = contributors;
+        this.emphasizeVersion = emphasizeVersion;
     }
 
     @Override
@@ -38,7 +40,7 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         }
 
         for (ReleaseNotesData d : data) {
-            sb.append("**").append(d.getVersion()).append(" (").append(DateFormat.formatDate(d.getDate())).append(")** - ");
+            sb.append(header(d.getVersion(), d.getDate(), emphasizeVersion));
             String vcsCommitsLink = MessageFormat.format(vcsCommitsLinkTemplate, d.getPreviousVersionVcsTag(), d.getVcsTag());
             sb.append(releaseSummary(d.getVersion(), d.getDate(), d.getContributions(), contributors, vcsCommitsLink, publicationRepository));
 
@@ -51,6 +53,15 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         }
 
         return sb.toString().trim();
+    }
+
+    static String header(String version, Date date, boolean emphasizeVersion){
+        return emphasizeVersion ? buildHeader(version, date, "# ", "")
+                : buildHeader(version, date, "**", "**");
+    }
+
+    private static String buildHeader(String version, Date date, String prefix, String postfix){
+        return prefix + version + " (" + DateFormat.formatDate(date) + ")" + postfix + " - ";
     }
 
     static String releaseSummary(String version, Date date, ContributionSet contributions, Map<String, Contributor> contributors,

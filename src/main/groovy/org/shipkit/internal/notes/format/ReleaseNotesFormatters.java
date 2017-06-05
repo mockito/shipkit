@@ -43,8 +43,9 @@ public class ReleaseNotesFormatters {
                                                                Map<String, String> labelMapping,
                                                                String vcsCommitsLinkTemplate,
                                                                String publicationRepository,
-                                                               Map<String, Contributor> contributors) {
+                                                               Map<String, Contributor> contributors,
+                                                               boolean emphasizeVersion) {
         return new DetailedFormatter(introductionText, labelMapping, vcsCommitsLinkTemplate,
-                publicationRepository, contributors);
+                publicationRepository, contributors, emphasizeVersion);
     }
 }
