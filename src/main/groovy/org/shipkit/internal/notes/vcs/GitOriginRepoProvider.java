@@ -12,7 +12,6 @@ public class GitOriginRepoProvider {
 
     /**
      * fetches remote url for git origin and returns it in format "user/repo", eg. "mockito/mockito-release-tools"
-     * in case "git remote" call fails it returns {#FALLBACK_REPO}
      */
     public String getOriginGitRepo(){
         return processRunner.run("git", "remote", "get-url", "origin") // for GitHub returns git@github.com:user/repo.git
