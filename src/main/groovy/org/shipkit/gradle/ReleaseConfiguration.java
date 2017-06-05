@@ -52,6 +52,7 @@ public class ReleaseConfiguration {
     //TODO currently it's not clear when to use class fields and when to use the 'configuration' map
     //Let's make it clear in the docs
     private boolean dryRun = true;
+    private boolean releaseAllJavaModules = true;
 
     /**
      * See {@link #isDryRun()}
@@ -67,6 +68,21 @@ public class ReleaseConfiguration {
      */
     public boolean isDryRun() {
         return dryRun;
+    }
+
+    /**
+     * See {@link #isReleaseAllJavaModules()}}
+     */
+    public void setReleaseAllJavaModules(boolean releaseAllJavaModules) {
+        this.releaseAllJavaModules = releaseAllJavaModules;
+    }
+
+    /**
+     * org.shipkit.java-library plugin will be applied to every java subproject if this boolean
+     * is <code>true</code>.
+     */
+    public boolean isReleaseAllJavaModules() {
+        return releaseAllJavaModules;
     }
 
     public GitHub getGitHub() {

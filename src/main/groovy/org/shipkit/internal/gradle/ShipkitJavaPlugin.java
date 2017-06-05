@@ -53,12 +53,14 @@ public class ShipkitJavaPlugin implements Plugin<Project> {
         project.allprojects(new Action<Project>() {
             @Override
             public void execute(final Project subproject) {
-                subproject.getPlugins().withId("java", new Action<Plugin>() {
-                    @Override
-                    public void execute(Plugin plugin) {
-                        subproject.getPlugins().apply(JavaLibraryPlugin.class);
-                    }
-                });
+                if (conf.isReleaseAllJavaModules()) {
+                    subproject.getPlugins().withId("java", new Action<Plugin>() {
+                        @Override
+                        public void execute(Plugin plugin) {
+                            subproject.getPlugins().apply(JavaLibraryPlugin.class);
+                        }
+                    });
+                }
 
                 subproject.getPlugins().withType(BaseJavaLibraryPlugin.class, new Action<BaseJavaLibraryPlugin>() {
                     @Override
