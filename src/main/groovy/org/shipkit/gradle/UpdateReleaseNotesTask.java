@@ -180,6 +180,7 @@ public class UpdateReleaseNotesTask extends DefaultTask {
      * Previous released version we generate the release notes from.
      */
     @Input
+    @Optional
     public String getPreviousVersion() {
         return previousVersion;
     }

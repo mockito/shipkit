@@ -26,8 +26,6 @@ class DefaultReleasedVersionsProviderTest extends Specification {
             { new DefaultReleasedVersionsProvider(Stub(ProcessRunner))
                     .getReleasedVersions(null, new Date(), ['1.0'], "v") },
             { new DefaultReleasedVersionsProvider(Stub(ProcessRunner))
-                    .getReleasedVersions('1.0', new Date(), [], "v") },
-            { new DefaultReleasedVersionsProvider(Stub(ProcessRunner))
                     .getReleasedVersions('1.0', null, ['1.1'], "v") }
         ]
     }
