@@ -80,6 +80,9 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         task.dependsOn(releaseNotesFetcher);
         task.dependsOn(contributorsFetcher);
 
+        task.setVersion(project.getVersion().toString());
+        task.setTagPrefix(conf.getGit().getTagPrefix());
+
         task.setDevelopers(conf.getTeam().getDevelopers());
         task.setContributors(conf.getTeam().getContributors());
         task.setGitHubLabelMapping(conf.getReleaseNotes().getLabelMapping()); //TODO make it optional

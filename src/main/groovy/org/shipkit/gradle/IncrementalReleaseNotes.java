@@ -41,6 +41,8 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
     private Collection<String> contributors;
     private File contributorsDataFile;
     private boolean emphasizeVersion;
+    private String version;
+    private String tagPrefix;
 
     /**
      * Release notes file this task operates on.
@@ -55,6 +57,36 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
      */
     public void setReleaseNotesFile(File releaseNotesFile) {
         this.releaseNotesFile = releaseNotesFile;
+    }
+
+    /**
+     * The version we are generating the release notes for.
+     */
+    @Input
+    public String getVersion() {
+        return version;
+    }
+
+    /**
+     * See {@link #getVersion()}
+     */
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    /**
+     * See {@link ReleaseConfiguration.Git#getTagPrefix()}
+     */
+    @Input
+    public String getTagPrefix() {
+        return tagPrefix;
+    }
+
+    /**
+     * See {@link #getTagPrefix()}
+     */
+    public void setTagPrefix(String tagPrefix) {
+        this.tagPrefix = tagPrefix;
     }
 
     /**
@@ -215,9 +247,6 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
     String getNewContent() {
         assertConfigured();
         LOG.lifecycle("  Building new release notes based on {}", releaseNotesFile);
-
-        String version = getProject().getVersion().toString();
-        String tagPrefix = "v";
 
         Collection<ReleaseNotesData> data = new ReleaseNotesSerializer().deserialize(IOUtil.readFully(releaseNotesData));
 
