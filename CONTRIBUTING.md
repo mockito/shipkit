@@ -22,11 +22,11 @@ It should use the same version that was built in the previous step.
 3. Basic testing (for most contributors):
  - Smoke test (no tasks are run): ```./gradlew testRelease -m```
  - Test most things, without actually making any code pushes/publications: ```./gradlew testRelease -x gitPush -x bintrayUpload```
- - Release notes content: ```./gradlew previewReleaseNotes```
-    To generate sizable release notes content, before running 'previewReleaseNotes' you can downgrade the 'previousVersion' in 'version.properties'.
+ - Release notes content: ```./gradlew updateReleaseNotes -Ppreview```
+    To generate sizable release notes content, before running 'updateReleaseNotes' you can downgrade the 'previousVersion' in 'version.properties'.
     Release notes are generated from 'previousVersion' to current 'version' as declared in 'version.properties' file.
 4. Advanced testing (occasionally, for core developers, edge cases):
- - Release notes in file: ```./gradlew previewReleaseNotes```, then inspect updated file
+ - Release notes in file: ```./gradlew updateReleaseNotes```, then inspect updated file
  - Test release needed task: ```./gradlew assertReleaseNeeded```
  - If you are one of the core developers you can export env variables and even test git push and bintray upload.
  Run ```./gradlew testRelease``` follow the prompts and export necessary env variables.

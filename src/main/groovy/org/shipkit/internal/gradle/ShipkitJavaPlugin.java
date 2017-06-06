@@ -4,7 +4,7 @@ import com.jfrog.bintray.gradle.BintrayExtension;
 import org.gradle.api.*;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.shipkit.gradle.IncrementalReleaseNotes;
+import org.shipkit.gradle.UpdateReleaseNotesTask;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.internal.gradle.util.BintrayUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
@@ -161,8 +161,8 @@ public class ShipkitJavaPlugin implements Plugin<Project> {
         //not using 'getTasks().withType()' because I don't want to create too many task configuration rules
         //TODO add information about it in the development guide
         for (Task t : project.getTasks()) {
-            if (t instanceof IncrementalReleaseNotes) {
-                IncrementalReleaseNotes task = (IncrementalReleaseNotes) t;
+            if (t instanceof UpdateReleaseNotesTask) {
+                UpdateReleaseNotesTask task = (UpdateReleaseNotesTask) t;
                 if (task.getPublicationRepository() == null) {
                     LOG.info("Configuring publication repository '{}' on task: {}", bintrayRepo, t.getPath());
                     task.setPublicationRepository(bintrayRepo);
