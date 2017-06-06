@@ -50,7 +50,7 @@ public class E2ETestingPlugin implements Plugin<Project> {
             CloneGitRepositoryTask clone = project.getTasks().create(
                     "cloneProjectFromGitHub" + capitalize(repoName),
                     CloneGitRepositoryTask.class);
-            clone.setRepository(gitHubRepoUrl);
+            clone.setRepositoryUrl(gitHubRepoUrl);
             clone.setTargetDir(new File(project.getBuildDir(), repoName + "-pristine"));
             // For now for easier testing
             clone.dependsOn("clean");
@@ -66,7 +66,7 @@ public class E2ETestingPlugin implements Plugin<Project> {
                     "cloneProjectToWorkDir" + capitalize(repoName),
                     CloneGitRepositoryTask.class);
             copy.dependsOn(clone);
-            copy.setRepository(clone.getTargetDir().getAbsolutePath());
+            copy.setRepositoryUrl(clone.getTargetDir().getAbsolutePath());
             copy.setTargetDir(workDir);
             return copy;
         }

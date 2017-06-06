@@ -107,6 +107,9 @@ public class DefaultProcessRunner implements ProcessRunner {
         if(outputLogFile != null) {
             //TODO ms - can we make sure that the output does not have sensitive secret values
             //should we mask secret values in the output stored in file, too?
+            //TODO SF - good question. Currently secret values are masked (see invocation of this method)
+            //On Travis CI you can't see files in workspace, but maybe it would be good to publish this outputs somewhere
+            //for example gist.github.com (?), then we should mask secrets
             IOUtil.writeFile(outputLogFile, content);
         }
     }
