@@ -6,7 +6,7 @@ buildscript {
     }
     dependencies {
         classpath "com.gradle.publish:plugin-publish-plugin:0.9.6"
-        classpath "gradle.plugin.org.mockito:mockito-release-tools:0.8.56"
+        classpath "gradle.plugin.org.shipkit:shipkit:0.8.71"
     }
 }
 

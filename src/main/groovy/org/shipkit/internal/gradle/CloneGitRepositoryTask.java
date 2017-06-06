@@ -4,12 +4,18 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.internal.exec.ProcessRunner;
 import org.shipkit.internal.exec.Exec;
+import org.shipkit.internal.util.ExposedForTesting;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.lang.String.valueOf;
 
 /**
  * This task clone git project from repository to target dir.
@@ -27,13 +33,28 @@ public class CloneGitRepositoryTask extends DefaultTask {
 
     private String repositoryUrl;
     private File targetDir;
+    private int numberOfCommitsToClone;
 
     @TaskAction
     public void cloneRepository() {
         LOG.lifecycle("  Cloning repository {}\n    into {}", repositoryUrl, targetDir);
         getProject().getBuildDir().mkdirs();    // build dir can be not created yet
         ProcessRunner processRunner = Exec.getProcessRunner(getProject().getBuildDir());
-        processRunner.run("git", "clone", repositoryUrl, targetDir.getAbsolutePath());
+        processRunner.run(getCloneCommand());
+    }
+
+    @ExposedForTesting
+    List<String> getCloneCommand() {
+        List<String> result = new ArrayList<String>();
+        result.add("git");
+        result.add("clone");
+        if(numberOfCommitsToClone != 0) {
+            result.add("--depth");
+            result.add(valueOf(numberOfCommitsToClone));
+        }
+        result.add(repositoryUrl);
+        result.add(targetDir.getAbsolutePath());
+        return result;
     }
 
     //TODO ms - let's put javadoc on all public methods of the task
@@ -79,5 +100,23 @@ public class CloneGitRepositoryTask extends DefaultTask {
      */
     public File getTargetDir() {
         return targetDir;
+    }
+
+    /**
+     * Truncate a history to the specified number of commits. In other words it makes a shallow clone.
+     * This input is optional, default set to 0 (zero) what means a full clone
+     */
+    public int getNumberOfCommitsToClone() {
+        return numberOfCommitsToClone;
+    }
+
+    /**
+     * See {@link #getNumberOfCommitsToClone()}
+     * @param numberOfCommitsToClone
+     */
+    @Optional
+    @Input
+    public void setNumberOfCommitsToClone(int numberOfCommitsToClone) {
+        this.numberOfCommitsToClone = numberOfCommitsToClone;
     }
 }

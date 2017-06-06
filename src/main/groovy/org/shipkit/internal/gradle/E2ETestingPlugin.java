@@ -46,12 +46,12 @@ public class E2ETestingPlugin implements Plugin<Project> {
         }
 
         private CloneGitRepositoryTask createCloneProjectFromGitHub(String gitHubRepoUrl, String repoName) {
-            // TODO add depth clone configuration for shallow clone
             CloneGitRepositoryTask clone = project.getTasks().create(
                     "cloneProjectFromGitHub" + capitalize(repoName),
                     CloneGitRepositoryTask.class);
             clone.setRepositoryUrl(gitHubRepoUrl);
             clone.setTargetDir(new File(project.getBuildDir(), repoName + "-pristine"));
+            clone.setNumberOfCommitsToClone(50);
             // For now for easier testing
             clone.dependsOn("clean");
             return clone;
