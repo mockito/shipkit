@@ -75,7 +75,7 @@ public abstract class IncrementalReleaseNotes extends DefaultTask {
     }
 
     /**
-     * The tag prefix used for release note generation.
+     * See {@link ReleaseConfiguration.Git#getTagPrefix()}
      */
     @Input
     public String getTagPrefix() {
