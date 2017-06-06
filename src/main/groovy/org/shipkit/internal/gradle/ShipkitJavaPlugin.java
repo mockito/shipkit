@@ -53,7 +53,7 @@ public class ShipkitJavaPlugin implements Plugin<Project> {
         project.allprojects(new Action<Project>() {
             @Override
             public void execute(final Project subproject) {
-                if (conf.isReleaseAllJavaModules()) {
+                if (conf.isPublishAllJavaSubprojects()) {
                     subproject.getPlugins().withId("java", new Action<Plugin>() {
                         @Override
                         public void execute(Plugin plugin) {
