@@ -22,7 +22,6 @@ import org.shipkit.internal.notes.util.IOUtil;
 import org.shipkit.internal.util.ExposedForTesting;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -44,6 +43,8 @@ public class UpdateReleaseNotesTask extends DefaultTask {
     private Collection<String> contributors;
     private File contributorsDataFile;
     private boolean emphasizeVersion;
+    private String version;
+    private String tagPrefix;
     private boolean previewMode;
 
     private IncrementalNotesGenerator incrementalNotesGenerator = new IncrementalNotesGenerator();
@@ -91,6 +92,36 @@ public class UpdateReleaseNotesTask extends DefaultTask {
      */
     public void setReleaseNotesFile(File releaseNotesFile) {
         this.releaseNotesFile = releaseNotesFile;
+    }
+
+    /**
+     * The version we are generating the release notes for.
+     */
+    @Input
+    public String getVersion() {
+        return version;
+    }
+
+    /**
+     * See {@link #getVersion()}
+     */
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    /**
+     * See {@link ReleaseConfiguration.Git#getTagPrefix()}
+     */
+    @Input
+    public String getTagPrefix() {
+        return tagPrefix;
+    }
+
+    /**
+     * See {@link #getTagPrefix()}
+     */
+    public void setTagPrefix(String tagPrefix) {
+        this.tagPrefix = tagPrefix;
     }
 
     /**
@@ -292,14 +323,9 @@ public class UpdateReleaseNotesTask extends DefaultTask {
         return out;
     }
 
-
-
     class IncrementalNotesGenerator {
         public String generateNewContent() {
             LOG.lifecycle("  Building new release notes based on {}", releaseNotesFile);
-
-            String version = getProject().getVersion().toString();
-            String tagPrefix = "v";
 
             Collection<ReleaseNotesData> data = new ReleaseNotesSerializer().deserialize(IOUtil.readFully(releaseNotesData));
 

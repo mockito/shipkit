@@ -26,7 +26,7 @@ targetCompatibility = 1.6
 
 repositories { jcenter() }
 
-group = 'gradle.plugin.org.mockito'
+group = 'gradle.plugin.org.shipkit'
 
 dependencies {
     compile gradleApi()
@@ -43,7 +43,7 @@ dependencies {
 }
 
 pluginBundle {
-    website = 'http://mockito.org/'
+    website = 'http://shipkit.org/'
     vcsUrl = 'https://github.com/mockito/mockito-release-tools'
     description = 'Release tools and Gradle plugins that automate Mockito continuous delivery.'
     tags = ['shipkit', 'continuous delivery', 'release']
@@ -87,8 +87,8 @@ pluginBundle {
     }
 
     mavenCoordinates {
-        groupId = 'gradle.plugin.org.mockito'
-        artifactId = "mockito-release-tools"
+        groupId = 'gradle.plugin.org.shipkit'
+        artifactId = 'shipkit'
     }
 }
 
