@@ -79,7 +79,7 @@ public class DefaultReleaseNotesData implements ReleaseNotesData {
                 Jsoner.escape(String.valueOf(date.getTime())),
                 contributions.toJson(),
                 improvementsBuilder.toString(),
-                Jsoner.escape(previousVersionTag),
+                Jsoner.escape(previousVersionTag == null ? "" : previousVersionTag),
                 Jsoner.escape(thisVersionTag)
         );
     }

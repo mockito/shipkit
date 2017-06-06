@@ -48,7 +48,7 @@ class DefaultReleaseNotesGenerator implements ReleaseNotesGenerator {
         Collection<ReleasedVersion> versions = releasedVersionsProvider.getReleasedVersions(headVersion, new Date(), targetVersions, tagPrefix);
 
         for (ReleasedVersion v : versions) {
-            if (v.getPreviousRev() == null) {
+            if (versions.size() > 1 && v.getPreviousRev() == null) {
                 continue;
             }
             ContributionSet contributions = contributionsProvider.getContributionsBetween(v.getPreviousRev(), v.getRev());
