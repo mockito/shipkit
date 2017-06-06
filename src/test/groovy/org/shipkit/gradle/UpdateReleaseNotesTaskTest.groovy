@@ -105,8 +105,9 @@ class UpdateReleaseNotesTaskTest extends Specification {
         underTest.setGitHubRepository("https://github.com/mockito/mockito")
         incrementalNotesGenerator.generateNewContent() >> "content"
 
+        underTest.setPreviewMode(true)
+
         when:
-        project.extensions.add(UpdateReleaseNotesTask.PREVIEW_PROJECT_PROPERTY, "")
         underTest.updateReleaseNotes()
 
         then:

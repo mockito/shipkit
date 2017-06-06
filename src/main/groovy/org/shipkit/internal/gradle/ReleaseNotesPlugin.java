@@ -19,7 +19,7 @@ import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.de
  *
  * <ul>
  *     <li>fetchReleaseNotes - fetches release notes data, see {@link ReleaseNotesFetcherTask}</li>
- *     <li>updateReleaseNotes - updates release notes file in place, or only displays preview, see {@link UpdateReleaseNotesTask}</li>
+ *     <li>updateReleaseNotes - updates release notes file in place, or only displays preview if project property 'preview' exists, see {@link UpdateReleaseNotesTask}</li>
  * </ul>
  *
  * It also adds updates release notes changes if {@link GitPlugin} applied
@@ -58,7 +58,10 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
 
                 configureDetailedNotes(t, releaseNotesFetcher, project, conf, contributorsFetcher);
 
-                if(!t.isInPreviewMode()){
+                boolean previewMode = project.hasProperty(UpdateReleaseNotesTask.PREVIEW_PROJECT_PROPERTY);
+                t.setPreviewMode(previewMode);
+
+                if(!previewMode){
                     File releaseNotesFile = project.file(conf.getReleaseNotes().getFile());
                     GitPlugin.registerChangesForCommitIfApplied(
                         Arrays.asList(releaseNotesFile), "release notes updated", t);

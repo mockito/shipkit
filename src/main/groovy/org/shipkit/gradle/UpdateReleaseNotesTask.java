@@ -44,6 +44,8 @@ public class UpdateReleaseNotesTask extends DefaultTask {
     private Collection<String> contributors;
     private File contributorsDataFile;
     private boolean emphasizeVersion;
+    private boolean previewMode;
+
     private IncrementalNotesGenerator incrementalNotesGenerator = new IncrementalNotesGenerator();
 
     /**
@@ -53,7 +55,7 @@ public class UpdateReleaseNotesTask extends DefaultTask {
     @TaskAction
     public void updateReleaseNotes() {
         String newContent = getNewContent();
-        if (isInPreviewMode()){
+        if (previewMode){
             LOG.lifecycle("  Preview of release notes update:\n" +
                     "  ----------------\n" + newContent + "----------------");
         } else{
@@ -63,11 +65,19 @@ public class UpdateReleaseNotesTask extends DefaultTask {
     }
 
     /**
-     * @return true if task is configured to generate only preview of release notes, and false otherwise
+     * @return true if task is configured to generate only preview of release notes (without appending them to the file), and false otherwise
      */
-    public boolean isInPreviewMode() {
-        return getProject().hasProperty(PREVIEW_PROJECT_PROPERTY);
+    public boolean isPreviewMode() {
+        return previewMode;
     }
+
+    /**
+     * See {@link #isPreviewMode()} ()}
+     */
+    public void setPreviewMode(boolean previewMode) {
+        this.previewMode = previewMode;
+    }
+
 
     /**
      * Release notes file this task operates on.
@@ -229,7 +239,7 @@ public class UpdateReleaseNotesTask extends DefaultTask {
             throw new GradleException("'" + this.getPath() + ".gitHubRepository' must be configured.");
         }
 
-        if(!isInPreviewMode()) { // releaseNotesFile is not needed in preview mode
+        if(!previewMode) { // releaseNotesFile is not needed in preview mode
             if (releaseNotesFile == null) {
                 throw new GradleException("'" + this.getPath() + ".releaseNotesFile' must be configured.");
             }
@@ -237,11 +247,11 @@ public class UpdateReleaseNotesTask extends DefaultTask {
                 throw new GradleException("'" + this.getPath() + ".releaseNotesFile' must be a file.");
             }
             if(!releaseNotesFile.exists()){
-                IOUtil.createParentDirectory(releaseNotesFile);
                 try {
+                    IOUtil.createParentDirectory(releaseNotesFile);
                     releaseNotesFile.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    throw new GradleException("Failed to create file " + releaseNotesFile.getAbsolutePath() + ". You can create an empty file by yourself and restart the task." , e);
                 }
             }
         }
