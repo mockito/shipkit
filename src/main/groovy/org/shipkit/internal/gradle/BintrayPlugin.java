@@ -104,6 +104,8 @@ public class BintrayPlugin implements Plugin<Project> {
                         "Missing 'bintray.key' value.\n" +
                         "  Please configure Bintray extension or export 'BINTRAY_API_KEY' env variable.");
                 bintray.setKey(key);
+                // api key is set basing on 'bintray.key' before lazy configuration so it has to be set again here
+                bintrayUpload.setApiKey(key);
 
                 //workaround for https://github.com/bintray/gradle-bintray-plugin/issues/170
                 notNull(bintray.getUser(), "Missing 'bintray.user' value.\n" +
