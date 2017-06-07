@@ -23,9 +23,7 @@ import static org.shipkit.internal.gradle.util.StringUtil.capitalize;
 public class E2ETestingPlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
-        E2ETest e2eTest = project.getExtensions().create("e2eTest", E2ETest.class, project);
-        // TODO hardcoded for now
-        e2eTest.create("https://github.com/mockito/mockito-release-tools-example");
+        project.getExtensions().create("e2eTest", E2ETest.class, project);
     }
 
     //TODO ms - closer to the finish line we need to make this type public in one of the public packages
