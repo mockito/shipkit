@@ -11,12 +11,10 @@ class GitLogProvider {
     }
 
     public String getLog(String fromRev, String toRev, String format) {
-        if(fromRev != null) {
-            runner.run("git", "fetch", "origin", "+refs/tags/" + fromRev + ":refs/tags/" + fromRev);
-            return runner.run("git", "log", format, fromRev + ".." + toRev);
-        } else{
-            runner.run("git", "fetch", "origin", toRev);
-            return runner.run("git", "log", format, toRev);
-        }
+        String fetch = fromRev == null ? toRev : "+refs/tags/" + fromRev + ":refs/tags/" + fromRev;
+        String log = fromRev == null ? toRev : fromRev + ".." + toRev;
+        
+        runner.run("git", "fetch", "origin", fetch);
+        return runner.run("git", "log", format, log);
     }
 }
