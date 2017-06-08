@@ -1,6 +1,6 @@
 apply plugin: 'base'    // for clean task
 
-// It needs to be commented until first version of release-tools with E2E plugin is released.
+// It needs to be commented until first version of shipkit with E2E plugin is released.
 // If not, Gradle is unable to configure whole project, because E2E plugin isn't published in any version yet.
 // TODO uncomment in next PR
 // apply plugin: 'org.shipkit.e2e-test'
