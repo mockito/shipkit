@@ -22,7 +22,7 @@ class DefaultReleasedVersionsProvider implements ReleasedVersionsProvider {
         //collect the versions
         if (versions.size() == 0 && headVersion == null) {
             throw new IllegalArgumentException("Not enough versions supplied." +
-                    "\n  I need at least 1 versions." +
+                    "\n  I need at least 1 version." +
                     "\n   - head version: " + headVersion +
                     "\n   - versions: " + versions);
         }

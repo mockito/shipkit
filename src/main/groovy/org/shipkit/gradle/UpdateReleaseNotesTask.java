@@ -330,8 +330,7 @@ public class UpdateReleaseNotesTask extends DefaultTask {
 
             Collection<ReleaseNotesData> data = new ReleaseNotesSerializer().deserialize(IOUtil.readFully(releaseNotesData));
 
-            String vcsCommitTemplate = "https://github.com/" + gitHubRepository + "/compare/"
-                    + tagPrefix + previousVersion + "..." + tagPrefix + version;
+            String vcsCommitTemplate = getVcsCommitTemplate();
 
             ProjectContributorsSet contributorsFromGitHub;
             if(!contributors.isEmpty()) {
@@ -348,6 +347,15 @@ public class UpdateReleaseNotesTask extends DefaultTask {
                     .formatReleaseNotes(data);
 
             return notes + "\n\n";
+        }
+    }
+
+    public String getVcsCommitTemplate() {
+        if(previousVersion != null) {
+            return "https://github.com/" + gitHubRepository + "/compare/"
+                    + tagPrefix + previousVersion + "..." + tagPrefix + version;
+        } else{
+            return "";
         }
     }
 }
