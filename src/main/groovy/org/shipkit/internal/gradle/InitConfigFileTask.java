@@ -18,7 +18,7 @@ public class InitConfigFileTask extends DefaultTask{
 
     private File configFile;
     private GitOriginRepoProvider gitOriginRepoProvider;
-    public static final String FALLBACK_GITHUB_REPO = "mockito/mockito-release-tools-example";
+    public static final String FALLBACK_GITHUB_REPO = "mockito/shipkit-example";
 
     public InitConfigFileTask(){
         ProcessRunner runner = new DefaultProcessRunner(getProject().getProjectDir());
@@ -86,7 +86,7 @@ public class InitConfigFileTask extends DefaultTask{
                     "}\n"+
                     "\n"+
                     "allprojects {\n"+
-                    "   plugins.withId(\"org.mockito.mockito-release-tools.bintray\") {\n"+
+                    "   plugins.withId(\"org.mockito.shipkit.bintray\") {\n"+
                     "       bintray {\n"+
                     "           pkg {\n"+
                     "               repo = '@bintray.pkg.repo@'\n"+

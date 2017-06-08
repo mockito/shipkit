@@ -9,7 +9,7 @@ apply plugin: 'base'    // for clean task
 
 Before we can push the code, I'd like to clean it up a little bit (TODO)
 4. In order for Gradle to neatly paralelize,
-let's have the mockito and mockito-release-tools-example be separate subprojects,
+let's have the mockito and shipkit-example be separate subprojects,
 just like I have set it up in PR #100.
 This way, the integration tests will run in parallel (Gradle parallelizes per project)
 5. Let's have completely separate task for cloning which will be incremental

@@ -11,7 +11,7 @@ class E2ETestingPluginTest extends Specification {
         project.plugins.apply("org.shipkit.e2e-test")
 
         expect:
-        project.tasks.'runTestReleaseMockito-release-tools-example'
+        project.tasks.'runTestReleaseShipkit-example'
     }
 
     def "should extract project name correctly"() {

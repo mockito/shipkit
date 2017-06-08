@@ -18,7 +18,7 @@ and automatically publish new versions to
 
 If the vision of the project connects with you help us!!! Get in touch on the [mailing list](https://groups.google.com/forum/#!forum/mockito-release-tools).
 
-- Implementing features - see the issue marked with "[please contribute](https://github.com/mockito/mockito-release-tools/issues?q=is%3Aissue+is%3Aopen+label%3A%22please+contribute%21%22)" label.
+- Implementing features - see the issue marked with "[please contribute](https://github.com/mockito/shipkit/issues?q=is%3Aissue+is%3Aopen+label%3A%22please+contribute%21%22)" label.
 - Using the Shipkit in your project and giving us feedback.
 - Spreading the word of what we're doing, letting us know about other project with similar goals. You can GitHub issue tracker for reaching out.
 
@@ -29,14 +29,14 @@ We [still do it today](https://github.com/mockito/mockito/wiki/Continuous-Delive
 - 2016, November - we pushed out the release automation toolkit to a separate project in GitHub, called "mockito-release-tools".
 We really needed to do that!
 As much as useful the toolkit was to drive Mockito releases, we needed to make it reusable, well documented, and packaged as a separate binary.
-- 2017, February - [Marcin Stachniuk](https://github.com/mstachniuk) joins the team, implements automatic fetching of contributors from GitHub and starts working on automatic [e2e testing](https://github.com/mockito/mockito-release-tools/issues/85) of library clients.
-- 2017, March - [Wojtek Wilk](https://github.com/wwilk) joins the team, implements release avoidance when binaries aren't changed in comparison to previous release, starts driving [API compatibility](https://github.com/mockito/mockito-release-tools/issues/105) validation and Shipkit dogfooding.
+- 2017, February - [Marcin Stachniuk](https://github.com/mstachniuk) joins the team, implements automatic fetching of contributors from GitHub and starts working on automatic [e2e testing](https://github.com/mockito/shipkit/issues/85) of library clients.
+- 2017, March - [Wojtek Wilk](https://github.com/wwilk) joins the team, implements release avoidance when binaries aren't changed in comparison to previous release, starts driving [API compatibility](https://github.com/mockito/shipkit/issues/105) validation and Shipkit dogfooding.
 - 2017, April - we found a neat name for our project: "Shipit", a toolkit for shipping it! We registered the domain: http://shipkit.org
-- 2017, May - there are 5 contributors in total, we expanded the vision of the project, and currently working on killer features like: automated e2e testing with library consumers + automated pushes of version upgrades [#85](https://github.com/mockito/mockito-release-tools/issues/85), [A/B testing](https://github.com/mockito/mockito-release-tools/issues/113) of build results when upgrading dependencies.
+- 2017, May - there are 5 contributors in total, we expanded the vision of the project, and currently working on killer features like: automated e2e testing with library consumers + automated pushes of version upgrades [#85](https://github.com/mockito/shipkit/issues/85), [A/B testing](https://github.com/mockito/shipkit/issues/113) of build results when upgrading dependencies.
 
 ## Plans
 
-- 2017, June - we plan to release [1.0 of Shipkit](https://github.com/mockito/mockito-release-tools/issues/116) library during [Gradle Summit Conference](https://summit.gradle.com) 22-23th of June 2017, Palo Alto, CA. Core features offered by 1.0:
+- 2017, June - we plan to release [1.0 of Shipkit](https://github.com/mockito/shipkit/issues/116) library during [Gradle Summit Conference](https://summit.gradle.com) 22-23th of June 2017, Palo Alto, CA. Core features offered by 1.0:
   - version management
   - automatic publication of binaries to well known public repositories
   - release notes generation based on Git log and the issue tracker links
@@ -59,11 +59,11 @@ This section describes how we roll the project.
 
 ### Getting contributions
 
-Contributions are super important to build lively community and excite other engineers around the project vision. In "mockito-release-tools" we use ["please contribute!"](https://github.com/mockito/mockito-release-tools/issues?q=is%3Aissue+is%3Aopen+label%3A%22please+contribute%21%22) label on tickets to attract contributors. Before the ticket can be labeled with "please contribute!" it should:
+Contributions are super important to build lively community and excite other engineers around the project vision. In "shipkit" we use ["please contribute!"](https://github.com/mockito/shipkit/issues?q=is%3Aissue+is%3Aopen+label%3A%22please+contribute%21%22) label on tickets to attract contributors. Before the ticket can be labeled with "please contribute!" it should:
  - sell the feature. If the value of the ticket is not clear, why would a contributor bother to invest his free time?
  - describe high level design. Otherwise it's hard to come up with the implementation. More over, lack of guiding high level design leads to more rework and ping-pong pull requests, with multiple pr->feedback->fixes cycles.
- - give a starting point, point to classes in question, suggest implementation, or even point to the branch that has some scaffolding prototype code. Example ["starting point" PR](https://github.com/mockito/mockito-release-tools/pull/100).
- - be like [#101](https://github.com/mockito/mockito-release-tools/issues/101), [#84](https://github.com/mockito/mockito-release-tools/issues/84), or [epic #85](https://github.com/mockito/mockito-release-tools/issues/85)
+ - give a starting point, point to classes in question, suggest implementation, or even point to the branch that has some scaffolding prototype code. Example ["starting point" PR](https://github.com/mockito/shipkit/pull/100).
+ - be like [#101](https://github.com/mockito/shipkit/issues/101), [#84](https://github.com/mockito/shipkit/issues/84), or [epic #85](https://github.com/mockito/shipkit/issues/85)
 
 ### How to give great code review feedback?
 

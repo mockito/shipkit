@@ -28,7 +28,7 @@ class RecentContributorsFetcherTest extends Specification {
     }
 
     def "null until date smoke test"() {
-        def c = fetcher.fetchContributorsSinceYesterday("mockito/mockito-release-tools", readOnlyToken)
+        def c = fetcher.fetchContributorsSinceYesterday("mockito/shipkit", readOnlyToken)
         expect:
         //we cannot write assertions because we are querying for commits since yesterday
         //and the commits can change. Smoke testing only

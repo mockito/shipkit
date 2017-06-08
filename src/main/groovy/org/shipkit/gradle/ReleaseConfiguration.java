@@ -15,10 +15,10 @@ import static org.shipkit.internal.gradle.util.team.TeamParser.validateTeamMembe
  * Configuration of the releasing plugin.
  * <p>
  * Example of a release configuration of a working example project
- * <a href="https://github.com/mockito/mockito-release-tools-example/blob/master/gradle/release.gradle">on GitHub</a>.
+ * <a href="https://github.com/mockito/shipkit-example/blob/master/gradle/shipkit.gradle">on GitHub</a>.
  * <p>
  * For minimal and full configuration, see the
- * <a href="https://github.com/mockito/mockito-release-tools/issues/76">issue 76</a>
+ * <a href="https://github.com/mockito/shipkit/issues/76">issue 76</a>
  */
 public class ReleaseConfiguration {
 

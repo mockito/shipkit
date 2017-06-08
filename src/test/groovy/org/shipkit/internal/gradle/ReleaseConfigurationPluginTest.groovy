@@ -63,7 +63,7 @@ class ReleaseConfigurationPluginTest extends PluginSpecification {
         def conf = root.plugins.apply(ReleaseConfigurationPlugin).configuration
 
         then:
-        conf.gitHub.repository == "mockito/mockito-release-tools"
+        conf.gitHub.repository == "mockito/shipkit"
         conf.gitHub.readOnlyAuthToken == "e7fe8fcfd6ffedac384c8c4c71b2a48e646ed1ab"
     }
 
