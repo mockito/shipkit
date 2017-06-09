@@ -6,17 +6,19 @@ import org.gradle.api.Task
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
+import static java.io.File.separator
+
 class GitCommitTaskTest extends Specification {
 
     def tasksContainer = new ProjectBuilder().build().tasks
     def gitCommitTask = tasksContainer.create("gitCommitTask", GitCommitTask)
 
-    def "aggregated commit message is empty when no changes registered"(){
+    def "aggregated commit message is empty when no changes registered"() {
         expect:
         gitCommitTask.aggregatedCommitMessage == ""
     }
 
-    def "list of files is empty when no changes registered"(){
+    def "list of files is empty when no changes registered"() {
         expect:
         gitCommitTask.files.isEmpty()
     }
@@ -38,10 +40,12 @@ class GitCommitTaskTest extends Specification {
         gitCommitTask.addChange([new File("test3")], "", anyTask())
 
         then:
-        gitCommitTask.files == [basePath + "/test", basePath + "/test2", basePath + "/test3"]
+        gitCommitTask.files == [basePath + separator + "test",
+                                basePath + separator + "test2",
+                                basePath + separator + "test3"]
     }
 
-    Task anyTask(){
+    Task anyTask() {
         return tasksContainer.create(RandomStringUtils.random(15), DefaultTask)
     }
 }

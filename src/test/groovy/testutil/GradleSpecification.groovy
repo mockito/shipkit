@@ -20,15 +20,15 @@ class GradleSpecification extends Specification {
     File buildFile
     File settingsFile
 
-    private final static File CLASSES_DIR = findClassesDir();
-    private final static File RESOURCES_DIR = findResourcesDir();
+    private static final String CLASSES_DIR = findClassesDir();
+    private static final String RESOURCES_DIR = findResourcesDir();
 
     void setup() {
         buildFile = projectDir.newFile('build.gradle')
         buildFile << """buildscript {
             dependencies {
-                classpath files("${CLASSES_DIR.absolutePath}")
-                classpath files("${RESOURCES_DIR.absolutePath}")
+                classpath files("${CLASSES_DIR}")
+                classpath files("${RESOURCES_DIR}")
                 classpath "com.github.cliftonlabs:json-simple:2.1.2"
                 classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3"
             }
@@ -71,24 +71,23 @@ class GradleSpecification extends Specification {
         }
     }
 
-    private static File findClassesDir() {
+    private static String findClassesDir() {
         //Using one of the production classes to find directory where IDE or the build system outputs compiled production code
         def bearing = ShipkitJavaPlugin.class.name.replaceAll("\\.", "/") + ".class"
         return findDir(bearing)
     }
 
-    private static File findResourcesDir() {
+    private static String findResourcesDir() {
         //Using standard location of gradle plugins to find where production resources are outputted by IDE or build system
         def bearing = "META-INF/gradle-plugins"
         return findDir(bearing)
     }
 
-    private static File findDir(String bearing) {
+    private static String findDir(String bearing) {
         //Based on a bearing resource, we're finding root directory in the classpath
         def gradlePluginsDir = GradleSpecification.classLoader.getResource(bearing).file
         def classesDir = gradlePluginsDir - bearing
-        def result = new File(classesDir)
-        assert result.isDirectory()
-        return result
+        assert new File(classesDir).isDirectory()
+        return classesDir
     }
 }
