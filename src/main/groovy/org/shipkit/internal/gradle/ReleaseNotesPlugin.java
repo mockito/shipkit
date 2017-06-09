@@ -42,7 +42,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
             public void execute(final ReleaseNotesFetcherTask t) {
                 t.setDescription("Fetches release notes data from Git and GitHub and serializes them to a file");
                 t.setOutputFile(new File(project.getBuildDir(), "detailed-release-notes.ser"));
-
+                t.setGitHubApiUrl(conf.getGitHub().getApiUrl());
                 t.setGitHubReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
                 t.setGitHubRepository(conf.getGitHub().getRepository());
                 t.setPreviousVersion(conf.getPreviousReleaseVersion());

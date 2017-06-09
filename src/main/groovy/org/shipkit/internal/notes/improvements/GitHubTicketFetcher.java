@@ -16,7 +16,7 @@ class GitHubTicketFetcher {
 
     private static final Logger LOG = LoggerFactory.getLogger(GitHubTicketFetcher.class);
 
-    Collection<Improvement> fetchTickets(String repository, String readOnlyAuthToken, Collection<String> ticketIds, Collection<String> labels,
+    Collection<Improvement> fetchTickets(String apiUrl, String repository, String readOnlyAuthToken, Collection<String> ticketIds, Collection<String> labels,
                                          boolean onlyPullRequests) {
         List<Improvement> out = new LinkedList<Improvement>();
         if (ticketIds.isEmpty()) {
@@ -27,7 +27,7 @@ class GitHubTicketFetcher {
         Queue<Long> tickets = queuedTicketNumbers(ticketIds);
 
         try {
-            GitHubIssues issues = GitHubIssues.forRepo(repository, readOnlyAuthToken)
+            GitHubIssues issues = GitHubIssues.forRepo(apiUrl, repository, readOnlyAuthToken)
                     .state("closed")
                     .labels(StringUtil.join(labels, ","))
                     .filter("all")
@@ -107,11 +107,12 @@ class GitHubTicketFetcher {
             return fetcher.nextPage();
         }
 
-        static GitHubIssuesBuilder forRepo(String repository, String readOnlyAuthToken) {
-            return new GitHubIssuesBuilder(repository, readOnlyAuthToken);
+        static GitHubIssuesBuilder forRepo(String apiUrl, String repository, String readOnlyAuthToken) {
+            return new GitHubIssuesBuilder(apiUrl, repository, readOnlyAuthToken);
         }
 
         private static class GitHubIssuesBuilder {
+            private final String apiUrl;
             private final String readOnlyAuthToken;
             private final String repository;
             private String state;
@@ -119,7 +120,8 @@ class GitHubTicketFetcher {
             private String direction;
             private String labels;
 
-            GitHubIssuesBuilder(String repository, String readOnlyAuthToken) {
+            GitHubIssuesBuilder(String apiUrl, String repository, String readOnlyAuthToken) {
+                this.apiUrl = apiUrl;
                 this.repository = repository;
                 this.readOnlyAuthToken = readOnlyAuthToken;
             }
@@ -151,7 +153,7 @@ class GitHubTicketFetcher {
             GitHubIssues browse() {
                 // see API doc: https://developer.github.com/v3/issues/
                 String nextPageUrl = String.format("%s%s%s%s%s%s%s",
-                        "https://api.github.com/repos/" + repository + "/issues",
+                        apiUrl + "/repos/" + repository + "/issues",
                         "?access_token=" + readOnlyAuthToken,
                         state == null ? "" : "&state=" + state,
                         filter == null ? "" : "&filter=" + filter,

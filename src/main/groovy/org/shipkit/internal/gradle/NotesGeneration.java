@@ -9,6 +9,7 @@ import java.util.Collection;
 //TODO expose as public API
 public class NotesGeneration {
     private File gitWorkingDir;
+    private String gitHubApiUrl;
     private String gitHubRepository;
     private String gitHubReadOnlyAuthToken;
     private Collection<String> targetVersions;
@@ -30,6 +31,14 @@ public class NotesGeneration {
 
     public void setGitWorkingDir(File gitWorkingDir) {
         this.gitWorkingDir = gitWorkingDir;
+    }
+
+    public String getGitHubApiUrl() {
+        return gitHubApiUrl;
+    }
+
+    public void setGitHubApiUrl(String gitHubApiUrl) {
+        this.gitHubApiUrl = gitHubApiUrl;
     }
 
     public String getGitHubRepository() {

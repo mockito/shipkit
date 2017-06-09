@@ -111,9 +111,9 @@ public class GitPlugin implements Plugin<Project> {
 
         TaskMaker.execTask(project, COMMIT_CLEANUP_TASK, new Action<Exec>() {
             public void execute(final Exec t) {
-                t.setDescription("Removes last commit, using 'reset --hard HEAD~'");
+                t.setDescription("Removes last commit, using 'reset --soft HEAD~'");
                 //TODO replace with combination of 'git reset --soft HEAD~ && git stash' so that we don't lose commits
-                t.commandLine("git", "reset", "--hard", "HEAD~");
+                t.commandLine("git", "reset", "--soft", "HEAD~");
             }
         });
 

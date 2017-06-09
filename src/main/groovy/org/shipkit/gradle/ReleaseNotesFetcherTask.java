@@ -27,6 +27,7 @@ public class ReleaseNotesFetcherTask extends DefaultTask {
 
     @Input @Optional private String previousVersion;
     @Input private String version = getProject().getVersion().toString();
+    @Input private String gitHubApiUrl;
     @Input private String gitHubReadOnlyAuthToken;
     @Input private String gitHubRepository;
     @Input private String tagPrefix = "v";
@@ -35,6 +36,14 @@ public class ReleaseNotesFetcherTask extends DefaultTask {
     @Input private Collection<String> gitHubLabels = Collections.emptyList();
     @Input private Collection<String> ignoreCommitsContaining;
     @OutputFile private File outputFile;
+
+    public String getGitHubApiUrl() {
+        return gitHubApiUrl;
+    }
+
+    public void setGitHubApiUrl(String gitHubApiUrl) {
+        this.gitHubApiUrl = gitHubApiUrl;
+    }
 
     /**
      * See {@link ReleaseConfiguration.GitHub#getReadOnlyAuthToken()}
@@ -182,7 +191,7 @@ public class ReleaseNotesFetcherTask extends DefaultTask {
     @TaskAction
     public void generateReleaseNotes() {
         ReleaseNotesGenerator generator = ReleaseNotesGenerators.releaseNotesGenerator(
-                gitWorkDir, gitHubRepository, gitHubReadOnlyAuthToken, new IgnoredCommit(ignoreCommitsContaining));
+                gitWorkDir, gitHubApiUrl, gitHubRepository, gitHubReadOnlyAuthToken, new IgnoredCommit(ignoreCommitsContaining));
 
         List<String> targetVersions = previousVersion == null ? new ArrayList<String>() : asList(previousVersion);
         Collection<ReleaseNotesData> releaseNotes = generator.generateReleaseNotesData(

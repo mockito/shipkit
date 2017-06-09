@@ -25,10 +25,25 @@ public class AllContributorsFetcherTask extends DefaultTask {
 
     private static final Logger LOG = Logging.getLogger(AllContributorsFetcherTask.class);
 
+    @Input private String apiUrl;
     @Input private String repository;
     @Input private String readOnlyAuthToken;
 
     @OutputFile private File outputFile;
+
+    /**
+     * See {@link ReleaseConfiguration.GitHub#getApiUrl()}
+     */
+    public String getApiUrl() {
+        return apiUrl;
+    }
+
+    /**
+     * See {@link #getApiUrl()}
+     */
+    public void setApiUrl(String apiUrl) {
+        this.apiUrl = apiUrl;
+    }
 
     /**
      * See {@link ReleaseConfiguration.GitHub#getRepository()}
@@ -76,7 +91,7 @@ public class AllContributorsFetcherTask extends DefaultTask {
     public void fetchContributors() {
         LOG.lifecycle("  Fetching all contributors for project");
 
-        GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContributorsProvider(repository, readOnlyAuthToken);
+        GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContributorsProvider(apiUrl, repository, readOnlyAuthToken);
         ProjectContributorsSet contributors = contributorsProvider.getAllContributorsForProject();
 
         AllContributorsSerializer serializer = new AllContributorsSerializer();

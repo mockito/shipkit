@@ -41,6 +41,8 @@ public class ReleaseConfiguration {
         git.setUser("Shipkit");
         git.setEmail("<shipkit.org@gmail.com>");
 
+        gitHub.setApiUrl("https://api.github.com");
+
         releaseNotes.setFile("docs/release-notes.md");
         releaseNotes.setIgnoreCommitsContaining(asList("[ci skip]"));
         releaseNotes.setLabelMapping(Collections.<String, String>emptyMap());
@@ -117,6 +119,22 @@ public class ReleaseConfiguration {
     }
 
     public class GitHub {
+
+        /**
+         * GitHub API endpoint address, for example:  https://api.github.com/
+         */
+        public String getApiUrl() {
+            return getString("gitHub.apiUrl");
+        }
+
+        /**
+         * See {@link #getApiUrl()}
+         *
+         * @param apiUrl GitHub (or gitHub enterprise) API endpoint address, for example: https://api.github.com/
+         */
+        public void setApiUrl(String apiUrl) {
+            configuration.put("gitHub.apiUrl", apiUrl);
+        }
 
         /**
          * GitHub repository name, for example: "mockito/shipkit"
