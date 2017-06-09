@@ -20,6 +20,6 @@ public class BuildConventions {
      * Returns file object in a standard location where we put other output files generated during the build.
      */
     private static File outputFile(Project project, String fileName) {
-        return new File(project.getBuildDir(), "/mockito/" + fileName);
+        return new File(project.getBuildDir(), "/shipkit/" + fileName);
     }
 }

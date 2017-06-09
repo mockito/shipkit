@@ -62,7 +62,7 @@ shipkit {
 }
 
 allprojects {
-   plugins.withId(\"org.mockito.shipkit.bintray\") {
+   plugins.withId(\"org.shipkit.bintray\") {
        bintray {
            pkg {
                repo = 'examples'
