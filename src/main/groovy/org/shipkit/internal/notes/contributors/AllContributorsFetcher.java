@@ -5,13 +5,16 @@ import org.gradle.api.logging.Logging;
 import org.json.simple.DeserializationException;
 import org.json.simple.JsonObject;
 import org.shipkit.internal.notes.model.ProjectContributor;
+import org.shipkit.internal.notes.util.Function;
 import org.shipkit.internal.notes.util.GitHubListFetcher;
 import org.shipkit.internal.notes.util.GitHubObjectFetcher;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.*;
 
 /**
  * Gets all contributors from the repository
@@ -40,16 +43,78 @@ class AllContributorsFetcher {
         return result;
     }
 
-    private Set<ProjectContributor> extractContributors(List<JsonObject> page, String readOnlyAuthToken) throws IOException, DeserializationException {
-        Set<ProjectContributor> result = new HashSet<ProjectContributor>();
-        for (JsonObject contributor : page) {
-            //Since returned contributor does not have 'name' element, we need to fetch the user data to get his name
-            //TODO add static caching of this. Names don't change that often, let's just cache this forever in build cache.
-            String url = (String) contributor.get("url");
-            GitHubObjectFetcher userFetcher = new GitHubObjectFetcher(url, readOnlyAuthToken);
-            JsonObject user = userFetcher.getPage();
-            result.add(GitHubAllContributorsJson.toContributor(contributor, user));
+    private static class FetcherCallable<V, R> implements Callable<Set<R>> {
+
+        private final List<V> list;
+        private final Function<V, R> function;
+
+        public FetcherCallable(List<V> list, Function<V, R> function) {
+            this.list = list;
+            this.function = function;
         }
+
+        @Override
+        public Set<R> call() throws Exception {
+            Set<R> result = new HashSet<R>();
+            for (V v : list) {
+                result.add(function.apply(v));
+            }
+            return result;
+        }
+    }
+
+    private static class ProjectContributorFetcherFunction implements Function<JsonObject, ProjectContributor> {
+
+        private final GitHubObjectFetcher objectFetcher;
+
+        public ProjectContributorFetcherFunction(GitHubObjectFetcher objectFetcher) {
+            this.objectFetcher = objectFetcher;
+        }
+
+        @Override
+        public ProjectContributor apply(JsonObject contributor) {
+            String url = (String) contributor.get("url");
+            JsonObject user;
+            try {
+                user = objectFetcher.getPage(url);
+            } catch (IOException e) {
+                throw new RuntimeException("Error occurred while fetching contributor using " + url + "!", e);
+            } catch (DeserializationException e) {
+                throw new RuntimeException("Error occurred while fetching contributor using " + url + "!", e);
+            }
+
+            return GitHubAllContributorsJson.toContributor(contributor, user);
+        }
+    }
+
+    private Set<ProjectContributor> extractContributors(List<JsonObject> page, final String readOnlyAuthToken) throws IOException, DeserializationException {
+        Set<ProjectContributor> result = new HashSet<ProjectContributor>();
+        ExecutorService executor = Executors.newFixedThreadPool(4);
+        int maxSizePerCallable = 25;
+
+        List<Future<Set<ProjectContributor>>> futures = new ArrayList<Future<Set<ProjectContributor>>>();
+        if (page.size() > 0) {
+            for (int i = 0; i < Math.max(page.size() / maxSizePerCallable, 1); i++) {
+                List<JsonObject> subList = page.subList(i * maxSizePerCallable, Math.min((i + 1) * maxSizePerCallable, page.size()));
+
+                GitHubObjectFetcher objectFetcher = new GitHubObjectFetcher(readOnlyAuthToken);
+                Function<JsonObject, ProjectContributor> projectContributorFetcherFunction = new ProjectContributorFetcherFunction(objectFetcher);
+                Callable<Set<ProjectContributor>> callable = new FetcherCallable<JsonObject, ProjectContributor>(subList, projectContributorFetcherFunction);
+
+                futures.add(executor.submit(callable));
+            }
+        }
+
+        for (Future<Set<ProjectContributor>> future: futures) {
+            try {
+                result.addAll(future.get());
+            } catch (InterruptedException e) {
+                throw new IOException(e);
+            } catch (ExecutionException e) {
+                throw new IOException(e.getCause());
+            }
+        }
+
         return result;
     }
 
