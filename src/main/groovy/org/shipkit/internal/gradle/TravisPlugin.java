@@ -3,7 +3,6 @@ package org.shipkit.internal.gradle;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.ReleaseNeededTask;
 import org.shipkit.internal.gradle.configuration.BasicValidator;
 import org.shipkit.internal.gradle.configuration.LazyConfiguration;
