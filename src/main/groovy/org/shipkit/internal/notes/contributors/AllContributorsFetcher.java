@@ -43,50 +43,6 @@ class AllContributorsFetcher {
         return result;
     }
 
-    private static class FetcherCallable<V, R> implements Callable<Set<R>> {
-
-        private final List<V> list;
-        private final Function<V, R> function;
-
-        public FetcherCallable(List<V> list, Function<V, R> function) {
-            this.list = list;
-            this.function = function;
-        }
-
-        @Override
-        public Set<R> call() throws Exception {
-            Set<R> result = new HashSet<R>();
-            for (V v : list) {
-                result.add(function.apply(v));
-            }
-            return result;
-        }
-    }
-
-    private static class ProjectContributorFetcherFunction implements Function<JsonObject, ProjectContributor> {
-
-        private final GitHubObjectFetcher objectFetcher;
-
-        public ProjectContributorFetcherFunction(GitHubObjectFetcher objectFetcher) {
-            this.objectFetcher = objectFetcher;
-        }
-
-        @Override
-        public ProjectContributor apply(JsonObject contributor) {
-            String url = (String) contributor.get("url");
-            JsonObject user;
-            try {
-                user = objectFetcher.getPage(url);
-            } catch (IOException e) {
-                throw new RuntimeException("Error occurred while fetching contributor using " + url + "!", e);
-            } catch (DeserializationException e) {
-                throw new RuntimeException("Error occurred while fetching contributor using " + url + "!", e);
-            }
-
-            return GitHubAllContributorsJson.toContributor(contributor, user);
-        }
-    }
-
     private Set<ProjectContributor> extractContributors(List<JsonObject> page, final String readOnlyAuthToken) throws IOException, DeserializationException {
         Set<ProjectContributor> result = new HashSet<ProjectContributor>();
         ExecutorService executor = Executors.newFixedThreadPool(4);
