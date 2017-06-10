@@ -1,7 +1,5 @@
 package org.shipkit.internal.comparison;
 
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
 import org.shipkit.internal.comparison.diff.Diff;
 import org.shipkit.internal.comparison.diff.DirectoryDiffGenerator;
 import org.shipkit.internal.util.ExposedForTesting;
