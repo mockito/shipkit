@@ -30,7 +30,8 @@ public class InitConfigFileTask extends DefaultTask{
             LOG.lifecycle("  Shipkit configuration already exists, nothing to do. Configuration file: {}", configFile.getPath());
         } else{
             createShipKitConfigFile();
-            LOG.lifecycle("  Shipkit configuration created at {}! You can modify it manually. Remember to check it into VCS!", configFile.getPath());
+            LOG.lifecycle("  Shipkit configuration created at {}!\n" +
+                    "  You can modify it manually. Remember to check it into VCS!", configFile.getPath());
         }
     }
 
