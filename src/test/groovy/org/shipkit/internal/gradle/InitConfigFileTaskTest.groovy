@@ -38,7 +38,7 @@ class InitConfigFileTaskTest extends Specification {
         task.initShipkitConfigFile()
 
         then:
-        task.configFile.text.contains('gitHub.repository = "mockito/mockito-release-tools-example"')
+        task.configFile.text.contains('gitHub.repository = "mockito/shipkit-example"')
     }
 
     def "creates default shipkit config file if it does not exist"() {
@@ -62,7 +62,7 @@ shipkit {
 }
 
 allprojects {
-   plugins.withId(\"org.mockito.mockito-release-tools.bintray\") {
+   plugins.withId(\"org.shipkit.bintray\") {
        bintray {
            pkg {
                repo = 'examples'

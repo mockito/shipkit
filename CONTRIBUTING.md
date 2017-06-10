@@ -17,7 +17,7 @@ Be pragmatic, all rules have exceptions given good reasons.
 1. Clone shipkit repo, make your changes, then run ```./gradlew fastInstall```
 This will install the artifacts in local maven repository for easy sharing.
 Notice the version you're building in the build output.
-2. Clone mockito-release-tools-example repo and ensure that 'release-tools-example/build.gradle' file uses the correct version of shipkit (declared at the top of build.gradle).
+2. Clone shipkit-example repo and ensure that 'shipkit-example/build.gradle' file uses the correct version of shipkit (declared at the top of build.gradle).
 It should use the same version that was built in the previous step.
 3. Basic testing (for most contributors):
  - Smoke test (no tasks are run): ```./gradlew testRelease -m```

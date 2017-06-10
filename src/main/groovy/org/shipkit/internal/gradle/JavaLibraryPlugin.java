@@ -29,7 +29,7 @@ public class JavaLibraryPlugin implements Plugin<Project> {
 
     private boolean shouldConfigurePublications(Project project) {
         //Sanity system property. Semi-internal.
-        boolean workaroundTurnedOff = "false".equals(System.getProperty("org.mockito.mockito-release-tools.publications-bug-workaround"));
+        boolean workaroundTurnedOff = "false".equals(System.getProperty("org.mockito.shipkit.publications-bug-workaround"));
         if (workaroundTurnedOff) {
             return true;
         }

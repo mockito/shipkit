@@ -1,6 +1,6 @@
 apply plugin: 'base'    // for clean task
 
-// It needs to be commented until first version of release-tools with E2E plugin is released.
+// It needs to be commented until first version of shipkit with E2E plugin is released.
 // If not, Gradle is unable to configure whole project, because E2E plugin isn't published in any version yet.
 // TODO uncomment in next PR
 // apply plugin: 'org.shipkit.e2e-test'
@@ -9,7 +9,7 @@ apply plugin: 'base'    // for clean task
 
 Before we can push the code, I'd like to clean it up a little bit (TODO)
 4. In order for Gradle to neatly paralelize,
-let's have the mockito and mockito-release-tools-example be separate subprojects,
+let's have the mockito and shipkit-example be separate subprojects,
 just like I have set it up in PR #100.
 This way, the integration tests will run in parallel (Gradle parallelizes per project)
 5. Let's have completely separate task for cloning which will be incremental

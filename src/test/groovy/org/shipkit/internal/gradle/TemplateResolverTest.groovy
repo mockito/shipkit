@@ -14,7 +14,7 @@ class TemplateResolverTest extends Specification {
 
     def output = """
     shipkit {
-        gitHub.repository = "mockito/mockito-release-tools-example"
+        gitHub.repository = "mockito/shipkit-example"
         pkg.licenses = ['MIT']
         buildNo = System.getenv("TRAVIS_BUILD_NUMBER")
     }
@@ -23,7 +23,7 @@ class TemplateResolverTest extends Specification {
     def "should resolve template" (){
         given:
         def resolver = new TemplateResolver(input)
-                            .withProperty("gitHub.repository", "mockito/mockito-release-tools-example")
+                            .withProperty("gitHub.repository", "mockito/shipkit-example")
                             .withProperty("pkg.licenses", "['MIT']")
                             .withProperty("buildNo", "System.getenv(\"TRAVIS_BUILD_NUMBER\")")
 
