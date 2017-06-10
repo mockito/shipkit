@@ -22,5 +22,7 @@ class ProjectContributorFetcherFunctionTest extends Specification {
         then:
         contributor
         contributor.login == 'epeee'
+        contributor.name
+        contributor.name.contains('Erhard')
     }
 }
