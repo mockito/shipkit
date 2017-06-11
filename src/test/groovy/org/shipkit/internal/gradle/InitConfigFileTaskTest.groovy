@@ -57,20 +57,21 @@ class InitConfigFileTaskTest extends Specification {
                 """//This file was created automatically and is intended to be checked-in.
 shipkit {
    gitHub.repository = \"mockito/mockito\"
-   gitHub.readOnlyAuthToken = \"e7fe8fcfd6ffedac384c8c4c71b2a48e646ed1ab\"
-   gitHub.writeAuthUser = \"shipkit\"
+   gitHub.readOnlyAuthToken = \"76826c9ec886612f504d12fd4268b16721c4f85d\"
+   gitHub.writeAuthUser = \"shipkit-org\"
 }
 
 allprojects {
    plugins.withId(\"org.shipkit.bintray\") {
        bintray {
+           key = '7ea297848ca948adb7d3ee92a83292112d7ae989'
            pkg {
-               repo = 'examples'
-               user = 'szczepiq'
-               userOrg = 'shipkit'
-               name = 'basic'
+               repo = 'bootstrap'
+               user = 'shipkit-bootstrap-bot'
+               userOrg = 'shipkit-bootstrap'
+               name = 'maven'
                licenses = ['MIT']
-               labels = ['continuous delivery', 'release automation', 'mockito']
+               labels = ['continuous delivery', 'release automation', 'shipkit']
            }
        }
    }
