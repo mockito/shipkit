@@ -28,12 +28,14 @@ import static org.shipkit.internal.gradle.util.GitUtil.getTag;
  *     <li>performGitPush</li>
  *
  *     <li>gitCommitCleanUp</li>
+ *     <li>gitResetCommit</li>
  *     <li>gitTagCleanUp</li>
  * </ul>
  */
 public class GitPlugin implements Plugin<Project> {
 
     static final String COMMIT_CLEANUP_TASK = "gitCommitCleanUp";
+    static final String RESET_COMMIT_TASK = "gitResetCommit";
     static final String TAG_CLEANUP_TASK = "gitTagCleanUp";
     static final String GIT_TAG_TASK = "gitTag";
     static final String GIT_PUSH_TASK = "gitPush";
@@ -111,9 +113,16 @@ public class GitPlugin implements Plugin<Project> {
 
         TaskMaker.execTask(project, COMMIT_CLEANUP_TASK, new Action<Exec>() {
             public void execute(final Exec t) {
-                t.setDescription("Removes last commit, using 'reset --hard HEAD~'");
-                //TODO replace with combination of 'git reset --soft HEAD~ && git stash' so that we don't lose commits
-                t.commandLine("git", "reset", "--hard", "HEAD~");
+                t.setDescription("Stashes current changes");
+                t.commandLine("git", "stash");
+                t.dependsOn(RESET_COMMIT_TASK);
+            }
+        });
+
+        TaskMaker.execTask(project, RESET_COMMIT_TASK, new Action<Exec>() {
+            public void execute(final Exec t) {
+                t.setDescription("Removes last commit, using 'reset --soft HEAD~'");
+                t.commandLine("git", "reset", "--soft", "HEAD~");
             }
         });
 
