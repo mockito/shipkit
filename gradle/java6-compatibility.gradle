@@ -1,0 +1,8 @@
+allprojects { p ->
+    plugins.withId('java') {
+        p.apply plugin :'ru.vyarus.animalsniffer'
+        p.dependencies {
+            signature 'org.codehaus.mojo.signature:java16:1.1@signature'
+        }
+    }
+}
