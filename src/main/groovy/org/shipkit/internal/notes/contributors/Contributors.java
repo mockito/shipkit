@@ -10,7 +10,7 @@ public class Contributors {
     /**
      * Fetches contributors from GitHub. Needs GitHub auth token.
      *
-     * @param apiUrl address of GitHub api endpoint, for example: "https://api.github.com/"
+     * @param apiUrl address of GitHub api endpoint, for example: "https://api.github.com"
      * @param repository name of GitHub repository, for example: "mockito/mockito"
      * @param readOnlyAuthToken the GitHub auth token
      */
