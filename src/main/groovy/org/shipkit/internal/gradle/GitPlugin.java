@@ -27,13 +27,17 @@ import static org.shipkit.internal.gradle.util.GitUtil.getTag;
  *     <li>gitPush</li>
  *     <li>performGitPush</li>
  *
- *     <li>gitCommitCleanUp</li>
+ *     <li>performGitCommitCleanUp</li>
+ *     <li>gitSoftResetCommit</li>
+ *     <li>gitStash</li>
  *     <li>gitTagCleanUp</li>
  * </ul>
  */
 public class GitPlugin implements Plugin<Project> {
 
-    static final String COMMIT_CLEANUP_TASK = "gitCommitCleanUp";
+    static final String PERFORM_GIT_COMMIT_CLEANUP_TASK = "performGitCommitCleanUp";
+    static final String GIT_STASH_TASK = "gitStash";
+    static final String SOFT_RESET_COMMIT_TASK = "gitSoftResetCommit";
     static final String TAG_CLEANUP_TASK = "gitTagCleanUp";
     static final String GIT_TAG_TASK = "gitTag";
     static final String GIT_PUSH_TASK = "gitPush";
@@ -109,11 +113,25 @@ public class GitPlugin implements Plugin<Project> {
             }
         });
 
-        TaskMaker.execTask(project, COMMIT_CLEANUP_TASK, new Action<Exec>() {
+        TaskMaker.task(project, PERFORM_GIT_COMMIT_CLEANUP_TASK, Task.class, new Action<Task>() {
+            public void execute(final Task t) {
+                t.setDescription("Performs " + SOFT_RESET_COMMIT_TASK + " and " + GIT_STASH_TASK + " tasks.");
+                t.dependsOn(SOFT_RESET_COMMIT_TASK, GIT_STASH_TASK);
+            }
+        });
+
+        TaskMaker.execTask(project, GIT_STASH_TASK, new Action<Exec>() {
             public void execute(final Exec t) {
-                t.setDescription("Removes last commit, using 'reset --hard HEAD~'");
-                //TODO replace with combination of 'git reset --soft HEAD~ && git stash' so that we don't lose commits
-                t.commandLine("git", "reset", "--hard", "HEAD~");
+                t.setDescription("Stashes current changes");
+                t.commandLine("git", "stash");
+                t.mustRunAfter(SOFT_RESET_COMMIT_TASK);
+            }
+        });
+
+        TaskMaker.execTask(project, SOFT_RESET_COMMIT_TASK, new Action<Exec>() {
+            public void execute(final Exec t) {
+                t.setDescription("Removes last commit, using 'reset --soft HEAD~'");
+                t.commandLine("git", "reset", "--soft", "HEAD~");
             }
         });
 
