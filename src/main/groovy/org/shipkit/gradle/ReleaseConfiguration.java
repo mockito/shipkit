@@ -38,7 +38,7 @@ public class ReleaseConfiguration {
         git.setTagPrefix("v"); //so that tags are "v1.0", "v2.3.4"
         git.setReleasableBranchRegex("master|release/.+");  // matches 'master', 'release/2.x', 'release/3.x', etc.
         git.setCommitMessagePostfix("[ci skip]");
-        git.setUser("Shipkit");
+        git.setUser("shipkit-org");
         git.setEmail("<shipkit.org@gmail.com>");
 
         releaseNotes.setFile("docs/release-notes.md");
