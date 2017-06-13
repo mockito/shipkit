@@ -3,6 +3,7 @@ package org.shipkit.internal.gradle
 import org.shipkit.gradle.ReleaseConfiguration
 import org.shipkit.internal.gradle.util.team.TeamParser
 import spock.lang.Specification
+import spock.lang.Unroll
 
 class ReleaseConfigurationTest extends Specification {
 
@@ -44,5 +45,23 @@ class ReleaseConfigurationTest extends Specification {
 
         when: conf.team.contributors = ["ala:"]
         then: thrown(TeamParser.InvalidInput.class)
+    }
+
+    @Unroll
+    def "configures GitHub URL without ending slash when #url used"() {
+        when:
+        conf.gitHub.url = url
+        conf.gitHub.apiUrl = url
+
+        then:
+        conf.gitHub.url == fixedUrl
+        conf.gitHub.apiUrl == fixedUrl
+
+        where:
+        url                      | fixedUrl
+        "https://github.com"     | "https://github.com"
+        "https://github.com/"    | "https://github.com"
+        "https://github.com////" | "https://github.com"
+        "/"                      | ""
     }
 }

@@ -16,7 +16,7 @@ class GitHubTicketFetcher {
 
     private static final Logger LOG = LoggerFactory.getLogger(GitHubTicketFetcher.class);
 
-    Collection<Improvement> fetchTickets(String repository, String readOnlyAuthToken, Collection<String> ticketIds, Collection<String> labels,
+    Collection<Improvement> fetchTickets(String apiUrl, String repository, String readOnlyAuthToken, Collection<String> ticketIds, Collection<String> labels,
                                          boolean onlyPullRequests) {
         List<Improvement> out = new LinkedList<Improvement>();
         if (ticketIds.isEmpty()) {
@@ -27,7 +27,7 @@ class GitHubTicketFetcher {
         Queue<Long> tickets = queuedTicketNumbers(ticketIds);
 
         try {
-            GitHubIssues issues = GitHubIssues.forRepo(repository, readOnlyAuthToken)
+            GitHubIssues issues = GitHubIssues.forRepo(apiUrl, repository, readOnlyAuthToken)
                     .state("closed")
                     .labels(StringUtil.join(labels, ","))
                     .filter("all")
@@ -107,35 +107,36 @@ class GitHubTicketFetcher {
             return fetcher.nextPage();
         }
 
-        static GitHubIssuesBuilder forRepo(String repository, String readOnlyAuthToken) {
-            return new GitHubIssuesBuilder(repository, readOnlyAuthToken);
+        static GitHubIssuesBuilder forRepo(String apiUrl, String repository, String readOnlyAuthToken) {
+            return new GitHubIssuesBuilder(apiUrl, repository, readOnlyAuthToken);
         }
 
         private static class GitHubIssuesBuilder {
-            private final String readOnlyAuthToken;
+            private final String apiUrl;
             private final String repository;
-            private String state;
-            private String filter;
-            private String direction;
-            private String labels;
 
-            GitHubIssuesBuilder(String repository, String readOnlyAuthToken) {
+            private Map<String, String> parameters;
+
+            GitHubIssuesBuilder(String apiUrl, String repository, String readOnlyAuthToken) {
+                this.apiUrl = apiUrl;
                 this.repository = repository;
-                this.readOnlyAuthToken = readOnlyAuthToken;
+
+                parameters = new HashMap<String, String>();
+                parameters.put("access_token", readOnlyAuthToken);
             }
 
             GitHubIssuesBuilder state(String state) {
-                this.state = state;
+                parameters.put("state", state);
                 return this;
             }
 
             GitHubIssuesBuilder filter(String filter) {
-                this.filter = filter;
+                parameters.put("filter", filter);
                 return this;
             }
 
             GitHubIssuesBuilder direction(String direction) {
-                this.direction = direction;
+                parameters.put("direction", direction);
                 return this;
             }
 
@@ -144,22 +145,21 @@ class GitHubTicketFetcher {
              * Empty string is ok and means that we are interested in all issues, regardless of the label.
              */
             public GitHubIssuesBuilder labels(String labels) {
-                this.labels = labels;
+                parameters.put("labels", labels);
                 return this;
             }
 
             GitHubIssues browse() {
                 // see API doc: https://developer.github.com/v3/issues/
-                String nextPageUrl = String.format("%s%s%s%s%s%s%s",
-                        "https://api.github.com/repos/" + repository + "/issues",
-                        "?access_token=" + readOnlyAuthToken,
-                        state == null ? "" : "&state=" + state,
-                        filter == null ? "" : "&filter=" + filter,
-                        "&labels=" + labels,
-                        direction == null ? "" : "&direction=" + direction,
-                        "&page=1"
-                );
-                return new GitHubIssues(nextPageUrl);
+                StringBuilder urlBuilder = new StringBuilder(apiUrl)
+                        .append("/repos/").append(repository)
+                        .append("/issues?page=1");
+
+                for (Map.Entry<String, String> parameter : parameters.entrySet()) {
+                    urlBuilder.append("&").append(parameter.getKey()).append("=").append(parameter.getValue());
+                }
+
+                return new GitHubIssues(urlBuilder.toString());
             }
         }
     }

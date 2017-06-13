@@ -21,13 +21,13 @@ class AllContributorsFetcher {
 
     private static final Logger LOG = Logging.getLogger(AllContributorsFetcher.class);
 
-    ProjectContributorsSet fetchAllContributorsForProject(String repository, String readOnlyAuthToken) {
+    ProjectContributorsSet fetchAllContributorsForProject(String apiUrl, String repository, String readOnlyAuthToken) {
         LOG.lifecycle("  Querying GitHub API for all contributors for project");
         ProjectContributorsSet result = new DefaultProjectContributorsSet();
 
         try {
             GitHubProjectContributors contributors =
-                    GitHubProjectContributors.authenticatingWith(repository, readOnlyAuthToken).build();
+                    GitHubProjectContributors.authenticatingWith(apiUrl, repository, readOnlyAuthToken).build();
 
             while(contributors.hasNextPage()) {
                 List<JsonObject> page = contributors.nextPage();
@@ -57,8 +57,8 @@ class AllContributorsFetcher {
         private final GitHubListFetcher fetcher;
         private List<JsonObject> lastFetchedPage;
 
-        static GitHubProjectContributorsBuilder authenticatingWith(String repository, String readOnlyAuthToken) {
-            return new GitHubProjectContributorsBuilder(repository, readOnlyAuthToken);
+        static GitHubProjectContributorsBuilder authenticatingWith(String apiUrl, String repository, String readOnlyAuthToken) {
+            return new GitHubProjectContributorsBuilder(apiUrl, repository, readOnlyAuthToken);
         }
 
         private GitHubProjectContributors(String nextPageUrl) {
@@ -77,17 +77,19 @@ class AllContributorsFetcher {
 
     private static class GitHubProjectContributorsBuilder {
 
+        private final String apiUrl;
         private final String repository;
         private final String readOnlyAuthToken;
 
-        public GitHubProjectContributorsBuilder(String repository, String readOnlyAuthToken) {
+        public GitHubProjectContributorsBuilder(String apiUrl, String repository, String readOnlyAuthToken) {
+            this.apiUrl = apiUrl;
             this.repository = repository;
             this.readOnlyAuthToken = readOnlyAuthToken;
         }
 
         GitHubProjectContributors build() {
             // see API doc: https://developer.github.com/v3/repos/#list-contributors
-            String nextPageUrl = "https://api.github.com/repos/" + repository + "/contributors" +
+            String nextPageUrl = apiUrl + "/repos/" + repository + "/contributors" +
                     "?access_token=" + readOnlyAuthToken +
                     "&per_page=100";
             return new GitHubProjectContributors(nextPageUrl);

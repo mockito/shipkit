@@ -35,6 +35,7 @@ public class UpdateReleaseNotesTask extends DefaultTask {
 
     private String previousVersion;
     private File releaseNotesFile;
+    private String gitHubUrl;
     private String gitHubRepository;
     private Map<String, String> gitHubLabelMapping = new LinkedHashMap<String, String>();
     private String publicationRepository;
@@ -122,6 +123,22 @@ public class UpdateReleaseNotesTask extends DefaultTask {
      */
     public void setTagPrefix(String tagPrefix) {
         this.tagPrefix = tagPrefix;
+    }
+
+    /**
+     * GitHub URL address, for example: https://github.com
+     * See {@link ReleaseConfiguration.GitHub#getUrl()}
+     */
+    @Input
+    public String getGitHubUrl() {
+        return gitHubUrl;
+    }
+
+    /**
+     * See {@link #getGitHubUrl()}
+     */
+    public void setGitHubUrl(String gitHubUrl) {
+        this.gitHubUrl = gitHubUrl;
     }
 
     /**
@@ -267,6 +284,10 @@ public class UpdateReleaseNotesTask extends DefaultTask {
     }
 
     private void assertConfigured() {
+        if (gitHubUrl == null || gitHubUrl.trim().isEmpty()) {
+            throw new GradleException("'" + this.getPath() + ".gitHubUrl' must be configured.");
+        }
+
         if (gitHubRepository == null || gitHubRepository.trim().isEmpty()) {
             throw new GradleException("'" + this.getPath() + ".gitHubRepository' must be configured.");
         }
@@ -352,7 +373,7 @@ public class UpdateReleaseNotesTask extends DefaultTask {
 
     public String getVcsCommitTemplate() {
         if(previousVersion != null) {
-            return "https://github.com/" + gitHubRepository + "/compare/"
+            return gitHubUrl + "/" + gitHubRepository + "/compare/"
                     + tagPrefix + previousVersion + "..." + tagPrefix + version;
         } else{
             return "";

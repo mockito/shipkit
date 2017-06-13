@@ -41,6 +41,9 @@ public class ReleaseConfiguration {
         git.setUser("shipkit-org");
         git.setEmail("<shipkit.org@gmail.com>");
 
+        gitHub.setUrl("https://github.com");
+        gitHub.setApiUrl("https://api.github.com");
+
         releaseNotes.setFile("docs/release-notes.md");
         releaseNotes.setIgnoreCommitsContaining(asList("[ci skip]"));
         releaseNotes.setLabelMapping(Collections.<String, String>emptyMap());
@@ -117,6 +120,34 @@ public class ReleaseConfiguration {
     }
 
     public class GitHub {
+
+        /**
+         * GitHub URL address, for example: https://github.com
+         */
+        public String getUrl() {
+            return getStringUrl("gitHub.url");
+        }
+
+        /**
+         * See {@link #getUrl()}
+         */
+        public void setUrl(String url) {
+            configuration.put("gitHub.url", url);
+        }
+
+        /**
+         * GitHub API endpoint address, for example:  https://api.github.com
+         */
+        public String getApiUrl() {
+            return getStringUrl("gitHub.apiUrl");
+        }
+
+        /**
+         * See {@link #getApiUrl()}
+         */
+        public void setApiUrl(String apiUrl) {
+            configuration.put("gitHub.apiUrl", apiUrl);
+        }
 
         /**
          * GitHub repository name, for example: "mockito/shipkit"
@@ -367,6 +398,14 @@ public class ReleaseConfiguration {
     //2. Move handling to this new object and make it testable, along with env variables
     private String getString(String key) {
         return getString(key, NO_ENV_VARIABLE);
+    }
+
+    private String getStringUrl(String key) {
+        String url = getString(key);
+        if(url.endsWith("/")) {
+            return url.replaceAll("/*$", "");
+        }
+        return url;
     }
 
     private Boolean getBoolean(String key) {

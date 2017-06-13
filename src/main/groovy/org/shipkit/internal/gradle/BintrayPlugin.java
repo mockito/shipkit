@@ -84,15 +84,15 @@ public class BintrayPlugin implements Plugin<Project> {
                 }
 
                 if (pkg.getWebsiteUrl() == null) {
-                    pkg.setWebsiteUrl("https://github.com/" + conf.getGitHub().getRepository());
+                    pkg.setWebsiteUrl(conf.getGitHub().getUrl() + "/" + conf.getGitHub().getRepository());
                 }
 
                 if (pkg.getIssueTrackerUrl() == null) {
-                    pkg.setIssueTrackerUrl("https://github.com/" + conf.getGitHub().getRepository() + "/issues");
+                    pkg.setIssueTrackerUrl(conf.getGitHub().getUrl() + "/" + conf.getGitHub().getRepository() + "/issues");
                 }
 
                 if (pkg.getVcsUrl() == null) {
-                    pkg.setVcsUrl("https://github.com/" + conf.getGitHub().getRepository() + ".git");
+                    pkg.setVcsUrl(conf.getGitHub().getUrl() + "/" + conf.getGitHub().getRepository() + ".git");
                 }
             }
         });
