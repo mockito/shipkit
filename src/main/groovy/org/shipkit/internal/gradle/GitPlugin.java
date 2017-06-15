@@ -106,7 +106,7 @@ public class GitPlugin implements Plugin<Project> {
             }
         });
 
-        TaskMaker.task(project, PERFORM_GIT_PUSH_TASK, Task.class, new Action<Task>() {
+        final Task performPush = TaskMaker.task(project, PERFORM_GIT_PUSH_TASK, Task.class, new Action<Task>() {
             public void execute(final Task t) {
                 t.setDescription("Performs gitCommit, gitTag and gitPush tasks and all tasks dependent on them.");
                 t.dependsOn(GIT_COMMIT_TASK, GIT_TAG_TASK, GIT_PUSH_TASK);
@@ -117,6 +117,7 @@ public class GitPlugin implements Plugin<Project> {
             public void execute(final Task t) {
                 t.setDescription("Performs " + SOFT_RESET_COMMIT_TASK + " and " + GIT_STASH_TASK + " tasks.");
                 t.dependsOn(SOFT_RESET_COMMIT_TASK, GIT_STASH_TASK);
+                t.mustRunAfter(performPush);
             }
         });
 
@@ -139,6 +140,7 @@ public class GitPlugin implements Plugin<Project> {
             public void execute(final Exec t) {
                 t.setDescription("Deletes version tag '" + getTag(conf, project) + "'");
                 t.commandLine("git", "tag", "-d", getTag(conf, project));
+                t.mustRunAfter(performPush);
             }
         });
     }

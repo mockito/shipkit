@@ -86,9 +86,6 @@ public class ShipkitJavaPlugin implements Plugin<Project> {
 
                 t.dependsOn(VersioningPlugin.BUMP_VERSION_FILE_TASK, "updateReleaseNotes");
                 t.dependsOn(GitPlugin.PERFORM_GIT_PUSH_TASK);
-
-                project.getTasks().getByName(GitPlugin.PERFORM_GIT_COMMIT_CLEANUP_TASK).mustRunAfter(t);
-                project.getTasks().getByName(GitPlugin.TAG_CLEANUP_TASK).mustRunAfter(t);
             }
         });
 
