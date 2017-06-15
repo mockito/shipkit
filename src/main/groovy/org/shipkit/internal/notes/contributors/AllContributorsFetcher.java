@@ -35,7 +35,7 @@ class AllContributorsFetcher {
             }
         } catch (Exception e) {
             throw new RuntimeException("Problems fetching and parsing contributors from GitHub repo: '" + repository
-                    + "', using read only token: 'readOnlyAuthToken'", e);
+                    + "', using read only token: '" + readOnlyAuthToken + "'", e);
         }
         return result;
     }
