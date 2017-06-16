@@ -17,6 +17,7 @@ apply plugin: 'groovy'
 apply plugin: 'com.gradle.plugin-publish'
 apply plugin: 'checkstyle'
 apply plugin: 'codenarc'
+// TODO change to org.shipkit.gradle-plugin
 apply plugin: 'org.shipkit.gradle-plugin-releasing'
 apply plugin: 'org.shipkit.release-needed'
 
@@ -71,7 +72,7 @@ pluginBundle {
         }
 
         gradlePluginReleasingPlugin {
-            id = 'org.shipkit.gradle-plugin-releasing'
+            id = 'org.shipkit.gradle-plugin'
             displayName = 'Shipkit automated versioning and Travis CI integration'
             tags = ['shipkit', 'continuous delivery', 'release', 'versioning', 'auto-versioning', 'semantic-versioning', 'travis']
         }
