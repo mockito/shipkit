@@ -6,6 +6,6 @@ class GradlePluginReleasingPluginTest extends PluginSpecification {
 
     def "applies"(){
         expect:
-        project.plugins.apply("org.shipkit.gradle-plugin-releasing")
+        project.plugins.apply("org.shipkit.gradle-plugin")
     }
 }
