@@ -15,11 +15,22 @@ class ConcurrentDispatcherTest extends Specification {
         functionMock.apply(_) >>> list.collect { it + 5 }
 
         when:
-        Set result = new ConcurrentDispatcher().dispatch(functionMock,list)
+        Set result = new ConcurrentDispatcher().dispatch(functionMock, list)
 
         then:
         result
         result.size() == listSize
         result == (6 .. 105).toSet()
+    }
+
+    def "dispatch using empty list"() {
+        def list = []
+        def functionMock = Mock(Function)
+
+        when:
+        Set result = new ConcurrentDispatcher().dispatch(functionMock, list)
+
+        then:
+        result.isEmpty()
     }
 }
