@@ -23,9 +23,22 @@ class FetcherCallable<V, R> implements Callable<Set<R>> {
     @Override
     public Set<R> call() throws Exception {
         Set<R> result = new HashSet<R>();
-        for (V v : list) {
+        V v = getFromList();
+        while (v != null) {
             result.add(function.apply(v));
+            v = getFromList();
         }
         return result;
+    }
+
+    private V getFromList() {
+        V v = null;
+        synchronized (list) {
+            int size = list.size();
+            if (size > 0) {
+                v = list.remove(size - 1);
+            }
+        }
+        return v;
     }
 }
