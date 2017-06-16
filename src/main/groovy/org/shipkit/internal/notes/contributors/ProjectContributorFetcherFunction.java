@@ -26,9 +26,7 @@ class ProjectContributorFetcherFunction implements Function<JsonObject, ProjectC
         JsonObject user;
         try {
             user = objectFetcher.getPage(url);
-        } catch (IOException e) {
-            throw new RuntimeException("Error occurred while fetching contributor using " + url + "!", e);
-        } catch (DeserializationException e) {
+        } catch (Exception e) {
             throw new RuntimeException("Error occurred while fetching contributor using " + url + "!", e);
         }
 
