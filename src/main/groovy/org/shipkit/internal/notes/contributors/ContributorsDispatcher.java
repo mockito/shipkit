@@ -14,7 +14,7 @@ import java.util.concurrent.Future;
 
 public class ContributorsDispatcher {
 
-    public static final int N_THREADS = 4;
+    private static final int N_THREADS = 4;
 
     public Set<ProjectContributor> dispatch(List<JsonObject> page, String readOnlyAuthToken) {
         Set<ProjectContributor> result = new HashSet<ProjectContributor>();
