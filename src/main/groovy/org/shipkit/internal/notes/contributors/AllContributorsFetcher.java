@@ -5,11 +5,11 @@ import org.gradle.api.logging.Logging;
 import org.json.simple.DeserializationException;
 import org.json.simple.JsonObject;
 import org.shipkit.internal.notes.model.ProjectContributor;
+import org.shipkit.internal.notes.util.Function;
 import org.shipkit.internal.notes.util.GitHubListFetcher;
 import org.shipkit.internal.notes.util.GitHubObjectFetcher;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -40,16 +40,13 @@ class AllContributorsFetcher {
         return result;
     }
 
-    private Set<ProjectContributor> extractContributors(List<JsonObject> page, String readOnlyAuthToken) throws IOException, DeserializationException {
-        Set<ProjectContributor> result = new HashSet<ProjectContributor>();
-        for (JsonObject contributor : page) {
-            //Since returned contributor does not have 'name' element, we need to fetch the user data to get his name
-            //TODO add static caching of this. Names don't change that often, let's just cache this forever in build cache.
-            String url = (String) contributor.get("url");
-            GitHubObjectFetcher userFetcher = new GitHubObjectFetcher(url, readOnlyAuthToken);
-            JsonObject user = userFetcher.getPage();
-            result.add(GitHubAllContributorsJson.toContributor(contributor, user));
-        }
+    private Set<ProjectContributor> extractContributors(List<JsonObject> page, final String readOnlyAuthToken) throws IOException, DeserializationException {
+        //Since returned contributor does not have 'name' element, we need to fetch the user data to get his name
+        //TODO add static caching of this. Names don't change that often, let's just cache this forever in build cache.
+        GitHubObjectFetcher objectFetcher = new GitHubObjectFetcher(readOnlyAuthToken);
+        Function<JsonObject, ProjectContributor> projectContributorFetcherFunction = new ProjectContributorFetcherFunction(objectFetcher);
+
+        Set<ProjectContributor> result = new ConcurrentDispatcher().dispatch(projectContributorFetcherFunction, page);
         return result;
     }
 
