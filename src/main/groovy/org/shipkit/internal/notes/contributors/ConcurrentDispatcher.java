@@ -30,7 +30,7 @@ public class ConcurrentDispatcher {
             try {
                 result.addAll(future.get());
             } catch (Exception e) {
-                throw new RuntimeException("Error occurred while fetching contributors!", e);
+                throw new RuntimeException("Error occurred while dispatching!", e);
             }
         }
         return result;
