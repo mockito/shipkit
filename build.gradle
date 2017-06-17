@@ -48,12 +48,16 @@ dependencies {
 
 pluginBundle {
     website = 'http://shipkit.org/'
-    vcsUrl = 'https://github.com/mockito/mockito-release-tools'
+    vcsUrl = 'https://github.com/mockito/shipkit'
     description = 'Release tools and Gradle plugins that automate Mockito continuous delivery.'
     tags = ['shipkit', 'continuous delivery', 'release']
 
     plugins {
-        //TODO update plugins
+        shipkitJavaPlugin {
+            id = 'org.shipkit.java'
+            displayName = 'Shipkit automated releases for Java libraries'
+        }
+
         releaseNotesPlugin {
             id = 'org.shipkit.release-notes'
             displayName = 'Shipkit automated release notes generation plugin'
