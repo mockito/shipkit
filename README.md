@@ -18,11 +18,13 @@ and automatically publish new versions to
 
 ## We need help!
 
-If the vision of the project connects with you help us!!! Get in touch on the [mailing list](https://groups.google.com/forum/#!forum/mockito-release-tools).
+If the vision of the project connects with you help us!!!
 
-- Implementing features - see the issue marked with "[please contribute](https://github.com/mockito/shipkit/issues?q=is%3Aissue+is%3Aopen+label%3A%22please+contribute%21%22)" label.
-- Using the Shipkit in your project and giving us feedback.
-- Spreading the word of what we're doing, letting us know about other project with similar goals. You can GitHub issue tracker for reaching out.
+- Open a [new GitHub ticket](https://github.com/mockito/shipkit/issues/new) to start conversation, we love feedback, brainstorming and discussions.
+- Drop a comment to one of the existing "[please contribute](https://github.com/mockito/shipkit/issues?q=is%3Aissue+is%3Aopen+label%3A%22please+contribute%21%22)" tickets, and tell us that you are interesting in implementing it.
+- Try out Shipkit in your project and give feedback
+- If you like emails, join the [mailing list](https://groups.google.com/forum/#!forum/shipkit), but be warned that we rarely use emails, and much more prefer GitHub tickets.
+- Spread the word about Shipkit, let us know about other projects with similar goals.
 
 ## History
 
@@ -35,6 +37,7 @@ As much as useful the toolkit was to drive Mockito releases, we needed to make i
 - 2017, March - [Wojtek Wilk](https://github.com/wwilk) joins the team, implements release avoidance when binaries aren't changed in comparison to previous release, starts driving [API compatibility](https://github.com/mockito/shipkit/issues/105) validation and Shipkit dogfooding.
 - 2017, April - we found a neat name for our project: "Shipit", a toolkit for shipping it! We registered the domain: http://shipkit.org
 - 2017, May - there are 5 contributors in total, we expanded the vision of the project, and currently working on killer features like: automated e2e testing with library consumers + automated pushes of version upgrades [#85](https://github.com/mockito/shipkit/issues/85), [A/B testing](https://github.com/mockito/shipkit/issues/113) of build results when upgrading dependencies.
+- 2017, June - "Ship every change to production!" presentation at Software Architecture conference in Santa Clara ([details](https://github.com/mockito/shipkit/wiki/Conferences-and-Meetups)).
 
 ## Plans
 
@@ -45,7 +48,8 @@ As much as useful the toolkit was to drive Mockito releases, we needed to make i
   - avoiding releases when binaries are the same
   - pulling information about contributors and including it in release notes and pom.xml files
   - and all that in a sweet little package, fully integrated, neatly automated, easy to roll out
-- 2017, July - we will be present at [Confitura '17 conference](https://2017.confitura.pl) in Warsaw, PL, on 1st of July. We submitted a paper, if it gets accepted, Shipkit will be revealed in all its might!
+- 2017, July - we will be present at [Confitura '17 conference](https://2017.confitura.pl) in Warsaw, PL, on 1st of July.
+  - our presentation was accepted!
 
 ## Future
 
