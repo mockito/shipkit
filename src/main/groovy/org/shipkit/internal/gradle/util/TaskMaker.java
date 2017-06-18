@@ -20,7 +20,7 @@ public class TaskMaker {
 
     //TODO remove this property, all current client of this property should be using factory methods
     // available on this class to create tasks
-    public final static String TASK_GROUP = "Mockito Release Tools";
+    public final static String TASK_GROUP = "Shipkit";
 
     /**
      * Creates exec task with preconfigured defaults
