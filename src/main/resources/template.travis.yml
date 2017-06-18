@@ -19,7 +19,7 @@ branches:
 
 #build and test the release logic
 script:
-  - ./gradlew build testRelease -s -i
+  - ./gradlew build -s -i
 
 #check release criteria and make release if criteria are met!
 after_success:
