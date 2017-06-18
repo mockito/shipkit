@@ -11,7 +11,12 @@ import java.io.File;
 
 /**
  * Creates task initShipkit that all other init tasks should depend on
- * so that running it would create all configuration needed to start Shipkit
+ * so that running it would create all configuration needed to start Shipkit.
+ *
+ * Adds tasks:
+ * <ul>
+ *     <li>'initTravis' - of type {@link InitTravisTask} - generates '.travis.yml' file</li>
+ * </ul>
  */
 public class InitPlugin implements Plugin<Project> {
 

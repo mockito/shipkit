@@ -11,7 +11,7 @@ import java.io.File;
 import java.io.InputStream;
 
 /**
- * Creates .travis.yml file for shipping with Shipkit
+ * Creates default '.travis.yml' file for shipping with Shipkit
  */
 public class InitTravisTask extends DefaultTask {
 
