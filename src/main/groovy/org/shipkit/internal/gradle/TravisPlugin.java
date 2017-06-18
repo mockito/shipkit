@@ -3,7 +3,6 @@ package org.shipkit.internal.gradle;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.ReleaseNeededTask;
 import org.shipkit.internal.gradle.configuration.BasicValidator;
 import org.shipkit.internal.gradle.configuration.LazyConfiguration;
@@ -22,12 +21,6 @@ public class TravisPlugin implements Plugin<Project> {
     @Override
     public void apply(final Project project) {
         project.getPlugins().apply(GitSetupPlugin.class);
-        ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
-
-        String buildNo = System.getenv("TRAVIS_BUILD_NUMBER");
-        if (buildNo != null) {
-            conf.getGit().setCommitMessagePostfix("by Travis CI build " + buildNo + " [ci skip]");
-        }
 
         String pr = System.getenv("TRAVIS_PULL_REQUEST");
         final boolean isPullRequest = pr != null && !pr.trim().isEmpty() && !pr.equals("false");

@@ -81,7 +81,9 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
             // sets some defaults so that they can't be used to run any task (except for bootstrap ones)
             // but also configuration doesn't fail when running Shipkit for the first time
             // and configuration files are not created yet
-            configuration.getGitHub().setRepository("mockito/mockito-release-tools");
+            configuration.getGitHub().setUrl("https://github.com");
+            configuration.getGitHub().setApiUrl("https://api.github.com");
+            configuration.getGitHub().setRepository("mockito/shipkit");
             configuration.getGitHub().setReadOnlyAuthToken("e7fe8fcfd6ffedac384c8c4c71b2a48e646ed1ab");
         } else {
             // apply configuration properties from config file

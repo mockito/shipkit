@@ -15,10 +15,10 @@ import static org.shipkit.internal.gradle.util.team.TeamParser.validateTeamMembe
  * Configuration of the releasing plugin.
  * <p>
  * Example of a release configuration of a working example project
- * <a href="https://github.com/mockito/mockito-release-tools-example/blob/master/gradle/release.gradle">on GitHub</a>.
+ * <a href="https://github.com/mockito/shipkit-example/blob/master/gradle/shipkit.gradle">on GitHub</a>.
  * <p>
  * For minimal and full configuration, see the
- * <a href="https://github.com/mockito/mockito-release-tools/issues/76">issue 76</a>
+ * <a href="https://github.com/mockito/shipkit/issues/76">issue 76</a>
  */
 public class ReleaseConfiguration {
 
@@ -38,8 +38,14 @@ public class ReleaseConfiguration {
         git.setTagPrefix("v"); //so that tags are "v1.0", "v2.3.4"
         git.setReleasableBranchRegex("master|release/.+");  // matches 'master', 'release/2.x', 'release/3.x', etc.
         git.setCommitMessagePostfix("[ci skip]");
-        git.setUser("Shipkit");
+        git.setUser("shipkit-org");
         git.setEmail("<shipkit.org@gmail.com>");
+
+        gitHub.setUrl("https://github.com");
+        gitHub.setApiUrl("https://api.github.com");
+
+        //It does not seem that write auth user is used by GitHub in any way
+        gitHub.setWriteAuthUser("dummy");
 
         releaseNotes.setFile("docs/release-notes.md");
         releaseNotes.setIgnoreCommitsContaining(asList("[ci skip]"));
@@ -117,6 +123,34 @@ public class ReleaseConfiguration {
     }
 
     public class GitHub {
+
+        /**
+         * GitHub URL address, for example: https://github.com
+         */
+        public String getUrl() {
+            return getStringUrl("gitHub.url");
+        }
+
+        /**
+         * See {@link #getUrl()}
+         */
+        public void setUrl(String url) {
+            configuration.put("gitHub.url", url);
+        }
+
+        /**
+         * GitHub API endpoint address, for example:  https://api.github.com
+         */
+        public String getApiUrl() {
+            return getStringUrl("gitHub.apiUrl");
+        }
+
+        /**
+         * See {@link #getApiUrl()}
+         */
+        public void setApiUrl(String apiUrl) {
+            configuration.put("gitHub.apiUrl", apiUrl);
+        }
 
         /**
          * GitHub repository name, for example: "mockito/shipkit"
@@ -367,6 +401,14 @@ public class ReleaseConfiguration {
     //2. Move handling to this new object and make it testable, along with env variables
     private String getString(String key) {
         return getString(key, NO_ENV_VARIABLE);
+    }
+
+    private String getStringUrl(String key) {
+        String url = getString(key);
+        if(url.endsWith("/")) {
+            return url.replaceAll("/*$", "");
+        }
+        return url;
     }
 
     private Boolean getBoolean(String key) {

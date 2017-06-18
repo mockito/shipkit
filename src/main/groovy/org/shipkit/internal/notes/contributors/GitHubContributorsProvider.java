@@ -6,10 +6,12 @@ import java.util.Collection;
 
 public class GitHubContributorsProvider implements ContributorsProvider {
 
+    private final String apiUrl;
     private final String repository;
     private final String readOnlyAuthToken;
 
-    GitHubContributorsProvider(String repository, String readOnlyAuthToken) {
+    GitHubContributorsProvider(String apiUrl, String repository, String readOnlyAuthToken) {
+        this.apiUrl = apiUrl;
         this.repository = repository;
         this.readOnlyAuthToken = readOnlyAuthToken;
     }
@@ -21,8 +23,8 @@ public class GitHubContributorsProvider implements ContributorsProvider {
 
     @Override
     public ProjectContributorsSet getAllContributorsForProject() {
-        ProjectContributorsSet contributors = new AllContributorsFetcher().fetchAllContributorsForProject(repository, readOnlyAuthToken);
-        Collection<Contributor> recent = new RecentContributorsFetcher().fetchContributorsSinceYesterday(repository, readOnlyAuthToken);
+        ProjectContributorsSet contributors = new AllContributorsFetcher().fetchAllContributorsForProject(apiUrl, repository, readOnlyAuthToken);
+        Collection<Contributor> recent = new RecentContributorsFetcher().fetchContributorsSinceYesterday(apiUrl, repository, readOnlyAuthToken);
         return mergeContributors(contributors, recent);
     }
 

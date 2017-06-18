@@ -11,7 +11,7 @@ import static org.shipkit.internal.gradle.util.StringUtil.capitalize;
 /**
  * This plugin tests your library end-to-end (e2e) using client projects.
  * Plugin clones client projects to '$buildDir/project-name-pristine' first, next clone project from 'pristine' to
- * '$buildDir/project-name-work' and execute 'testRelease' task using the newest mockito-release-tools version
+ * '$buildDir/project-name-work' and execute 'testRelease' task using the newest shipkit version
  *
  * Adds tasks:
  * <ul>

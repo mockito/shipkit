@@ -20,9 +20,9 @@ class DefaultReleasedVersionsProvider implements ReleasedVersionsProvider {
     @Override
     public Collection<ReleasedVersion> getReleasedVersions(String headVersion, Date headDate, Collection<String> versions, String tagPrefix) {
         //collect the versions
-        if (versions.size() == 0 || (versions.size() == 1 && headVersion == null)) {
+        if (versions.size() == 0 && headVersion == null) {
             throw new IllegalArgumentException("Not enough versions supplied." +
-                    "\n  I need at least 2 versions." +
+                    "\n  I need at least 1 version." +
                     "\n   - head version: " + headVersion +
                     "\n   - versions: " + versions);
         }
@@ -42,7 +42,8 @@ class DefaultReleasedVersionsProvider implements ReleasedVersionsProvider {
         }
 
         if (headVersion != null) {
-            DefaultReleasedVersion head = new DefaultReleasedVersion(headVersion, headDate, "HEAD", result.get(0).getRev());
+            String prev = result.isEmpty() ? null : result.get(0).getRev();
+            DefaultReleasedVersion head = new DefaultReleasedVersion(headVersion, headDate, "HEAD", prev);
             result.addFirst(head);
         }
         return result;

@@ -31,6 +31,7 @@ public class ContributorsPlugin implements Plugin<Project> {
                 task.setGroup(TaskMaker.TASK_GROUP);
                 task.setDescription("Fetch info about all project contributors from GitHub and store it in file");
                 task.setOutputFile(contributorsFile(project));
+                task.setApiUrl(conf.getGitHub().getApiUrl());
                 task.setReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
                 task.setRepository(conf.getGitHub().getRepository());
                 task.setEnabled(conf.getTeam().getContributors().isEmpty());

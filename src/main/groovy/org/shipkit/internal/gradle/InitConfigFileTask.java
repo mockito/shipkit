@@ -18,7 +18,7 @@ public class InitConfigFileTask extends DefaultTask{
 
     private File configFile;
     private GitOriginRepoProvider gitOriginRepoProvider;
-    public static final String FALLBACK_GITHUB_REPO = "mockito/mockito-release-tools-example";
+    public static final String FALLBACK_GITHUB_REPO = "mockito/shipkit-example";
 
     public InitConfigFileTask(){
         ProcessRunner runner = new DefaultProcessRunner(getProject().getProjectDir());
@@ -30,7 +30,8 @@ public class InitConfigFileTask extends DefaultTask{
             LOG.lifecycle("  Shipkit configuration already exists, nothing to do. Configuration file: {}", configFile.getPath());
         } else{
             createShipKitConfigFile();
-            LOG.lifecycle("  Shipkit configuration created! Please review before committing: ", configFile.getPath());
+            LOG.lifecycle("  Shipkit configuration created at {}!\n" +
+                    "  You can modify it manually. Remember to check it into VCS!", configFile.getPath());
         }
     }
 
@@ -39,15 +40,16 @@ public class InitConfigFileTask extends DefaultTask{
         String content =
                 new TemplateResolver(DEFAULT_SHIPKIT_CONFIG_FILE_CONTENT)
                         .withProperty("gitHub.repository", defaultGitRepo)
-                        .withProperty("gitHub.writeAuthUser", "shipkit")
-                        .withProperty("gitHub.readOnlyAuthToken", "e7fe8fcfd6ffedac384c8c4c71b2a48e646ed1ab")
+                        .withProperty("gitHub.writeAuthUser", "shipkit-org")
+                        .withProperty("gitHub.readOnlyAuthToken", "76826c9ec886612f504d12fd4268b16721c4f85d")
 
-                        .withProperty("bintray.pkg.repo", "examples")
-                        .withProperty("bintray.pkg.user", "szczepiq")
-                        .withProperty("bintray.pkg.userOrg", "shipkit")
-                        .withProperty("bintray.pkg.name", "basic")
+                        .withProperty("bintray.key", "7ea297848ca948adb7d3ee92a83292112d7ae989")
+                        .withProperty("bintray.pkg.repo", "bootstrap")
+                        .withProperty("bintray.pkg.user", "shipkit-bootstrap-bot")
+                        .withProperty("bintray.pkg.userOrg", "shipkit-bootstrap")
+                        .withProperty("bintray.pkg.name", "maven")
                         .withProperty("bintray.pkg.licenses", "['MIT']")
-                        .withProperty("bintray.pkg.labels", "['continuous delivery', 'release automation', 'mockito']")
+                        .withProperty("bintray.pkg.labels", "['continuous delivery', 'release automation', 'shipkit']")
 
                         .resolve();
 
@@ -82,12 +84,14 @@ public class InitConfigFileTask extends DefaultTask{
                     "shipkit {\n"+
                     "   gitHub.repository = \"@gitHub.repository@\"\n"+
                     "   gitHub.readOnlyAuthToken = \"@gitHub.readOnlyAuthToken@\"\n"+
+                    //TODO gitHub.writeAuthUser is potentially not needed, see https://github.com/mockito/shipkit/issues/227
                     "   gitHub.writeAuthUser = \"@gitHub.writeAuthUser@\"\n"+
                     "}\n"+
                     "\n"+
                     "allprojects {\n"+
-                    "   plugins.withId(\"org.mockito.mockito-release-tools.bintray\") {\n"+
+                    "   plugins.withId(\"org.shipkit.bintray\") {\n"+
                     "       bintray {\n"+
+                    "           key = '@bintray.key@'\n"+
                     "           pkg {\n"+
                     "               repo = '@bintray.pkg.repo@'\n"+
                     "               user = '@bintray.pkg.user@'\n"+

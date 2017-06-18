@@ -27,7 +27,7 @@ class GitUtilTest extends Specification {
 
         conf.gitHub.setWriteAuthUser("wwilk")
         conf.gitHub.setWriteAuthToken("token")
-        conf.gitHub.setRepository("mockito-release-tools")
+        conf.gitHub.setRepository("shipkit")
         conf.setDryRun(false)
         project.getVersion() >> "0.0.1"
 
@@ -35,7 +35,7 @@ class GitUtilTest extends Specification {
         def result = GitUtil.getGitPushArgs(conf, project, "master")
 
         then:
-        result == ["git", "push", "https://wwilk:token@github.com/mockito-release-tools.git", "master", "v0.0.1"]
+        result == ["git", "push", "https://wwilk:token@github.com/shipkit.git", "master", "v0.0.1"]
     }
 
     def "git push with --dry-run" () {
@@ -44,7 +44,7 @@ class GitUtilTest extends Specification {
 
         conf.gitHub.setWriteAuthUser("wwilk")
         conf.gitHub.setWriteAuthToken("token")
-        conf.gitHub.setRepository("mockito-release-tools")
+        conf.gitHub.setRepository("shipkit")
         conf.setDryRun(true)
         project.getVersion() >> "0.0.1"
 
@@ -52,6 +52,6 @@ class GitUtilTest extends Specification {
         def result = GitUtil.getGitPushArgs(conf, project, "master")
 
         then:
-        result == ["git", "push", "https://wwilk:token@github.com/mockito-release-tools.git", "master", "v0.0.1", "--dry-run"]
+        result == ["git", "push", "https://wwilk:token@github.com/shipkit.git", "master", "v0.0.1", "--dry-run"]
     }
 }

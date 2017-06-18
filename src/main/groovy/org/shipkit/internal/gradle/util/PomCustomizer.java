@@ -69,7 +69,7 @@ public class PomCustomizer {
         root.appendNode("name", projectName);
         root.appendNode("packaging", "jar");
 
-        String repoLink = "https://github.com/" + conf.getGitHub().getRepository();
+        String repoLink = conf.getGitHub().getUrl() + "/" + conf.getGitHub().getRepository();
         root.appendNode("url", repoLink);
         if(projectDescription != null) {
             root.appendNode("description", projectDescription);
@@ -98,7 +98,7 @@ public class PomCustomizer {
                 d.appendNode("id", person.gitHubUser);
                 d.appendNode("name", person.name);
                 d.appendNode("roles").appendNode("role", "Core developer");
-                d.appendNode("url", "https://github.com/" + person.gitHubUser);
+                d.appendNode("url", conf.getGitHub().getUrl() + "/" + person.gitHubUser);
             }
         }
 
@@ -113,7 +113,7 @@ public class PomCustomizer {
                     TeamMember person = parsePerson(notation);
                     Node d = contributors.appendNode("contributor");
                     d.appendNode("name", person.name);
-                    d.appendNode("url", "https://github.com/" + person.gitHubUser);
+                    d.appendNode("url", conf.getGitHub().getUrl() + "/" + person.gitHubUser);
                 }
             }
         }

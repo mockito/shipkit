@@ -20,15 +20,13 @@ public class GitHubObjectFetcher {
     private static final Logger LOG = Logging.getLogger(GitHubObjectFetcher.class);
     //TODO GitHubObjectFetcher and GitHubListFetcher can probably be merged into one, there's code duplicated
 
-    private final String pageUrl;
     private final String authToken;
 
-    public GitHubObjectFetcher(String pageUrl, String authToken) {
-        this.pageUrl = pageUrl;
+    public GitHubObjectFetcher(String authToken) {
         this.authToken = authToken;
     }
 
-    public JsonObject getPage() throws IOException, DeserializationException {
+    public JsonObject getPage(String pageUrl) throws IOException, DeserializationException {
         URL url = new URL(String.format("%s%s%s", pageUrl, "?access_token=", authToken));
         LOG.info("GitHub API querying page {}", url);
         LOG.lifecycle("GET {}", url);

@@ -1,5 +1,6 @@
 package org.shipkit.internal.notes.format;
 
+import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.util.MultiMap;
 import org.shipkit.internal.notes.internal.DateFormat;
 import org.shipkit.internal.notes.model.*;
@@ -147,7 +148,8 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
     }
 
     private static String link(String text, String link) {
-        return "[" + text + "](" + link + ")";
+        return StringUtil.isEmpty(link) ? text :
+                "[" + text + "](" + link + ")";
     }
 
     private static String allAuthors(ContributionSet contributions, Map<String, Contributor> contributors) {

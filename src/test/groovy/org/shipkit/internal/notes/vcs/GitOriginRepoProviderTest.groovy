@@ -13,9 +13,17 @@ class GitOriginRepoProviderTest extends Specification {
         underTest = new GitOriginRepoProvider(runner)
     }
 
-    def "should return git remote correctly" (){
+    def "should return git remote correctly for ssh config" (){
         given:
         runner.run(_) >> "git@github.com:mockito/mockito.git\n"
+
+        expect:
+        underTest.originGitRepo == "mockito/mockito"
+    }
+
+    def "should return git remote correctly for https config" (){
+        given:
+        runner.run(_) >> "https://github.com/mockito/mockito.git\n"
 
         expect:
         underTest.originGitRepo == "mockito/mockito"
