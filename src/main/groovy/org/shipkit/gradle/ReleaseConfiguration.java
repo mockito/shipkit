@@ -44,6 +44,9 @@ public class ReleaseConfiguration {
         gitHub.setUrl("https://github.com");
         gitHub.setApiUrl("https://api.github.com");
 
+        //It does not seem that write auth user is used by GitHub in any way
+        gitHub.setWriteAuthUser("dummy");
+
         releaseNotes.setFile("docs/release-notes.md");
         releaseNotes.setIgnoreCommitsContaining(asList("[ci skip]"));
         releaseNotes.setLabelMapping(Collections.<String, String>emptyMap());
