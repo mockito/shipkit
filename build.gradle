@@ -6,7 +6,7 @@ buildscript {
     }
     dependencies {
         classpath "com.gradle.publish:plugin-publish-plugin:0.9.6"
-        classpath "gradle.plugin.org.shipkit:shipkit:0.8.82"
+        classpath "gradle.plugin.org.shipkit:shipkit:0.8.92"
         classpath 'ru.vyarus:gradle-animalsniffer-plugin:1.3.0'
     }
 }
@@ -17,8 +17,7 @@ apply plugin: 'groovy'
 apply plugin: 'com.gradle.plugin-publish'
 apply plugin: 'checkstyle'
 apply plugin: 'codenarc'
-// TODO change to org.shipkit.gradle-plugin
-apply plugin: 'org.shipkit.gradle-plugin-releasing'
+apply plugin: 'org.shipkit.gradle-plugin'
 apply plugin: 'org.shipkit.release-needed'
 
 apply from: 'gradle/java6-compatibility.gradle'
