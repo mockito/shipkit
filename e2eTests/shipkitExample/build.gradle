@@ -2,4 +2,6 @@ apply plugin: 'base' // for clean task, TODO ms: push it to the plugin, make 'ch
 
 apply plugin: 'org.shipkit.e2e-test'
 
-e2eTest.create("https://github.com/mockito/shipkit-example")
+// has to be commented out until shipkit version is bumped, since test for this project was configured also in a different place
+// in old version of shipkit, see https://github.com/mockito/shipkit/blob/master/src/main/groovy/org/shipkit/internal/gradle/E2ETestingPlugin.java#L29
+//e2eTest.create("https://github.com/mockito/shipkit-example")

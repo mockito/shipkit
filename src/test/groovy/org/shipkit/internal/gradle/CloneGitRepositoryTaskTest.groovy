@@ -10,9 +10,13 @@ class CloneGitRepositoryTaskTest extends Specification {
 
     @Rule
     TemporaryFolder tmp = new TemporaryFolder()
-    def tempFolder = tmp.newFolder()
+    def tempFolder
 
     @Subject task = new ProjectBuilder().build().tasks.create("cloneGitRepositoryTask", CloneGitRepositoryTask)
+
+    void setup(){
+        tempFolder = tmp.newFolder()
+    }
 
     def "clone a full repository"() {
         task.repositoryUrl = "url"

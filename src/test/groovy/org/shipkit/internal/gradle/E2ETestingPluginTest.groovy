@@ -7,13 +7,6 @@ class E2ETestingPluginTest extends Specification {
 
     def project = new ProjectBuilder().build()
 
-    def "e2e with example project by default"() {
-        project.plugins.apply("org.shipkit.e2e-test")
-
-        expect:
-        project.tasks.'runTestReleaseShipkit-example'
-    }
-
     def "should extract project name correctly"() {
         E2ETestingPlugin.E2ETest sut = new E2ETestingPlugin.E2ETest(project)
 
