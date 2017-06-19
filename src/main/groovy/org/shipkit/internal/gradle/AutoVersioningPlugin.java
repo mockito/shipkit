@@ -14,6 +14,7 @@ import org.shipkit.internal.gradle.util.TaskMaker;
  * Applies following plugins and preconfigures tasks provided by those plugins:
  *
  * <ul>
+ *     <li>{@link GitPlugin}</li>
  *     <li>{@link VersioningPlugin}</li>
  * </ul>
  *
