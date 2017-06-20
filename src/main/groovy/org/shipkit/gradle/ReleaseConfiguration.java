@@ -468,6 +468,16 @@ public class ReleaseConfiguration {
         }
     }
 
+    /**
+     * Provides 'lenient' copy of this configuration instance,
+     * that does not fail fast when one accesses a property that is not configured (e.g. is null).
+     * <p>
+     * By default, release configuration object fails fast in this scenario.
+     * This is a good default because it helps us identify missing configuration early.
+     * However sometimes we want to check if the user has configured a property (like for GitHub write token) without failing.
+     *
+     * @return lenient copy of this configuration instance
+     */
     public ReleaseConfiguration getLenient() {
         return new ReleaseConfiguration(configuration, true);
     }
