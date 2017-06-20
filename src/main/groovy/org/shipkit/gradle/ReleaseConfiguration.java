@@ -1,6 +1,7 @@
 package org.shipkit.gradle;
 
 import org.gradle.api.GradleException;
+import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.version.VersionInfo;
 
 import java.util.Collection;
@@ -24,16 +25,25 @@ public class ReleaseConfiguration {
 
     private static final String NO_ENV_VARIABLE = null;
 
-    private final Map<String, Object> configuration = new HashMap<String, Object>();
+    private final Map<String, Object> configuration;
 
     private final GitHub gitHub = new GitHub();
     private final ReleaseNotes releaseNotes = new ReleaseNotes();
     private final Git git = new Git();
     private final Team team = new Team();
+    private final boolean lenient;
 
     private String previousReleaseVersion;
 
+    ReleaseConfiguration(Map<String, Object> configuration, boolean lenient) {
+        this.configuration = configuration;
+        this.lenient = lenient;
+    }
+
     public ReleaseConfiguration() {
+        configuration = new HashMap<String, Object>();
+        lenient = false;
+
         //Configure default values
         git.setTagPrefix("v"); //so that tags are "v1.0", "v2.3.4"
         git.setReleasableBranchRegex("master|release/.+");  // matches 'master', 'release/2.x', 'release/3.x', etc.
@@ -212,6 +222,15 @@ public class ReleaseConfiguration {
                     "  It is highly recommended to keep write token secure and store env variable with your CI configuration.\n" +
                     "  Alternatively, you can configure the write token explicitly in the *.gradle file:\n" +
                     "    shipkit.gitHub.writeAuthToken = 'secret'");
+        }
+
+        /**
+         * Checks if write auth token, used for git push was configured.
+         *
+         * @return true if write auth token has been configured
+         */
+        public boolean hasWriteAuthToken() {
+            return !StringUtil.isEmpty((String) configuration.get("gitHub.writeAuthToken"));
         }
 
         public void setWriteAuthToken(String writeAuthToken) {
@@ -435,11 +454,21 @@ public class ReleaseConfiguration {
         }
 
         if (envVarName != null) {
+            //TODO remove env var handling from here
             value = System.getenv(envVarName);
             if (value != NO_ENV_VARIABLE) {
                 return value;
             }
         }
-        throw new GradleException(message);
+
+        if (lenient) {
+            return null;
+        } else {
+            throw new GradleException(message);
+        }
+    }
+
+    public ReleaseConfiguration getLenient() {
+        return new ReleaseConfiguration(configuration, true);
     }
 }
