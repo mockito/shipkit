@@ -222,15 +222,6 @@ public class ReleaseConfiguration {
                     "    shipkit.gitHub.writeAuthToken = 'secret'");
         }
 
-        /**
-         * Checks if write auth token, used for git push was configured.
-         *
-         * @return true if write auth token has been configured
-         */
-        public boolean hasWriteAuthToken() {
-            return !StringUtil.isEmpty((String) configuration.get("gitHub.writeAuthToken"));
-        }
-
         public void setWriteAuthToken(String writeAuthToken) {
             configuration.put("gitHub.writeAuthToken", writeAuthToken);
         }
