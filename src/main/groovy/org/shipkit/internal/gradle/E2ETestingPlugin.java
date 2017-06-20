@@ -2,7 +2,6 @@ package org.shipkit.internal.gradle;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.shipkit.gradle.ReleaseConfiguration;
 
 import java.io.File;
 
