@@ -29,7 +29,7 @@ public class PluginDiscoveryPlugin implements Plugin<Project> {
                 Set<File> pluginPropertyFiles = discoverGradlePluginPropertyFiles(project);
                 for (File pluginPropertyFile : pluginPropertyFiles) {
                     PluginConfig config = new PluginConfig(generatePluginName(pluginPropertyFile.getName()));
-                    config.setId(pluginPropertyFile.getName().substring(0, pluginPropertyFile.getName().indexOf(DOT_PROPERTIES)));
+                    config.setId(pluginPropertyFile.getName().substring(0, pluginPropertyFile.getName().lastIndexOf(DOT_PROPERTIES)));
                     project.getLogger().lifecycle("Adding autodiscovered plugin " + config);
                     extension.getPlugins().add(config);
                 }
@@ -45,7 +45,7 @@ public class PluginDiscoveryPlugin implements Plugin<Project> {
     }
 
     static String generatePluginName(String fileName) {
-        String pluginName = fileName.substring(0, fileName.indexOf(DOT_PROPERTIES));
+        String pluginName = fileName.substring(0, fileName.lastIndexOf(DOT_PROPERTIES));
         pluginName = pluginName.substring(pluginName.lastIndexOf(".") + 1);
         String[] split = pluginName.split("-");
         StringBuilder sb = new StringBuilder();
