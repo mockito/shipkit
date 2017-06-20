@@ -12,6 +12,8 @@ import static java.util.Arrays.asList;
 
 /**
  * Gets information about current git branch and keeps the value in the task as reference.
+ *
+ * TODO: decom git status plugin, move git related tasks and internal classes to git package
  */
 public class IdentifyGitBranchTask extends DefaultTask {
 
