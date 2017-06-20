@@ -9,7 +9,7 @@ import org.gradle.api.Project;
  * <ul>
  *     <li>{@link AutoVersioningPlugin}</li>
  *     <li>{@link TravisPlugin}</li>
- *     <li>{@link AutoDiscoverGradlePluginsPlugin}</li>
+ *     <li>{@link PluginDiscoveryPlugin}</li>
  * </ul>
  *
  * Adds following tasks:
@@ -24,6 +24,6 @@ public class GradlePluginReleasingPlugin implements Plugin<Project> {
     public void apply(Project project) {
         project.getPlugins().apply(AutoVersioningPlugin.class);
         project.getPlugins().apply(TravisPlugin.class);
-        project.getPlugins().apply(AutoDiscoverGradlePluginsPlugin.class);
+        project.getPlugins().apply(PluginDiscoveryPlugin.class);
     }
 }

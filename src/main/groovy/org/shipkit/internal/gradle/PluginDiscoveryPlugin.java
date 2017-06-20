@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * This plugin discovers gradle plugins and adds them to the {@link PluginBundleExtension}.
  */
-public class AutoDiscoverGradlePluginsPlugin implements Plugin<Project> {
+public class PluginDiscoveryPlugin implements Plugin<Project> {
 
     private static final String DOT_PROPERTIES = ".properties";
 
@@ -24,14 +24,14 @@ public class AutoDiscoverGradlePluginsPlugin implements Plugin<Project> {
         project.getPlugins().withId("com.gradle.plugin-publish", new Action<Plugin>() {
             @Override
             public void execute(Plugin plugin) {
-                PluginBundleExtension pluginBundleExtension = project.getExtensions().findByType(PluginBundleExtension.class);
+                PluginBundleExtension extension = project.getExtensions().findByType(PluginBundleExtension.class);
 
                 Set<File> pluginPropertyFiles = discoverGradlePluginPropertyFiles(project);
                 for (File pluginPropertyFile : pluginPropertyFiles) {
                     PluginConfig config = new PluginConfig(generatePluginName(pluginPropertyFile.getName()));
                     config.setId(pluginPropertyFile.getName().substring(0, pluginPropertyFile.getName().indexOf(DOT_PROPERTIES)));
                     project.getLogger().lifecycle("Adding autodiscovered plugin " + config);
-                    pluginBundleExtension.getPlugins().add(config);
+                    extension.getPlugins().add(config);
                 }
             }
         });
@@ -44,7 +44,7 @@ public class AutoDiscoverGradlePluginsPlugin implements Plugin<Project> {
         return tree.getFiles();
     }
 
-    private String generatePluginName(String fileName) {
+    static String generatePluginName(String fileName) {
         String pluginName = fileName.substring(0, fileName.indexOf(DOT_PROPERTIES));
         pluginName = pluginName.substring(pluginName.lastIndexOf(".") + 1);
         String[] split = pluginName.split("-");
