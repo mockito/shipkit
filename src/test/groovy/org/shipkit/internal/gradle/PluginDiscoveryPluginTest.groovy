@@ -28,4 +28,15 @@ class PluginDiscoveryPluginTest extends PluginSpecification {
         project.pluginBundle.plugins["pluginNameSample"]
         project.pluginBundle.plugins["pluginNameSample"].id == 'org.shipkit.plugin-name-sample'
     }
+
+    def "generate plugin name"() {
+        expect:
+        PluginDiscoveryPlugin.generatePluginName(input) == expected
+
+        where:
+        input                                       | expected
+        'plugin.properties'                         | 'plugin'
+        'com.shipkit.base-java-library.properties'  | 'baseJavaLibrary'
+        'com.shipkit.versioning.properties'         | 'versioning'
+    }
 }
