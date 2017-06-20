@@ -14,6 +14,10 @@ import java.util.Set;
 
 /**
  * This plugin discovers gradle plugins and adds them to the {@link PluginBundleExtension}.
+ *
+ * Maintaining plugins manually is error-prone. E.g. someone might easily forget about adding a new plugin. This plugin
+ * will automatically pick up available gradle plugins (discovered via properties files in META-INF/gradle-plugins) and
+ * will configure the pluginBundle extension (provided via 'com.gradle.plugin-publish' plugin) accordingly.
  */
 public class PluginDiscoveryPlugin implements Plugin<Project> {
 
