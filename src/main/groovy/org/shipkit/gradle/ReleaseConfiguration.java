@@ -23,8 +23,6 @@ import static org.shipkit.internal.gradle.util.team.TeamParser.validateTeamMembe
  */
 public class ReleaseConfiguration {
 
-    private static final String NO_ENV_VARIABLE = null;
-
     private final Map<String, Object> configuration;
 
     private final GitHub gitHub = new GitHub();
@@ -210,17 +208,17 @@ public class ReleaseConfiguration {
 
         /**
          * GitHub write auth token to be used for pushing code to GitHub.
-         * Auth token is used with the user specified in {@link #getWriteAuthUser()}.
-         * <strong>WARNING:</strong> please don't commit the write auth token to VCS.
-         * Instead export "GH_WRITE_TOKEN" environment variable.
-         * The env variable value will be automatically returned by this method.
+         * Please do not configure write auth token in plain text / commit to VCS!
+         * Instead use env variable and that you can securely store in CI server configuration.
+         * Shipkit automatically uses "GH_WRITE_TOKEN" env variable
+         * if this value is not specified.
          */
         public String getWriteAuthToken() {
-            return (String) getValue("gitHub.writeAuthToken", "GH_WRITE_TOKEN",
+            return (String) getValue("gitHub.writeAuthToken",
                     "Please export 'GH_WRITE_TOKEN' env variable first!\n" +
-                    "  The value of that variable is automatically used for 'shipkit.gitHub.writeAuthToken' setting.\n" +
+                    "  The value of that variable is automatically used by Shipkit.\n" +
                     "  It is highly recommended to keep write token secure and store env variable with your CI configuration.\n" +
-                    "  Alternatively, you can configure the write token explicitly in the *.gradle file:\n" +
+                    "  Alternatively, you can configure the write token explicitly:\n" +
                     "    shipkit.gitHub.writeAuthToken = 'secret'");
         }
 
@@ -415,13 +413,6 @@ public class ReleaseConfiguration {
         }
     }
 
-    //TODO unit test message creation and error handling, suggested plan:
-    //1. Create wrapper type over 'configuration' map
-    //2. Move handling to this new object and make it testable, along with env variables
-    private String getString(String key) {
-        return getString(key, NO_ENV_VARIABLE);
-    }
-
     private String getStringUrl(String key) {
         String url = getString(key);
         if(url.endsWith("/")) {
@@ -430,42 +421,24 @@ public class ReleaseConfiguration {
         return url;
     }
 
-    private Boolean getBoolean(String key) {
-        Object value = configuration.get(key);
-        return Boolean.parseBoolean(value.toString());
-    }
-
-    private String getString(String key, String envVarName) {
-        return (String) getValue(key, envVarName, "Please configure 'shipkit." + key + "' value (String).");
+    private String getString(String key) {
+        return (String) getValue(key, "Please configure 'shipkit." + key + "' value (String).");
     }
 
     private Map getMap(String key) {
-        return (Map) getValue(key, NO_ENV_VARIABLE, "Please configure 'shipkit." + key + "' value (Map).");
+        return (Map) getValue(key, "Please configure 'shipkit." + key + "' value (Map).");
     }
 
     private Collection<String> getCollection(String key) {
-        return (Collection) getValue(key, NO_ENV_VARIABLE, "Please configure 'shipkit." + key + "' value (Collection).");
+        return (Collection) getValue(key, "Please configure 'shipkit." + key + "' value (Collection).");
     }
 
-    private Object getValue(String key, String envVarName, String message) {
+    private Object getValue(String key, String message) {
         Object value = configuration.get(key);
-        if (value != null) {
+        if (value != null || lenient) {
             return value;
         }
-
-        if (envVarName != null) {
-            //TODO remove env var handling from here
-            value = System.getenv(envVarName);
-            if (value != NO_ENV_VARIABLE) {
-                return value;
-            }
-        }
-
-        if (lenient) {
-            return null;
-        } else {
-            throw new GradleException(message);
-        }
+        throw new GradleException(message);
     }
 
     /**
