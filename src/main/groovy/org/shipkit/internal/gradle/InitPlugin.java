@@ -4,7 +4,10 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.InitTravisTask;
+import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
 import java.io.File;
@@ -19,6 +22,8 @@ import java.io.File;
  * </ul>
  */
 public class InitPlugin implements Plugin<Project> {
+
+    private final static Logger LOG = Logging.getLogger(InitPlugin.class);
 
     public static final String INIT_SHIPKIT_TASK = "initShipkit";
     public static final String INIT_TRAVIS_TASK = "initTravis";
@@ -39,5 +44,17 @@ public class InitPlugin implements Plugin<Project> {
             }
         });
 
+        //The user might configure the 'group' later, after the plugin is applied
+        DeferredConfiguration.deferredConfiguration(project, new Runnable() {
+            @Override
+            public void run() {
+                if (project.getGroup() == null) {
+                    LOG.info("  Gradle project does not have 'group' property configured yet." +
+                            "\n  Shipkit is setting the group to 'org.shipkit.bootstrap' so that it has a reasonable default." +
+                            "\n  It is recommended that you configure the 'group' to your choice.");
+                    project.setGroup("org.shipkit.bootstrap");
+                }
+            }
+        });
     }
 }

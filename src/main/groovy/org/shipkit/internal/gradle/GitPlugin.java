@@ -4,28 +4,34 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Exec;
 import org.shipkit.gradle.ReleaseConfiguration;
-import org.shipkit.gradle.SecureExecTask;
+import org.shipkit.gradle.git.GitPushTask;
+import org.shipkit.gradle.git.IdentifyGitBranchTask;
+import org.shipkit.internal.gradle.git.GitPushArgs;
 import org.shipkit.internal.gradle.util.GitUtil;
+import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
-import static org.shipkit.internal.gradle.configuration.LazyConfiguration.lazyConfiguration;
 import static org.shipkit.internal.gradle.util.GitUtil.getTag;
 
 /**
  * Adds Git-specific tasks needed for the release process:
  *
  * <ul>
+ *     <li>identifyGitBranch - {@link IdentifyGitBranchTask}</li>
  *     <li>gitCommit</li>
  *     <li>gitTag</li>
  *     <li>gitPush</li>
- *     <li>performGitPush</li>
+ *     <li>performGitPush - {@link GitPushTask}</li>
  *
  *     <li>performGitCommitCleanUp</li>
  *     <li>gitSoftResetCommit</li>
@@ -36,17 +42,20 @@ import static org.shipkit.internal.gradle.util.GitUtil.getTag;
 public class GitPlugin implements Plugin<Project> {
 
     static final String PERFORM_GIT_COMMIT_CLEANUP_TASK = "performGitCommitCleanUp";
+    static final String IDENTIFY_GIT_BRANCH = "identifyGitBranch";
     static final String GIT_STASH_TASK = "gitStash";
     static final String SOFT_RESET_COMMIT_TASK = "gitSoftResetCommit";
     static final String TAG_CLEANUP_TASK = "gitTagCleanUp";
     static final String GIT_TAG_TASK = "gitTag";
     static final String GIT_PUSH_TASK = "gitPush";
     static final String PERFORM_GIT_PUSH_TASK = "performGitPush";
+    static final String WRITE_TOKEN_ENV = "GH_WRITE_TOKEN";
     public static final String GIT_COMMIT_TASK = "gitCommit";
+
+    private final static Logger LOG = Logging.getLogger(GitPlugin.class);
 
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
-        final GitStatusPlugin.GitStatus gitStatus = project.getPlugins().apply(GitStatusPlugin.class).getGitStatus();
 
         TaskMaker.task(project, GIT_COMMIT_TASK, GitCommitTask.class, new Action<GitCommitTask>() {
             public void execute(final GitCommitTask t) {
@@ -54,16 +63,17 @@ public class GitPlugin implements Plugin<Project> {
                 t.doFirst(new Action<Task>() {
                     @Override
                     public void execute(Task task) {
-                        List<Object> arguments = new ArrayList<Object>();
-                        arguments.add("git");
-                        arguments.add("commit");
-                        arguments.add("--author");
-                        arguments.add(GitUtil.getGitGenericUserNotation(conf));
-                        arguments.add("-m");
-                        arguments.add(GitUtil.getCommitMessage(conf, t.getAggregatedCommitMessage()));
-                        arguments.addAll(t.getFiles());
+                        Collection<String> args = new LinkedList<String>();
+                        args.add("git");
+                        args.add("commit");
+                        args.add("--author");
+                        args.add(GitUtil.getGitGenericUserNotation(conf));
+                        args.add("-m");
+                        args.add(GitUtil.getCommitMessage(conf, t.getAggregatedCommitMessage()));
+                        args.addAll(t.getFiles());
 
-                        t.commandLine(arguments);
+                        LOG.lifecycle("{} - running command:\n  {}", task.getPath(), StringUtil.join(args, " "));
+                        t.commandLine(args);
                     }
                 });
             }
@@ -84,23 +94,26 @@ public class GitPlugin implements Plugin<Project> {
             }
         });
 
-        TaskMaker.task(project, GIT_PUSH_TASK, SecureExecTask.class, new Action<SecureExecTask>() {
-            public void execute(final SecureExecTask t) {
+        final GitPushTask gitPush = TaskMaker.task(project, GIT_PUSH_TASK, GitPushTask.class, new Action<GitPushTask>() {
+            public void execute(final GitPushTask t) {
                 t.setDescription("Pushes automatically created commits to remote repo.");
                 t.mustRunAfter(GIT_COMMIT_TASK);
                 t.mustRunAfter(GIT_TAG_TASK);
+                t.dependsOn(IDENTIFY_GIT_BRANCH);
+                t.getTargets().add(GitUtil.getTag(conf, project));
+                t.setDryRun(conf.isDryRun());
 
-                t.doFirst(new Action<Task>() {
+                GitPushArgs.setPushUrl(t, conf, System.getenv(WRITE_TOKEN_ENV));
+            }
+        });
+
+        TaskMaker.task(project, IDENTIFY_GIT_BRANCH, IdentifyGitBranchTask.class, new Action<IdentifyGitBranchTask>() {
+            public void execute(final IdentifyGitBranchTask t) {
+                t.setDescription("Identifies current git branch.");
+                gitPush.dependsOn(t);
+                t.doLast(new Action<Task>() {
                     public void execute(Task task) {
-                        //Getting the branch during task execution time so that integ testing is easier
-                        //TODO revisit. How can we make integ testing easy without using doFirst to configure tasks?
-                        String branch = gitStatus.getBranch();
-                        t.setCommandLine(GitUtil.getGitPushArgs(conf, project, branch));
-                    }
-                });
-                lazyConfiguration(t, new Runnable() {
-                    public void run() {
-                        t.setSecretValue(conf.getGitHub().getWriteAuthToken());
+                        gitPush.getTargets().add(t.getBranch());
                     }
                 });
             }
