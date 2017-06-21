@@ -6,6 +6,7 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.file.FileTree;
+import org.gradle.api.file.SourceDirectorySet;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.util.PatternSet;
 
@@ -43,8 +44,8 @@ public class PluginDiscoveryPlugin implements Plugin<Project> {
 
     private Set<File> discoverGradlePluginPropertyFiles(Project project) {
         final JavaPluginConvention java = project.getConvention().getPlugin(JavaPluginConvention.class);
-        FileTree tree = java.getSourceSets().getByName("main").getResources().getAsFileTree();
-        tree.matching(new PatternSet().include("META-INF/gradle-plugins/*.properties"));
+        SourceDirectorySet resources = java.getSourceSets().getByName("main").getResources();
+        FileTree tree = resources.matching(new PatternSet().include("META-INF/gradle-plugins/*.properties"));
         return tree.getFiles();
     }
 
