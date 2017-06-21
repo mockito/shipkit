@@ -57,7 +57,6 @@ public class GitPlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
-        project.getPlugins().apply(GitBranchPlugin.class);
 
         TaskMaker.task(project, GIT_COMMIT_TASK, GitCommitTask.class, new Action<GitCommitTask>() {
             public void execute(final GitCommitTask t) {
@@ -107,13 +106,13 @@ public class GitPlugin implements Plugin<Project> {
 
                 GitPushArgs.setPushUrl(t, conf, System.getenv(WRITE_TOKEN_ENV));
 
-                final IdentifyGitBranchTask branchTask = (IdentifyGitBranchTask) project.getTasks().getByName(GitBranchPlugin.IDENTIFY_GIT_BRANCH);
-                t.dependsOn(branchTask);
-                branchTask.doLast(new Action<Task>() {
-                    public void execute(Task task) {
-                        t.getTargets().add(branchTask.getBranch());
-                    }
-                });
+                project.getPlugins().apply(GitBranchPlugin.class)
+                        .provideBranchTo(t, new Action<String>() {
+                            @Override
+                            public void execute(String branch) {
+                                t.getTargets().add(branch);
+                            }
+                        });
             }
         });
 

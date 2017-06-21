@@ -6,7 +6,6 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.ReleaseNeededTask;
-import org.shipkit.gradle.git.IdentifyGitBranchTask;
 import org.shipkit.internal.comparison.PublicationsComparatorTask;
 import org.shipkit.internal.gradle.git.GitBranchPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
@@ -33,7 +32,6 @@ public class ReleaseNeededPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
-        project.getPlugins().apply(GitBranchPlugin.class);
 
         //Task that throws an exception when release is not needed is very useful for CI workflows
         //Travis CI job will stop executing further commands if assertReleaseNeeded fails.
@@ -70,13 +68,12 @@ public class ReleaseNeededPlugin implements Plugin<Project> {
 
                 t.setReleasableBranchRegex(conf.getGit().getReleasableBranchRegex());
 
-                final IdentifyGitBranchTask branchTask = (IdentifyGitBranchTask) project.getTasks().getByName(GitBranchPlugin.IDENTIFY_GIT_BRANCH);
-                t.dependsOn(branchTask);
-                branchTask.doLast(new Action<Task>() {
-                    public void execute(Task task) {
-                        t.setBranch(branchTask.getBranch());
-                    }
-                });
+                project.getPlugins().apply(GitBranchPlugin.class)
+                        .provideBranchTo(t, new Action<String>() {
+                            public void execute(String branch) {
+                                t.setBranch(branch);
+                            }
+                        });
             }
         });
     }
