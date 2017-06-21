@@ -46,8 +46,7 @@ class AllContributorsFetcher {
         GitHubObjectFetcher objectFetcher = new GitHubObjectFetcher(readOnlyAuthToken);
         Function<JsonObject, ProjectContributor> projectContributorFetcherFunction = new ProjectContributorFetcherFunction(objectFetcher);
 
-        Set<ProjectContributor> result = new ConcurrentDispatcher().dispatch(projectContributorFetcherFunction, page);
-        return result;
+        return new ConcurrentDispatcher().dispatch(projectContributorFetcherFunction, page);
     }
 
     private static class GitHubProjectContributors {

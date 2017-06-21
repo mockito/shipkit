@@ -18,7 +18,7 @@ public class FileDiffGenerator {
         List<String> previousLines = breakIntoLines(previousContent);
         List<String> currentLines = breakIntoLines(currentContent);
 
-        Patch patch = DiffUtils.diff(previousLines, currentLines);
+        Patch<String> patch = DiffUtils.diff(previousLines, currentLines);
 
         List<String> unifiedDiff = DiffUtils.generateUnifiedDiff(previousFilePath, currentFilePath, previousLines, patch, 0);
 

@@ -14,7 +14,7 @@ public class GitCheckOutTask extends DefaultTask {
     private String rev;
 
     /**
-     * See {@link #setRev(String)}
+     * See {@link #getRev()}
      */
     public void setRev(String rev) {
         this.rev = rev;
