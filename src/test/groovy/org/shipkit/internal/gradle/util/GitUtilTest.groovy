@@ -1,6 +1,5 @@
 package org.shipkit.internal.gradle.util
 
-import org.gradle.api.Project
 import org.shipkit.gradle.ReleaseConfiguration
 import spock.lang.Specification
 
@@ -19,39 +18,5 @@ class GitUtilTest extends Specification {
         "foo" | "[ci skip]" | "foo [ci skip]"
         ""    | "[ci skip]" | " [ci skip]"    //info will never be empty, only documenting behavior
         "foo" | ""          | "foo"
-    }
-
-    def "git push" () {
-        given:
-        def project = Mock(Project)
-
-        conf.gitHub.setWriteAuthUser("wwilk")
-        conf.gitHub.setWriteAuthToken("token")
-        conf.gitHub.setRepository("shipkit")
-        conf.setDryRun(false)
-        project.getVersion() >> "0.0.1"
-
-        when:
-        def result = GitUtil.getGitPushArgs(conf, project, "master")
-
-        then:
-        result == ["git", "push", "https://wwilk:token@github.com/shipkit.git", "master", "v0.0.1"]
-    }
-
-    def "git push with --dry-run" () {
-        given:
-        def project = Mock(Project)
-
-        conf.gitHub.setWriteAuthUser("wwilk")
-        conf.gitHub.setWriteAuthToken("token")
-        conf.gitHub.setRepository("shipkit")
-        conf.setDryRun(true)
-        project.getVersion() >> "0.0.1"
-
-        when:
-        def result = GitUtil.getGitPushArgs(conf, project, "master")
-
-        then:
-        result == ["git", "push", "https://wwilk:token@github.com/shipkit.git", "master", "v0.0.1", "--dry-run"]
     }
 }

@@ -77,6 +77,7 @@ class ShipkitJavaPluginIntegTest extends GradleSpecification {
 :impl:javadocJar=SKIPPED
 :impl:sourcesJar=SKIPPED
 :impl:publishJavaLibraryPublicationToMavenLocal=SKIPPED
+:identifyGitBranch=SKIPPED
 :gitPush=SKIPPED
 :performGitPush=SKIPPED
 :api:bintrayUpload=SKIPPED

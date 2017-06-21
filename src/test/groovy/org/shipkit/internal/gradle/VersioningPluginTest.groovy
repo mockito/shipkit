@@ -54,6 +54,7 @@ class VersioningPluginTest extends PluginSpecification {
 
     def "adds version bumped changes to GitCommitTask if GitPlugin applied"() {
         given:
+        project.plugins.apply(ReleaseConfigurationPlugin).configuration.gitHub.repository = "http://github.com"
         project.plugins.apply(GitPlugin)
 
         when:

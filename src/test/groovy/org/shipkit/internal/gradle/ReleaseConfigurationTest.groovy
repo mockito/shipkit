@@ -1,5 +1,6 @@
 package org.shipkit.internal.gradle
 
+import org.gradle.api.GradleException
 import org.shipkit.gradle.ReleaseConfiguration
 import org.shipkit.internal.gradle.util.team.TeamParser
 import spock.lang.Specification
@@ -63,5 +64,18 @@ class ReleaseConfigurationTest extends Specification {
         "https://github.com/"    | "https://github.com"
         "https://github.com////" | "https://github.com"
         "/"                      | ""
+    }
+
+    def "by default validates that settings are configured"() {
+        when:
+        conf.gitHub.repository
+
+        then:
+        thrown(GradleException)
+    }
+
+    def "offers a way to find out if settings are configured"() {
+        expect:
+        conf.lenient.gitHub.repository == null
     }
 }
