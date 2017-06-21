@@ -10,6 +10,10 @@ import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.util.PatternSet;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.Set;
 
 /**
@@ -34,6 +38,7 @@ public class PluginDiscoveryPlugin implements Plugin<Project> {
                 for (File pluginPropertyFile : pluginPropertyFiles) {
                     PluginConfig config = new PluginConfig(generatePluginName(pluginPropertyFile.getName()));
                     config.setId(pluginPropertyFile.getName().substring(0, pluginPropertyFile.getName().lastIndexOf(DOT_PROPERTIES)));
+                    config.setDisplayName(getImplementationClass(pluginPropertyFile));
                     project.getLogger().lifecycle("Adding autodiscovered plugin " + config);
                     extension.getPlugins().add(config);
                 }
@@ -61,5 +66,24 @@ public class PluginDiscoveryPlugin implements Plugin<Project> {
             }
         }
         return sb.toString();
+    }
+
+    static String getImplementationClass(File file) {
+        Properties properties = new Properties();
+        InputStream is = null;
+        try {
+            is = new FileInputStream(file);
+            properties.load(is);
+            return properties.getProperty("implementation-class");
+        } catch (Exception e) {
+            throw new RuntimeException("error while reading " + file, e);
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                }
+            }
+        }
     }
 }

@@ -41,4 +41,12 @@ class PluginDiscoveryPluginTest extends PluginSpecification {
         'com.shipkit.base-java-library.properties'  | 'baseJavaLibrary'
         'com.shipkit.versioning.properties'         | 'versioning'
     }
+
+    def "implementation class"() {
+        when:
+        project.file(META_INF_GRADLE_PLUGINS).mkdirs()
+        File file = project.file("$META_INF_GRADLE_PLUGINS/org.shipkit.plugin-name-sample.properties") << "implementation-class=org.shipkit.PluginNameSample"
+        then:
+        PluginDiscoveryPlugin.getImplementationClass(file) == 'org.shipkit.PluginNameSample'
+    }
 }
