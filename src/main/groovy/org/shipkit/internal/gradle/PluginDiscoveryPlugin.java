@@ -43,9 +43,9 @@ public class PluginDiscoveryPlugin implements Plugin<Project> {
 
     private Set<File> discoverGradlePluginPropertyFiles(Project project) {
         final JavaPluginConvention java = project.getConvention().getPlugin(JavaPluginConvention.class);
-        FileTree tree = java.getSourceSets().getByName("main").getResources().getAsFileTree();
-        tree.matching(new PatternSet().include("META-INF/gradle-plugins/*.properties"));
-        return tree.getFiles();
+        FileTree resources = java.getSourceSets().getByName("main").getResources();
+        FileTree plugins = resources.matching(new PatternSet().include("META-INF/gradle-plugins/*.properties"));
+        return plugins.getFiles();
     }
 
     static String generatePluginName(String fileName) {
