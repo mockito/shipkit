@@ -6,9 +6,10 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.ReleaseNeededTask;
+import org.shipkit.gradle.git.IdentifyGitBranchTask;
 import org.shipkit.internal.comparison.PublicationsComparatorTask;
+import org.shipkit.internal.gradle.git.GitBranchPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
-import org.shipkit.internal.gradle.configuration.LazyConfiguration;
 
 /**
  * Adds tasks for checking if release is needed
@@ -17,40 +18,39 @@ import org.shipkit.internal.gradle.configuration.LazyConfiguration;
  *
  * <ul>
  *     <li>{@link ReleaseConfigurationPlugin}</li>
- *     <li>{@link GitStatusPlugin}</li>
+ *     <li>{@link GitBranchPlugin}</li>
  * </ul>
  *
  * Adds following tasks:
  *
  * <ul>
- *     <li>assertReleaseNeeded</li>
- *     <li>releaseNeeded</li>
+ *     <li>assertReleaseNeeded - {@link ReleaseNeededTask}</li>
+ *     <li>releaseNeeded - {@link ReleaseNeededTask}</li>
  * </ul>
  */
 public class ReleaseNeededPlugin implements Plugin<Project> {
 
-
     @Override
     public void apply(Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
-        final GitStatusPlugin.GitStatus gitStatus = project.getPlugins().apply(GitStatusPlugin.class).getGitStatus();
+        project.getPlugins().apply(GitBranchPlugin.class);
 
         //Task that throws an exception when release is not needed is very useful for CI workflows
         //Travis CI job will stop executing further commands if assertReleaseNeeded fails.
         //See the example projects how we have set up the 'assertReleaseNeeded' task in CI pipeline.
-        releaseNeededTask(project, "assertReleaseNeeded", conf, gitStatus)
+        releaseNeededTask(project, "assertReleaseNeeded", conf)
                 .setExplosive(true)
                 .setDescription("Asserts that criteria for the release are met and throws exception if release is not needed.");
 
         //Below task is useful for testing. It will not throw an exception but will run the code that check is release is needed
         //and it will print the information to the console.
-        releaseNeededTask(project, "releaseNeeded", conf, gitStatus)
+        releaseNeededTask(project, "releaseNeeded", conf)
                 .setExplosive(false)
                 .setDescription("Checks and prints to the console if criteria for the release are met.");
     }
 
     private static ReleaseNeededTask releaseNeededTask(final Project project, String taskName,
-                                                       final ReleaseConfiguration conf, final GitStatusPlugin.GitStatus gitStatus) {
+                                                       final ReleaseConfiguration conf) {
         return TaskMaker.task(project, taskName, ReleaseNeededTask.class, new Action<ReleaseNeededTask>() {
             public void execute(final ReleaseNeededTask t) {
                 t.setDescription("Asserts that criteria for the release are met and throws exception if release not needed.");
@@ -70,12 +70,11 @@ public class ReleaseNeededPlugin implements Plugin<Project> {
 
                 t.setReleasableBranchRegex(conf.getGit().getReleasableBranchRegex());
 
-                LazyConfiguration.lazyConfiguration(t, new Runnable() {
-                    public void run() {
-                        //if the user or some other task have configured the branch, don't overwrite it
-                        if (t.getBranch() == null) {
-                            t.setBranch(gitStatus.getBranch());
-                        }
+                final IdentifyGitBranchTask branchTask = (IdentifyGitBranchTask) project.getTasks().getByName(GitBranchPlugin.IDENTIFY_GIT_BRANCH);
+                t.dependsOn(branchTask);
+                branchTask.doLast(new Action<Task>() {
+                    public void execute(Task task) {
+                        t.setBranch(branchTask.getBranch());
                     }
                 });
             }
