@@ -6,7 +6,7 @@ buildscript {
     }
     dependencies {
         classpath "com.gradle.publish:plugin-publish-plugin:0.9.6"
-        classpath "gradle.plugin.org.shipkit:shipkit:0.8.96"
+        classpath "gradle.plugin.org.shipkit:shipkit:0.8.92"
         classpath 'ru.vyarus:gradle-animalsniffer-plugin:1.3.0'
     }
 }
@@ -55,6 +55,49 @@ pluginBundle {
     vcsUrl = 'https://github.com/mockito/shipkit'
     description = 'Release tools and Gradle plugins that automate Mockito continuous delivery.'
     tags = ['shipkit', 'continuous delivery', 'release']
+
+    plugins {
+        shipkitJavaPlugin {
+            id = 'org.shipkit.java'
+            displayName = 'Shipkit automated releases for Java libraries'
+        }
+
+        releaseNotesPlugin {
+            id = 'org.shipkit.release-notes'
+            displayName = 'Shipkit automated release notes generation plugin'
+        }
+
+        autoReleaseNotesPlugin {
+            id = 'org.shipkit.auto-release-notes'
+            displayName = 'Shipkit plugin for automated release notes generation and publishing released changes to VCS'
+            tags = ['shipkit', 'continuous delivery', 'release notes', 'changelog']
+        }
+
+        autoVersioningPlugin {
+            id = 'org.shipkit.auto-versioning'
+            displayName = 'Shipkit automated versioning plugin'
+            tags = ['shipkit', 'continuous delivery', 'release', 'versioning', 'auto-versioning', 'semantic-versioning']
+        }
+
+        gradlePluginReleasingPlugin {
+            id = 'org.shipkit.gradle-plugin'
+            displayName = 'Shipkit automated versioning and Travis CI integration'
+            tags = ['shipkit', 'continuous delivery', 'release', 'versioning', 'auto-versioning', 'semantic-versioning', 'travis']
+        }
+
+        releaseNeededPlugin {
+            id = 'org.shipkit.release-needed'
+            displayName = 'Shipkit plugin for checking if release is needed'
+            tags = ['shipkit', 'continuous delivery', 'release']
+        }
+
+        e2eTestPlugin {
+            id = 'org.shipkit.e2e-test'
+            displayName = 'Shipkit e2e tests plugin'
+            tags = ['shipkit', 'continuous delivery', 'release', 'e2e', 'end-to-end', 'end-2-end', 'test']
+        }
+    }
+
 
     mavenCoordinates {
         groupId = 'gradle.plugin.org.shipkit'
