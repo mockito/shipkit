@@ -43,7 +43,6 @@ import static org.shipkit.internal.gradle.util.GitUtil.getTag;
 public class GitPlugin implements Plugin<Project> {
 
     static final String PERFORM_GIT_COMMIT_CLEANUP_TASK = "performGitCommitCleanUp";
-    static final String IDENTIFY_GIT_BRANCH = "identifyGitBranch";
     static final String GIT_STASH_TASK = "gitStash";
     static final String SOFT_RESET_COMMIT_TASK = "gitSoftResetCommit";
     static final String TAG_CLEANUP_TASK = "gitTagCleanUp";
@@ -100,7 +99,7 @@ public class GitPlugin implements Plugin<Project> {
                 t.setDescription("Pushes automatically created commits to remote repo.");
                 t.mustRunAfter(GIT_COMMIT_TASK);
                 t.mustRunAfter(GIT_TAG_TASK);
-                t.dependsOn(IDENTIFY_GIT_BRANCH);
+                t.dependsOn(GitBranchPlugin.IDENTIFY_GIT_BRANCH);
                 t.getTargets().add(GitUtil.getTag(conf, project));
                 t.setDryRun(conf.isDryRun());
 
