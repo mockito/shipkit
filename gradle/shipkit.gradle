@@ -1,6 +1,5 @@
 shipkit {
     gitHub.repository = "mockito/shipkit"
-    gitHub.writeAuthUser = "dummy" //TODO remove this line after we start consuming newer version
     gitHub.readOnlyAuthToken = "e7fe8fcdd6ffed5c38498c4c79b2a68e6f6ed1bb"
 
     team.developers = ['szczepiq:Szczepan Faber', 'mstachniuk:Marcin Stachniuk',
