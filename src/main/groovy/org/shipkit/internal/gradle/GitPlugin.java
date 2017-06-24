@@ -10,6 +10,7 @@ import org.gradle.api.tasks.Exec;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.git.GitPushTask;
 import org.shipkit.gradle.git.IdentifyGitBranchTask;
+import org.shipkit.internal.gradle.git.GitBranchPlugin;
 import org.shipkit.internal.gradle.git.GitPushArgs;
 import org.shipkit.internal.gradle.util.GitUtil;
 import org.shipkit.internal.gradle.util.StringUtil;
@@ -42,7 +43,6 @@ import static org.shipkit.internal.gradle.util.GitUtil.getTag;
 public class GitPlugin implements Plugin<Project> {
 
     static final String PERFORM_GIT_COMMIT_CLEANUP_TASK = "performGitCommitCleanUp";
-    static final String IDENTIFY_GIT_BRANCH = "identifyGitBranch";
     static final String GIT_STASH_TASK = "gitStash";
     static final String SOFT_RESET_COMMIT_TASK = "gitSoftResetCommit";
     static final String TAG_CLEANUP_TASK = "gitTagCleanUp";
@@ -94,28 +94,24 @@ public class GitPlugin implements Plugin<Project> {
             }
         });
 
-        final GitPushTask gitPush = TaskMaker.task(project, GIT_PUSH_TASK, GitPushTask.class, new Action<GitPushTask>() {
+        TaskMaker.task(project, GIT_PUSH_TASK, GitPushTask.class, new Action<GitPushTask>() {
             public void execute(final GitPushTask t) {
                 t.setDescription("Pushes automatically created commits to remote repo.");
                 t.mustRunAfter(GIT_COMMIT_TASK);
                 t.mustRunAfter(GIT_TAG_TASK);
-                t.dependsOn(IDENTIFY_GIT_BRANCH);
+                t.dependsOn(GitBranchPlugin.IDENTIFY_GIT_BRANCH);
                 t.getTargets().add(GitUtil.getTag(conf, project));
                 t.setDryRun(conf.isDryRun());
 
                 GitPushArgs.setPushUrl(t, conf, System.getenv(WRITE_TOKEN_ENV));
-            }
-        });
 
-        TaskMaker.task(project, IDENTIFY_GIT_BRANCH, IdentifyGitBranchTask.class, new Action<IdentifyGitBranchTask>() {
-            public void execute(final IdentifyGitBranchTask t) {
-                t.setDescription("Identifies current git branch.");
-                gitPush.dependsOn(t);
-                t.doLast(new Action<Task>() {
-                    public void execute(Task task) {
-                        gitPush.getTargets().add(t.getBranch());
-                    }
-                });
+                project.getPlugins().apply(GitBranchPlugin.class)
+                        .provideBranchTo(t, new Action<String>() {
+                            @Override
+                            public void execute(String branch) {
+                                t.getTargets().add(branch);
+                            }
+                        });
             }
         });
 
