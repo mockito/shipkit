@@ -47,7 +47,7 @@ public class GitPlugin implements Plugin<Project> {
     static final String SOFT_RESET_COMMIT_TASK = "gitSoftResetCommit";
     public static final String TAG_CLEANUP_TASK = "gitTagCleanUp";
     static final String GIT_TAG_TASK = "gitTag";
-    static final String GIT_PUSH_TASK = "gitPush";
+    public static final String GIT_PUSH_TASK = "gitPush";
     public static final String PERFORM_GIT_PUSH_TASK = "performGitPush";
     static final String WRITE_TOKEN_ENV = "GH_WRITE_TOKEN";
     public static final String GIT_COMMIT_TASK = "gitCommit";
