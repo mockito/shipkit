@@ -9,6 +9,7 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.UpdateReleaseNotesTask;
+import org.shipkit.internal.gradle.release.CiReleasePlugin;
 import org.shipkit.internal.gradle.release.ReleasePlugin;
 import org.shipkit.internal.gradle.util.BintrayUtil;
 
@@ -16,21 +17,22 @@ import static org.shipkit.internal.gradle.BaseJavaLibraryPlugin.MAVEN_LOCAL_TASK
 import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
 
 /**
- * Opinionated continuous delivery plugin.
+ * Adds plugins and tasks to setup automated releasing for a Java project
  * Applies following plugins and preconfigures tasks provided by those plugins:
  *
  * <ul>
- *     <li>{@link ReleaseNotesPlugin}</li>
- *     <li>{@link VersioningPlugin}</li>
+ *     <li>{@link ReleaseConfigurationPlugin}</li>
  *     <li>{@link GitPlugin}</li>
- *     <li>{@link ContributorsPlugin}</li>
  *     <li>{@link TravisPlugin}</li>
+ *     <li>{@link PomContributorsPlugin}</li>
+ *     <li>{@link ReleasePlugin}</li>
+ *     <li>{@link CiReleasePlugin}</li>
  * </ul>
  *
- * Adds following tasks:
+ * Applies following plugins to all Java submodules:
  *
  * <ul>
- *     <li>TODO document all</li>
+ *     <li>{@link JavaLibraryPlugin}</li>
  * </ul>
  */
 public class ShipkitJavaPlugin implements Plugin<Project> {
@@ -47,6 +49,7 @@ public class ShipkitJavaPlugin implements Plugin<Project> {
         project.getPlugins().apply(TravisPlugin.class);
         project.getPlugins().apply(PomContributorsPlugin.class);
         project.getPlugins().apply(ReleasePlugin.class);
+        project.getPlugins().apply(CiReleasePlugin.class);
 
         project.allprojects(new Action<Project>() {
             @Override
