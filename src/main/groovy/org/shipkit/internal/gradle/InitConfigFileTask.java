@@ -4,10 +4,10 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.internal.notes.vcs.GitOriginRepoProvider;
 import org.shipkit.internal.exec.DefaultProcessRunner;
 import org.shipkit.internal.exec.ProcessRunner;
 import org.shipkit.internal.notes.util.IOUtil;
+import org.shipkit.internal.notes.vcs.GitOriginRepoProvider;
 import org.shipkit.internal.util.ExposedForTesting;
 
 import java.io.File;
@@ -59,9 +59,11 @@ public class InitConfigFileTask extends DefaultTask{
     private String getOriginGitRepo() {
         try {
             return gitOriginRepoProvider.getOriginGitRepo();
-        } catch(Exception e){
-            LOG.error("Failed to get url of git remote origin. Using fallback '" + FALLBACK_GITHUB_REPO + "' instead.\n" +
-                    "You can change GitHub repository manually in " + configFile, e);
+        } catch (Exception e) {
+            LOG.lifecycle("  Problems getting url of git remote origin (run with --debug to find out more).\n" +
+                    "  Using fallback '" + FALLBACK_GITHUB_REPO + "' instead.\n" +
+                    "  Please update GitHub repository in '" + configFile + "' file.\n");
+            LOG.debug("  Problems getting url of git remote origin", e);
             return FALLBACK_GITHUB_REPO;
         }
     }
