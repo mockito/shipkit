@@ -4,10 +4,9 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Exec;
 import org.shipkit.gradle.ReleaseConfiguration;
+import org.shipkit.gradle.exec.ExecCommand;
 import org.shipkit.gradle.git.GitPushTask;
 import org.shipkit.gradle.git.IdentifyGitBranchTask;
 import org.shipkit.internal.gradle.git.GitBranchPlugin;
@@ -17,8 +16,7 @@ import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
@@ -52,28 +50,18 @@ public class GitPlugin implements Plugin<Project> {
     static final String WRITE_TOKEN_ENV = "GH_WRITE_TOKEN";
     public static final String GIT_COMMIT_TASK = "gitCommit";
 
-    private final static Logger LOG = Logging.getLogger(GitPlugin.class);
-
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
 
         TaskMaker.task(project, GIT_COMMIT_TASK, GitCommitTask.class, new Action<GitCommitTask>() {
             public void execute(final GitCommitTask t) {
                 t.setDescription("Commits all changed files using generic --author and aggregated commit message");
+                //TODO WW create unit tests
                 t.doFirst(new Action<Task>() {
                     @Override
                     public void execute(Task task) {
-                        Collection<String> args = new LinkedList<String>();
-                        args.add("git");
-                        args.add("commit");
-                        args.add("--author");
-                        args.add(GitUtil.getGitGenericUserNotation(conf));
-                        args.add("-m");
-                        args.add(GitUtil.getCommitMessage(conf, t.getAggregatedCommitMessage()));
-                        args.addAll(t.getFiles());
-
-                        LOG.lifecycle("{} - running command:\n  {}", task.getPath(), StringUtil.join(args, " "));
-                        t.commandLine(args);
+                        t.getExecCommands().add(new ExecCommand(getAddCommand(t.getFiles())));
+                        t.getExecCommands().add(new ExecCommand(getCommitCommand(conf, t.getAggregatedCommitMessage())));
                     }
                 });
             }
@@ -152,6 +140,25 @@ public class GitPlugin implements Plugin<Project> {
                 t.mustRunAfter(performPush);
             }
         });
+    }
+
+    private List<String> getAddCommand(List<String> files) {
+        List<String> args = new ArrayList<String>();
+        args.add("git");
+        args.add("add");
+        args.addAll(files);
+        return args;
+    }
+
+    private List<String> getCommitCommand(ReleaseConfiguration conf, String aggregatedCommitMsg) {
+        List<String> args = new ArrayList<String>();
+        args.add("git");
+        args.add("commit");
+        args.add("--author");
+        args.add(GitUtil.getGitGenericUserNotation(conf));
+        args.add("-m");
+        args.add(GitUtil.getCommitMessage(conf, aggregatedCommitMsg));
+        return args;
     }
 
     public static void registerChangesForCommitIfApplied(final List<File> changedFiles,
