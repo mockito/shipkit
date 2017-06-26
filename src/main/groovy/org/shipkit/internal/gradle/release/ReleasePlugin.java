@@ -55,6 +55,7 @@ public class ReleasePlugin implements Plugin<Project> {
         });
 
         TaskMaker.task(project, TEST_RELEASE_TASK, CompositeExecTask.class, new Action<CompositeExecTask>() {
+            //TODO rename CompositeExecTask because it can have one action
             public void execute(CompositeExecTask task) {
                 task.setDescription("Tests the release procedure and cleans up. Safe to be invoked multiple times.");
                 //releaseCleanUp is already set up to run all his "subtasks" after performRelease is performed
