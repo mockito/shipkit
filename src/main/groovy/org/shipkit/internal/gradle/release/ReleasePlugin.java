@@ -15,6 +15,9 @@ import static org.shipkit.internal.gradle.configuration.LazyConfiguration.lazyCo
  * Applies plugins:
  * <ul>
  *     <li>{@link ReleaseConfigurationPlugin}</li>
+ *     <li>{@link ReleaseNotesPlugin}</li>
+ *     <li>{@link VersioningPlugin}</li>
+ *     <li>{@link GitPlugin}</li>
  * </ul>
  *
  * Adds tasks:
