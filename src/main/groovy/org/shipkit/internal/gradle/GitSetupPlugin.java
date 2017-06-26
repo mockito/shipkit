@@ -8,8 +8,8 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Exec;
 import org.shipkit.gradle.ReleaseConfiguration;
-import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.gradle.util.StringUtil;
+import org.shipkit.internal.gradle.util.TaskMaker;
 
 /**
  * Plugin that adds Git tasks commonly used for setting up
@@ -44,7 +44,7 @@ public class GitSetupPlugin implements Plugin<Project> {
     static final String CHECKOUT_BRANCH_TASK = "checkOutBranch";
     private static final String SET_USER_TASK = "setGitUserName";
     private static final String SET_EMAIL_TASK = "setGitUserEmail";
-    private static final String CI_RELEASE_PREPARE_TASK = "ciReleasePrepare";
+    public static final String CI_RELEASE_PREPARE_TASK = "ciReleasePrepare";
 
     @Override
     public void apply(Project project) {

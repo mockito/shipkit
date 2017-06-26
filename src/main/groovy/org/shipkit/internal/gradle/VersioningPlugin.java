@@ -41,7 +41,7 @@ public class VersioningPlugin implements Plugin<Project> {
 
     public static final String VERSION_FILE_NAME = "version.properties";
 
-    static final String BUMP_VERSION_FILE_TASK = "bumpVersionFile";
+    public static final String BUMP_VERSION_FILE_TASK = "bumpVersionFile";
     static final String INIT_VERSIONING_TASK = "initVersioning";
 
     public void apply(final Project project) {

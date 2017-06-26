@@ -29,6 +29,8 @@ import org.shipkit.internal.gradle.util.TaskMaker;
  */
 public class ReleaseNeededPlugin implements Plugin<Project> {
 
+    public final static String ASSERT_RELEASE_NEEDED_TASK = "assertReleaseNeeded";
+
     @Override
     public void apply(Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
@@ -36,7 +38,7 @@ public class ReleaseNeededPlugin implements Plugin<Project> {
         //Task that throws an exception when release is not needed is very useful for CI workflows
         //Travis CI job will stop executing further commands if assertReleaseNeeded fails.
         //See the example projects how we have set up the 'assertReleaseNeeded' task in CI pipeline.
-        releaseNeededTask(project, "assertReleaseNeeded", conf)
+        releaseNeededTask(project, ASSERT_RELEASE_NEEDED_TASK, conf)
                 .setExplosive(true)
                 .setDescription("Asserts that criteria for the release are met and throws exception if release is not needed.");
 

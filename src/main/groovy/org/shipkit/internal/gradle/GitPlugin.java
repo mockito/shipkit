@@ -42,13 +42,13 @@ import static org.shipkit.internal.gradle.util.GitUtil.getTag;
  */
 public class GitPlugin implements Plugin<Project> {
 
-    static final String PERFORM_GIT_COMMIT_CLEANUP_TASK = "performGitCommitCleanUp";
+    public static final String PERFORM_GIT_COMMIT_CLEANUP_TASK = "performGitCommitCleanUp";
     static final String GIT_STASH_TASK = "gitStash";
     static final String SOFT_RESET_COMMIT_TASK = "gitSoftResetCommit";
-    static final String TAG_CLEANUP_TASK = "gitTagCleanUp";
+    public static final String TAG_CLEANUP_TASK = "gitTagCleanUp";
     static final String GIT_TAG_TASK = "gitTag";
-    static final String GIT_PUSH_TASK = "gitPush";
-    static final String PERFORM_GIT_PUSH_TASK = "performGitPush";
+    public static final String GIT_PUSH_TASK = "gitPush";
+    public static final String PERFORM_GIT_PUSH_TASK = "performGitPush";
     static final String WRITE_TOKEN_ENV = "GH_WRITE_TOKEN";
     public static final String GIT_COMMIT_TASK = "gitCommit";
 

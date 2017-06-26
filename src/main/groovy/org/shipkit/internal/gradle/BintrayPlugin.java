@@ -34,7 +34,7 @@ public class BintrayPlugin implements Plugin<Project> {
     /**
      * Name of the task that is configured by this plugin
      */
-    static final String BINTRAY_UPLOAD_TASK = "bintrayUpload";
+    public static final String BINTRAY_UPLOAD_TASK = "bintrayUpload";
 
     private final static Logger LOG = Logging.getLogger(BintrayPlugin.class);
 
