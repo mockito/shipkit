@@ -65,7 +65,7 @@ public class ReleaseConfiguration {
 
     //TODO currently it's not clear when to use class fields and when to use the 'configuration' map
     //Let's make it clear in the docs
-    private boolean dryRun = true;
+    private boolean dryRun;
     private boolean publishAllJavaSubprojects = true;
 
     /**

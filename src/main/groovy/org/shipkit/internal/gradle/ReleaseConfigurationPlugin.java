@@ -52,9 +52,9 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
             loadConfigFromFile(project.getRootProject(), configFile);
 
             if (project.hasProperty("shipkit.dryRun")) {
-                Object value = project.getProperties().get("shipkit.dryRun");
-                configuration.setDryRun(!"false".equals(value));
-                //TODO we can actually implement it so that we automatically preconfigure everything by command line parameters
+                //TODO document that we only check for presence of this property
+                configuration.setDryRun(true);
+                //TODO (maybe) we can actually implement it so that we automatically preconfigure everything by command line parameters
                 //e.g. shipkit.gitHub.repository is also a property
             }
 
