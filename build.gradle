@@ -6,8 +6,7 @@ buildscript {
     }
     dependencies {
         classpath "com.gradle.publish:plugin-publish-plugin:0.9.6"
-        //TODO: Needs to remove gradle.plugin prefix in next PR and bump the version
-        classpath "gradle.plugin.org.shipkit:shipkit:0.8.99"
+        classpath "org.shipkit:shipkit:0.8.104"
         classpath 'ru.vyarus:gradle-animalsniffer-plugin:1.3.0'
     }
 }
