@@ -2,7 +2,6 @@ package org.shipkit.internal.gradle
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
-import spock.lang.Unroll
 import testutil.PluginSpecification
 
 class ReleaseConfigurationPluginTest extends PluginSpecification {
