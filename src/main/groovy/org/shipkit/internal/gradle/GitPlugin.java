@@ -57,6 +57,8 @@ public class GitPlugin implements Plugin<Project> {
             public void execute(final GitCommitTask t) {
                 t.setDescription("Commits all changed files using generic --author and aggregated commit message");
                 //TODO WW create unit tests
+                //doFirst used so that commit operation can reflect changes added by other plugins configurations
+                //see GitCommitTask#addChange
                 t.doFirst(new Action<Task>() {
                     @Override
                     public void execute(Task task) {
