@@ -22,7 +22,7 @@ install:
  - true
 
 script:
-  - ./gradlew build -s -i
+  - ./gradlew build -PcheckJava6Compatibility -s -i
 
 after_success:
   - ./gradlew assertReleaseNeeded && ./gradlew ciReleasePrepare && ./gradlew travisRelease -s
