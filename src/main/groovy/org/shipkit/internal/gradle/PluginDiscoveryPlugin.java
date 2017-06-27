@@ -6,6 +6,8 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.file.FileTree;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.util.PatternSet;
 
@@ -25,6 +27,7 @@ import java.util.Set;
  */
 public class PluginDiscoveryPlugin implements Plugin<Project> {
 
+    private static Logger LOG = Logging.getLogger(PluginDiscoveryPlugin.class);
     private static final String DOT_PROPERTIES = ".properties";
 
     @Override
@@ -35,11 +38,12 @@ public class PluginDiscoveryPlugin implements Plugin<Project> {
                 PluginBundleExtension extension = project.getExtensions().findByType(PluginBundleExtension.class);
 
                 Set<File> pluginPropertyFiles = discoverGradlePluginPropertyFiles(project);
+                LOG.lifecycle("  Adding {} discovered Gradle plugins to 'pluginBundle'", pluginPropertyFiles.size());
                 for (File pluginPropertyFile : pluginPropertyFiles) {
                     PluginConfig config = new PluginConfig(generatePluginName(pluginPropertyFile.getName()));
                     config.setId(pluginPropertyFile.getName().substring(0, pluginPropertyFile.getName().lastIndexOf(DOT_PROPERTIES)));
                     config.setDisplayName(getImplementationClass(pluginPropertyFile));
-                    project.getLogger().lifecycle("Adding autodiscovered plugin " + config);
+                    LOG.info("Discovered plugin " + config);
                     extension.getPlugins().add(config);
                 }
             }

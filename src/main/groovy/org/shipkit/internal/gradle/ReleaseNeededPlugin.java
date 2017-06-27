@@ -30,6 +30,7 @@ import org.shipkit.internal.gradle.util.TaskMaker;
 public class ReleaseNeededPlugin implements Plugin<Project> {
 
     public final static String ASSERT_RELEASE_NEEDED_TASK = "assertReleaseNeeded";
+    public final static String RELEASE_NEEDED = "releaseNeeded";
 
     @Override
     public void apply(Project project) {
@@ -44,7 +45,7 @@ public class ReleaseNeededPlugin implements Plugin<Project> {
 
         //Below task is useful for testing. It will not throw an exception but will run the code that check is release is needed
         //and it will print the information to the console.
-        releaseNeededTask(project, "releaseNeeded", conf)
+        releaseNeededTask(project, RELEASE_NEEDED, conf)
                 .setExplosive(false)
                 .setDescription("Checks and prints to the console if criteria for the release are met.");
     }

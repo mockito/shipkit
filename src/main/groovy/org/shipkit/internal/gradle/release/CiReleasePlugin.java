@@ -43,7 +43,7 @@ public class CiReleasePlugin implements Plugin<Project> {
                 task.setDescription("Checks if release is needed. If so it will prepare for ci release and perform release.");
                 task.getExecCommands().add(new ExecCommand(asList("./gradlew", ASSERT_RELEASE_NEEDED_TASK), stopExecution()));
                 task.getExecCommands().add(new ExecCommand(asList("./gradlew", CI_RELEASE_PREPARE_TASK)));
-                task.getExecCommands().add(new ExecCommand(asList("./gradlew", PERFORM_RELEASE_TASK, "-Pshipkit.dryRun=false")));
+                task.getExecCommands().add(new ExecCommand(asList("./gradlew", PERFORM_RELEASE_TASK)));
             }
         });
     }
