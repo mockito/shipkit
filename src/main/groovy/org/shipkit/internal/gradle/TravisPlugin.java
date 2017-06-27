@@ -9,7 +9,7 @@ import org.shipkit.internal.gradle.configuration.BasicValidator;
 import org.shipkit.internal.gradle.configuration.LazyConfiguration;
 import org.shipkit.internal.gradle.git.GitBranchPlugin;
 
-import static org.shipkit.internal.gradle.GitSetupPlugin.CHECKOUT_BRANCH_TASK;
+import static org.shipkit.internal.gradle.GitSetupPlugin.CHECKOUT_TASK;
 import static org.shipkit.internal.gradle.git.GitBranchPlugin.IDENTIFY_GIT_BRANCH;
 
 /**
@@ -41,7 +41,7 @@ public class TravisPlugin implements Plugin<Project> {
         project.getPlugins().withType(GitSetupPlugin.class, new Action<GitSetupPlugin>() {
             @Override
             public void execute(GitSetupPlugin p) {
-                final GitCheckOutTask checkout = (GitCheckOutTask) project.getTasks().getByName(CHECKOUT_BRANCH_TASK);
+                final GitCheckOutTask checkout = (GitCheckOutTask) project.getTasks().getByName(CHECKOUT_TASK);
                 checkout.setRev(branch);
                 LazyConfiguration.lazyConfiguration(checkout, new Runnable() {
                     public void run() {
