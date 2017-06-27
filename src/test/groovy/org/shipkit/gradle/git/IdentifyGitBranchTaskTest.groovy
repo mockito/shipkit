@@ -18,6 +18,18 @@ class IdentifyGitBranchTaskTest extends Specification {
         !t.branch.isEmpty()
     }
 
+    def "uses explicitly configured branch"() {
+        def t = project.tasks.create("identify", IdentifyGitBranchTask)
+        t.branch = "master"
+
+
+        when:
+        t.execute()
+
+        then:
+        t.branch == "master"
+    }
+
     def "fails when branch requested too early"() {
         def t = project.tasks.create("identify", IdentifyGitBranchTask)
 
