@@ -3,6 +3,8 @@ package org.shipkit.internal.gradle;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.ReleaseNeededTask;
 import org.shipkit.gradle.git.IdentifyGitBranchTask;
 import org.shipkit.internal.gradle.configuration.BasicValidator;
@@ -25,11 +27,15 @@ import static org.shipkit.internal.gradle.git.GitBranchPlugin.IDENTIFY_GIT_BRANC
  */
 public class TravisPlugin implements Plugin<Project> {
 
+    private final static Logger LOG = Logging.getLogger(TravisPlugin.class);
+
     @Override
     public void apply(final Project project) {
         project.getPlugins().apply(GitSetupPlugin.class);
 
         final String branch = System.getenv("TRAVIS_BRANCH");
+        LOG.info("Branch from 'TRAVIS_BRANCH' env variable: {}", branch);
+
         project.getPlugins().withType(GitBranchPlugin.class, new Action<GitBranchPlugin>() {
             @Override
             public void execute(GitBranchPlugin p) {
@@ -56,9 +62,12 @@ public class TravisPlugin implements Plugin<Project> {
         });
 
         project.getPlugins().withType(ReleaseNeededPlugin.class, new Action<ReleaseNeededPlugin>() {
-            String pr = System.getenv("TRAVIS_PULL_REQUEST");
-            final boolean isPullRequest = pr != null && !pr.trim().isEmpty() && !pr.equals("false");
             public void execute(ReleaseNeededPlugin p) {
+                String pr = System.getenv("TRAVIS_PULL_REQUEST");
+                LOG.info("Pull request from 'TRAVIS_PULL_REQUEST' env variable: {}", pr);
+                final boolean isPullRequest = pr != null && !pr.trim().isEmpty() && !pr.equals("false");
+                LOG.info("Pull request build: {}", isPullRequest);
+
                 project.getTasks().withType(ReleaseNeededTask.class, new Action<ReleaseNeededTask>() {
                     public void execute(ReleaseNeededTask t) {
                         t.setCommitMessage(System.getenv("TRAVIS_COMMIT_MESSAGE"));
