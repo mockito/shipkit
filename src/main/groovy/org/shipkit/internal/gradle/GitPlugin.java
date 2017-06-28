@@ -62,8 +62,8 @@ public class GitPlugin implements Plugin<Project> {
                 t.doFirst(new Action<Task>() {
                     @Override
                     public void execute(Task task) {
-                        t.getExecCommands().add(new ExecCommand(getAddCommand(t.getFiles())));
-                        t.getExecCommands().add(new ExecCommand(getCommitCommand(conf, t.getAggregatedCommitMessage())));
+                        t.getExecCommands().add(new ExecCommand("Adding files to git", getAddCommand(t.getFiles())));
+                        t.getExecCommands().add(new ExecCommand("Performing git commit", getCommitCommand(conf, t.getAggregatedCommitMessage())));
                     }
                 });
             }

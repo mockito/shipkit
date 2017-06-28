@@ -42,9 +42,6 @@ public class ShipkitExecTask extends DefaultTask {
             ExecResult result = getProject().exec(new Action<ExecSpec>() {
                 @Override
                 public void execute(ExecSpec spec) {
-                    //TODO we should expose 'description' on exec command and write it to console before forking process
-                    //TODO figure out a clean way of adding unit test coverage for it
-
                     spec.setIgnoreExitValue(true);
                     spec.commandLine(execCommand.getCommandLine());
                     //TODO move prefix onto the ExecCommand with default
@@ -54,7 +51,7 @@ public class ShipkitExecTask extends DefaultTask {
 
                     execCommand.getSetupAction().execute(spec);
 
-                    LOG.lifecycle("  Executing:\n    " + StringUtil.join(execCommand.getCommandLine(), " "));
+                    LOG.lifecycle("  " + execCommand.getDescription() + ":\n    " + StringUtil.join(execCommand.getCommandLine(), " "));
                 }
             });
             execCommand.getResultAction().execute(result);

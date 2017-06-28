@@ -24,6 +24,7 @@ public class ExecCommand {
         }
     };
 
+    private final String description;
     private final Collection<String> commandLine;
     private final Action<ExecSpec> setupAction;
     private final Action<ExecResult> resultAction;
@@ -31,11 +32,13 @@ public class ExecCommand {
     /**
      * Generic command line to be executed
      *
+     * @param description human readable description of the command
      * @param commandLine command line to be executed
      * @param setupAction action that configures the command line execution
      * @param resultAction action that is triggered after the command line was executed
      */
-    public ExecCommand(Collection<String> commandLine, Action<ExecSpec> setupAction, Action<ExecResult> resultAction) {
+    public ExecCommand(String description, Collection<String> commandLine, Action<ExecSpec> setupAction, Action<ExecResult> resultAction) {
+        this.description = description;
         this.commandLine = commandLine;
         this.setupAction = setupAction;
         this.resultAction = resultAction;
@@ -45,8 +48,8 @@ public class ExecCommand {
      * Exec command that will throw the exception when the command line fails.
      * This is the most typical kind of exec command.
      */
-    public ExecCommand(Collection<String> commandLine) {
-        this(commandLine, NO_OP_ACTION, ENSURE_SUCCEEDED_ACTION);
+    public ExecCommand(String description, Collection<String> commandLine) {
+        this(description, commandLine, NO_OP_ACTION, ENSURE_SUCCEEDED_ACTION);
     }
 
     /**
@@ -54,8 +57,8 @@ public class ExecCommand {
      * Useful if the user needs custom behavior when command line finishes executing.
      * For example, we can ignore the failure.
      */
-    public ExecCommand(Collection<String> commandLine, Action<ExecResult> resultAction) {
-        this(commandLine, NO_OP_ACTION, resultAction);
+    public ExecCommand(String description, Collection<String> commandLine, Action<ExecResult> resultAction) {
+        this(description, commandLine, NO_OP_ACTION, resultAction);
     }
 
     /**
@@ -77,5 +80,9 @@ public class ExecCommand {
      */
     public Action<ExecResult> getResultAction() {
         return resultAction;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }
