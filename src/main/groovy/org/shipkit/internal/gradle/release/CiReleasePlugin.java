@@ -3,6 +3,8 @@ package org.shipkit.internal.gradle.release;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.StopExecutionException;
 import org.gradle.process.ExecResult;
 import org.shipkit.gradle.exec.ShipkitExecTask;
@@ -20,6 +22,8 @@ import static org.shipkit.internal.gradle.release.ReleasePlugin.PERFORM_RELEASE_
  * Adds convenience 'ciPerformRelease' task to execute release using a single Gradle task.
  */
 public class CiReleasePlugin implements Plugin<Project> {
+
+    private final static Logger LOG = Logging.getLogger(CiReleasePlugin.class);
 
     @Override
     public void apply(Project project) {
@@ -52,6 +56,7 @@ public class CiReleasePlugin implements Plugin<Project> {
         return new Action<ExecResult>() {
             public void execute(ExecResult exec) {
                 if (exec.getExitValue() != 0) {
+                    LOG.info("External process returned exit code: {}. Stopping the execution of the task.");
                     //Cleanly stop executing the task, without making the task failed.
                     throw new StopExecutionException();
                 }
