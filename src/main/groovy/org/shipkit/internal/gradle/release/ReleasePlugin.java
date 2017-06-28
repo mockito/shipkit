@@ -4,7 +4,7 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.shipkit.gradle.exec.CompositeExecTask;
+import org.shipkit.gradle.exec.ShipkitExecTask;
 import org.shipkit.gradle.exec.ExecCommand;
 import org.shipkit.internal.gradle.GitPlugin;
 import org.shipkit.internal.gradle.ReleaseNeededPlugin;
@@ -54,9 +54,9 @@ public class ReleasePlugin implements Plugin<Project> {
             }
         });
 
-        TaskMaker.task(project, TEST_RELEASE_TASK, CompositeExecTask.class, new Action<CompositeExecTask>() {
-            //TODO rename CompositeExecTask because it can have one action
-            public void execute(CompositeExecTask task) {
+        TaskMaker.task(project, TEST_RELEASE_TASK, ShipkitExecTask.class, new Action<ShipkitExecTask>() {
+            //TODO rename ShipkitExecTask because it can have one action
+            public void execute(ShipkitExecTask task) {
                 task.setDescription("Tests the release procedure and cleans up. Safe to be invoked multiple times.");
                 //releaseCleanUp is already set up to run all his "subtasks" after performRelease is performed
                 //releaseNeeded is used here only to execute the code paths in the release needed task (extra testing)

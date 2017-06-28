@@ -5,7 +5,7 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.StopExecutionException;
 import org.gradle.process.ExecResult;
-import org.shipkit.gradle.exec.CompositeExecTask;
+import org.shipkit.gradle.exec.ShipkitExecTask;
 import org.shipkit.gradle.exec.ExecCommand;
 import org.shipkit.internal.gradle.GitSetupPlugin;
 import org.shipkit.internal.gradle.ReleaseNeededPlugin;
@@ -37,9 +37,9 @@ public class CiReleasePlugin implements Plugin<Project> {
           Also, when release is not needed, we don't have clean Gradle API to stop the build, without failing it.
           Hence, we are pragmatic. We are forking Gradle from Gradle which seems hacky but we have no other viable choice.
         */
-        TaskMaker.task(project, "ciPerformRelease", CompositeExecTask.class, new Action<CompositeExecTask>() {
+        TaskMaker.task(project, "ciPerformRelease", ShipkitExecTask.class, new Action<ShipkitExecTask>() {
             @Override
-            public void execute(CompositeExecTask task) {
+            public void execute(ShipkitExecTask task) {
                 task.setDescription("Checks if release is needed. If so it will prepare for ci release and perform release.");
                 task.getExecCommands().add(new ExecCommand(asList("./gradlew", ASSERT_RELEASE_NEEDED_TASK), stopExecution()));
                 task.getExecCommands().add(new ExecCommand(asList("./gradlew", CI_RELEASE_PREPARE_TASK)));

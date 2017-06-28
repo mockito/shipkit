@@ -17,10 +17,10 @@ import java.util.LinkedList;
  * Generic Gradle task that allows composing multiple executable command line invocations.
  * Very useful for scenarios where we cannot easily use multiple Gradle Exec tasks.
  */
-public class CompositeExecTask extends DefaultTask {
+public class ShipkitExecTask extends DefaultTask {
 
     private Collection<ExecCommand> execCommands = new LinkedList<ExecCommand>();
-    private final static Logger LOG = Logging.getLogger(CompositeExecTask.class);
+    private final static Logger LOG = Logging.getLogger(ShipkitExecTask.class);
 
     /**
      * Sequence of command line executions.
