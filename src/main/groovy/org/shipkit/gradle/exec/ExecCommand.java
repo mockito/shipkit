@@ -28,16 +28,19 @@ public class ExecCommand {
     private final Collection<String> commandLine;
     private final Action<ExecSpec> setupAction;
     private final Action<ExecResult> resultAction;
+    private final String loggingPrefix;
 
     /**
      * Generic command line to be executed
      *
+     * @param loggingPrefix see {@link #getLoggingPrefix()}
      * @param description human readable description of the command
      * @param commandLine command line to be executed
      * @param setupAction action that configures the command line execution
      * @param resultAction action that is triggered after the command line was executed
      */
-    public ExecCommand(String description, Collection<String> commandLine, Action<ExecSpec> setupAction, Action<ExecResult> resultAction) {
+    public ExecCommand(String loggingPrefix, String description, Collection<String> commandLine, Action<ExecSpec> setupAction, Action<ExecResult> resultAction) {
+        this.loggingPrefix = loggingPrefix;
         this.description = description;
         this.commandLine = commandLine;
         this.setupAction = setupAction;
@@ -49,7 +52,12 @@ public class ExecCommand {
      * This is the most typical kind of exec command.
      */
     public ExecCommand(String description, Collection<String> commandLine) {
-        this(description, commandLine, NO_OP_ACTION, ENSURE_SUCCEEDED_ACTION);
+        this(defaultPrefix(commandLine), description, commandLine, NO_OP_ACTION, ENSURE_SUCCEEDED_ACTION);
+    }
+
+    private static String defaultPrefix(Collection<String> commandLine) {
+        //by default, we are using the first argument as prefix
+        return "[" + commandLine.iterator().next() + "] ";
     }
 
     /**
@@ -58,7 +66,7 @@ public class ExecCommand {
      * For example, we can ignore the failure.
      */
     public ExecCommand(String description, Collection<String> commandLine, Action<ExecResult> resultAction) {
-        this(description, commandLine, NO_OP_ACTION, resultAction);
+        this(defaultPrefix(commandLine), description, commandLine, NO_OP_ACTION, resultAction);
     }
 
     /**
@@ -82,7 +90,17 @@ public class ExecCommand {
         return resultAction;
     }
 
+    /**
+     * Description of the command, for example: "Checking out git revision"
+     */
     public String getDescription() {
         return description;
+    }
+
+    /**
+     * Logging prefix to be used to prefix every line of output captured from running the command.
+     */
+    public String getLoggingPrefix() {
+        return loggingPrefix;
     }
 }

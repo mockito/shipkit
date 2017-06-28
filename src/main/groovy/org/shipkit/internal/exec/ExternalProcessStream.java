@@ -46,10 +46,7 @@ public class ExternalProcessStream extends OutputStream {
     private void maybeOutput(int b) {
         //optionally write prefix so that terminal looks clean
         if (writePrefix) {
-            output.print('[');
             output.print(outputPrefix);
-            output.print(']');
-            output.print(' ');
             writePrefix = false;
         }
         //write to output

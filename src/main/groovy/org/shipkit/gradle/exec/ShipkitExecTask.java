@@ -44,10 +44,8 @@ public class ShipkitExecTask extends DefaultTask {
                 public void execute(ExecSpec spec) {
                     spec.setIgnoreExitValue(true);
                     spec.commandLine(execCommand.getCommandLine());
-                    //TODO move prefix onto the ExecCommand with default
-                    String firstArg = execCommand.getCommandLine().iterator().next();
-                    spec.setStandardOutput(new ExternalProcessStream(firstArg, System.out));
-                    spec.setErrorOutput(new ExternalProcessStream(firstArg, System.err));
+                    spec.setStandardOutput(new ExternalProcessStream(execCommand.getLoggingPrefix(), System.out));
+                    spec.setErrorOutput(new ExternalProcessStream(execCommand.getLoggingPrefix(), System.err));
 
                     execCommand.getSetupAction().execute(spec);
 
