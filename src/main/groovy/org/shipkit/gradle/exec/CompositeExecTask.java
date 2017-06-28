@@ -7,6 +7,7 @@ import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.process.ExecResult;
 import org.gradle.process.ExecSpec;
+import org.shipkit.internal.exec.ExternalProcessStream;
 import org.shipkit.internal.gradle.util.StringUtil;
 
 import java.util.Collection;
@@ -41,13 +42,16 @@ public class CompositeExecTask extends DefaultTask {
             ExecResult result = getProject().exec(new Action<ExecSpec>() {
                 @Override
                 public void execute(ExecSpec spec) {
-                    //TODO add better logging, we should capture the output from external process
-                    //and prefix it with [./gradlew]
                     //TODO we should expose 'description' on exec command and write it to console before forking process
                     //TODO figure out a clean way of adding unit test coverage for it
 
                     spec.setIgnoreExitValue(true);
                     spec.commandLine(execCommand.getCommandLine());
+                    //TODO move prefix onto the ExecCommand with default
+                    String firstArg = execCommand.getCommandLine().iterator().next();
+                    spec.setStandardOutput(new ExternalProcessStream(firstArg, System.out));
+                    spec.setErrorOutput(new ExternalProcessStream(firstArg, System.err));
+
                     execCommand.getSetupAction().execute(spec);
 
                     LOG.lifecycle("  Executing:\n    " + StringUtil.join(execCommand.getCommandLine(), " "));
