@@ -1,8 +1,10 @@
-allprojects { p ->
-    plugins.withId('java') {
-        p.apply plugin :'ru.vyarus.animalsniffer'
-        p.dependencies {
-            signature 'org.codehaus.mojo.signature:java16:1.1@signature'
+if (project.hasProperty('checkJava6Compatibility')) {
+    allprojects { p ->
+        plugins.withId('java') {
+            p.apply plugin: 'ru.vyarus.animalsniffer'
+            p.dependencies {
+                signature 'org.codehaus.mojo.signature:java16:1.1@signature'
+            }
         }
     }
 }
