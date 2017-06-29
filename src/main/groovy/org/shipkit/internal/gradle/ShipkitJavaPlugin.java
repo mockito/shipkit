@@ -6,7 +6,7 @@ import org.shipkit.internal.gradle.release.CiReleasePlugin;
 import org.shipkit.internal.gradle.release.JavaReleasePlugin;
 
 /**
- * Adds plugins and tasks to setup automated releasing for a Java multi-project.
+ * Adds plugins and tasks to setup automated releasing for a typical Java project.
  * Applies following plugins:
  *
  * <ul>

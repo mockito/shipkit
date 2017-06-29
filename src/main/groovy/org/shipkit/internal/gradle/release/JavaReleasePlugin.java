@@ -5,8 +5,6 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.UpdateReleaseNotesTask;
 import org.shipkit.internal.gradle.*;
@@ -16,7 +14,7 @@ import static org.shipkit.internal.gradle.BaseJavaLibraryPlugin.MAVEN_LOCAL_TASK
 import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
 
 /**
- * Configures Java multi-project for automated releases.
+ * Configures Java project for automated releases.
  * Applies some configuration to subprojects, too.
  *
  * <p>
@@ -38,8 +36,6 @@ import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.de
  * </ul>
  */
 public class JavaReleasePlugin implements Plugin<Project> {
-
-    private static final Logger LOG = Logging.getLogger(ShipkitJavaPlugin.class);
 
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
