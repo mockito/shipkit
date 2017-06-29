@@ -4,7 +4,9 @@ import org.shipkit.gradle.ReleaseConfiguration
 import org.shipkit.gradle.git.GitPushTask
 import spock.lang.Specification
 
-import static org.shipkit.internal.gradle.git.GitPush.*
+import static org.shipkit.internal.gradle.git.GitPush.getWriteToken
+import static org.shipkit.internal.gradle.git.GitPush.gitPushArgs
+import static org.shipkit.internal.gradle.git.GitPush.setPushUrl
 
 class GitPushTest extends Specification {
 
