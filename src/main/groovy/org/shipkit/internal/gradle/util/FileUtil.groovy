@@ -8,7 +8,7 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class FileUtil {
 
-    //TODO convert to Java at some point
+    //TODO (maybe) convert to Java at some point
 
     /**
      * Returns first line of the file.

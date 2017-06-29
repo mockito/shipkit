@@ -8,7 +8,7 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class StringUtil {
 
-    //TODO convert to Java at some point
+    //TODO (maybe) convert to Java at some point
 
     /**
      * Classic string join
