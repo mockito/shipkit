@@ -15,9 +15,6 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static org.shipkit.internal.gradle.util.StringUtil.join;
 
-//TODO since this class is already public, probably it's best if we keep things simple and remove it from the public API
-//1. Remove the ProcessRunner interface and Exec class
-//2. Move the runner to the internal package
 public class DefaultProcessRunner implements ProcessRunner {
 
     private static final Logger LOG = Logging.getLogger(DefaultProcessRunner.class);
