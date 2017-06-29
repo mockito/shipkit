@@ -41,7 +41,7 @@ public class BintrayPlugin implements Plugin<Project> {
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
 
-        //TODO since this plugin depends on bintray,
+        //TODO (maybe) since this plugin depends on bintray,
         // we need to either shade bintray plugin or ship this Gradle plugin in a separate jar
         // this way we avoid version conflicts and any bintray dependencies for users who don't use bintray
         project.getPlugins().apply("com.jfrog.bintray");
@@ -55,10 +55,7 @@ public class BintrayPlugin implements Plugin<Project> {
 
         bintrayUpload.doFirst(new Action<Task>() {
             public void execute(Task task) {
-                //TODO unit test
-                BintrayUploadTask t = (BintrayUploadTask) task;
-
-                String welcomeMessage = uploadWelcomeMessage(t);
+                String welcomeMessage = uploadWelcomeMessage((BintrayUploadTask) task);
                 LOG.lifecycle(welcomeMessage);
             }
         });
@@ -115,7 +112,6 @@ public class BintrayPlugin implements Plugin<Project> {
     }
 
     static String uploadWelcomeMessage(BintrayUploadTask t) {
-        //TODO unit test
         return t.getPath() + " - publishing to Bintray\n" +
                             "  - dry run: " + t.getDryRun()
                             + ", version: " + t.getVersionName()
