@@ -1,6 +1,5 @@
 package org.shipkit.internal.notes.format
 
-import org.shipkit.internal.notes.about.InformationAboutProvider
 import org.shipkit.internal.notes.contributors.DefaultContributor
 import org.shipkit.internal.notes.internal.DefaultImprovement
 import org.shipkit.internal.notes.internal.DefaultReleaseNotesData

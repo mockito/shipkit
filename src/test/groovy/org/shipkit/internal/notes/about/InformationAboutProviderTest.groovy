@@ -14,7 +14,7 @@ class InformationAboutProviderTest extends Specification {
 
         expect:
         "should generate correct info about shipkit when information about is " + informationAbout + " and release not file not exist"
-        testObj.getInforomationAboutText(releaseNoteFile, informationAbout) == result
+        testObj.getInformationAboutText(releaseNoteFile, informationAbout) == result
         where:
         informationAbout || result
         true             || InformationAboutProvider.getInformationAbout(1)
@@ -28,7 +28,7 @@ class InformationAboutProviderTest extends Specification {
 
         expect:
         "should generate correct info about shipkit when information about is " + informationAbout + " and release not file not exist"
-        testObj.getInforomationAboutText(releaseNoteFile, informationAbout) == result
+        testObj.getInformationAboutText(releaseNoteFile, informationAbout) == result
         where:
         informationAbout || result
         true             || InformationAboutProvider.getInformationAbout(1)
@@ -44,7 +44,7 @@ class InformationAboutProviderTest extends Specification {
         }
 
         expect:
-        testObj.getInforomationAboutText(releaseNoteFile, informationAbout) == result
+        testObj.getInformationAboutText(releaseNoteFile, informationAbout) == result
         where:
         informationAbout | content                                                                          || result
         true             | "content"                                                                        || InformationAboutProvider.getInformationAbout(1)

@@ -369,7 +369,7 @@ public class UpdateReleaseNotesTask extends DefaultTask {
         public String generateNewContent() {
             LOG.lifecycle("  Building new release notes based on {}", releaseNotesFile);
 
-            String inforomationAboutText = informationAboutProvider.getInforomationAboutText(releaseNotesFile, showAboutInfo);
+            String inforomationAboutText = informationAboutProvider.getInformationAboutText(releaseNotesFile, showAboutInfo);
 
             Collection<ReleaseNotesData> data = new ReleaseNotesSerializer().deserialize(IOUtil.readFully(releaseNotesData));
 

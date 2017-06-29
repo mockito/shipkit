@@ -10,7 +10,7 @@ public class InformationAboutProvider {
 
     private final ReleaseNoteCounter releaseNoteCounter = new ReleaseNoteCounter();
 
-    public String getInforomationAboutText(File releaseNoteFile, boolean informationAboutEnabled) {
+    public String getInformationAboutText(File releaseNoteFile, boolean informationAboutEnabled) {
         int nextReleaseNoteNumber = releaseNoteCounter.getNextReleaseNoteNumber(releaseNoteFile);
         if (informationAboutEnabled) {
             return InformationAboutProvider.getInformationAbout(nextReleaseNoteNumber);
