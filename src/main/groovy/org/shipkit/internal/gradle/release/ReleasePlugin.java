@@ -60,7 +60,7 @@ public class ReleasePlugin implements Plugin<Project> {
                 //releaseCleanUp is already set up to run all his "subtasks" after performRelease is performed
                 //releaseNeeded is used here only to execute the code paths in the release needed task (extra testing)
                 task.getExecCommands().add(new ExecCommand("Performing relase in dry run, with cleanup", asList(
-                    "./gradlew", RELEASE_NEEDED, PERFORM_RELEASE_TASK, RELEASE_CLEAN_UP_TASK, "-Pshipkit.dryRun")));
+                    "./gradlew", RELEASE_NEEDED, PERFORM_RELEASE_TASK, RELEASE_CLEAN_UP_TASK, "-PdryRun")));
             }
         });
 

@@ -20,7 +20,7 @@ import java.io.File;
  * Adds following behavior:
  * <ul>
  *     <li>Adds and preconfigures 'shipkit' extension of type {@link ReleaseConfiguration}</li>
- *     <li>Configures 'shipkit.dryRun' setting based on 'shipkit.dryRun' Gradle project property</li>
+ *     <li>Configures 'shipkit.dryRun' setting based on 'dryRun' Gradle project property</li>
  * </ul>
  *
  * Applies following plugins and preconfigures tasks provided by those plugins:
@@ -36,6 +36,7 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
 
     public static final String CONFIG_FILE_RELATIVE_PATH = "gradle/shipkit.gradle";
     static final String INIT_CONFIG_FILE_TASK = "initConfigFile";
+    public static final String DRY_RUN_PROPERTY = "dryRun";
 
     public void apply(final Project project) {
         if (project.getParent() == null) {
@@ -51,9 +52,7 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
 
             loadConfigFromFile(project.getRootProject(), configFile);
 
-            if (project.hasProperty("shipkit.dryRun")) {
-                //TODO rename to 'dryRun' and expose constant
-                //TODO document that we only check for presence of this property
+            if (project.hasProperty(DRY_RUN_PROPERTY)) {
                 configuration.setDryRun(true);
                 //TODO (maybe) we can actually implement it so that we automatically preconfigure everything by command line parameters
                 //e.g. shipkit.gitHub.repository is also a property
