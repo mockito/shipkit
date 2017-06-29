@@ -12,14 +12,12 @@ import org.shipkit.gradle.git.IdentifyGitBranchTask;
 import org.shipkit.internal.gradle.git.GitBranchPlugin;
 import org.shipkit.internal.gradle.git.GitPushArgs;
 import org.shipkit.internal.gradle.util.GitUtil;
-import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
 import static org.shipkit.internal.gradle.util.GitUtil.getTag;
 
 /**
@@ -74,13 +72,7 @@ public class GitPlugin implements Plugin<Project> {
                 t.mustRunAfter(GIT_COMMIT_TASK);
                 final String tag = GitUtil.getTag(conf, project);
                 t.setDescription("Creates new version tag '" + tag + "'");
-                deferredConfiguration(project, new Runnable() {
-                    @Override
-                    public void run() {
-                        t.commandLine("git", "tag", "-a", tag, "-m",
-                                GitUtil.getCommitMessage(conf, "Created new tag " + tag));
-                    }
-                });
+                t.commandLine("git", "tag", "-a", tag, "-m", GitUtil.getCommitMessage(conf, "Created new tag " + tag));
             }
         });
 
