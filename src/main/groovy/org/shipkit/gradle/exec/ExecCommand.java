@@ -1,6 +1,7 @@
 package org.shipkit.gradle.exec;
 
 import org.gradle.api.Action;
+import org.gradle.api.GradleException;
 import org.gradle.process.ExecResult;
 import org.gradle.process.ExecSpec;
 
@@ -19,10 +20,16 @@ public class ExecCommand {
 
     private final static Action ENSURE_SUCCEEDED_ACTION = new Action<ExecResult>() {
         public void execute(ExecResult result) {
-            //TODO offer cleaner exception than the one by default offered by Gradle
-            result.assertNormalExitValue();
+            ensureSucceeded(result);
         }
     };
+
+    static void ensureSucceeded(ExecResult result) {
+        if (result.getExitValue() != 0) {
+            throw new GradleException("Command execution failed. The exit code was: " + result.getExitValue() + "\n" +
+                    "Please inspect the process output prefixed in the build log.");
+        }
+    }
 
     private final String description;
     private final Collection<String> commandLine;
