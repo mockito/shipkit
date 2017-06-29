@@ -58,7 +58,6 @@ class InitConfigFileTaskTest extends Specification {
 shipkit {
    gitHub.repository = \"mockito/mockito\"
    gitHub.readOnlyAuthToken = \"76826c9ec886612f504d12fd4268b16721c4f85d\"
-   gitHub.writeAuthUser = \"shipkit-org\"
 }
 
 allprojects {
