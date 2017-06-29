@@ -85,12 +85,13 @@ public class InitConfigFileTask extends DefaultTask{
                     "shipkit {\n" +
                     "   gitHub.repository = \"@gitHub.repository@\"\n" +
                     "\n" +
-                    "   //TODO when you finished trying out Shipkit, use your own token below (http://link/needed)\n" +
+                    "   //TODO when you finish trying out Shipkit, use your own token below (http://link/needed)\n" +
                     "   gitHub.readOnlyAuthToken = \"@gitHub.readOnlyAuthToken@\"\n"+
                     "}\n"+
                     "\n"+
                     "allprojects {\n"+
                     "   plugins.withId(\"org.shipkit.bintray\") {\n"+
+                    "       //TODO when you finish trying out Shipkit, use your own Bintray repository below (http://link/needed)\n"+
                     "       bintray {\n"+
                     "           key = '@bintray.key@'\n"+
                     "           pkg {\n"+
