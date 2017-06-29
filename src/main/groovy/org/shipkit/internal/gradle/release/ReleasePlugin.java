@@ -55,7 +55,6 @@ public class ReleasePlugin implements Plugin<Project> {
         });
 
         TaskMaker.task(project, TEST_RELEASE_TASK, ShipkitExecTask.class, new Action<ShipkitExecTask>() {
-            //TODO rename ShipkitExecTask because it can have one action
             public void execute(ShipkitExecTask task) {
                 task.setDescription("Tests the release procedure and cleans up. Safe to be invoked multiple times.");
                 //releaseCleanUp is already set up to run all his "subtasks" after performRelease is performed
