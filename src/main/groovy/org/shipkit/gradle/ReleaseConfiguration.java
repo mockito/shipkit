@@ -1,7 +1,6 @@
 package org.shipkit.gradle;
 
 import org.gradle.api.GradleException;
-import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.version.VersionInfo;
 
 import java.util.Collection;
@@ -56,6 +55,7 @@ public class ReleaseConfiguration {
         gitHub.setWriteAuthUser("dummy");
 
         releaseNotes.setFile("docs/release-notes.md");
+        releaseNotes.setShowAboutInfo(Boolean.TRUE);
         releaseNotes.setIgnoreCommitsContaining(asList("[ci skip]"));
         releaseNotes.setLabelMapping(Collections.<String, String>emptyMap());
 
@@ -276,6 +276,14 @@ public class ReleaseConfiguration {
         public void setIgnoreCommitsContaining(Collection<String> commitMessageParts) {
             configuration.put("releaseNotes.ignoreCommitsContaining", commitMessageParts);
         }
+
+        public boolean isShowAboutInfo() {
+            return getBoolean("releaseNotes.showAboutInfo");
+        }
+
+        public void setShowAboutInfo(Boolean showAboutInfo) {
+            configuration.put("releaseNotes.showAboutInfo", showAboutInfo);
+        }
     }
 
     public class Git {
@@ -422,6 +430,10 @@ public class ReleaseConfiguration {
 
     private Collection<String> getCollection(String key) {
         return (Collection) getValue(key, "Please configure 'shipkit." + key + "' value (Collection).");
+    }
+
+    private Boolean getBoolean(String key) {
+        return (Boolean) getValue(key, "Please configure 'shipkit." + key + "' value (String).");
     }
 
     private Object getValue(String key, String message) {

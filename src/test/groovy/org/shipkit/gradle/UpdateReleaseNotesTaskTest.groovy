@@ -4,6 +4,7 @@ import org.gradle.api.GradleException
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
+import org.shipkit.internal.notes.about.InfoAboutRemover
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -15,11 +16,13 @@ class UpdateReleaseNotesTaskTest extends Specification {
     def project = new ProjectBuilder().build()
     def tasks = project.getTasks();
     def incrementalNotesGenerator = Mock(UpdateReleaseNotesTask.IncrementalNotesGenerator)
+    def infoAboutRemover = Mock(InfoAboutRemover)
 
     UpdateReleaseNotesTask underTest = tasks.create("updateReleaseNotes", UpdateReleaseNotesTask)
 
     void setup(){
         underTest.incrementalNotesGenerator = incrementalNotesGenerator
+        underTest.infoAboutRemover = infoAboutRemover
         underTest.gitHubUrl = "https://github.com"
     }
 
@@ -113,6 +116,21 @@ class UpdateReleaseNotesTaskTest extends Specification {
 
         then:
         file.text == "content"
+    }
+
+    def "should remove about info from release notes if not in preview mode" (){
+        given:
+        def file = tmp.newFile("release-notes.md")
+        file << ""
+        underTest.releaseNotesFile = file
+        underTest.gitHubRepository = "mockito/mockito"
+        incrementalNotesGenerator.generateNewContent() >> "content"
+
+        when:
+        underTest.updateReleaseNotes()
+
+        then:
+        1 * infoAboutRemover.removeAboutInfoIfExist(file)
     }
 
     def "should not modify releaseNotesFile if in preview mode" (){

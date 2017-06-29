@@ -78,4 +78,9 @@ class ReleaseConfigurationTest extends Specification {
         expect:
         conf.lenient.gitHub.repository == null
     }
+
+    def "header by default should be enabled"(){
+        expect:
+        conf.releaseNotes.showAboutInfo == true
+    }
 }

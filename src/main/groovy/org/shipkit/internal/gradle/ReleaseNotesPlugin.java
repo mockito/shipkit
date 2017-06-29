@@ -89,6 +89,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         task.setGitHubUrl(conf.getGitHub().getUrl());
         task.setGitHubRepository(conf.getGitHub().getRepository());
         task.setPreviousVersion(project.getExtensions().getByType(VersionInfo.class).getPreviousVersion());
+        task.setShowAboutInfo(conf.getReleaseNotes().isShowAboutInfo());
 
         deferredConfiguration(project, new Runnable() {
             public void run() {
