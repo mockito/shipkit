@@ -3,16 +3,14 @@ package org.shipkit.internal.gradle;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.shipkit.gradle.UpdateReleaseNotesTask;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.ReleaseNotesFetcherTask;
+import org.shipkit.gradle.UpdateReleaseNotesTask;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.version.VersionInfo;
 
 import java.io.File;
 import java.util.Arrays;
-
-import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
 
 /**
  * The plugin adds following tasks:
