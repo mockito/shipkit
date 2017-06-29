@@ -90,11 +90,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         task.setGitHubRepository(conf.getGitHub().getRepository());
         task.setPreviousVersion(project.getExtensions().getByType(VersionInfo.class).getPreviousVersion());
 
-        deferredConfiguration(project, new Runnable() {
-            public void run() {
-                task.setReleaseNotesData(releaseNotesFetcher.getOutputFile());
-                task.setContributorsDataFile(contributorsFetcher.getOutputFile());
-            }
-        });
+        task.setReleaseNotesData(releaseNotesFetcher.getOutputFile());
+        task.setContributorsDataFile(contributorsFetcher.getOutputFile());
     }
 }
