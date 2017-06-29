@@ -81,26 +81,14 @@ public class GitSetupPlugin implements Plugin<Project> {
         TaskMaker.execTask(project, SET_USER_TASK, new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Overwrites local git 'user.name' with a generic name. Intended for CI.");
-                //TODO replace all doFirst in this class with LazyConfiguration
-                t.doFirst(new Action<Task>() {
-                    public void execute(Task task) {
-                        //using doFirst() so that we request and validate presence of env var only during execution time
-                        t.commandLine("git", "config", "--local", "user.name", conf.getGit().getUser());
-                    }
-                });
+                t.commandLine("git", "config", "--local", "user.name", conf.getGit().getUser());
             }
         });
 
         TaskMaker.execTask(project, SET_EMAIL_TASK, new Action<Exec>() {
             public void execute(final Exec t) {
                 t.setDescription("Overwrites local git 'user.email' with a generic email. Intended for CI.");
-                t.doFirst(new Action<Task>() {
-                    public void execute(Task task) {
-                        //using doFirst() so that we request and validate presence of env var only during execution time
-                        //TODO consider adding 'lazyExec' task or method that automatically uses do first
-                        t.commandLine("git", "config", "--local", "user.email", conf.getGit().getEmail());
-                    }
-                });
+                t.commandLine("git", "config", "--local", "user.email", conf.getGit().getEmail());
             }
         });
 
