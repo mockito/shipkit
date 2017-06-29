@@ -1,10 +1,10 @@
-package org.shipkit.gradle.exec
+package org.shipkit.internal.gradle.exec
 
 import org.gradle.api.GradleException
 import org.gradle.process.ExecResult
 import spock.lang.Specification
 
-class ExecCommandTest extends Specification {
+class ExecCommandFactoryTest extends Specification {
 
     def result = Mock(ExecResult)
 
@@ -12,7 +12,7 @@ class ExecCommandTest extends Specification {
         result.exitValue >> 0
 
         expect:
-        ExecCommand.ensureSucceeded(result)
+        ExecCommandFactory.ensureSucceeded(result)
     }
 
     def "throws exception if command fails"() {
@@ -20,7 +20,7 @@ class ExecCommandTest extends Specification {
         result.exitValue >> -100
 
         when:
-        ExecCommand.ensureSucceeded(result)
+        ExecCommandFactory.ensureSucceeded(result)
 
         then:
         def e = thrown(GradleException)
