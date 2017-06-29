@@ -24,6 +24,7 @@ import java.util.Arrays;
  */
 public class ReleaseNotesPlugin implements Plugin<Project> {
 
+    public static final String PREVIEW_PROJECT_PROPERTY = "preview";
     private static final String FETCH_NOTES_TASK = "fetchReleaseNotes";
     public static final String UPDATE_NOTES_TASK = "updateReleaseNotes";
 
@@ -56,7 +57,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
 
                 configureDetailedNotes(t, releaseNotesFetcher, project, conf, contributorsFetcher);
 
-                boolean previewMode = project.hasProperty(UpdateReleaseNotesTask.PREVIEW_PROJECT_PROPERTY);
+                boolean previewMode = project.hasProperty(PREVIEW_PROJECT_PROPERTY);
                 t.setPreviewMode(previewMode);
 
                 if(!previewMode){
