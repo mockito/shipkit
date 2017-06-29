@@ -1,8 +1,8 @@
 package org.shipkit.internal.notes.format;
 
 import org.shipkit.internal.gradle.util.StringUtil;
+import org.shipkit.internal.util.DateUtil;
 import org.shipkit.internal.util.MultiMap;
-import org.shipkit.internal.notes.internal.DateFormat;
 import org.shipkit.internal.notes.model.*;
 
 import java.text.MessageFormat;
@@ -62,7 +62,7 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
     }
 
     private static String buildHeader(String version, Date date, String prefix, String postfix){
-        return prefix + version + " (" + DateFormat.formatDate(date) + ")" + postfix + " - ";
+        return prefix + version + " (" + DateUtil.formatDate(date) + ")" + postfix + " - ";
     }
 
     static String releaseSummary(String version, Date date, ContributionSet contributions, Map<String, Contributor> contributors,

@@ -5,7 +5,7 @@ import org.shipkit.internal.exec.ProcessRunner;
 import java.util.Date;
 import java.util.regex.Pattern;
 
-import static org.shipkit.internal.notes.internal.DateFormat.parseDate;
+import static org.shipkit.internal.util.DateUtil.parseDate;
 
 /**
  * Provides date of given vcs revision

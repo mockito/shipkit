@@ -5,7 +5,7 @@ import org.gradle.api.logging.Logging;
 import org.json.simple.DeserializationException;
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
-import org.shipkit.internal.notes.internal.DateFormat;
+import org.shipkit.internal.util.DateUtil;
 
 import java.io.*;
 import java.net.URL;
@@ -47,8 +47,8 @@ public class GitHubObjectFetcher {
         if(rateLimitReset == null) {
             return "";
         }
-        Date resetInEpochSeconds = DateFormat.parseDateInEpochSeconds(rateLimitReset);
-        return DateFormat.formatDateToLocalTime(resetInEpochSeconds);
+        Date resetInEpochSeconds = DateUtil.parseDateInEpochSeconds(rateLimitReset);
+        return DateUtil.formatDateToLocalTime(resetInEpochSeconds);
     }
 
     private JsonObject parseJsonFrom(URLConnection urlConnection) throws IOException, DeserializationException {
