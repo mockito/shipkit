@@ -8,7 +8,6 @@ import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.StopExecutionException;
 import org.gradle.process.ExecResult;
 import org.shipkit.gradle.exec.ShipkitExecTask;
-import org.shipkit.gradle.exec.ExecCommand;
 import org.shipkit.internal.gradle.GitSetupPlugin;
 import org.shipkit.internal.gradle.ReleaseNeededPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
@@ -16,6 +15,7 @@ import org.shipkit.internal.gradle.util.TaskMaker;
 import static java.util.Arrays.asList;
 import static org.shipkit.internal.gradle.GitSetupPlugin.CI_RELEASE_PREPARE_TASK;
 import static org.shipkit.internal.gradle.ReleaseNeededPlugin.ASSERT_RELEASE_NEEDED_TASK;
+import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
 import static org.shipkit.internal.gradle.release.ReleasePlugin.PERFORM_RELEASE_TASK;
 
 /**
@@ -45,11 +45,11 @@ public class CiReleasePlugin implements Plugin<Project> {
             @Override
             public void execute(ShipkitExecTask task) {
                 task.setDescription("Checks if release is needed. If so it will prepare for ci release and perform release.");
-                task.getExecCommands().add(new ExecCommand(
+                task.getExecCommands().add(execCommand(
                         "Checking if release is needed", asList("./gradlew", ASSERT_RELEASE_NEEDED_TASK), stopExecution()));
-                task.getExecCommands().add(new ExecCommand(
+                task.getExecCommands().add(execCommand(
                         "Preparing working copy for the release", asList("./gradlew", CI_RELEASE_PREPARE_TASK)));
-                task.getExecCommands().add(new ExecCommand(
+                task.getExecCommands().add(execCommand(
                         "Performing the release", asList("./gradlew", PERFORM_RELEASE_TASK)));
             }
         });

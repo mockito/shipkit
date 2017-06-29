@@ -5,7 +5,6 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.shipkit.gradle.exec.ShipkitExecTask;
-import org.shipkit.gradle.exec.ExecCommand;
 import org.shipkit.internal.gradle.GitPlugin;
 import org.shipkit.internal.gradle.ReleaseNeededPlugin;
 import org.shipkit.internal.gradle.ReleaseNotesPlugin;
@@ -15,6 +14,7 @@ import org.shipkit.internal.gradle.util.TaskMaker;
 import static java.util.Arrays.asList;
 import static org.shipkit.internal.gradle.ReleaseNeededPlugin.RELEASE_NEEDED;
 import static org.shipkit.internal.gradle.ReleaseNotesPlugin.UPDATE_NOTES_TASK;
+import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
 
 /**
  * Applies plugins:
@@ -59,8 +59,8 @@ public class ReleasePlugin implements Plugin<Project> {
                 task.setDescription("Tests the release procedure and cleans up. Safe to be invoked multiple times.");
                 //releaseCleanUp is already set up to run all his "subtasks" after performRelease is performed
                 //releaseNeeded is used here only to execute the code paths in the release needed task (extra testing)
-                task.getExecCommands().add(new ExecCommand("Performing relase in dry run, with cleanup", asList(
-                    "./gradlew", RELEASE_NEEDED, PERFORM_RELEASE_TASK, RELEASE_CLEAN_UP_TASK, "-PdryRun")));
+                task.getExecCommands().add(execCommand("Performing relase in dry run, with cleanup"
+                        , asList("./gradlew", RELEASE_NEEDED, PERFORM_RELEASE_TASK, RELEASE_CLEAN_UP_TASK, "-PdryRun")));
             }
         });
 

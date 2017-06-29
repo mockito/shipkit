@@ -1,14 +1,8 @@
 package org.shipkit.gradle.exec;
 
-import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.process.ExecResult;
-import org.gradle.process.ExecSpec;
-import org.shipkit.internal.exec.ExternalProcessStream;
-import org.shipkit.internal.gradle.util.StringUtil;
+import org.shipkit.internal.gradle.exec.ShipkitExec;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -20,7 +14,6 @@ import java.util.LinkedList;
 public class ShipkitExecTask extends DefaultTask {
 
     private Collection<ExecCommand> execCommands = new LinkedList<ExecCommand>();
-    private final static Logger LOG = Logging.getLogger(ShipkitExecTask.class);
 
     /**
      * Sequence of command line executions.
@@ -37,22 +30,10 @@ public class ShipkitExecTask extends DefaultTask {
         this.execCommands = execCommands;
     }
 
+    /**
+     * Executes all commands
+     */
     @TaskAction public void execCommands() {
-        for (final ExecCommand execCommand : execCommands) {
-            ExecResult result = getProject().exec(new Action<ExecSpec>() {
-                @Override
-                public void execute(ExecSpec spec) {
-                    spec.setIgnoreExitValue(true);
-                    spec.commandLine(execCommand.getCommandLine());
-                    spec.setStandardOutput(new ExternalProcessStream(execCommand.getLoggingPrefix(), System.out));
-                    spec.setErrorOutput(new ExternalProcessStream(execCommand.getLoggingPrefix(), System.err));
-
-                    execCommand.getSetupAction().execute(spec);
-
-                    LOG.lifecycle("  " + execCommand.getDescription() + ":\n    " + StringUtil.join(execCommand.getCommandLine(), " "));
-                }
-            });
-            execCommand.getResultAction().execute(result);
-        }
+        new ShipkitExec().execCommands(this);
     }
 }

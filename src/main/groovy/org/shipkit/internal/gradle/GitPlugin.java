@@ -6,7 +6,6 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.Exec;
 import org.shipkit.gradle.ReleaseConfiguration;
-import org.shipkit.gradle.exec.ExecCommand;
 import org.shipkit.gradle.git.GitPushTask;
 import org.shipkit.gradle.git.IdentifyGitBranchTask;
 import org.shipkit.internal.gradle.git.GitBranchPlugin;
@@ -18,6 +17,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
 import static org.shipkit.internal.gradle.util.GitUtil.getTag;
 
 /**
@@ -60,8 +60,8 @@ public class GitPlugin implements Plugin<Project> {
                 t.doFirst(new Action<Task>() {
                     @Override
                     public void execute(Task task) {
-                        t.getExecCommands().add(new ExecCommand("Adding files to git", getAddCommand(t.getFiles())));
-                        t.getExecCommands().add(new ExecCommand("Performing git commit", getCommitCommand(conf, t.getAggregatedCommitMessage())));
+                        t.getExecCommands().add(execCommand("Adding files to git", getAddCommand(t.getFiles())));
+                        t.getExecCommands().add(execCommand("Performing git commit", getCommitCommand(conf, t.getAggregatedCommitMessage())));
                     }
                 });
             }

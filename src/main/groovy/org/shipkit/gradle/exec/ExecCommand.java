@@ -1,7 +1,6 @@
 package org.shipkit.gradle.exec;
 
 import org.gradle.api.Action;
-import org.gradle.api.GradleException;
 import org.gradle.process.ExecResult;
 import org.gradle.process.ExecSpec;
 
@@ -11,25 +10,10 @@ import java.util.Collection;
  * Object that contains information about the executable command line.
  * It has: the command line arguments, action that configures the execution,
  * action that is triggered when the execution is complete.
+ * <p>
+ * To minimize public API and improve maintenance, this class should remain a value object, without any behavior.
  */
 public class ExecCommand {
-
-    private final static Action NO_OP_ACTION = new Action() {
-        public void execute(Object o) {}
-    };
-
-    private final static Action ENSURE_SUCCEEDED_ACTION = new Action<ExecResult>() {
-        public void execute(ExecResult result) {
-            ensureSucceeded(result);
-        }
-    };
-
-    static void ensureSucceeded(ExecResult result) {
-        if (result.getExitValue() != 0) {
-            throw new GradleException("Command execution failed. The exit code was: " + result.getExitValue() + "\n" +
-                    "Please inspect the process output prefixed in the build log.");
-        }
-    }
 
     private final String description;
     private final Collection<String> commandLine;
@@ -52,28 +36,6 @@ public class ExecCommand {
         this.commandLine = commandLine;
         this.setupAction = setupAction;
         this.resultAction = resultAction;
-    }
-
-    /**
-     * Exec command that will throw the exception when the command line fails.
-     * This is the most typical kind of exec command.
-     */
-    public ExecCommand(String description, Collection<String> commandLine) {
-        this(defaultPrefix(commandLine), description, commandLine, NO_OP_ACTION, ENSURE_SUCCEEDED_ACTION);
-    }
-
-    private static String defaultPrefix(Collection<String> commandLine) {
-        //by default, we are using the first argument as prefix
-        return "[" + commandLine.iterator().next() + "] ";
-    }
-
-    /**
-     * Exec command with custom result action.
-     * Useful if the user needs custom behavior when command line finishes executing.
-     * For example, we can ignore the failure.
-     */
-    public ExecCommand(String description, Collection<String> commandLine, Action<ExecResult> resultAction) {
-        this(defaultPrefix(commandLine), description, commandLine, NO_OP_ACTION, resultAction);
     }
 
     /**
