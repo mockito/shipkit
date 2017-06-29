@@ -15,7 +15,6 @@ public class ExternalProcessStream extends OutputStream {
     private final PrintStream output;
     private final String outputPrefix;
 
-    private StringBuilder line = new StringBuilder();
     private boolean writePrefix = true;
 
     /**
@@ -30,14 +29,10 @@ public class ExternalProcessStream extends OutputStream {
 
     @Override
     public void write(int b) throws IOException {
-        //keep building the line
-        line.append((char) b);
         //maybe write to output
         maybeOutput(b);
 
         if (b == '\n') {
-            //clear the line
-            line = new StringBuilder();
             //next time, before anything is printed to output, print the prefix
             writePrefix = true;
         }
