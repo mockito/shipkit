@@ -9,7 +9,7 @@ import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.git.GitPushTask;
 import org.shipkit.gradle.git.IdentifyGitBranchTask;
 import org.shipkit.internal.gradle.git.GitBranchPlugin;
-import org.shipkit.internal.gradle.git.GitPushArgs;
+import org.shipkit.internal.gradle.git.GitPush;
 import org.shipkit.internal.gradle.util.GitUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
@@ -85,7 +85,7 @@ public class GitPlugin implements Plugin<Project> {
                 t.getTargets().add(GitUtil.getTag(conf, project));
                 t.setDryRun(conf.isDryRun());
 
-                GitPushArgs.setPushUrl(t, conf, System.getenv(WRITE_TOKEN_ENV));
+                GitPush.setPushUrl(t, conf, System.getenv(WRITE_TOKEN_ENV));
 
                 project.getPlugins().apply(GitBranchPlugin.class)
                         .provideBranchTo(t, new Action<String>() {

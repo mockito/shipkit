@@ -3,8 +3,7 @@ package org.shipkit.gradle.git;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.internal.exec.DefaultProcessRunner;
-import org.shipkit.internal.gradle.git.GitPushArgs;
+import org.shipkit.internal.gradle.git.GitPush;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -24,9 +23,7 @@ public class GitPushTask extends DefaultTask {
     private String secretValue;
 
     @TaskAction public void gitPush() {
-        new DefaultProcessRunner(getProject().getProjectDir())
-                .setSecretValue(secretValue)
-                .run(GitPushArgs.gitPushArgs(url, targets, dryRun));
+        new GitPush().gitPush(this);
     }
 
     /**
