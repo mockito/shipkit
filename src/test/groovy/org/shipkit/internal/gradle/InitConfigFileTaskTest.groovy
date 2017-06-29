@@ -57,6 +57,8 @@ class InitConfigFileTaskTest extends Specification {
                 """//This file was created automatically and is intended to be checked-in.
 shipkit {
    gitHub.repository = \"mockito/mockito\"
+
+   //TODO when you finished trying out Shipkit, use your own token below (http://link/needed)
    gitHub.readOnlyAuthToken = \"76826c9ec886612f504d12fd4268b16721c4f85d\"
 }
 

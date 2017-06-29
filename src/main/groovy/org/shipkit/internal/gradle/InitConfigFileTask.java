@@ -82,8 +82,10 @@ public class InitConfigFileTask extends DefaultTask{
 
     static final String DEFAULT_SHIPKIT_CONFIG_FILE_CONTENT =
             "//This file was created automatically and is intended to be checked-in.\n" +
-                    "shipkit {\n"+
-                    "   gitHub.repository = \"@gitHub.repository@\"\n"+
+                    "shipkit {\n" +
+                    "   gitHub.repository = \"@gitHub.repository@\"\n" +
+                    "\n" +
+                    "   //TODO when you finished trying out Shipkit, use your own token below (http://link/needed)\n" +
                     "   gitHub.readOnlyAuthToken = \"@gitHub.readOnlyAuthToken@\"\n"+
                     "}\n"+
                     "\n"+
