@@ -1,5 +1,6 @@
 package org.shipkit.internal.gradle;
 
+import org.apache.commons.lang.StringUtils;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -40,7 +41,9 @@ public class TravisPlugin implements Plugin<Project> {
             @Override
             public void execute(GitBranchPlugin p) {
                 IdentifyGitBranchTask identifyBranch = (IdentifyGitBranchTask) project.getTasks().getByName(IDENTIFY_GIT_BRANCH);
-                identifyBranch.setBranch(branch);
+                if(StringUtils.isNotEmpty(branch)) {
+                    identifyBranch.setBranch(branch);
+                }
             }
         });
 
