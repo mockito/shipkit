@@ -1,7 +1,6 @@
 package org.shipkit.gradle;
 
 import org.gradle.api.GradleException;
-import org.shipkit.internal.version.VersionInfo;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -122,8 +121,7 @@ public class ReleaseConfiguration {
     }
 
     /**
-     * Return last previously released version number
-     * See {@link VersionInfo#getPreviousVersion()}
+     * Return last previously released version number.
      */
     public String getPreviousReleaseVersion() {
         return previousReleaseVersion;
