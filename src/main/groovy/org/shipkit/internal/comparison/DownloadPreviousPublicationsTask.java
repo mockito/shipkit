@@ -3,7 +3,9 @@ package org.shipkit.internal.comparison;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.gradle.api.tasks.*;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.OutputFile;
+import org.gradle.api.tasks.TaskAction;
 import org.shipkit.internal.notes.util.IOUtil;
 
 import java.io.File;
@@ -12,9 +14,9 @@ import java.io.File;
  * Downloads artifacts from last release and stores them to local files for further comparison
  * Currently it downloads .pom and -sources.jar
  */
-public class DownloadPreviousReleaseArtifactsTask extends DefaultTask {
+public class DownloadPreviousPublicationsTask extends DefaultTask {
 
-    private static final Logger LOG = Logging.getLogger(DownloadPreviousReleaseArtifactsTask.class);
+    private static final Logger LOG = Logging.getLogger(DownloadPreviousPublicationsTask.class);
 
     @Input
     private String previousVersionPomUrl;

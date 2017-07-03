@@ -3,7 +3,7 @@ package org.shipkit.internal.gradle.java
 import com.jfrog.bintray.gradle.BintrayExtension
 import org.gradle.testfixtures.ProjectBuilder
 import org.shipkit.gradle.ReleaseConfiguration
-import org.shipkit.internal.comparison.DownloadPreviousReleaseArtifactsTask
+import org.shipkit.internal.comparison.DownloadPreviousPublicationsTask
 import org.shipkit.internal.comparison.PublicationsComparatorTask
 import org.shipkit.internal.gradle.ShipkitBintrayPlugin
 import org.shipkit.internal.gradle.VersioningPlugin
@@ -75,7 +75,7 @@ class ComparePublicationsPluginTest extends PluginSpecification {
         child.evaluate()
 
         then:
-        DownloadPreviousReleaseArtifactsTask task = child.getTasks()
+        DownloadPreviousPublicationsTask task = child.getTasks()
                 .getByName(ComparePublicationsPlugin.DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK);
 
         task.previousVersionPomUrl.contains("bintray.com")
@@ -92,7 +92,7 @@ class ComparePublicationsPluginTest extends PluginSpecification {
         child.evaluate()
 
         then:
-        DownloadPreviousReleaseArtifactsTask task = child.getTasks()
+        DownloadPreviousPublicationsTask task = child.getTasks()
                 .getByName(ComparePublicationsPlugin.DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK);
 
         task.previousVersionPomUrl == null
@@ -113,7 +113,7 @@ class ComparePublicationsPluginTest extends PluginSpecification {
         child.evaluate()
 
         then:
-        DownloadPreviousReleaseArtifactsTask downloadTask = child.getTasks()
+        DownloadPreviousPublicationsTask downloadTask = child.getTasks()
                 .getByName(ComparePublicationsPlugin.DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK)
         PublicationsComparatorTask comparisonTask = child.getTasks()
                 .getByName(ComparePublicationsPlugin.COMPARE_PUBLICATIONS_TASK)

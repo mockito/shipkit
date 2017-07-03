@@ -7,7 +7,7 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.bundling.Jar;
 import org.shipkit.gradle.ReleaseConfiguration;
-import org.shipkit.internal.comparison.DownloadPreviousReleaseArtifactsTask;
+import org.shipkit.internal.comparison.DownloadPreviousPublicationsTask;
 import org.shipkit.internal.comparison.PublicationsComparatorTask;
 import org.shipkit.internal.comparison.artifact.DefaultArtifactUrlResolver;
 import org.shipkit.internal.comparison.artifact.DefaultArtifactUrlResolverFactory;
@@ -54,9 +54,9 @@ public class ComparePublicationsPlugin implements Plugin<Project> {
         final File previousVersionPomLocalFile = new File(basePreviousVersionArtifactPath + ".pom");
         final File previousVersionSourcesJarLocalFile = new File(basePreviousVersionArtifactPath + "-sources.jar");
 
-        TaskMaker.task(project, DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK, DownloadPreviousReleaseArtifactsTask.class, new Action<DownloadPreviousReleaseArtifactsTask>() {
+        TaskMaker.task(project, DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK, DownloadPreviousPublicationsTask.class, new Action<DownloadPreviousPublicationsTask>() {
             @Override
-            public void execute(final DownloadPreviousReleaseArtifactsTask t) {
+            public void execute(final DownloadPreviousPublicationsTask t) {
                 t.setDescription("Downloads artifacts of last released version and stores it locally for comparison");
 
                 DeferredConfiguration.deferredConfiguration(project, new Runnable() {
