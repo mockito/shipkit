@@ -3,6 +3,7 @@ package org.shipkit.internal.gradle
 import org.gradle.testfixtures.ProjectBuilder
 import org.shipkit.internal.gradle.git.GitBranchPlugin
 import org.shipkit.internal.gradle.git.GitSetupPlugin
+import org.shipkit.internal.gradle.release.ReleaseNeededPlugin
 import spock.lang.Specification
 
 class TravisPluginTest extends Specification {

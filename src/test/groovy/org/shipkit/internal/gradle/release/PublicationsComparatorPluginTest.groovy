@@ -1,10 +1,13 @@
-package org.shipkit.internal.gradle
+package org.shipkit.internal.gradle.release
 
 import com.jfrog.bintray.gradle.BintrayExtension
 import org.gradle.testfixtures.ProjectBuilder
 import org.shipkit.gradle.ReleaseConfiguration
 import org.shipkit.internal.comparison.DownloadPreviousReleaseArtifactsTask
 import org.shipkit.internal.comparison.PublicationsComparatorTask
+import org.shipkit.internal.gradle.BintrayPlugin
+import org.shipkit.internal.gradle.ReleaseConfigurationPlugin
+import org.shipkit.internal.gradle.VersioningPlugin
 import testutil.PluginSpecification
 
 class PublicationsComparatorPluginTest extends PluginSpecification {

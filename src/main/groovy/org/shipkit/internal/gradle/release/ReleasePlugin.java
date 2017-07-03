@@ -5,16 +5,15 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.shipkit.gradle.exec.ShipkitExecTask;
-import org.shipkit.internal.gradle.ReleaseNeededPlugin;
 import org.shipkit.internal.gradle.ReleaseNotesPlugin;
 import org.shipkit.internal.gradle.VersioningPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
 import static java.util.Arrays.asList;
-import static org.shipkit.internal.gradle.ReleaseNeededPlugin.RELEASE_NEEDED;
 import static org.shipkit.internal.gradle.ReleaseNotesPlugin.UPDATE_NOTES_TASK;
 import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
+import static org.shipkit.internal.gradle.release.ReleaseNeededPlugin.RELEASE_NEEDED;
 
 /**
  * Release automation: notes generation, tagging, versioning.

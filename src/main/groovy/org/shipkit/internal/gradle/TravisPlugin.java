@@ -14,6 +14,7 @@ import org.shipkit.internal.gradle.git.GitCheckOutTask;
 import org.shipkit.internal.gradle.git.GitSetupPlugin;
 import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.gradle.release.CiReleasePlugin;
+import org.shipkit.internal.gradle.release.ReleaseNeededPlugin;
 
 /**
  * Configures the release automation to be used with Travis CI.

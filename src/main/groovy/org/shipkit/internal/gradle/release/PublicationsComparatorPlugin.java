@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle;
+package org.shipkit.internal.gradle.release;
 
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
@@ -11,6 +11,7 @@ import org.shipkit.internal.comparison.DownloadPreviousReleaseArtifactsTask;
 import org.shipkit.internal.comparison.PublicationsComparatorTask;
 import org.shipkit.internal.comparison.artifact.DefaultArtifactUrlResolver;
 import org.shipkit.internal.comparison.artifact.DefaultArtifactUrlResolverFactory;
+import org.shipkit.internal.gradle.ReleaseConfigurationPlugin;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
 import org.shipkit.internal.gradle.java.JavaLibraryPlugin;
 import org.shipkit.internal.gradle.java.JavaPublishPlugin;
@@ -40,7 +41,7 @@ public class PublicationsComparatorPlugin implements Plugin<Project> {
     private static final Logger LOG = Logging.getLogger(PublicationsComparatorPlugin.class);
 
     final static String DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK = "downloadPreviousReleaseArtifacts";
-    final static String COMPARE_PUBLICATIONS_TASK = "comparePublications";
+    public final static String COMPARE_PUBLICATIONS_TASK = "comparePublications";
 
     final static String PREVIOUS_RELEASE_ARTIFACTS_DIR = "/previous-release-artifacts";
 

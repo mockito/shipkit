@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle;
+package org.shipkit.internal.gradle.release;
 
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
@@ -7,6 +7,7 @@ import org.gradle.api.Task;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.ReleaseNeededTask;
 import org.shipkit.internal.comparison.PublicationsComparatorTask;
+import org.shipkit.internal.gradle.ReleaseConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitBranchPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
