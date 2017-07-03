@@ -22,6 +22,7 @@ apply plugin: 'org.shipkit.release-needed'
 
 apply from: 'gradle/java6-compatibility.gradle'
 apply from: 'gradle/precommit.gradle'
+apply from: 'gradle/e2e-test.gradle'
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
