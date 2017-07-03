@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle;
+package org.shipkit.internal.gradle.init;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.Logger;
@@ -6,6 +6,7 @@ import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.internal.exec.DefaultProcessRunner;
 import org.shipkit.internal.exec.ProcessRunner;
+import org.shipkit.internal.gradle.TemplateResolver;
 import org.shipkit.internal.notes.util.IOUtil;
 import org.shipkit.internal.notes.vcs.GitOriginRepoProvider;
 import org.shipkit.internal.util.ExposedForTesting;

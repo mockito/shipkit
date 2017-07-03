@@ -1,9 +1,9 @@
-package org.shipkit.internal.gradle
+package org.shipkit.internal.gradle.init
 
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
-import static org.shipkit.internal.gradle.InitPlugin.INIT_TRAVIS_TASK
+import static InitPlugin.INIT_TRAVIS_TASK
 
 class InitPluginTest extends Specification {
 

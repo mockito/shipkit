@@ -2,6 +2,7 @@ package org.shipkit.internal.gradle
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
+import org.shipkit.internal.gradle.init.InitConfigFileTask
 import testutil.PluginSpecification
 
 class ReleaseConfigurationPluginTest extends PluginSpecification {
