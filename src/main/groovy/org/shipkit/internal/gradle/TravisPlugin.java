@@ -10,6 +10,7 @@ import org.shipkit.gradle.git.IdentifyGitBranchTask;
 import org.shipkit.internal.gradle.configuration.BasicValidator;
 import org.shipkit.internal.gradle.configuration.LazyConfiguration;
 import org.shipkit.internal.gradle.git.GitBranchPlugin;
+import org.shipkit.internal.gradle.util.StringUtil;
 
 import static org.shipkit.internal.gradle.GitSetupPlugin.CHECKOUT_TASK;
 import static org.shipkit.internal.gradle.git.GitBranchPlugin.IDENTIFY_GIT_BRANCH;
@@ -40,7 +41,9 @@ public class TravisPlugin implements Plugin<Project> {
             @Override
             public void execute(GitBranchPlugin p) {
                 IdentifyGitBranchTask identifyBranch = (IdentifyGitBranchTask) project.getTasks().getByName(IDENTIFY_GIT_BRANCH);
-                identifyBranch.setBranch(branch);
+                if(!StringUtil.isEmpty(branch)) {
+                    identifyBranch.setBranch(branch);
+                }
             }
         });
 
