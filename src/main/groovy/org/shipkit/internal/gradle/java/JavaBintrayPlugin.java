@@ -22,7 +22,7 @@ public class JavaBintrayPlugin implements Plugin<Project> {
     public void apply(Project project) {
         project.getPlugins().apply(JavaPublishPlugin.class);
         project.getPlugins().apply(ShipkitBintrayPlugin.class);
-        project.getPlugins().apply(PublicationsComparatorPlugin.class);
+        project.getPlugins().apply(ComparePublicationsPlugin.class);
 
         if (shouldConfigurePublications(project)) {
             BintrayExtension bintray = project.getExtensions().getByType(BintrayExtension.class);

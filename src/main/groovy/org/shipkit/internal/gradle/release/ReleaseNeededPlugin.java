@@ -9,7 +9,7 @@ import org.shipkit.gradle.ReleaseNeededTask;
 import org.shipkit.internal.comparison.PublicationsComparatorTask;
 import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitBranchPlugin;
-import org.shipkit.internal.gradle.java.PublicationsComparatorPlugin;
+import org.shipkit.internal.gradle.java.ComparePublicationsPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
 /**
@@ -61,10 +61,10 @@ public class ReleaseNeededPlugin implements Plugin<Project> {
 
                 project.allprojects(new Action<Project>() {
                     public void execute(final Project subproject) {
-                        subproject.getPlugins().withType(PublicationsComparatorPlugin.class, new Action<PublicationsComparatorPlugin>() {
-                            public void execute(PublicationsComparatorPlugin p) {
+                        subproject.getPlugins().withType(ComparePublicationsPlugin.class, new Action<ComparePublicationsPlugin>() {
+                            public void execute(ComparePublicationsPlugin p) {
                                 // make this task depend on all comparePublications tasks
-                                Task task = subproject.getTasks().getByName(PublicationsComparatorPlugin.COMPARE_PUBLICATIONS_TASK);
+                                Task task = subproject.getTasks().getByName(ComparePublicationsPlugin.COMPARE_PUBLICATIONS_TASK);
                                 t.addPublicationsComparator((PublicationsComparatorTask) task);
                             }
                         });

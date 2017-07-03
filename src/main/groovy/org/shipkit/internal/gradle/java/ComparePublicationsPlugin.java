@@ -34,9 +34,9 @@ import java.io.File;
  *     <li>comparePublications</li>
  * </ul>
  */
-public class PublicationsComparatorPlugin implements Plugin<Project> {
+public class ComparePublicationsPlugin implements Plugin<Project> {
 
-    private static final Logger LOG = Logging.getLogger(PublicationsComparatorPlugin.class);
+    private static final Logger LOG = Logging.getLogger(ComparePublicationsPlugin.class);
 
     final static String DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK = "downloadPreviousReleaseArtifacts";
     public final static String COMPARE_PUBLICATIONS_TASK = "comparePublications";
