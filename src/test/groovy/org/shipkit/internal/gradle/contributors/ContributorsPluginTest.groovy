@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle
+package org.shipkit.internal.gradle.contributors
 
 import testutil.PluginSpecification
 

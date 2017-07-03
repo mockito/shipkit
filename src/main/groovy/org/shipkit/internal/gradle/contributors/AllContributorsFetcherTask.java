@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle;
+package org.shipkit.internal.gradle.contributors;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.Logger;
