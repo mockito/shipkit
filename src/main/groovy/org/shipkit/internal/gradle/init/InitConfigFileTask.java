@@ -6,10 +6,10 @@ import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.internal.exec.DefaultProcessRunner;
 import org.shipkit.internal.exec.ProcessRunner;
-import org.shipkit.internal.gradle.TemplateResolver;
 import org.shipkit.internal.notes.util.IOUtil;
 import org.shipkit.internal.notes.vcs.GitOriginRepoProvider;
 import org.shipkit.internal.util.ExposedForTesting;
+import org.shipkit.internal.util.TemplateResolver;
 
 import java.io.File;
 
