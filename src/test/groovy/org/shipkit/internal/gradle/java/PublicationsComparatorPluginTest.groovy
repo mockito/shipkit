@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle.release
+package org.shipkit.internal.gradle.java
 
 import com.jfrog.bintray.gradle.BintrayExtension
 import org.gradle.testfixtures.ProjectBuilder
