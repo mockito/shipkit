@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle;
+package org.shipkit.internal.gradle.e2e;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.Logger;
@@ -6,8 +6,8 @@ import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.internal.exec.ProcessRunner;
 import org.shipkit.internal.exec.Exec;
+import org.shipkit.internal.exec.ProcessRunner;
 
 import java.io.File;
 import java.util.List;

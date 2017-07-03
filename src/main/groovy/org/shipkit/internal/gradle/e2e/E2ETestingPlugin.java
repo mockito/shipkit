@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle;
+package org.shipkit.internal.gradle.e2e;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
