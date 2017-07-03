@@ -17,7 +17,10 @@ import static org.shipkit.internal.gradle.ReleaseNotesPlugin.UPDATE_NOTES_TASK;
 import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
 
 /**
- * Applies plugins:
+ * Release automation: notes generation, tagging, versioning.
+ * <p>
+ * Applies:
+ *
  * <ul>
  *     <li>{@link ReleaseNotesPlugin}</li>
  *     <li>{@link VersioningPlugin}</li>
@@ -40,7 +43,6 @@ public class ReleasePlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
         project.getPlugins().apply(ReleaseNotesPlugin.class);
-        project.getPlugins().apply(VersioningPlugin.class);
         project.getPlugins().apply(GitPlugin.class);
         project.getPlugins().apply(ReleaseNeededPlugin.class);
 
