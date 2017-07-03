@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle;
+package org.shipkit.internal.gradle.git;
 
 import org.gradle.api.Task;
 import org.shipkit.gradle.exec.ShipkitExecTask;

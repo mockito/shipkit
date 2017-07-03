@@ -1,5 +1,7 @@
 package org.shipkit.internal.gradle
 
+import org.shipkit.internal.gradle.git.GitCommitTask
+import org.shipkit.internal.gradle.git.GitPlugin
 import testutil.PluginSpecification
 
 class ReleaseNotesPluginTest extends PluginSpecification {

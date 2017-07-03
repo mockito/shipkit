@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle;
+package org.shipkit.internal.gradle.git;
 
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
@@ -8,6 +8,7 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Exec;
 import org.shipkit.gradle.ReleaseConfiguration;
+import org.shipkit.internal.gradle.ReleaseConfigurationPlugin;
 import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
@@ -44,7 +45,7 @@ public class GitSetupPlugin implements Plugin<Project> {
     private static final Logger LOG = Logging.getLogger(GitSetupPlugin.class);
 
     private static final String UNSHALLOW_TASK = "gitUnshallow";
-    static final String CHECKOUT_TASK = "gitCheckout";
+    public static final String CHECKOUT_TASK = "gitCheckout";
     private static final String SET_USER_TASK = "setGitUserName";
     private static final String SET_EMAIL_TASK = "setGitUserEmail";
     public static final String CI_RELEASE_PREPARE_TASK = "ciReleasePrepare";

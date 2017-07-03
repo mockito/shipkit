@@ -7,8 +7,8 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.shipkit.gradle.UpdateReleaseNotesTask;
 import org.shipkit.internal.gradle.BintrayPlugin;
-import org.shipkit.internal.gradle.GitPlugin;
 import org.shipkit.internal.gradle.ReleaseNotesPlugin;
+import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.java.JavaBintrayPlugin;
 import org.shipkit.internal.gradle.util.BintrayUtil;
 

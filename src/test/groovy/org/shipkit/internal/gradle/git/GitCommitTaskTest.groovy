@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle
+package org.shipkit.internal.gradle.git
 
 import org.apache.commons.lang.RandomStringUtils
 import org.gradle.api.DefaultTask

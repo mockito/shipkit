@@ -2,6 +2,7 @@ package org.shipkit.internal.gradle;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.shipkit.internal.gradle.git.CloneGitRepositoryTask;
 
 import java.io.File;
 
