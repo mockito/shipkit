@@ -4,11 +4,11 @@ import org.shipkit.gradle.ReleaseConfiguration
 import org.shipkit.gradle.git.GitPushTask
 import spock.lang.Specification
 
-import static GitPushArgs.getWriteToken
-import static GitPushArgs.setPushUrl
-import static org.shipkit.internal.gradle.git.GitPushArgs.gitPushArgs
+import static org.shipkit.internal.gradle.git.GitPush.getWriteToken
+import static org.shipkit.internal.gradle.git.GitPush.gitPushArgs
+import static org.shipkit.internal.gradle.git.GitPush.setPushUrl
 
-class GitPushArgsTest extends Specification {
+class GitPushTest extends Specification {
 
     def conf = new ReleaseConfiguration()
 

@@ -5,8 +5,6 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.UpdateReleaseNotesTask;
 import org.shipkit.internal.gradle.*;
@@ -16,7 +14,7 @@ import static org.shipkit.internal.gradle.BaseJavaLibraryPlugin.MAVEN_LOCAL_TASK
 import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
 
 /**
- * Configures Java multi-project for automated releases.
+ * Configures Java project for automated releases.
  * Applies some configuration to subprojects, too.
  *
  * <p>
@@ -38,8 +36,6 @@ import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.de
  * </ul>
  */
 public class JavaReleasePlugin implements Plugin<Project> {
-
-    private static final Logger LOG = Logging.getLogger(ShipkitJavaPlugin.class);
 
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
@@ -79,31 +75,15 @@ public class JavaReleasePlugin implements Plugin<Project> {
                         bintrayUpload.mustRunAfter(gitPush);
 
                         final BintrayExtension bintray = subproject.getExtensions().getByType(BintrayExtension.class);
-                        //TODO clean up below. We don't need 'deferredConfiguration' because at this point
-                        // shipkit file was already loaded and java library plugin applied on the subproject
                         deferredConfiguration(subproject, new Runnable() {
                             public void run() {
-                                configurePublicationRepo(project, BintrayUtil.getRepoLink(bintray));
+                                UpdateReleaseNotesTask updateNotes = (UpdateReleaseNotesTask) project.getTasks().getByName(ReleaseNotesPlugin.UPDATE_NOTES_TASK);
+                                updateNotes.setPublicationRepository(BintrayUtil.getRepoLink(bintray));
                             }
                         });
                     }
                 });
             }
         });
-    }
-
-    private static void configurePublicationRepo(Project project, String bintrayRepo) {
-        //not using 'getTasks().withType()' because I don't want to create too many task configuration rules
-        //TODO add information about it in the development guide
-        for (Task t : project.getTasks()) {
-            if (t instanceof UpdateReleaseNotesTask) {
-                UpdateReleaseNotesTask task = (UpdateReleaseNotesTask) t;
-                if (task.getPublicationRepository() == null) {
-                    LOG.info("Configuring publication repository '{}' on task: {}", bintrayRepo, t.getPath());
-                    task.setPublicationRepository(bintrayRepo);
-                }
-            }
-        }
-        //TODO unit test coverage
     }
 }

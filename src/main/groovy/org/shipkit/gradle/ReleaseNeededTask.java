@@ -5,9 +5,9 @@ import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskAction;
+import org.shipkit.internal.comparison.PublicationsComparatorTask;
 import org.shipkit.internal.comparison.diff.Diff;
 import org.shipkit.internal.util.EnvVariables;
-import org.shipkit.internal.comparison.PublicationsComparatorTask;
 import org.shipkit.internal.util.ExposedForTesting;
 
 import java.util.LinkedList;
@@ -15,13 +15,14 @@ import java.util.List;
 
 /**
  * Decides if the release is needed.
+ * It is necessary to avoid making releases in certain scenarios like when we are building pull requests.
+ * <p>
  * The release is <strong>not needed</strong> when any of below is true:
  *  - the env variable 'SKIP_RELEASE' is present
  *  - the commit message, loaded from 'TRAVIS_COMMIT_MESSAGE' env variable contains '[ci skip-release]' keyword
  *  - the env variable 'TRAVIS_PULL_REQUEST' is not empty, not an empty String and and not 'false'
- *  - the branch ({@link #getBranch()} does not match release-eligibility regex ({@link #getReleasableBranchRegex()}.
- *
- *  TODO update the javadoc
+ *  - the current Git branch does not match release-eligibility regex ({@link #getReleasableBranchRegex()}.
+ *  - binaries have not changes since the previous release
  */
 public class ReleaseNeededTask extends DefaultTask {
 

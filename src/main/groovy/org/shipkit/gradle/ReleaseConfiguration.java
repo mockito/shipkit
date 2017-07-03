@@ -1,7 +1,6 @@
 package org.shipkit.gradle;
 
 import org.gradle.api.GradleException;
-import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.version.VersionInfo;
 
 import java.util.Collection;
@@ -18,8 +17,8 @@ import static org.shipkit.internal.gradle.util.team.TeamParser.validateTeamMembe
  * Example of a release configuration of a working example project
  * <a href="https://github.com/mockito/shipkit-example/blob/master/gradle/shipkit.gradle">on GitHub</a>.
  * <p>
- * For minimal and full configuration, see the
- * <a href="https://github.com/mockito/shipkit/issues/76">issue 76</a>
+ * Sophisticated example based on Mockito project:
+ * <a href="https://github.com/mockito/mockito/blob/release/2.x/gradle/shipkit.gradle">Mockito project</a>.
  */
 public class ReleaseConfiguration {
 
@@ -133,7 +132,9 @@ public class ReleaseConfiguration {
     public class GitHub {
 
         /**
-         * GitHub URL address, for example: https://github.com
+         * GitHub URL address, for example: https://github.com.
+         * Useful when you are using on-premises GitHub Enterprise
+         * and your url is different than the default GitHub instance for Open Source
          */
         public String getUrl() {
             return getStringUrl("gitHub.url");

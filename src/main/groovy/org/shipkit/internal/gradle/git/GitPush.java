@@ -4,6 +4,7 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.git.GitPushTask;
+import org.shipkit.internal.exec.DefaultProcessRunner;
 
 import java.text.MessageFormat;
 import java.util.LinkedList;
@@ -12,9 +13,9 @@ import java.util.List;
 /**
  * Utility class for configuring git push task with the correct git push arguments.
  */
-public class GitPushArgs {
+public class GitPush {
 
-    private final static Logger LOG = Logging.getLogger(GitPushArgs.class);
+    private final static Logger LOG = Logging.getLogger(GitPush.class);
 
     /**
      * Constructs git push arguments based of the url, targets and dry run
@@ -65,5 +66,11 @@ public class GitPushArgs {
             return writeTokenEnvValue;
         }
         return null;
+    }
+
+    public void gitPush(GitPushTask task) {
+        new DefaultProcessRunner(task.getProject().getProjectDir())
+                .setSecretValue(task.getSecretValue())
+                .run(GitPush.gitPushArgs(task.getUrl(), task.getTargets(), task.isDryRun()));
     }
 }

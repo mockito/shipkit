@@ -31,7 +31,7 @@ class ReleaseConfigurationPluginTest extends PluginSpecification {
 
     def "configures dry run based on project property"() {
         when:
-        root.ext.'shipkit.dryRun' = ''
+        root.ext.'dryRun' = ''
 
         then:
         root.plugins.apply(ReleaseConfigurationPlugin).configuration.dryRun

@@ -38,18 +38,18 @@ public class BumpVersionFileTask extends DefaultTask {
     /**
      * See {@link BumpVersionFileTask}
      */
-    @TaskAction public VersionInfo bumpVersionFile() {
+    @TaskAction
+    public VersionInfo bumpVersionFile() {
         VersionInfo versionInfo = Version.versionInfo(this.versionFile);
         VersionInfo newVersion = versionInfo.bumpVersion();
-        //TODO add unit test for the message.
-        // We already had a bug related to printing VersionInfo toString() instead of neat string version.
-        LOG.lifecycle("{} - updated version file '{}'\n" +
-                "  - new version: {}\n" +
-                "  - previous version: {}\n",
-                getPath(), getProject().relativePath(this.versionFile),
-                newVersion.getVersion(),
-                newVersion.getPreviousVersion());
-
+        LOG.lifecycle(versionMessage(this, newVersion));
         return newVersion;
+    }
+
+    static String versionMessage(BumpVersionFileTask task, VersionInfo newVersion) {
+        String relativePath = task.getProject().relativePath(task.getVersionFile());
+        return task.getPath() + " - updated version file '" + relativePath + "'\n" +
+                "  - new version: " + newVersion.getVersion() + "\n" +
+                "  - previous version: " + newVersion.getPreviousVersion();
     }
 }

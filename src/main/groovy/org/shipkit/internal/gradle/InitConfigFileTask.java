@@ -40,7 +40,6 @@ public class InitConfigFileTask extends DefaultTask{
         String content =
                 new TemplateResolver(DEFAULT_SHIPKIT_CONFIG_FILE_CONTENT)
                         .withProperty("gitHub.repository", defaultGitRepo)
-                        .withProperty("gitHub.writeAuthUser", "shipkit-org")
                         .withProperty("gitHub.readOnlyAuthToken", "76826c9ec886612f504d12fd4268b16721c4f85d")
 
                         .withProperty("bintray.key", "7ea297848ca948adb7d3ee92a83292112d7ae989")
@@ -83,15 +82,16 @@ public class InitConfigFileTask extends DefaultTask{
 
     static final String DEFAULT_SHIPKIT_CONFIG_FILE_CONTENT =
             "//This file was created automatically and is intended to be checked-in.\n" +
-                    "shipkit {\n"+
-                    "   gitHub.repository = \"@gitHub.repository@\"\n"+
+                    "shipkit {\n" +
+                    "   gitHub.repository = \"@gitHub.repository@\"\n" +
+                    "\n" +
+                    "   //TODO when you finish trying out Shipkit, use your own token below (http://link/needed)\n" +
                     "   gitHub.readOnlyAuthToken = \"@gitHub.readOnlyAuthToken@\"\n"+
-                    //TODO gitHub.writeAuthUser is potentially not needed, see https://github.com/mockito/shipkit/issues/227
-                    "   gitHub.writeAuthUser = \"@gitHub.writeAuthUser@\"\n"+
                     "}\n"+
                     "\n"+
                     "allprojects {\n"+
                     "   plugins.withId(\"org.shipkit.bintray\") {\n"+
+                    "       //TODO when you finish trying out Shipkit, use your own Bintray repository below (http://link/needed)\n"+
                     "       bintray {\n"+
                     "           key = '@bintray.key@'\n"+
                     "           pkg {\n"+

@@ -1,7 +1,7 @@
 package org.shipkit.internal.notes.vcs
 
 import org.shipkit.internal.exec.ProcessRunner
-import org.shipkit.internal.notes.internal.DateFormat
+import org.shipkit.internal.util.DateUtil
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -31,9 +31,9 @@ class DefaultReleasedVersionsProviderTest extends Specification {
     }
 
     def "provides versions "() {
-        dateProvider.getDate("v2.0.0") >> DateFormat.parseUTCDate("2017-02-15")
-        dateProvider.getDate("v1.5.0") >> DateFormat.parseUTCDate("2017-01-30")
-        dateProvider.getDate("v1.0.0") >> DateFormat.parseUTCDate("2017-01-15")
+        dateProvider.getDate("v2.0.0") >> DateUtil.parseUTCDate("2017-02-15")
+        dateProvider.getDate("v1.5.0") >> DateUtil.parseUTCDate("2017-01-30")
+        dateProvider.getDate("v1.0.0") >> DateUtil.parseUTCDate("2017-01-15")
 
         expect:
         //with head version

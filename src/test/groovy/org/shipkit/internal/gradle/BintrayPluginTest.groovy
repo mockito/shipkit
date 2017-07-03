@@ -1,5 +1,6 @@
 package org.shipkit.internal.gradle
 
+import com.jfrog.bintray.gradle.BintrayUploadTask
 import org.gradle.api.GradleException
 import org.shipkit.internal.gradle.configuration.LazyConfiguration
 import testutil.PluginSpecification
@@ -76,5 +77,19 @@ class BintrayPluginTest extends PluginSpecification {
         ex.message ==
                 "Missing 'bintray.user' value.\n" +
                 "  Please configure Bintray extension."
+    }
+
+    def "prints informative message before upload"() {
+        BintrayUploadTask u = project.tasks[BintrayPlugin.BINTRAY_UPLOAD_TASK]
+        u.versionName = "1.0.0"
+        u.user = "shipkit-bot"
+        u.userOrg = "shipkit.org"
+        u.repoName = "shipkit"
+        u.packageName = "shipkit-example"
+
+        expect:
+        BintrayPlugin.uploadWelcomeMessage(u) == """:bintrayUpload - publishing to Bintray
+  - dry run: false, version: 1.0.0, Maven Central sync: false
+  - user/org: shipkit-bot/shipkit.org, repository/package: shipkit/shipkit-example"""
     }
 }
