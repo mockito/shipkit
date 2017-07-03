@@ -8,7 +8,7 @@ import org.gradle.api.tasks.Exec;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.git.GitPushTask;
 import org.shipkit.gradle.git.IdentifyGitBranchTask;
-import org.shipkit.internal.gradle.ReleaseConfigurationPlugin;
+import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
 import org.shipkit.internal.gradle.util.GitUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
 

@@ -6,8 +6,8 @@ import org.shipkit.gradle.ReleaseConfiguration
 import org.shipkit.internal.comparison.DownloadPreviousReleaseArtifactsTask
 import org.shipkit.internal.comparison.PublicationsComparatorTask
 import org.shipkit.internal.gradle.BintrayPlugin
-import org.shipkit.internal.gradle.ReleaseConfigurationPlugin
 import org.shipkit.internal.gradle.VersioningPlugin
+import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin
 import testutil.PluginSpecification
 
 class PublicationsComparatorPluginTest extends PluginSpecification {

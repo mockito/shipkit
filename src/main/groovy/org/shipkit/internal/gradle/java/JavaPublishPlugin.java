@@ -9,7 +9,7 @@ import org.gradle.api.publish.PublicationContainer;
 import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.api.tasks.bundling.Jar;
 import org.shipkit.gradle.ReleaseConfiguration;
-import org.shipkit.internal.gradle.ReleaseConfigurationPlugin;
+import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
 import org.shipkit.internal.gradle.util.GradleDSLHelper;
 import org.shipkit.internal.gradle.util.PomCustomizer;
 import org.shipkit.internal.gradle.util.StringUtil;

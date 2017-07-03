@@ -7,7 +7,7 @@ import org.gradle.api.Task;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.ReleaseNeededTask;
 import org.shipkit.internal.comparison.PublicationsComparatorTask;
-import org.shipkit.internal.gradle.ReleaseConfigurationPlugin;
+import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitBranchPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 

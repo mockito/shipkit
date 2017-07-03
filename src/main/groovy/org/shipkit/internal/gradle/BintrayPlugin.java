@@ -10,6 +10,7 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.internal.gradle.configuration.LazyConfiguration;
+import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
 
 import static org.shipkit.internal.gradle.configuration.BasicValidator.notNull;
 import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
