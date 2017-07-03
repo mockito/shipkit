@@ -16,14 +16,14 @@ public class AllContributorsSerializer {
     public String serialize(ProjectContributorsSet contributorsSet) {
         Collection<ProjectContributor> allContributors = contributorsSet.getAllContributors();
         String json = Jsoner.serialize(allContributors);
-        LOG.info("Serialize contributors to: {}", json);
+        LOG.debug("Serialize contributors to: {}", json);
         return json;
     }
 
     public ProjectContributorsSet deserialize(String json) {
         ProjectContributorsSet set = new DefaultProjectContributorsSet();
         try {
-            LOG.info("Deserialize project contributors from: {}", json);
+            LOG.debug("Deserialize project contributors from: {}", json);
             JsonArray array = (JsonArray) Jsoner.deserialize(json);
             for (Object object : array) {
                 JsonObject jsonObject = (JsonObject) object;

@@ -27,6 +27,10 @@ public class IOUtil {
         try {
             return readNow(new FileInputStream(input));
         } catch (Exception e) {
+            //TODO this potentially swallows exceptions
+            //if the file does not exist, we should just use default value
+            //if the file cannot be read, we should write a message to the log that we cannot use the file
+            // + stack trace in debug level
             return defaultValue;
         }
     }

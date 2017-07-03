@@ -37,10 +37,16 @@ public class ReleaseNotesFetcherTask extends DefaultTask {
     @Input private Collection<String> ignoreCommitsContaining;
     @OutputFile private File outputFile;
 
+    /**
+     * See {@link ReleaseConfiguration.GitHub#getUrl()}
+     */
     public String getGitHubApiUrl() {
         return gitHubApiUrl;
     }
 
+    /**
+     * See {@link #getGitHubApiUrl()}
+     */
     public void setGitHubApiUrl(String gitHubApiUrl) {
         this.gitHubApiUrl = gitHubApiUrl;
     }

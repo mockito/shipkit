@@ -12,15 +12,16 @@ language: java
 jdk:
   - oraclejdk8
 
-#don't build tags
+#Skipping install step to avoid having Travis run arbitrary './gradlew assemble' task
+# https://docs.travis-ci.com/user/customizing-the-build/#Skipping-the-Installation-Step
+install:
+  - true
+
+#Don't build tags
 branches:
   except:
   - /^v\d/
 
-#build and test the release logic
+#Build and perform release (if needed)
 script:
-  - ./gradlew build -s -i
-
-#check release criteria and make release if criteria are met!
-after_success:
-  - ./gradlew assertReleaseNeeded && ./gradlew ciReleasePrepare && ./gradlew travisRelease
+  - ./gradlew build -s && ./gradlew ciPerformRelease

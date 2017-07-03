@@ -1,7 +1,7 @@
 package org.shipkit.internal.notes.vcs;
 
 import org.shipkit.internal.exec.ProcessRunner;
-import org.shipkit.internal.notes.internal.DateFormat;
+import org.shipkit.internal.util.DateUtil;
 
 import java.util.*;
 
@@ -79,7 +79,7 @@ class DefaultReleasedVersionsProvider implements ReleasedVersionsProvider {
         }
 
         public String toString() {
-            return "" + version + "@" + (date != null? DateFormat.formatDate(date): "<no date>") + "(" + rev + ".." + previousRev + ")";
+            return "" + version + "@" + (date != null? DateUtil.formatDate(date): "<no date>") + "(" + rev + ".." + previousRev + ")";
         }
     }
 }

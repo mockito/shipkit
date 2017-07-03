@@ -43,7 +43,7 @@ public class BaseJavaLibraryPlugin implements Plugin<Project> {
 
     final static String PUBLICATION_NAME = "javaLibrary";
     final static String POM_TASK = "generatePomFileFor" + StringUtil.capitalize(PUBLICATION_NAME) + "Publication";
-    final static String MAVEN_LOCAL_TASK = "publish" + StringUtil.capitalize(PUBLICATION_NAME) + "PublicationToMavenLocal";
+    public final static String MAVEN_LOCAL_TASK = "publish" + StringUtil.capitalize(PUBLICATION_NAME) + "PublicationToMavenLocal";
     final static String SOURCES_JAR_TASK = "sourcesJar";
 
     public void apply(final Project project) {

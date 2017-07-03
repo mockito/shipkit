@@ -4,10 +4,10 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.internal.notes.vcs.GitOriginRepoProvider;
 import org.shipkit.internal.exec.DefaultProcessRunner;
 import org.shipkit.internal.exec.ProcessRunner;
 import org.shipkit.internal.notes.util.IOUtil;
+import org.shipkit.internal.notes.vcs.GitOriginRepoProvider;
 import org.shipkit.internal.util.ExposedForTesting;
 
 import java.io.File;
@@ -40,7 +40,6 @@ public class InitConfigFileTask extends DefaultTask{
         String content =
                 new TemplateResolver(DEFAULT_SHIPKIT_CONFIG_FILE_CONTENT)
                         .withProperty("gitHub.repository", defaultGitRepo)
-                        .withProperty("gitHub.writeAuthUser", "shipkit-org")
                         .withProperty("gitHub.readOnlyAuthToken", "76826c9ec886612f504d12fd4268b16721c4f85d")
 
                         .withProperty("bintray.key", "7ea297848ca948adb7d3ee92a83292112d7ae989")
@@ -59,9 +58,11 @@ public class InitConfigFileTask extends DefaultTask{
     private String getOriginGitRepo() {
         try {
             return gitOriginRepoProvider.getOriginGitRepo();
-        } catch(Exception e){
-            LOG.error("Failed to get url of git remote origin. Using fallback '" + FALLBACK_GITHUB_REPO + "' instead.\n" +
-                    "You can change GitHub repository manually in " + configFile, e);
+        } catch (Exception e) {
+            LOG.lifecycle("  Problems getting url of git remote origin (run with --debug to find out more).\n" +
+                    "  Using fallback '" + FALLBACK_GITHUB_REPO + "' instead.\n" +
+                    "  Please update GitHub repository in '" + configFile + "' file.\n");
+            LOG.debug("  Problems getting url of git remote origin", e);
             return FALLBACK_GITHUB_REPO;
         }
     }
@@ -81,15 +82,16 @@ public class InitConfigFileTask extends DefaultTask{
 
     static final String DEFAULT_SHIPKIT_CONFIG_FILE_CONTENT =
             "//This file was created automatically and is intended to be checked-in.\n" +
-                    "shipkit {\n"+
-                    "   gitHub.repository = \"@gitHub.repository@\"\n"+
+                    "shipkit {\n" +
+                    "   gitHub.repository = \"@gitHub.repository@\"\n" +
+                    "\n" +
+                    "   //TODO when you finish trying out Shipkit, use your own token below (http://link/needed)\n" +
                     "   gitHub.readOnlyAuthToken = \"@gitHub.readOnlyAuthToken@\"\n"+
-                    //TODO gitHub.writeAuthUser is potentially not needed, see https://github.com/mockito/shipkit/issues/227
-                    "   gitHub.writeAuthUser = \"@gitHub.writeAuthUser@\"\n"+
                     "}\n"+
                     "\n"+
                     "allprojects {\n"+
                     "   plugins.withId(\"org.shipkit.bintray\") {\n"+
+                    "       //TODO when you finish trying out Shipkit, use your own Bintray repository below (http://link/needed)\n"+
                     "       bintray {\n"+
                     "           key = '@bintray.key@'\n"+
                     "           pkg {\n"+

@@ -34,14 +34,14 @@ public class BintrayPlugin implements Plugin<Project> {
     /**
      * Name of the task that is configured by this plugin
      */
-    static final String BINTRAY_UPLOAD_TASK = "bintrayUpload";
+    public static final String BINTRAY_UPLOAD_TASK = "bintrayUpload";
 
     private final static Logger LOG = Logging.getLogger(BintrayPlugin.class);
 
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
 
-        //TODO since this plugin depends on bintray,
+        //TODO (maybe) since this plugin depends on bintray,
         // we need to either shade bintray plugin or ship this Gradle plugin in a separate jar
         // this way we avoid version conflicts and any bintray dependencies for users who don't use bintray
         project.getPlugins().apply("com.jfrog.bintray");
@@ -55,10 +55,7 @@ public class BintrayPlugin implements Plugin<Project> {
 
         bintrayUpload.doFirst(new Action<Task>() {
             public void execute(Task task) {
-                //TODO unit test
-                BintrayUploadTask t = (BintrayUploadTask) task;
-
-                String welcomeMessage = uploadWelcomeMessage(t);
+                String welcomeMessage = uploadWelcomeMessage((BintrayUploadTask) task);
                 LOG.lifecycle(welcomeMessage);
             }
         });
@@ -97,14 +94,14 @@ public class BintrayPlugin implements Plugin<Project> {
             }
         });
 
-        //TODO unit test, create static wrapper over env variables that we use for testing
         LazyConfiguration.lazyConfiguration(bintrayUpload, new Runnable() {
             public void run() {
                 String key = notNull(bintray.getKey(), "BINTRAY_API_KEY",
                         "Missing 'bintray.key' value.\n" +
                         "  Please configure Bintray extension or export 'BINTRAY_API_KEY' env variable.");
                 bintray.setKey(key);
-                // api key is set basing on 'bintray.key' before lazy configuration so it has to be set again here
+                // api key is set by Bintray plugin, based on 'bintray.key' value, before lazy configuration.
+                // Hence we need to set it again here:
                 bintrayUpload.setApiKey(key);
 
                 //workaround for https://github.com/bintray/gradle-bintray-plugin/issues/170
@@ -115,7 +112,6 @@ public class BintrayPlugin implements Plugin<Project> {
     }
 
     static String uploadWelcomeMessage(BintrayUploadTask t) {
-        //TODO unit test
         return t.getPath() + " - publishing to Bintray\n" +
                             "  - dry run: " + t.getDryRun()
                             + ", version: " + t.getVersionName()

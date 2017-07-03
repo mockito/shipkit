@@ -1,9 +1,9 @@
 package org.shipkit.internal.notes.format;
 
-import org.shipkit.internal.notes.internal.DateFormat;
 import org.shipkit.internal.notes.model.ContributionSet;
 import org.shipkit.internal.notes.model.Improvement;
 import org.shipkit.internal.notes.model.ReleaseNotesData;
+import org.shipkit.internal.util.DateUtil;
 
 import java.text.MessageFormat;
 import java.util.Collection;
@@ -23,7 +23,7 @@ class NotableFormatter implements MultiReleaseNotesFormatter {
     public String formatReleaseNotes(Collection<ReleaseNotesData> data) {
         StringBuilder sb = new StringBuilder(introductionText == null? "":introductionText);
         for (ReleaseNotesData d : data) {
-            sb.append("### ").append(d.getVersion()).append(" - ").append(DateFormat.formatDate(d.getDate()))
+            sb.append("### ").append(d.getVersion()).append(" - ").append(DateUtil.formatDate(d.getDate()))
                     .append("\n\n");
 
             if (d.getContributions().getAllCommits().isEmpty()) {

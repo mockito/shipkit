@@ -3,7 +3,7 @@ package org.shipkit.internal.notes.contributors
 import spock.lang.Specification
 import spock.lang.Subject
 
-import static org.shipkit.internal.notes.internal.DateFormat.parseDate
+import static org.shipkit.internal.util.DateUtil.parseDate
 
 class RecentContributorsFetcherTest extends Specification {
 

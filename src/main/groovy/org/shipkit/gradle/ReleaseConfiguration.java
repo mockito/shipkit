@@ -17,23 +17,30 @@ import static org.shipkit.internal.gradle.util.team.TeamParser.validateTeamMembe
  * Example of a release configuration of a working example project
  * <a href="https://github.com/mockito/shipkit-example/blob/master/gradle/shipkit.gradle">on GitHub</a>.
  * <p>
- * For minimal and full configuration, see the
- * <a href="https://github.com/mockito/shipkit/issues/76">issue 76</a>
+ * Sophisticated example based on Mockito project:
+ * <a href="https://github.com/mockito/mockito/blob/release/2.x/gradle/shipkit.gradle">Mockito project</a>.
  */
 public class ReleaseConfiguration {
 
-    private static final String NO_ENV_VARIABLE = null;
-
-    private final Map<String, Object> configuration = new HashMap<String, Object>();
+    private final Map<String, Object> configuration;
 
     private final GitHub gitHub = new GitHub();
     private final ReleaseNotes releaseNotes = new ReleaseNotes();
     private final Git git = new Git();
     private final Team team = new Team();
+    private final boolean lenient;
 
     private String previousReleaseVersion;
 
+    ReleaseConfiguration(Map<String, Object> configuration, boolean lenient) {
+        this.configuration = configuration;
+        this.lenient = lenient;
+    }
+
     public ReleaseConfiguration() {
+        configuration = new HashMap<String, Object>();
+        lenient = false;
+
         //Configure default values
         git.setTagPrefix("v"); //so that tags are "v1.0", "v2.3.4"
         git.setReleasableBranchRegex("master|release/.+");  // matches 'master', 'release/2.x', 'release/3.x', etc.
@@ -57,7 +64,7 @@ public class ReleaseConfiguration {
 
     //TODO currently it's not clear when to use class fields and when to use the 'configuration' map
     //Let's make it clear in the docs
-    private boolean dryRun = true;
+    private boolean dryRun;
     private boolean publishAllJavaSubprojects = true;
 
     /**
@@ -125,7 +132,9 @@ public class ReleaseConfiguration {
     public class GitHub {
 
         /**
-         * GitHub URL address, for example: https://github.com
+         * GitHub URL address, for example: https://github.com.
+         * Useful when you are using on-premises GitHub Enterprise
+         * and your url is different than the default GitHub instance for Open Source
          */
         public String getUrl() {
             return getStringUrl("gitHub.url");
@@ -200,17 +209,17 @@ public class ReleaseConfiguration {
 
         /**
          * GitHub write auth token to be used for pushing code to GitHub.
-         * Auth token is used with the user specified in {@link #getWriteAuthUser()}.
-         * <strong>WARNING:</strong> please don't commit the write auth token to VCS.
-         * Instead export "GH_WRITE_TOKEN" environment variable.
-         * The env variable value will be automatically returned by this method.
+         * Please do not configure write auth token in plain text / commit to VCS!
+         * Instead use env variable and that you can securely store in CI server configuration.
+         * Shipkit automatically uses "GH_WRITE_TOKEN" env variable
+         * if this value is not specified.
          */
         public String getWriteAuthToken() {
-            return (String) getValue("gitHub.writeAuthToken", "GH_WRITE_TOKEN",
+            return (String) getValue("gitHub.writeAuthToken",
                     "Please export 'GH_WRITE_TOKEN' env variable first!\n" +
-                    "  The value of that variable is automatically used for 'shipkit.gitHub.writeAuthToken' setting.\n" +
+                    "  The value of that variable is automatically used by Shipkit.\n" +
                     "  It is highly recommended to keep write token secure and store env variable with your CI configuration.\n" +
-                    "  Alternatively, you can configure the write token explicitly in the *.gradle file:\n" +
+                    "  Alternatively, you can configure the write token explicitly:\n" +
                     "    shipkit.gitHub.writeAuthToken = 'secret'");
         }
 
@@ -396,13 +405,6 @@ public class ReleaseConfiguration {
         }
     }
 
-    //TODO unit test message creation and error handling, suggested plan:
-    //1. Create wrapper type over 'configuration' map
-    //2. Move handling to this new object and make it testable, along with env variables
-    private String getString(String key) {
-        return getString(key, NO_ENV_VARIABLE);
-    }
-
     private String getStringUrl(String key) {
         String url = getString(key);
         if(url.endsWith("/")) {
@@ -411,35 +413,37 @@ public class ReleaseConfiguration {
         return url;
     }
 
-    private Boolean getBoolean(String key) {
-        Object value = configuration.get(key);
-        return Boolean.parseBoolean(value.toString());
-    }
-
-    private String getString(String key, String envVarName) {
-        return (String) getValue(key, envVarName, "Please configure 'shipkit." + key + "' value (String).");
+    private String getString(String key) {
+        return (String) getValue(key, "Please configure 'shipkit." + key + "' value (String).");
     }
 
     private Map getMap(String key) {
-        return (Map) getValue(key, NO_ENV_VARIABLE, "Please configure 'shipkit." + key + "' value (Map).");
+        return (Map) getValue(key, "Please configure 'shipkit." + key + "' value (Map).");
     }
 
     private Collection<String> getCollection(String key) {
-        return (Collection) getValue(key, NO_ENV_VARIABLE, "Please configure 'shipkit." + key + "' value (Collection).");
+        return (Collection) getValue(key, "Please configure 'shipkit." + key + "' value (Collection).");
     }
 
-    private Object getValue(String key, String envVarName, String message) {
+    private Object getValue(String key, String message) {
         Object value = configuration.get(key);
-        if (value != null) {
+        if (value != null || lenient) {
             return value;
         }
-
-        if (envVarName != null) {
-            value = System.getenv(envVarName);
-            if (value != NO_ENV_VARIABLE) {
-                return value;
-            }
-        }
         throw new GradleException(message);
+    }
+
+    /**
+     * Provides 'lenient' copy of this configuration instance,
+     * that does not fail fast when one accesses a property that is not configured (e.g. is null).
+     * <p>
+     * By default, release configuration object fails fast in this scenario.
+     * This is a good default because it helps us identify missing configuration early.
+     * However sometimes we want to check if the user has configured a property (like for GitHub write token) without failing.
+     *
+     * @return lenient copy of this configuration instance
+     */
+    public ReleaseConfiguration getLenient() {
+        return new ReleaseConfiguration(configuration, true);
     }
 }

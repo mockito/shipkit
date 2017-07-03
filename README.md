@@ -4,29 +4,39 @@
 
 ## Imagine
 
-Imagine the world where you call pull in a new version of some Open Source library and not worry if it breaks compatibility. Imagine that you can submit a pull request to some project, have it reviewed timely, and have the new version with your fix available to you in minutes after your PR is merged. Imagine that for any dependency you consider upgrading, you can view its neatly and consistently maintained release notes. Imagine that you can set up practical Continuous Delivery automation in your project in minutes, by using a well behaving and documented Gradle plugin. Imagine that you can focus on code and features while the release management, versioning, publishing, release notes generation is taken care for you automagically.
+You will be more productive if your releases are fully automated and happen on every change.
+You will build great product if you can focus on code & features, but not on the release overhead.
+Shipkit will make it happen.
+Shipkit is a toolkit for shipping it.
 
-This is the goal of "Shipkit project". The project started in November 2016 and is currently in progress.
+Fully automated releases are only the first part of the journey...
 
-## True North Star
+Imagine the world where you call pull in a new version of some Open Source library and not worry if it breaks compatibility.
+Imagine that you can submit a pull request to some project, have it reviewed timely, and have the new version with your fix available to you in minutes after your PR is merged.
+Imagine that for any dependency you consider upgrading, you can view its neatly and consistently maintained release notes.
+Imagine that you can set up practical Continuous Delivery automation in your project in minutes, by using a well behaving and documented Gradle plugin.
+Imagine that you can focus on code and features while the release management, versioning, publishing, release notes generation is taken care for you automagically.
 
-The goal Mockito Release Tools project is to provide easy-to-setup Continuous Delivery tooling. We would like other teams to take advantage of rapid development, frictionless releases and semantic versioning just like [we do it in Mockito](https://github.com/mockito/mockito/wiki/Continuous-Delivery-Overview). We plan to make Shipkit generic and neatly documented. It will be a set of libraries and Gradle plugins that greatly simplify enabling Continuous Delivery for Java libraries.
+This is the goal of "Shipkit" project.
+The project started in November 2016 and is currently in progress.
 
-We already use this project to drive [Continuous Delivery](https://github.com/mockito/mockito/wiki/Continuous-Delivery-Overview) of Mockito Java library
-and automatically publish new versions to
+### True North Star
+
+Every team should be empowered to develop with rapid velocity, frictionless releases and semantic versioning just like [we do it in Mockito](https://github.com/mockito/mockito/wiki/Continuous-Delivery-Overview).
+Shipkit enables Mockito to automatically publish new versions to
 [2M Mockito users](https://github.com/mockito/mockito/wiki/Mockito-Popularity-and-User-Base)!
 
-## We need help!
+### We need help!
 
 If the vision of the project connects with you help us!!!
 
-- Open a [new GitHub ticket](https://github.com/mockito/shipkit/issues/new) to start conversation, we love feedback, brainstorming and discussions.
+- Open a [new GitHub ticket](https://github.com/mockito/shipkit/issues/new) to start the conversation. We love feedback, brainstorming and discussions.
 - Drop a comment to one of the existing "[please contribute](https://github.com/mockito/shipkit/issues?q=is%3Aissue+is%3Aopen+label%3A%22please+contribute%21%22)" tickets, and tell us that you are interesting in implementing it.
 - Try out Shipkit in your project and give feedback
 - If you like emails, join the [mailing list](https://groups.google.com/forum/#!forum/shipkit), but be warned that we rarely use emails, and much more prefer GitHub tickets.
 - Spread the word about Shipkit, let us know about other projects with similar goals.
 
-## History
+### History
 
 - 2014, August - we set up automated [continuous delivery for Mockito](http://blog.mockito.org/2014/08/ready-for-continuous-deployment.html) project, every merged pull requested produced release notes and new version in Maven Central.
 We [still do it today](https://github.com/mockito/mockito/wiki/Continuous-Delivery-Overview) in Mockito!
@@ -37,23 +47,22 @@ As much as useful the toolkit was to drive Mockito releases, we needed to make i
 - 2017, March - [Wojtek Wilk](https://github.com/wwilk) joins the team, implements release avoidance when binaries aren't changed in comparison to previous release, starts driving [API compatibility](https://github.com/mockito/shipkit/issues/105) validation and Shipkit dogfooding.
 - 2017, April - we found a neat name for our project: "Shipit", a toolkit for shipping it! We registered the domain: http://shipkit.org
 - 2017, May - there are 5 contributors in total, we expanded the vision of the project, and currently working on killer features like: automated e2e testing with library consumers + automated pushes of version upgrades [#85](https://github.com/mockito/shipkit/issues/85), [A/B testing](https://github.com/mockito/shipkit/issues/113) of build results when upgrading dependencies.
-- 2017, June - "Ship every change to production!" presentation at Software Architecture conference in Santa Clara ([details](https://github.com/mockito/shipkit/wiki/Conferences-and-Meetups)).
+- 2017, June - "Ship every change to production!" presentation at Software Architecture conference in Santa Clara, CA ([details](https://github.com/mockito/shipkit/wiki/Conferences-and-Meetups)).
+- 2017, June - Szczepan includes information about Shipkit in his presentation at Gradle Summit conference in Palo Alto, CA.
 
-## Plans
+### Plans
 
-- 2017, June - we plan to release [1.0 of Shipkit](https://github.com/mockito/shipkit/issues/116) library during [Gradle Summit Conference](https://summit.gradle.com) 22-23th of June 2017, Palo Alto, CA. Core features offered by 1.0:
+- 2017, July - we will be present at [Confitura '17 conference](https://2017.confitura.pl) in Warsaw, PL, on 1st of July.
+- 2017, August - we plan to release [1.0-milestone-1 of Shipkit](https://github.com/mockito/shipkit/issues/116) in July 2017.
+Core features offered by 1.0:
   - version management
   - automatic publication of binaries to well known public repositories
   - release notes generation based on Git log and the issue tracker links
   - avoiding releases when binaries are the same
-  - pulling information about contributors and including it in release notes and pom.xml files
+  - pulling information about contributors and including it in the release notes and pom.xml files
   - and all that in a sweet little package, fully integrated, neatly automated, easy to roll out
-- 2017, July - we will be present at [Confitura '17 conference](https://2017.confitura.pl) in Warsaw, PL, on 1st of July.
-  - our presentation was accepted!
-
-## Future
-
-The roadmap is comming soon!
+- 2017, September - 1.0 release.
+- 2017, Q4 - helping community adopt Shipkit and writing great features on the way!
 
 ## Development guide
 

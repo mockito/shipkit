@@ -11,8 +11,6 @@ public class BasicValidator {
 
     private final static Logger LOGGER = Logging.getLogger(BasicValidator.class);
 
-    //TODO unit test
-
     /**
      * Throws {@link GradleException} with specified message if the object is null.
      * Returns the object if it is not not null.
@@ -42,17 +40,17 @@ public class BasicValidator {
             return object;
         }
 
-        String envValue = System.getenv(envVariable);
-        if (envValue != null && !envValue.trim().isEmpty()) {
-            LOGGER.info("Environment variable '" + envVariable + "' is found and will be used.");
-            return envValue;
+        return notNullEnv(envVariable, System.getenv(envVariable), message);
+    }
+
+    static String notNullEnv(String envVarName, String envVarValue, String message) {
+        if (envVarValue != null && !envVarValue.trim().isEmpty()) {
+            LOGGER.info("Environment variable '" + envVarName + "' is found and will be used.");
+            return envVarValue;
         } else {
-            LOGGER.info("Environment variable '" + envVariable + "' was not found.");
+            LOGGER.info("Environment variable '" + envVarName + "' was not found.");
         }
 
-        //TODO we should consider prefixing all exceptions emitted by Shipkit
-        //otherwise it's hard to figure out what is failing, whether it's Bintray's task that fails or something else
-        //Perhaps '[shipkit]' prefix in exception message?
         throw new GradleException(message);
     }
 }

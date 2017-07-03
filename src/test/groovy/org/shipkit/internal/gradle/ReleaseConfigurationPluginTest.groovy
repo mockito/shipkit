@@ -2,7 +2,6 @@ package org.shipkit.internal.gradle
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
-import spock.lang.Unroll
 import testutil.PluginSpecification
 
 class ReleaseConfigurationPluginTest extends PluginSpecification {
@@ -25,25 +24,17 @@ class ReleaseConfigurationPluginTest extends PluginSpecification {
         subproject.plugins.apply(ReleaseConfigurationPlugin).configuration == root.plugins.apply(ReleaseConfigurationPlugin).configuration
     }
 
-    def "dry run on by default"() {
+    def "dry run off by default"() {
         expect:
-        root.plugins.apply(ReleaseConfigurationPlugin).configuration.dryRun
+        !root.plugins.apply(ReleaseConfigurationPlugin).configuration.dryRun
     }
 
-    @Unroll
-    def "configures dry run to #setting when project property is #property"() {
+    def "configures dry run based on project property"() {
         when:
-        root.ext.'shipkit.dryRun' = property
+        root.ext.'dryRun' = ''
 
         then:
-        root.plugins.apply(ReleaseConfigurationPlugin).configuration.dryRun == setting
-
-        where:
-        property | setting
-        "false"  | false
-        "true"   | true
-        ""       | true
-        null     | true
+        root.plugins.apply(ReleaseConfigurationPlugin).configuration.dryRun
     }
 
     def "configures initConfigFile task correctly"() {

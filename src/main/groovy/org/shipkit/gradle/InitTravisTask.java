@@ -30,10 +30,16 @@ public class InitTravisTask extends DefaultTask {
         LOG.lifecycle("  {} - generated default '{}', don't forget to check it in to your source control!", this.getPath(), outputFile.getName());
     }
 
+    /**
+     * Where the Travis file is generated to. Typically, it's ".travis.yml" in root directory of the project.
+     */
     public File getOutputFile() {
         return outputFile;
     }
 
+    /**
+     * See {@link #getOutputFile()}
+     */
     public void setOutputFile(File outputFile) {
         this.outputFile = outputFile;
     }

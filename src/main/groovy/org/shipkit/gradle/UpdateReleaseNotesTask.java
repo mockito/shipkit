@@ -4,8 +4,10 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.gradle.api.tasks.*;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.Optional;
+import org.gradle.api.tasks.TaskAction;
 import org.shipkit.internal.gradle.util.FileUtil;
 import org.shipkit.internal.gradle.util.ReleaseNotesSerializer;
 import org.shipkit.internal.gradle.util.team.TeamMember;
@@ -22,7 +24,10 @@ import org.shipkit.internal.notes.util.IOUtil;
 import org.shipkit.internal.util.ExposedForTesting;
 
 import java.io.File;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Generates incremental, detailed release notes text.
@@ -31,7 +36,6 @@ import java.util.*;
 public class UpdateReleaseNotesTask extends DefaultTask {
 
     private static final Logger LOG = Logging.getLogger(UpdateReleaseNotesTask.class);
-    public static final String PREVIEW_PROJECT_PROPERTY = "preview";
 
     private String previousVersion;
     private File releaseNotesFile;
@@ -79,7 +83,6 @@ public class UpdateReleaseNotesTask extends DefaultTask {
     public void setPreviewMode(boolean previewMode) {
         this.previewMode = previewMode;
     }
-
 
     /**
      * Release notes file this task operates on.
@@ -213,6 +216,7 @@ public class UpdateReleaseNotesTask extends DefaultTask {
      * Input to the release notes generation,
      * serialized release notes data objects of type {@link ReleaseNotesData}.
      * They are used to generate formatted release notes.
+     * The data file is generate by {@link ReleaseNotesFetcherTask}.
      */
     @InputFile
     public File getReleaseNotesData() {
@@ -284,14 +288,6 @@ public class UpdateReleaseNotesTask extends DefaultTask {
     }
 
     private void assertConfigured() {
-        if (gitHubUrl == null || gitHubUrl.trim().isEmpty()) {
-            throw new GradleException("'" + this.getPath() + ".gitHubUrl' must be configured.");
-        }
-
-        if (gitHubRepository == null || gitHubRepository.trim().isEmpty()) {
-            throw new GradleException("'" + this.getPath() + ".gitHubRepository' must be configured.");
-        }
-
         if(!previewMode) { // releaseNotesFile is not needed in preview mode
             if (releaseNotesFile == null) {
                 throw new GradleException("'" + this.getPath() + ".releaseNotesFile' must be configured.");
@@ -299,6 +295,7 @@ public class UpdateReleaseNotesTask extends DefaultTask {
             if(releaseNotesFile.exists() && !releaseNotesFile.isFile()){
                 throw new GradleException("'" + this.getPath() + ".releaseNotesFile' must be a file.");
             }
+            //TODO why do we need to create the file here? this method suppose to only validate
             if(!releaseNotesFile.exists()){
                 try {
                     IOUtil.createParentDirectory(releaseNotesFile);
@@ -371,7 +368,7 @@ public class UpdateReleaseNotesTask extends DefaultTask {
         }
     }
 
-    public String getVcsCommitTemplate() {
+    private String getVcsCommitTemplate() {
         if(previousVersion != null) {
             return gitHubUrl + "/" + gitHubRepository + "/compare/"
                     + tagPrefix + previousVersion + "..." + tagPrefix + version;
