@@ -1,7 +1,9 @@
-package org.shipkit.internal.gradle;
+package org.shipkit.internal.gradle.plugin;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.shipkit.internal.gradle.AutoVersioningPlugin;
+import org.shipkit.internal.gradle.TravisPlugin;
 
 /**
  * Plugin contains everything you need to automatically bump your version in Travis CI environment
