@@ -78,8 +78,8 @@ class ComparePublicationsPluginTest extends PluginSpecification {
         DownloadPreviousPublicationsTask task = child.getTasks()
                 .getByName(ComparePublicationsPlugin.DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK);
 
-        task.previousVersionPomUrl.contains("bintray.com")
-        task.previousVersionSourcesJarUrl.contains("bintray.com")
+        task.previousPomUrl.contains("bintray.com")
+        task.previousSourcesJarUrl.contains("bintray.com")
     }
 
     def "leaves previousVersionPomLocalFile and previousVersionSourcesJarLocalFile null if BintrayPlugin is NOT applied"() {
@@ -95,8 +95,8 @@ class ComparePublicationsPluginTest extends PluginSpecification {
         DownloadPreviousPublicationsTask task = child.getTasks()
                 .getByName(ComparePublicationsPlugin.DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK);
 
-        task.previousVersionPomUrl == null
-        task.previousVersionSourcesJarUrl == null
+        task.previousPomUrl == null
+        task.previousSourcesJarUrl == null
     }
 
     def "sets correctly local files in download and comparison tasks"() {
@@ -122,8 +122,8 @@ class ComparePublicationsPluginTest extends PluginSpecification {
         def expectedPom = new File(basePath + ".pom")
         def expectedSourcesJar = new File(basePath + "-sources.jar")
 
-        downloadTask.previousVersionPomLocalFile == expectedPom
-        downloadTask.previousVersionSourcesJarLocalFile == expectedSourcesJar
+        downloadTask.previousPom == expectedPom
+        downloadTask.previousSourcesJar == expectedSourcesJar
 
         comparisonTask.previousVersionPomFile == expectedPom
         comparisonTask.previousVersionSourcesJarFile == expectedSourcesJar

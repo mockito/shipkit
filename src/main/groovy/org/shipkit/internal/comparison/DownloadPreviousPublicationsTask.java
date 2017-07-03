@@ -18,20 +18,15 @@ public class DownloadPreviousPublicationsTask extends DefaultTask {
 
     private static final Logger LOG = Logging.getLogger(DownloadPreviousPublicationsTask.class);
 
-    @Input
-    private String previousVersionPomUrl;
-    @Input
-    private String previousVersionSourcesJarUrl;
+    @Input private String previousPomUrl;
+    @Input private String previousSourcesJarUrl;
 
-    @OutputFile
-    private File previousVersionPomLocalFile;
-    @OutputFile
-    private File previousVersionSourcesJarLocalFile;
-
+    @OutputFile private File previousPom;
+    @OutputFile private File previousSourcesJar;
 
     @TaskAction public void downloadPreviousReleases(){
-        downloadRemoteFile(previousVersionPomUrl, previousVersionPomLocalFile);
-        downloadRemoteFile(previousVersionSourcesJarUrl, previousVersionSourcesJarLocalFile);
+        downloadRemoteFile(previousPomUrl, previousPom);
+        downloadRemoteFile(previousSourcesJarUrl, previousSourcesJar);
     }
 
     private void downloadRemoteFile(String remoteUrl, File localFile) {
@@ -42,48 +37,59 @@ public class DownloadPreviousPublicationsTask extends DefaultTask {
         IOUtil.downloadToFile(remoteUrl, localFile);
     }
 
-    public String getPreviousVersionPomUrl() {
-        return previousVersionPomUrl;
+    /**
+     * See {@link #setPreviousPomUrl(String)}
+     */
+    public String getPreviousPomUrl() {
+        return previousPomUrl;
     }
 
     /**
-     *
-     * @param previousVersionPomUrl URL where previous version pom file can be found
+     * @param previousPomUrl URL where previous version pom file can be found
      */
-    public void setPreviousVersionPomUrl(String previousVersionPomUrl) {
-        this.previousVersionPomUrl = previousVersionPomUrl;
-    }
-
-    public String getPreviousVersionSourcesJarUrl() {
-        return previousVersionSourcesJarUrl;
+    public void setPreviousPomUrl(String previousPomUrl) {
+        this.previousPomUrl = previousPomUrl;
     }
 
     /**
-     * @param previousVersionSourcesJarUrl URL where previous version sources jar can be found
+     * See {@link #setPreviousSourcesJarUrl(String)}
      */
-    public void setPreviousVersionSourcesJarUrl(String previousVersionSourcesJarUrl) {
-        this.previousVersionSourcesJarUrl = previousVersionSourcesJarUrl;
+    public String getPreviousSourcesJarUrl() {
+        return previousSourcesJarUrl;
     }
 
     /**
-     * @param previousVersionPomLocalFile temporary storage file for downloaded previous version pom
+     * @param previousSourcesJarUrl URL where previous version sources jar can be found
      */
-    public void setPreviousVersionPomLocalFile(File previousVersionPomLocalFile) {
-        this.previousVersionPomLocalFile = previousVersionPomLocalFile;
-    }
-
-    public File getPreviousVersionPomLocalFile() {
-        return previousVersionPomLocalFile;
-    }
-
-    public File getPreviousVersionSourcesJarLocalFile() {
-        return previousVersionSourcesJarLocalFile;
+    public void setPreviousSourcesJarUrl(String previousSourcesJarUrl) {
+        this.previousSourcesJarUrl = previousSourcesJarUrl;
     }
 
     /**
-     * @param previousVersionSourcesJarLocalFile temporary storage file for downloaded previous version sources jar
+     * @param previousPom temporary storage file for downloaded previous version pom
      */
-    public void setPreviousVersionSourcesJarLocalFile(File previousVersionSourcesJarLocalFile) {
-        this.previousVersionSourcesJarLocalFile = previousVersionSourcesJarLocalFile;
+    public void setPreviousPom(File previousPom) {
+        this.previousPom = previousPom;
+    }
+
+    /**
+     * See {@link #setPreviousPom(File)}
+     */
+    public File getPreviousPom() {
+        return previousPom;
+    }
+
+    /**
+     * See {@link #setPreviousSourcesJar(File)}
+     */
+    public File getPreviousSourcesJar() {
+        return previousSourcesJar;
+    }
+
+    /**
+     * @param previousSourcesJar temporary storage file for downloaded previous version sources jar
+     */
+    public void setPreviousSourcesJar(File previousSourcesJar) {
+        this.previousSourcesJar = previousSourcesJar;
     }
 }

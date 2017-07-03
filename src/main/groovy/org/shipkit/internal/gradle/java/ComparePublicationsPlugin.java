@@ -65,13 +65,13 @@ public class ComparePublicationsPlugin implements Plugin<Project> {
                         DefaultArtifactUrlResolver artifactUrlResolver =
                                 new DefaultArtifactUrlResolverFactory().getDefaultResolver(project, sourcesJar.getBaseName(), conf.getPreviousReleaseVersion());
 
-                        String previousVersionPomUrl = getDefaultIfNull(t.getPreviousVersionPomUrl(), "previousVersionPomUrl", ".pom", artifactUrlResolver);
-                        t.setPreviousVersionPomUrl(previousVersionPomUrl);
-                        String previousVersionSourcesJarUrl = getDefaultIfNull(t.getPreviousVersionSourcesJarUrl(), "previousSourcesJarUrl", "-sources.jar", artifactUrlResolver);
-                        t.setPreviousVersionSourcesJarUrl(previousVersionSourcesJarUrl);
+                        String previousVersionPomUrl = getDefaultIfNull(t.getPreviousPomUrl(), "previousVersionPomUrl", ".pom", artifactUrlResolver);
+                        t.setPreviousPomUrl(previousVersionPomUrl);
+                        String previousVersionSourcesJarUrl = getDefaultIfNull(t.getPreviousSourcesJarUrl(), "previousSourcesJarUrl", "-sources.jar", artifactUrlResolver);
+                        t.setPreviousSourcesJarUrl(previousVersionSourcesJarUrl);
 
-                        t.setPreviousVersionPomLocalFile(previousVersionPomLocalFile);
-                        t.setPreviousVersionSourcesJarLocalFile(previousVersionSourcesJarLocalFile);
+                        t.setPreviousPom(previousVersionPomLocalFile);
+                        t.setPreviousSourcesJar(previousVersionSourcesJarLocalFile);
                     }
                 });
             }
