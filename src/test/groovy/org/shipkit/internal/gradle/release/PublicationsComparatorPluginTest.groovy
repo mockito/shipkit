@@ -5,7 +5,7 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.shipkit.gradle.ReleaseConfiguration
 import org.shipkit.internal.comparison.DownloadPreviousReleaseArtifactsTask
 import org.shipkit.internal.comparison.PublicationsComparatorTask
-import org.shipkit.internal.gradle.BintrayPlugin
+import org.shipkit.internal.gradle.ShipkitBintrayPlugin
 import org.shipkit.internal.gradle.VersioningPlugin
 import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin
 import testutil.PluginSpecification
@@ -64,7 +64,7 @@ class PublicationsComparatorPluginTest extends PluginSpecification {
         def parent = new ProjectBuilder().withProjectDir(tmp.root).withName("parent").build()
         def child = new ProjectBuilder().withName("child").withParent(parent).build()
 
-        child.plugins.apply(BintrayPlugin)
+        child.plugins.apply(ShipkitBintrayPlugin)
         child.getExtensions().getByType(BintrayExtension).user = "test";
 
         def releaseConfig = parent.getExtensions().getByType(ReleaseConfiguration)

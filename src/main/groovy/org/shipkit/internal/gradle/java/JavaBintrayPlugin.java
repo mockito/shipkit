@@ -3,7 +3,7 @@ package org.shipkit.internal.gradle.java;
 import com.jfrog.bintray.gradle.BintrayExtension;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.shipkit.internal.gradle.BintrayPlugin;
+import org.shipkit.internal.gradle.ShipkitBintrayPlugin;
 
 import static org.shipkit.internal.gradle.java.JavaPublishPlugin.PUBLICATION_NAME;
 
@@ -14,14 +14,14 @@ import static org.shipkit.internal.gradle.java.JavaPublishPlugin.PUBLICATION_NAM
  *
  * <ul>
  *     <li>{@link JavaPublishPlugin}</li>
- *     <li>{@link BintrayPlugin}</li>
+ *     <li>{@link ShipkitBintrayPlugin}</li>
  * </ul>
  */
 public class JavaBintrayPlugin implements Plugin<Project> {
 
     public void apply(Project project) {
         project.getPlugins().apply(JavaPublishPlugin.class);
-        project.getPlugins().apply(BintrayPlugin.class);
+        project.getPlugins().apply(ShipkitBintrayPlugin.class);
 
         if (shouldConfigurePublications(project)) {
             BintrayExtension bintray = project.getExtensions().getByType(BintrayExtension.class);

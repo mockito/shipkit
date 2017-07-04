@@ -5,7 +5,7 @@ import org.gradle.api.GradleException
 import org.shipkit.internal.gradle.configuration.LazyConfiguration
 import testutil.PluginSpecification
 
-class BintrayPluginTest extends PluginSpecification {
+class ShipkitBintrayPluginTest extends PluginSpecification {
 
     def setup() {
         project.plugins.apply("org.shipkit.bintray")
@@ -80,7 +80,7 @@ class BintrayPluginTest extends PluginSpecification {
     }
 
     def "prints informative message before upload"() {
-        BintrayUploadTask u = project.tasks[BintrayPlugin.BINTRAY_UPLOAD_TASK]
+        BintrayUploadTask u = project.tasks[ShipkitBintrayPlugin.BINTRAY_UPLOAD_TASK]
         u.versionName = "1.0.0"
         u.user = "shipkit-bot"
         u.userOrg = "shipkit.org"
@@ -88,7 +88,7 @@ class BintrayPluginTest extends PluginSpecification {
         u.packageName = "shipkit-example"
 
         expect:
-        BintrayPlugin.uploadWelcomeMessage(u) == """:bintrayUpload - publishing to Bintray
+        ShipkitBintrayPlugin.uploadWelcomeMessage(u) == """:bintrayUpload - publishing to Bintray
   - dry run: false, version: 1.0.0, Maven Central sync: false
   - user/org: shipkit-bot/shipkit.org, repository/package: shipkit/shipkit-example"""
     }

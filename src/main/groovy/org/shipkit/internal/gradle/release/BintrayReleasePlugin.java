@@ -6,7 +6,7 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.shipkit.gradle.UpdateReleaseNotesTask;
-import org.shipkit.internal.gradle.BintrayPlugin;
+import org.shipkit.internal.gradle.ShipkitBintrayPlugin;
 import org.shipkit.internal.gradle.ReleaseNotesPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.java.JavaBintrayPlugin;
@@ -41,7 +41,7 @@ public class BintrayReleasePlugin implements Plugin<Project> {
             public void execute(final Project subproject) {
                 subproject.getPlugins().withType(JavaBintrayPlugin.class, new Action<JavaBintrayPlugin>() {
                     public void execute(JavaBintrayPlugin plugin) {
-                        Task bintrayUpload = subproject.getTasks().getByName(BintrayPlugin.BINTRAY_UPLOAD_TASK);
+                        Task bintrayUpload = subproject.getTasks().getByName(ShipkitBintrayPlugin.BINTRAY_UPLOAD_TASK);
                         Task performRelease = project.getTasks().getByName(ReleasePlugin.PERFORM_RELEASE_TASK);
                         performRelease.dependsOn(bintrayUpload);
 

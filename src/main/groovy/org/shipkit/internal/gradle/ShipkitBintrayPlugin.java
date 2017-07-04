@@ -30,14 +30,14 @@ import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.de
  *     <li>Sets extension property: 'bintray.publish = true'</li>
  * </ul>
  */
-public class BintrayPlugin implements Plugin<Project> {
+public class ShipkitBintrayPlugin implements Plugin<Project> {
 
     /**
      * Name of the task that is configured by this plugin
      */
     public static final String BINTRAY_UPLOAD_TASK = "bintrayUpload";
 
-    private final static Logger LOG = Logging.getLogger(BintrayPlugin.class);
+    private final static Logger LOG = Logging.getLogger(ShipkitBintrayPlugin.class);
 
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
