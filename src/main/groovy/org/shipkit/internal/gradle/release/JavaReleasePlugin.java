@@ -5,7 +5,6 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.UpdateReleaseNotesTask;
 import org.shipkit.internal.gradle.*;
 import org.shipkit.internal.gradle.util.BintrayUtil;
@@ -16,16 +15,6 @@ import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.de
 /**
  * Configures Java project for automated releases.
  * Applies some configuration to subprojects, too.
- *
- * <p>
- *
- * Applies following plugins to all Java submodules, and preconfigures tasks provided by those plugins:
- *
- * <ul>
- *     <li>{@link JavaLibraryPlugin}</li>
- * </ul>
- *
- * <p>
  *
  * Applies following plugins:
  *
@@ -38,8 +27,6 @@ import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.de
 public class JavaReleasePlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
-        final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
-
         project.getPlugins().apply(GitPlugin.class);
         project.getPlugins().apply(PomContributorsPlugin.class);
         project.getPlugins().apply(ReleasePlugin.class);
@@ -47,15 +34,6 @@ public class JavaReleasePlugin implements Plugin<Project> {
         project.allprojects(new Action<Project>() {
             @Override
             public void execute(final Project subproject) {
-                if (conf.isPublishAllJavaSubprojects()) {
-                    subproject.getPlugins().withId("java", new Action<Plugin>() {
-                        @Override
-                        public void execute(Plugin plugin) {
-                            subproject.getPlugins().apply(JavaLibraryPlugin.class);
-                        }
-                    });
-                }
-
                 subproject.getPlugins().withType(JavaLibraryPlugin.class, new Action<JavaLibraryPlugin>() {
                     public void execute(JavaLibraryPlugin plugin) {
                         Task bintrayUpload = subproject.getTasks().getByName(BintrayPlugin.BINTRAY_UPLOAD_TASK);

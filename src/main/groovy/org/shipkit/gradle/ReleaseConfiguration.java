@@ -1,7 +1,6 @@
 package org.shipkit.gradle;
 
 import org.gradle.api.GradleException;
-import org.shipkit.internal.version.VersionInfo;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -65,7 +64,6 @@ public class ReleaseConfiguration {
     //TODO currently it's not clear when to use class fields and when to use the 'configuration' map
     //Let's make it clear in the docs
     private boolean dryRun;
-    private boolean publishAllJavaSubprojects = true;
 
     /**
      * See {@link #isDryRun()}
@@ -81,21 +79,6 @@ public class ReleaseConfiguration {
      */
     public boolean isDryRun() {
         return dryRun;
-    }
-
-    /**
-     * See {@link #isPublishAllJavaSubprojects()}}
-     */
-    public void setPublishAllJavaSubprojects(boolean publishAllJavaSubprojects) {
-        this.publishAllJavaSubprojects = publishAllJavaSubprojects;
-    }
-
-    /**
-     * org.shipkit.java-library plugin will be applied to every java subproject (project that applies Gradle's 'java'
-     * plugin) if this boolean is <code>true</code>.
-     */
-    public boolean isPublishAllJavaSubprojects() {
-        return publishAllJavaSubprojects;
     }
 
     public GitHub getGitHub() {
@@ -122,8 +105,7 @@ public class ReleaseConfiguration {
     }
 
     /**
-     * Return last previously released version number
-     * See {@link VersionInfo#getPreviousVersion()}
+     * Return last previously released version number.
      */
     public String getPreviousReleaseVersion() {
         return previousReleaseVersion;
