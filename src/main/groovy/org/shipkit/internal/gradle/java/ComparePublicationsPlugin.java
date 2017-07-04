@@ -87,8 +87,8 @@ public class ComparePublicationsPlugin implements Plugin<Project> {
 
                 t.setCurrentVersion(project.getVersion().toString());
                 t.setPreviousVersion(conf.getPreviousReleaseVersion());
-                t.setPreviousVersionPomFile(previousVersionPomLocalFile);
-                t.setPreviousVersionSourcesJarFile(previousVersionSourcesJarLocalFile);
+                t.setPreviousPom(previousVersionPomLocalFile);
+                t.setPreviousSourcesJar(previousVersionSourcesJarLocalFile);
 
                 //Set local sources jar for comparison with previously released
                 t.compareSourcesJar(sourcesJar);

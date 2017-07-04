@@ -36,11 +36,11 @@ public class ComparePublications {
                 task.getPath(), task.getPreviousVersion(), task.getCurrentVersion());
 
         PomComparator pomComparator = new PomComparator(task.getProjectGroup(), task.getPreviousVersion(), task.getCurrentVersion());
-        Diff pomsDiff = pomComparator.areEqual(task.getPreviousVersionPomFile(), currentVersionPomFile);
+        Diff pomsDiff = pomComparator.areEqual(task.getPreviousPom(), currentVersionPomFile);
         LOG.lifecycle("{} - pom files equal: {}", task.getPath(), pomsDiff.areFilesEqual());
 
         ZipComparator sourcesJarComparator = new ZipComparator();
-        Diff jarsDiff = sourcesJarComparator.areEqual(task.getPreviousVersionSourcesJarFile(), currentVersionSourcesJarFile);
+        Diff jarsDiff = sourcesJarComparator.areEqual(task.getPreviousSourcesJar(), currentVersionSourcesJarFile);
         LOG.lifecycle("{} - source jars equal: {}", task.getPath(), jarsDiff.areFilesEqual());
 
         List<Diff> differences = new ArrayList<Diff>();

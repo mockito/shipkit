@@ -125,7 +125,7 @@ class ComparePublicationsPluginTest extends PluginSpecification {
         downloadTask.previousPom == expectedPom
         downloadTask.previousSourcesJar == expectedSourcesJar
 
-        comparisonTask.previousVersionPomFile == expectedPom
-        comparisonTask.previousVersionSourcesJarFile == expectedSourcesJar
+        comparisonTask.previousPom == expectedPom
+        comparisonTask.previousSourcesJar == expectedSourcesJar
     }
 }

@@ -29,8 +29,8 @@ public class ComparePublicationsTask extends DefaultTask {
     @InputFiles private Jar sourcesJar;
     @Input private String pomTaskName;
 
-    @InputFile private File previousVersionPomFile;
-    @InputFile private File previousVersionSourcesJarFile;
+    @InputFile private File previousPom;
+    @InputFile private File previousSourcesJar;
 
     @OutputFile private File comparisonResult;
 
@@ -56,7 +56,7 @@ public class ComparePublicationsTask extends DefaultTask {
     }
 
     /**
-     * Sets the sourcesJar for comparision with {@link #getPreviousVersionSourcesJarFile()}.
+     * Sets the sourcesJar for comparision with {@link #getPreviousSourcesJar()}.
      * Task dependency will be automatically added from this task to sourcesJar task supplied as parameter.
      * During comparison, the algorithm will read jar's output file using {@link Jar#getArchivePath()}.
      */
@@ -69,7 +69,7 @@ public class ComparePublicationsTask extends DefaultTask {
     }
 
     /**
-     * Sets the pom task name for comparision with {@link #getPreviousVersionSourcesJarFile()}.
+     * Sets the pom task name for comparision with {@link #getPreviousSourcesJar()}.
      * Task dependency will be automatically added from this task to pomTaskName supplied as parameter.
      * During comparison, the algorithm will get the pom task, cast it to {@link GenerateMavenPom},
      * and read {@link GenerateMavenPom#getDestination()}.
@@ -131,29 +131,29 @@ public class ComparePublicationsTask extends DefaultTask {
     /**
      * Previously released pom file used for comparison with currently built pom file.
      */
-    public File getPreviousVersionPomFile() {
-        return previousVersionPomFile;
+    public File getPreviousPom() {
+        return previousPom;
     }
 
     /**
-     * See {@link #getPreviousVersionPomFile()}
+     * See {@link #getPreviousPom()}
      */
-    public void setPreviousVersionPomFile(File previousVersionPomFile) {
-        this.previousVersionPomFile = previousVersionPomFile;
+    public void setPreviousPom(File previousPom) {
+        this.previousPom = previousPom;
     }
 
     /**
      * Previously released sources jar used for comparison with currently built sources jar.
      */
-    public File getPreviousVersionSourcesJarFile() {
-        return previousVersionSourcesJarFile;
+    public File getPreviousSourcesJar() {
+        return previousSourcesJar;
     }
 
     /**
-     * See {@link #getPreviousVersionSourcesJarFile()}
+     * See {@link #getPreviousSourcesJar()}
      */
-    public void setPreviousVersionSourcesJarFile(File previousVersionSourcesJarFile) {
-        this.previousVersionSourcesJarFile = previousVersionSourcesJarFile;
+    public void setPreviousSourcesJar(File previousSourcesJar) {
+        this.previousSourcesJar = previousSourcesJar;
     }
 
     /**
