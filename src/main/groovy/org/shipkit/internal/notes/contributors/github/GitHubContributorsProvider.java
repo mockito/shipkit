@@ -1,5 +1,8 @@
-package org.shipkit.internal.notes.contributors;
+package org.shipkit.internal.notes.contributors.github;
 
+import org.shipkit.internal.notes.contributors.ContributorsProvider;
+import org.shipkit.internal.notes.contributors.DefaultProjectContributor;
+import org.shipkit.internal.notes.contributors.ProjectContributorsSet;
 import org.shipkit.internal.notes.model.Contributor;
 
 import java.util.Collection;

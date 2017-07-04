@@ -1,4 +1,6 @@
-package org.shipkit.internal.notes.contributors;
+package org.shipkit.internal.notes.contributors.github;
+
+import org.shipkit.internal.notes.contributors.ContributorsSerializer;
 
 import java.io.File;
 

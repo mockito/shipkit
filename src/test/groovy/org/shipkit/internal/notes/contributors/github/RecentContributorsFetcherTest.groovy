@@ -1,4 +1,4 @@
-package org.shipkit.internal.notes.contributors
+package org.shipkit.internal.notes.contributors.github
 
 import spock.lang.Specification
 import spock.lang.Subject

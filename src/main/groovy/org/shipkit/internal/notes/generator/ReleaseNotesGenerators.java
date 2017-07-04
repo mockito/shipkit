@@ -2,8 +2,8 @@ package org.shipkit.internal.notes.generator;
 
 import org.shipkit.internal.exec.Exec;
 import org.shipkit.internal.exec.ProcessRunner;
-import org.shipkit.internal.notes.contributors.Contributors;
-import org.shipkit.internal.notes.contributors.GitHubContributorsProvider;
+import org.shipkit.internal.notes.contributors.github.Contributors;
+import org.shipkit.internal.notes.contributors.github.GitHubContributorsProvider;
 import org.shipkit.internal.notes.improvements.Improvements;
 import org.shipkit.internal.notes.improvements.ImprovementsProvider;
 import org.shipkit.internal.notes.model.Commit;

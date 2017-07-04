@@ -1,4 +1,4 @@
-package org.shipkit.internal.notes.contributors;
+package org.shipkit.internal.notes.contributors.github;
 
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;

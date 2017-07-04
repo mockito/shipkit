@@ -4,8 +4,8 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.notes.FetchContributorsTask;
 import org.shipkit.internal.notes.contributors.ProjectContributorsSerializer;
-import org.shipkit.internal.notes.contributors.Contributors;
-import org.shipkit.internal.notes.contributors.GitHubContributorsProvider;
+import org.shipkit.internal.notes.contributors.github.Contributors;
+import org.shipkit.internal.notes.contributors.github.GitHubContributorsProvider;
 import org.shipkit.internal.notes.contributors.ProjectContributorsSet;
 import org.shipkit.internal.notes.util.IOUtil;
 

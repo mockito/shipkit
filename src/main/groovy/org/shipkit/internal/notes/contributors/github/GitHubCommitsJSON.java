@@ -1,6 +1,7 @@
-package org.shipkit.internal.notes.contributors;
+package org.shipkit.internal.notes.contributors.github;
 
 import org.json.simple.JsonObject;
+import org.shipkit.internal.notes.contributors.DefaultContributor;
 import org.shipkit.internal.notes.model.Contributor;
 
 import java.util.Map;
