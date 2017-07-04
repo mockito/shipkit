@@ -14,7 +14,6 @@ class ComparePublicationsPluginTest extends PluginSpecification {
 
     def "applies"() {
         expect:
-        //TODO inconsistent name: org.shipkit.publications-comparator
         project.plugins.apply("org.shipkit.publications-comparator")
     }
 
