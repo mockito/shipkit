@@ -14,7 +14,7 @@ class ComparePublicationsPluginTest extends PluginSpecification {
 
     def "applies"() {
         expect:
-        project.plugins.apply("org.shipkit.publications-comparator")
+        project.plugins.apply(ComparePublicationsPlugin)
     }
 
     def "configures comparePublications task correctly"() {
@@ -29,7 +29,7 @@ class ComparePublicationsPluginTest extends PluginSpecification {
         }
 
         when:
-        child.plugins.apply("org.shipkit.publications-comparator")
+        child.plugins.apply(ComparePublicationsPlugin)
         child.evaluate()
 
         then:
@@ -50,7 +50,7 @@ class ComparePublicationsPluginTest extends PluginSpecification {
         parent.plugins.apply(VersioningPlugin)
 
         when:
-        child.plugins.apply("org.shipkit.publications-comparator")
+        child.plugins.apply(ComparePublicationsPlugin)
 
         then:
         ComparePublicationsTask task = child.getTasks().getByName(ComparePublicationsPlugin.COMPARE_PUBLICATIONS_TASK);
@@ -71,7 +71,7 @@ class ComparePublicationsPluginTest extends PluginSpecification {
         releaseConfig.gitHub.repository = "repo"
 
         when:
-        child.plugins.apply("org.shipkit.publications-comparator")
+        child.plugins.apply(ComparePublicationsPlugin)
         child.evaluate()
 
         then:
@@ -88,7 +88,7 @@ class ComparePublicationsPluginTest extends PluginSpecification {
         def child = new ProjectBuilder().withName("child").withParent(parent).build()
 
         when:
-        child.plugins.apply("org.shipkit.publications-comparator")
+        child.plugins.apply(ComparePublicationsPlugin)
         child.evaluate()
 
         then:
@@ -109,7 +109,7 @@ class ComparePublicationsPluginTest extends PluginSpecification {
         conf.setPreviousReleaseVersion("1.0.0")
 
         when:
-        child.plugins.apply("org.shipkit.publications-comparator")
+        child.plugins.apply(ComparePublicationsPlugin)
         child.evaluate()
 
         then:
