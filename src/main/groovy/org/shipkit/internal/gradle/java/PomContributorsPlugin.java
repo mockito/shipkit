@@ -4,9 +4,9 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.shipkit.internal.gradle.ContributorsPlugin;
+import org.shipkit.internal.gradle.contributors.ContributorsPlugin;
 
-import static org.shipkit.internal.gradle.ContributorsPlugin.FETCH_ALL_CONTRIBUTORS_TASK;
+import static org.shipkit.internal.gradle.contributors.ContributorsPlugin.FETCH_ALL_CONTRIBUTORS_TASK;
 import static org.shipkit.internal.gradle.java.JavaPublishPlugin.POM_TASK;
 import static org.shipkit.internal.gradle.util.Specs.withName;
 
