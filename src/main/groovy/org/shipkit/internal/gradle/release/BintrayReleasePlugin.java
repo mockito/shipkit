@@ -6,36 +6,41 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.shipkit.gradle.UpdateReleaseNotesTask;
-import org.shipkit.internal.gradle.*;
+import org.shipkit.internal.gradle.BintrayPlugin;
+import org.shipkit.internal.gradle.GitPlugin;
+import org.shipkit.internal.gradle.ReleaseNotesPlugin;
+import org.shipkit.internal.gradle.java.JavaBintrayPlugin;
 import org.shipkit.internal.gradle.util.BintrayUtil;
 
-import static org.shipkit.internal.gradle.BaseJavaLibraryPlugin.MAVEN_LOCAL_TASK;
 import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
+import static org.shipkit.internal.gradle.java.JavaPublishPlugin.MAVEN_LOCAL_TASK;
 
 /**
- * Configures Java project for automated releases.
- * Applies some configuration to subprojects, too.
- *
+ * Configures Java project for automated releases with Bintray.
+ * <p>
  * Applies following plugins:
  *
  * <ul>
- *     <li>{@link GitPlugin}</li>
- *     <li>{@link PomContributorsPlugin}</li>
  *     <li>{@link ReleasePlugin}</li>
  * </ul>
+ *
+ * Adds following behavior to all submodules that have {@link JavaBintrayPlugin}:
+ *
+ * <ul>
+ *     <li>Hooks up bintray upload tasks to the release tasks</li>
+ *     <li>Configures Bintray publication repository on the release notes tasks</li>
+ * </ul>
  */
-public class JavaReleasePlugin implements Plugin<Project> {
+public class BintrayReleasePlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
-        project.getPlugins().apply(GitPlugin.class);
-        project.getPlugins().apply(PomContributorsPlugin.class);
         project.getPlugins().apply(ReleasePlugin.class);
 
         project.allprojects(new Action<Project>() {
             @Override
             public void execute(final Project subproject) {
-                subproject.getPlugins().withType(JavaLibraryPlugin.class, new Action<JavaLibraryPlugin>() {
-                    public void execute(JavaLibraryPlugin plugin) {
+                subproject.getPlugins().withType(JavaBintrayPlugin.class, new Action<JavaBintrayPlugin>() {
+                    public void execute(JavaBintrayPlugin plugin) {
                         Task bintrayUpload = subproject.getTasks().getByName(BintrayPlugin.BINTRAY_UPLOAD_TASK);
                         Task performRelease = project.getTasks().getByName(ReleasePlugin.PERFORM_RELEASE_TASK);
                         performRelease.dependsOn(bintrayUpload);

@@ -29,7 +29,6 @@ import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
  *     <li>ciPerformRelease ({@link ShipkitExecTask})
  *     - convenience task to execute release using a single Gradle task in ci build</li>
  * </ul>
- * </p>
  */
 public class CiReleasePlugin implements Plugin<Project> {
 

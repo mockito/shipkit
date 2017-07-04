@@ -12,17 +12,20 @@ import org.shipkit.internal.comparison.PublicationsComparatorTask;
 import org.shipkit.internal.comparison.artifact.DefaultArtifactUrlResolver;
 import org.shipkit.internal.comparison.artifact.DefaultArtifactUrlResolverFactory;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
+import org.shipkit.internal.gradle.java.JavaLibraryPlugin;
+import org.shipkit.internal.gradle.java.JavaPublishPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
 import java.io.File;
 
 /**
- * Opinionated continuous delivery plugin.
- * Applies following plugins and preconfigures tasks provided by those plugins:
+ * Comparing current publications with previous release.
+ * Intended for submodule.
+ * <p>
+ * Applies:
  *
  * <ul>
- *     <li>{@link BaseJavaLibraryPlugin}</li>
- *     <li>{@link ReleaseConfigurationPlugin}</li>
+ *     <li>{@link JavaPublishPlugin}</li>
  * </ul>
  *
  * Adds following tasks:
@@ -43,10 +46,10 @@ public class PublicationsComparatorPlugin implements Plugin<Project> {
 
     @Override
     public void apply(final Project project) {
-        project.getPlugins().apply(BaseJavaLibraryPlugin.class);
+        project.getPlugins().apply(JavaPublishPlugin.class);
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
 
-        final Jar sourcesJar = (Jar) project.getTasks().getByName(BaseJavaLibraryPlugin.SOURCES_JAR_TASK);
+        final Jar sourcesJar = (Jar) project.getTasks().getByName(JavaLibraryPlugin.SOURCES_JAR_TASK);
 
         String basePreviousVersionArtifactPath = getBasePreviousVersionArtifactPath(project, conf, sourcesJar);
         final File previousVersionPomLocalFile = new File(basePreviousVersionArtifactPath + ".pom");
@@ -82,7 +85,7 @@ public class PublicationsComparatorPlugin implements Plugin<Project> {
          - 1st gets the previously released files (we will make it incremental)
          - 2nd performs comparison (does not have to be incremental, it does not have download operation)
 
-        I suggest that the JavaLibraryPlugin applies PublicationsComparatorPlugin because the former has access to Bintray extension
+        I suggest that the JavaBintrayPlugin applies PublicationsComparatorPlugin because the former has access to Bintray extension
 
         It is more Gradle style (effective, incremental, easy to work with),
         when we divide operations into tasks and can pipe the inputs and outputs.
@@ -112,7 +115,7 @@ public class PublicationsComparatorPlugin implements Plugin<Project> {
                 //Set locally built pom file for comparison with previously released
                 //maven-publish plugin is messed up in Gradle API, we cannot really access generate pom task and we have to pass String
                 //The generate pom task is dynamically created by Gradle and we can only access it during execution
-                t.comparePom(BaseJavaLibraryPlugin.POM_TASK);
+                t.comparePom(JavaPublishPlugin.POM_TASK);
 
                 DeferredConfiguration.deferredConfiguration(project, new Runnable() {
                     @Override

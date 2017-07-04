@@ -1,24 +1,26 @@
-package org.shipkit.internal.gradle;
+package org.shipkit.internal.gradle.java;
 
 import com.jfrog.bintray.gradle.BintrayExtension;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.shipkit.internal.gradle.BintrayPlugin;
 
-import static org.shipkit.internal.gradle.BaseJavaLibraryPlugin.PUBLICATION_NAME;
+import static org.shipkit.internal.gradle.java.JavaPublishPlugin.PUBLICATION_NAME;
 
 /**
+ * Publishing java library using Bintray.
  * Intended to be applied in individual Java submodule.
  * Applies following plugins and configures java publications for Bintray plugin:
  *
  * <ul>
- *     <li>{@link JavaLibraryPlugin}</li>
+ *     <li>{@link JavaPublishPlugin}</li>
  *     <li>{@link BintrayPlugin}</li>
  * </ul>
  */
-public class JavaLibraryPlugin implements Plugin<Project> {
+public class JavaBintrayPlugin implements Plugin<Project> {
 
     public void apply(Project project) {
-        project.getPlugins().apply(BaseJavaLibraryPlugin.class);
+        project.getPlugins().apply(JavaPublishPlugin.class);
         project.getPlugins().apply(BintrayPlugin.class);
 
         if (shouldConfigurePublications(project)) {
