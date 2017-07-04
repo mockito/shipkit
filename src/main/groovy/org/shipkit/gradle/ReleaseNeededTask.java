@@ -5,11 +5,11 @@ import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.internal.comparison.PublicationsComparatorTask;
-import org.shipkit.internal.comparison.diff.Diff;
+import org.shipkit.internal.notes.util.IOUtil;
 import org.shipkit.internal.util.EnvVariables;
 import org.shipkit.internal.util.ExposedForTesting;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -36,11 +36,11 @@ public class ReleaseNeededTask extends DefaultTask {
 
     private String branch;
     private String releasableBranchRegex;
-    private final List<PublicationsComparatorTask> publicationsComparators = new LinkedList<PublicationsComparatorTask>();
     private String commitMessage;
     private boolean pullRequest;
     private boolean explosive;
     private EnvVariables envVariables = new EnvVariables();
+    private List<File> comparisonResults = new LinkedList<File>();
 
     /**
      * The branch we currently operate on
@@ -126,18 +126,16 @@ public class ReleaseNeededTask extends DefaultTask {
         boolean releasableBranch = branch != null && branch.matches(releasableBranchRegex);
         LOG.lifecycle("  Current branch '{}' matches '{}': {}", branch, releasableBranchRegex, releasableBranch);
 
-        boolean allPublicationsEqual = areAllPublicationsEqual();
+        boolean publicationsChanged = publicationsChanged();
 
-       logDifferencesBetweenPublications();
-
-        boolean releaseNotNeeded = allPublicationsEqual || skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
+        boolean releaseNotNeeded = !publicationsChanged || skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
 
         String message = "  Release is needed: " + !releaseNotNeeded +
                 "\n    - skip by env variable: " + skipEnvVariable +
                 "\n    - skip by commit message: " + skippedByCommitMessage +
                 "\n    - is pull request build:  " + pullRequest +
                 "\n    - is releasable branch:  " + releasableBranch +
-                "\n    - anything changed in publications since the previous release:  " + !allPublicationsEqual;
+                "\n    - publications changed since previous release:  " + publicationsChanged;
 
         if (releaseNotNeeded && explosive) {
             throw new GradleException(message);
@@ -148,48 +146,34 @@ public class ReleaseNeededTask extends DefaultTask {
         return !releaseNotNeeded;
     }
 
-    private void logDifferencesBetweenPublications() {
-        if(publicationsComparators.isEmpty()){
-           return; // no differences to log
-        }
-        LOG.lifecycle("\n  Results of publications comparison:\n");
-        for(PublicationsComparatorTask task : publicationsComparators){
-            for(Diff diff : task.getDifferences()){
-                if(!diff.areFilesEqual()) {
-                    LOG.lifecycle("  Difference between files:\n"
-                                + "  --- {}\n"
-                                + "  +++ {}\n\n{}\n",
-                            diff.getPreviousFile(),
-                            diff.getCurrentFile(),
-                            diff.getDiffOutput());
-                }
-            }
-        }
-
-    }
-
-    public void addPublicationsComparator(PublicationsComparatorTask task) {
-        this.dependsOn(task);
-        publicationsComparators.add(task);
+    private static boolean containsDifferences(File comparisonResult) {
+        return comparisonResult.isFile() && comparisonResult.length() > 0;
     }
 
     @ExposedForTesting
-    boolean areAllPublicationsEqual() {
-        if (publicationsComparators.isEmpty()) {
+    boolean publicationsChanged() {
+        if (comparisonResults.isEmpty()) {
             return false;
         }
 
-        boolean allEqual = true;
-
-        for(PublicationsComparatorTask comparator : publicationsComparators){
-            allEqual &= comparator.isPublicationsEqual();
+        boolean changed = false;
+        LOG.lifecycle("\n  Results of publications comparison:\n");
+        for (File result : comparisonResults) {
+            if (containsDifferences(result)) {
+                LOG.lifecycle(IOUtil.readFully(result));
+                changed = true;
+            }
         }
 
-        return allEqual;
+        return changed;
     }
 
     @ExposedForTesting
     void setEnvVariables(EnvVariables envVariables){
         this.envVariables = envVariables;
+    }
+
+    public void addComparisonResult(File comparisonResult) {
+        comparisonResults.add(comparisonResult);
     }
 }

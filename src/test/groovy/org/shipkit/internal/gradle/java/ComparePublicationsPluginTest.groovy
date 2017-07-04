@@ -2,9 +2,9 @@ package org.shipkit.internal.gradle.java
 
 import com.jfrog.bintray.gradle.BintrayExtension
 import org.gradle.testfixtures.ProjectBuilder
+import org.shipkit.gradle.ComparePublicationsTask
 import org.shipkit.gradle.ReleaseConfiguration
 import org.shipkit.internal.comparison.DownloadPreviousPublicationsTask
-import org.shipkit.internal.comparison.PublicationsComparatorTask
 import org.shipkit.internal.gradle.ShipkitBintrayPlugin
 import org.shipkit.internal.gradle.VersioningPlugin
 import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin
@@ -14,6 +14,7 @@ class ComparePublicationsPluginTest extends PluginSpecification {
 
     def "applies"() {
         expect:
+        //TODO inconsistent name: org.shipkit.publications-comparator
         project.plugins.apply("org.shipkit.publications-comparator")
     }
 
@@ -33,7 +34,7 @@ class ComparePublicationsPluginTest extends PluginSpecification {
         child.evaluate()
 
         then:
-        PublicationsComparatorTask task = child.getTasks().getByName(ComparePublicationsPlugin.COMPARE_PUBLICATIONS_TASK)
+        ComparePublicationsTask task = child.getTasks().getByName(ComparePublicationsPlugin.COMPARE_PUBLICATIONS_TASK)
         task.getProjectGroup() == "org.group"
         task.getCurrentVersion() == "1.0.1"
         task.getPreviousVersion() == "1.0.0"
@@ -53,7 +54,7 @@ class ComparePublicationsPluginTest extends PluginSpecification {
         child.plugins.apply("org.shipkit.publications-comparator")
 
         then:
-        PublicationsComparatorTask task = child.getTasks().getByName(ComparePublicationsPlugin.COMPARE_PUBLICATIONS_TASK);
+        ComparePublicationsTask task = child.getTasks().getByName(ComparePublicationsPlugin.COMPARE_PUBLICATIONS_TASK);
 
         task.getCurrentVersion() == "0.1.1"
         task.getPreviousVersion() == "0.1.0"
@@ -115,7 +116,7 @@ class ComparePublicationsPluginTest extends PluginSpecification {
         then:
         DownloadPreviousPublicationsTask downloadTask = child.getTasks()
                 .getByName(ComparePublicationsPlugin.DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK)
-        PublicationsComparatorTask comparisonTask = child.getTasks()
+        ComparePublicationsTask comparisonTask = child.getTasks()
                 .getByName(ComparePublicationsPlugin.COMPARE_PUBLICATIONS_TASK)
 
         def basePath = child.getBuildDir().absolutePath + "/previous-release-artifacts/child-1.0.0";

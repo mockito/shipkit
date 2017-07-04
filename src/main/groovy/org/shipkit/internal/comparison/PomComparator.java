@@ -10,13 +10,13 @@ import java.io.File;
 
 import static org.shipkit.internal.util.ArgumentValidation.notNull;
 
-class PomComparator{
+public class PomComparator{
 
     private static final Logger LOG = Logging.getLogger(PomComparator.class);
 
     private final PomFilter pomFilter;
 
-    PomComparator(String projectGroup, String previousVersion, String currentVersion) {
+    public PomComparator(String projectGroup, String previousVersion, String currentVersion) {
         notNull(projectGroup, "project group", previousVersion, "previous version",
                 currentVersion, "current version");
         this.pomFilter =

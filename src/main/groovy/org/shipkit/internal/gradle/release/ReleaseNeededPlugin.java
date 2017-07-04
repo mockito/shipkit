@@ -3,17 +3,16 @@ package org.shipkit.internal.gradle.release;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
+import org.shipkit.gradle.ComparePublicationsTask;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.ReleaseNeededTask;
-import org.shipkit.internal.comparison.PublicationsComparatorTask;
 import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitBranchPlugin;
 import org.shipkit.internal.gradle.java.ComparePublicationsPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
 /**
- * Adds tasks for checking if release is needed
+ * Adds tasks for checking if release is needed.
  *
  * Applies following plugins and preconfigures tasks provided by those plugins:
  *
@@ -64,8 +63,9 @@ public class ReleaseNeededPlugin implements Plugin<Project> {
                         subproject.getPlugins().withType(ComparePublicationsPlugin.class, new Action<ComparePublicationsPlugin>() {
                             public void execute(ComparePublicationsPlugin p) {
                                 // make this task depend on all comparePublications tasks
-                                Task task = subproject.getTasks().getByName(ComparePublicationsPlugin.COMPARE_PUBLICATIONS_TASK);
-                                t.addPublicationsComparator((PublicationsComparatorTask) task);
+                                ComparePublicationsTask task = (ComparePublicationsTask) subproject.getTasks().getByName(ComparePublicationsPlugin.COMPARE_PUBLICATIONS_TASK);
+                                t.dependsOn(task);
+                                t.addComparisonResult(task.getComparisonResult());
                             }
                         });
                     }

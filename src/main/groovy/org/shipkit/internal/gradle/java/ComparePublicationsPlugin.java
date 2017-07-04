@@ -6,9 +6,9 @@ import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.bundling.Jar;
+import org.shipkit.gradle.ComparePublicationsTask;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.internal.comparison.DownloadPreviousPublicationsTask;
-import org.shipkit.internal.comparison.PublicationsComparatorTask;
 import org.shipkit.internal.comparison.artifact.DefaultArtifactUrlResolver;
 import org.shipkit.internal.comparison.artifact.DefaultArtifactUrlResolverFactory;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
@@ -77,11 +77,13 @@ public class ComparePublicationsPlugin implements Plugin<Project> {
             }
         });
 
-        TaskMaker.task(project, COMPARE_PUBLICATIONS_TASK, PublicationsComparatorTask.class, new Action<PublicationsComparatorTask>() {
-            public void execute(final PublicationsComparatorTask t) {
+        TaskMaker.task(project, COMPARE_PUBLICATIONS_TASK, ComparePublicationsTask.class, new Action<ComparePublicationsTask>() {
+            public void execute(final ComparePublicationsTask t) {
                 t.setDescription("Compares artifacts and poms between last version and the currently built one to see if there are any differences");
 
                 t.dependsOn(DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK);
+
+                t.setComparisonResult(new File(project.getBuildDir(), "publications-comparison.txt"));
 
                 t.setCurrentVersion(project.getVersion().toString());
                 t.setPreviousVersion(conf.getPreviousReleaseVersion());
