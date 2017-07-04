@@ -3,7 +3,7 @@ package org.shipkit.internal.gradle.java.tasks;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.publish.maven.tasks.GenerateMavenPom;
-import org.shipkit.gradle.ComparePublicationsTask;
+import org.shipkit.gradle.java.ComparePublicationsTask;
 import org.shipkit.internal.comparison.PomComparator;
 import org.shipkit.internal.comparison.ZipComparator;
 import org.shipkit.internal.comparison.diff.Diff;

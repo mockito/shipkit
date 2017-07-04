@@ -1,4 +1,4 @@
-package org.shipkit.internal.comparison;
+package org.shipkit.gradle.java;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Input;

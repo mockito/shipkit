@@ -2,7 +2,7 @@ package org.shipkit.internal.gradle.java.tasks;
 
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.shipkit.internal.comparison.DownloadPreviousPublicationsTask;
+import org.shipkit.gradle.java.DownloadPreviousPublicationsTask;
 import org.shipkit.internal.notes.util.IOUtil;
 
 import java.io.File;

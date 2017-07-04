@@ -2,9 +2,9 @@ package org.shipkit.internal.gradle.java
 
 import com.jfrog.bintray.gradle.BintrayExtension
 import org.gradle.testfixtures.ProjectBuilder
-import org.shipkit.gradle.ComparePublicationsTask
+import org.shipkit.gradle.java.ComparePublicationsTask
 import org.shipkit.gradle.ReleaseConfiguration
-import org.shipkit.internal.comparison.DownloadPreviousPublicationsTask
+import org.shipkit.gradle.java.DownloadPreviousPublicationsTask
 import org.shipkit.internal.gradle.ShipkitBintrayPlugin
 import org.shipkit.internal.gradle.VersioningPlugin
 import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin
