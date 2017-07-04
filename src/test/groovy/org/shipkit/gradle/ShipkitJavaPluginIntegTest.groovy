@@ -30,7 +30,7 @@ class ShipkitJavaPluginIntegTest extends GradleSpecification {
             }
             
             allprojects {
-                plugins.withId("org.shipkit.java-library") {
+                plugins.withId("org.shipkit.bintray") {
                     bintray {
                         user = "szczepiq"
                         key = "secret"
@@ -47,11 +47,11 @@ class ShipkitJavaPluginIntegTest extends GradleSpecification {
         projectDir.newFile("version.properties") << "version=1.0.0"
         projectDir.newFolder('api')
         projectDir.newFolder('impl')
-        projectDir.newFile('api/build.gradle') << "apply plugin: 'org.shipkit.java-library'"
-        projectDir.newFile('impl/build.gradle') << "apply plugin: 'org.shipkit.java-library'"
+        projectDir.newFile('api/build.gradle') << "apply plugin: 'java'"
+        projectDir.newFile('impl/build.gradle') << "apply plugin: 'java'"
 
         expect:
-        def result = pass("performRelease", "-m")
+        def result = pass("performRelease", "-m", "-s")
         //git push and bintray upload tasks should run as late as possible
         result.tasks.join("\n") == """:bumpVersionFile=SKIPPED
 :fetchAllContributors=SKIPPED
