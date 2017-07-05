@@ -71,7 +71,7 @@ class VersioningPluginTest extends PluginSpecification {
     }
 
     @Override
-    void configureReleaseConfigurationDefaults(){
+    void createReleaseConfiguration(){
         // ReleaseConfiguration is not needed in this test
     }
 }

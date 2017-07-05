@@ -21,6 +21,11 @@ public class DownloadPreviousPublications {
                 "  - from {}\n" +
                 "  - and saving it to {}", remoteUrl, localFile);
 
-        IOUtil.downloadToFile(remoteUrl, localFile);
+        try {
+            IOUtil.downloadToFile(remoteUrl, localFile);
+        } catch (Exception e) {
+            LOG.lifecycle("Unable to download {}. Ignoring and moving on. Run with '-d' to see stack trace.", remoteUrl);
+            LOG.debug("Unable to download", e);
+        }
     }
 }

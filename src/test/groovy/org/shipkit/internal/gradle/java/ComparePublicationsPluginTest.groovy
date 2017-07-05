@@ -2,8 +2,8 @@ package org.shipkit.internal.gradle.java
 
 import com.jfrog.bintray.gradle.BintrayExtension
 import org.gradle.testfixtures.ProjectBuilder
-import org.shipkit.gradle.java.ComparePublicationsTask
 import org.shipkit.gradle.ReleaseConfiguration
+import org.shipkit.gradle.java.ComparePublicationsTask
 import org.shipkit.gradle.java.DownloadPreviousPublicationsTask
 import org.shipkit.internal.gradle.ShipkitBintrayPlugin
 import org.shipkit.internal.gradle.VersioningPlugin
@@ -127,5 +127,32 @@ class ComparePublicationsPluginTest extends PluginSpecification {
 
         comparisonTask.previousPom == expectedPom
         comparisonTask.previousSourcesJar == expectedSourcesJar
+    }
+
+    def "failures to download artifact are ignored"() {
+        given:
+        project.plugins.apply(ComparePublicationsPlugin)
+        project.plugins.apply(ShipkitBintrayPlugin)
+        project.evaluate()
+
+        when:
+        project.tasks[ComparePublicationsPlugin.DOWNLOAD_PUBLICATIONS_TASK].execute()
+
+        then:
+        noExceptionThrown()
+    }
+
+    def "when no previous artifacts are supplied comparison is skipped"() {
+        given:
+        conf.previousReleaseVersion = "0.0.1"
+        project.plugins.apply(ComparePublicationsPlugin)
+        project.plugins.apply(ShipkitBintrayPlugin)
+        project.evaluate()
+
+        when:
+        project.tasks[ComparePublicationsPlugin.COMPARE_PUBLICATIONS_TASK].execute()
+
+        then:
+        noExceptionThrown()
     }
 }

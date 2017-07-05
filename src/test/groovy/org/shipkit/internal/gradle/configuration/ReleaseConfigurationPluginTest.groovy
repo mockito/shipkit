@@ -62,7 +62,7 @@ class ReleaseConfigurationPluginTest extends PluginSpecification {
     }
 
     @Override
-    void configureReleaseConfigurationDefaults(){
+    void createReleaseConfiguration(){
         // default are not needed in this test
     }
 
