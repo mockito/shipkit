@@ -9,6 +9,7 @@ import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.bundling.Jar;
+import org.shipkit.gradle.ReleaseNeededTask;
 import org.shipkit.internal.gradle.java.tasks.ComparePublications;
 
 import java.io.File;
@@ -19,7 +20,7 @@ import java.io.File;
  * skip publication of the new version artifacts (e.g. skip the release).
  * <p>
  * The outputs of this task are used by {@link org.shipkit.gradle.ReleaseNeededTask}.
- * The {@link #getComparisonResult()} should be added to {@link org.shipkit.gradle.ReleaseNeededTask#addComparisonResult(File)}.
+ * The {@link #getComparisonResult()} should be added to {@link ReleaseNeededTask#getComparisonResults()}.
  */
 public class ComparePublicationsTask extends DefaultTask {
 
