@@ -19,6 +19,7 @@ import java.util.List;
  *  - the current Git branch does not match release-eligibility regex ({@link #getReleasableBranchRegex()}.
  *  - binaries have not changes since the previous release
  */
+//TODO move to 'release' subpackage
 public class ReleaseNeededTask extends DefaultTask {
 
     private String branch;
