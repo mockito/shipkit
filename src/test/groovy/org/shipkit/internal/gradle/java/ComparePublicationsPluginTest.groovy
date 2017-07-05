@@ -76,7 +76,7 @@ class ComparePublicationsPluginTest extends PluginSpecification {
 
         then:
         DownloadPreviousPublicationsTask task = child.getTasks()
-                .getByName(ComparePublicationsPlugin.DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK);
+                .getByName(ComparePublicationsPlugin.DOWNLOAD_PUBLICATIONS_TASK);
 
         task.previousPomUrl.contains("bintray.com")
         task.previousSourcesJarUrl.contains("bintray.com")
@@ -93,7 +93,7 @@ class ComparePublicationsPluginTest extends PluginSpecification {
 
         then:
         DownloadPreviousPublicationsTask task = child.getTasks()
-                .getByName(ComparePublicationsPlugin.DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK);
+                .getByName(ComparePublicationsPlugin.DOWNLOAD_PUBLICATIONS_TASK);
 
         task.previousPomUrl == null
         task.previousSourcesJarUrl == null
@@ -114,7 +114,7 @@ class ComparePublicationsPluginTest extends PluginSpecification {
 
         then:
         DownloadPreviousPublicationsTask downloadTask = child.getTasks()
-                .getByName(ComparePublicationsPlugin.DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK)
+                .getByName(ComparePublicationsPlugin.DOWNLOAD_PUBLICATIONS_TASK)
         ComparePublicationsTask comparisonTask = child.getTasks()
                 .getByName(ComparePublicationsPlugin.COMPARE_PUBLICATIONS_TASK)
 
