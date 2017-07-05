@@ -83,4 +83,5 @@ task fastInstall { Task t ->
             tasks.groovydoc.enabled = false
         }
     }
+    t.doLast { println "  Shipkit $version installed to local maven repo" }
 }
