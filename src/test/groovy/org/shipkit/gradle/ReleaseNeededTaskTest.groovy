@@ -2,6 +2,7 @@ package org.shipkit.gradle
 
 import org.gradle.api.GradleException
 import org.gradle.testfixtures.ProjectBuilder
+import org.shipkit.internal.gradle.release.tasks.ReleaseNeeded
 import org.shipkit.internal.util.EnvVariables
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -19,16 +20,15 @@ class ReleaseNeededTaskTest extends Specification {
         task.setPullRequest(pullRequest)
         def envVariables = Mock(EnvVariables)
         envVariables.getenv("SKIP_RELEASE") >> skipEnvVar
-        task.setEnvVariables(envVariables)
         comparisonResults.each {
             def f = File.createTempFile("shipkit-testing", "")
             f << it
-            this.task.addComparisonResult(f)
+            this.task.comparisonResults.add(f)
         }
         task.setReleasableBranchRegex("master")
 
         expect:
-        task.releaseNeeded() == releaseNeeded
+        new ReleaseNeeded().releaseNeeded(task, envVariables) == releaseNeeded
 
         where:
         commitMessage       | branch    | pullRequest |skipEnvVar | comparisonResults || releaseNeeded
@@ -44,11 +44,7 @@ class ReleaseNeededTaskTest extends Specification {
         "message"           | "master"  | true        | null      | ["", "diff"]      || false // pull request
         "message"           | "master"  | false       | "true"    | ["", "diff"]      || false // SKIP_RELEASE set
         "message"           | "master"  | false       | null      | ["", ""]          || false  // publications are the same
-    }
-
-    def "release is needed when no comparison results"() {
-        expect:
-        task.publicationsChanged()
+        "message"           | "master"  | false       | null      | []                || true   // no comparison results
     }
 
     def "should fail if release not needed and mode is explosive"() {

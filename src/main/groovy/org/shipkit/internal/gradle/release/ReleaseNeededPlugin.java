@@ -3,9 +3,9 @@ package org.shipkit.internal.gradle.release;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.shipkit.gradle.java.ComparePublicationsTask;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.ReleaseNeededTask;
+import org.shipkit.gradle.java.ComparePublicationsTask;
 import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitBranchPlugin;
 import org.shipkit.internal.gradle.java.ComparePublicationsPlugin;
@@ -65,7 +65,7 @@ public class ReleaseNeededPlugin implements Plugin<Project> {
                                 // make this task depend on all comparePublications tasks
                                 ComparePublicationsTask task = (ComparePublicationsTask) subproject.getTasks().getByName(ComparePublicationsPlugin.COMPARE_PUBLICATIONS_TASK);
                                 t.dependsOn(task);
-                                t.addComparisonResult(task.getComparisonResult());
+                                t.getComparisonResults().add(task.getComparisonResult());
                             }
                         });
                     }

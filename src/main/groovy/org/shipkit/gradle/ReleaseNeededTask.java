@@ -1,13 +1,8 @@
 package org.shipkit.gradle;
 
 import org.gradle.api.DefaultTask;
-import org.gradle.api.GradleException;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.internal.notes.util.IOUtil;
-import org.shipkit.internal.util.EnvVariables;
-import org.shipkit.internal.util.ExposedForTesting;
+import org.shipkit.internal.gradle.release.tasks.ReleaseNeeded;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -26,20 +21,11 @@ import java.util.List;
  */
 public class ReleaseNeededTask extends DefaultTask {
 
-    private final static Logger LOG = Logging.getLogger(ReleaseNeededTask.class);
-
-    //We are using environment variable instead of system property or Gradle project property here
-    //It's easier to configure Travis CI matrix builds using env variables
-    //For reference, see the ".travis.yml" of Mockito project
-    private final static String SKIP_RELEASE_ENV = "SKIP_RELEASE";
-    private final static String SKIP_RELEASE_KEYWORD = "[ci skip-release]";
-
     private String branch;
     private String releasableBranchRegex;
     private String commitMessage;
     private boolean pullRequest;
     private boolean explosive;
-    private EnvVariables envVariables = new EnvVariables();
     private List<File> comparisonResults = new LinkedList<File>();
 
     /**
@@ -113,67 +99,15 @@ public class ReleaseNeededTask extends DefaultTask {
         return this;
     }
 
+    public List<File> getComparisonResults() {
+        return comparisonResults;
+    }
+
+    public void setComparisonResults(List<File> comparisonResults) {
+        this.comparisonResults = comparisonResults;
+    }
+
     @TaskAction public boolean releaseNeeded() {
-        boolean skipEnvVariable = envVariables.getenv(SKIP_RELEASE_ENV) != null;
-        LOG.lifecycle("  Environment variable {} present: {}", SKIP_RELEASE_ENV, skipEnvVariable);
-
-        boolean commitMessageEmpty = commitMessage == null || commitMessage.trim().isEmpty();
-        boolean skippedByCommitMessage = !commitMessageEmpty && commitMessage.contains(SKIP_RELEASE_KEYWORD);
-        LOG.lifecycle("  Commit message to inspect for keyword '{}': {}",
-                SKIP_RELEASE_KEYWORD,
-                commitMessageEmpty? "<unknown commit message>" : "\n" + commitMessage);
-
-        boolean releasableBranch = branch != null && branch.matches(releasableBranchRegex);
-        LOG.lifecycle("  Current branch '{}' matches '{}': {}", branch, releasableBranchRegex, releasableBranch);
-
-        boolean publicationsChanged = publicationsChanged();
-
-        boolean releaseNotNeeded = !publicationsChanged || skipEnvVariable || skippedByCommitMessage || pullRequest || !releasableBranch;
-
-        String message = "  Release is needed: " + !releaseNotNeeded +
-                "\n    - skip by env variable: " + skipEnvVariable +
-                "\n    - skip by commit message: " + skippedByCommitMessage +
-                "\n    - is pull request build:  " + pullRequest +
-                "\n    - is releasable branch:  " + releasableBranch +
-                "\n    - publications changed since previous release:  " + publicationsChanged;
-
-        if (releaseNotNeeded && explosive) {
-            throw new GradleException(message);
-        } else {
-            LOG.lifecycle(message);
-        }
-
-        return !releaseNotNeeded;
-    }
-
-    private static boolean containsDifferences(File comparisonResult) {
-        return comparisonResult.isFile() && comparisonResult.length() > 0;
-    }
-
-    @ExposedForTesting
-    boolean publicationsChanged() {
-        if (comparisonResults.isEmpty()) {
-            return true;
-        }
-
-        boolean changed = false;
-        LOG.lifecycle("\n  Results of publications comparison:\n");
-        for (File result : comparisonResults) {
-            if (containsDifferences(result)) {
-                LOG.lifecycle(IOUtil.readFully(result));
-                changed = true;
-            }
-        }
-
-        return changed;
-    }
-
-    @ExposedForTesting
-    void setEnvVariables(EnvVariables envVariables){
-        this.envVariables = envVariables;
-    }
-
-    public void addComparisonResult(File comparisonResult) {
-        comparisonResults.add(comparisonResult);
+        return new ReleaseNeeded().releaseNeeded(this);
     }
 }
