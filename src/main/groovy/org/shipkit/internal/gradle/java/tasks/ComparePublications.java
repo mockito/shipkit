@@ -17,10 +17,14 @@ public class ComparePublications {
 
     private final static Logger LOG = Logging.getLogger(ComparePublications.class);
 
-    public Boolean comparePublications(ComparePublicationsTask task) {
+    public void comparePublications(ComparePublicationsTask task) {
         if (task.getPreviousVersion() == null) {
-            LOG.lifecycle("{} - previousVersion is not set, nothing to compare", task.getPath());
-            return false;
+            LOG.lifecycle("{} - previousVersion is not set, nothing to compare, skipping", task.getPath());
+            return;
+        }
+        if (!task.getPreviousPom().exists() || !task.getPreviousSourcesJar().exists()) {
+            LOG.lifecycle("{} - previous publications not found, nothing to compare, skipping", task.getPath());
+            return;
         }
 
         GenerateMavenPom pomTask = (GenerateMavenPom) task.getProject().getTasks().getByName(task.getPomTaskName());
@@ -58,7 +62,5 @@ public class ComparePublications {
         }
 
         IOUtil.writeFile(task.getComparisonResult(), comparisonResult.toString());
-
-        return jarsDiff.areFilesEqual() && pomsDiff.areFilesEqual();
     }
 }

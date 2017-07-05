@@ -17,10 +17,15 @@ public class DownloadPreviousPublications {
     }
 
     private void downloadRemoteFile(String remoteUrl, File localFile) {
-        LOG.lifecycle("Downloading remote artifact\n" +
+        LOG.lifecycle("  Downloading remote artifact\n" +
                 "  - from {}\n" +
                 "  - and saving it to {}", remoteUrl, localFile);
 
-        IOUtil.downloadToFile(remoteUrl, localFile);
+        try {
+            IOUtil.downloadToFile(remoteUrl, localFile);
+        } catch (Exception e) {
+            LOG.lifecycle("  Unable to download, ignoring. Run with '-d' for stack trace. Url: {}", remoteUrl);
+            LOG.debug("Unable to download, ignoring", e);
+        }
     }
 }

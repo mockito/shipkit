@@ -38,10 +38,10 @@ public class ComparePublicationsPlugin implements Plugin<Project> {
 
     private static final Logger LOG = Logging.getLogger(ComparePublicationsPlugin.class);
 
-    final static String DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK = "downloadPreviousReleaseArtifacts";
+    final static String DOWNLOAD_PUBLICATIONS_TASK = "downloadPreviousReleaseArtifacts";
     public final static String COMPARE_PUBLICATIONS_TASK = "comparePublications";
 
-    final static String PREVIOUS_RELEASE_ARTIFACTS_DIR = "/previous-release-artifacts";
+    final static String PREVIOUS_ARTIFACTS_DIR = "/previous-release-artifacts";
 
     @Override
     public void apply(final Project project) {
@@ -51,10 +51,10 @@ public class ComparePublicationsPlugin implements Plugin<Project> {
         final Jar sourcesJar = (Jar) project.getTasks().getByName(JavaLibraryPlugin.SOURCES_JAR_TASK);
 
         String basePreviousVersionArtifactPath = getBasePreviousVersionArtifactPath(project, conf, sourcesJar);
-        final File previousVersionPomLocalFile = new File(basePreviousVersionArtifactPath + ".pom");
-        final File previousVersionSourcesJarLocalFile = new File(basePreviousVersionArtifactPath + "-sources.jar");
+        final File previousPom = new File(basePreviousVersionArtifactPath + ".pom");
+        final File previousSourcesJar = new File(basePreviousVersionArtifactPath + "-sources.jar");
 
-        TaskMaker.task(project, DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK, DownloadPreviousPublicationsTask.class, new Action<DownloadPreviousPublicationsTask>() {
+        TaskMaker.task(project, DOWNLOAD_PUBLICATIONS_TASK, DownloadPreviousPublicationsTask.class, new Action<DownloadPreviousPublicationsTask>() {
             @Override
             public void execute(final DownloadPreviousPublicationsTask t) {
                 t.setDescription("Downloads artifacts of last released version and stores it locally for comparison");
@@ -65,13 +65,13 @@ public class ComparePublicationsPlugin implements Plugin<Project> {
                         DefaultArtifactUrlResolver artifactUrlResolver =
                                 new DefaultArtifactUrlResolverFactory().getDefaultResolver(project, sourcesJar.getBaseName(), conf.getPreviousReleaseVersion());
 
-                        String previousVersionPomUrl = getDefaultIfNull(t.getPreviousPomUrl(), "previousVersionPomUrl", ".pom", artifactUrlResolver);
+                        String previousVersionPomUrl = getDefaultIfNull(t.getPreviousPomUrl(), "previousPomUrl", ".pom", artifactUrlResolver);
                         t.setPreviousPomUrl(previousVersionPomUrl);
                         String previousVersionSourcesJarUrl = getDefaultIfNull(t.getPreviousSourcesJarUrl(), "previousSourcesJarUrl", "-sources.jar", artifactUrlResolver);
                         t.setPreviousSourcesJarUrl(previousVersionSourcesJarUrl);
 
-                        t.setPreviousPom(previousVersionPomLocalFile);
-                        t.setPreviousSourcesJar(previousVersionSourcesJarLocalFile);
+                        t.setPreviousPom(previousPom);
+                        t.setPreviousSourcesJar(previousSourcesJar);
                     }
                 });
             }
@@ -81,14 +81,14 @@ public class ComparePublicationsPlugin implements Plugin<Project> {
             public void execute(final ComparePublicationsTask t) {
                 t.setDescription("Compares artifacts and poms between last version and the currently built one to see if there are any differences");
 
-                t.dependsOn(DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK);
+                t.dependsOn(DOWNLOAD_PUBLICATIONS_TASK);
 
                 t.setComparisonResult(new File(project.getBuildDir(), "publications-comparison.txt"));
 
                 t.setCurrentVersion(project.getVersion().toString());
                 t.setPreviousVersion(conf.getPreviousReleaseVersion());
-                t.setPreviousPom(previousVersionPomLocalFile);
-                t.setPreviousSourcesJar(previousVersionSourcesJarLocalFile);
+                t.setPreviousPom(previousPom);
+                t.setPreviousSourcesJar(previousSourcesJar);
 
                 //Set local sources jar for comparison with previously released
                 t.compareSourcesJar(sourcesJar);
@@ -109,7 +109,7 @@ public class ComparePublicationsPlugin implements Plugin<Project> {
     }
 
     private String getBasePreviousVersionArtifactPath(Project project, ReleaseConfiguration conf, Jar sourcesJar) {
-        return project.getBuildDir().getAbsolutePath() + PREVIOUS_RELEASE_ARTIFACTS_DIR
+        return project.getBuildDir().getAbsolutePath() + PREVIOUS_ARTIFACTS_DIR
                 + File.separator + sourcesJar.getBaseName() + "-" + conf.getPreviousReleaseVersion();
     }
 

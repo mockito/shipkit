@@ -24,16 +24,20 @@ import java.io.File;
  */
 public class ComparePublicationsTask extends DefaultTask {
 
+    @OutputFile private File comparisonResult;
+
     @Input private String projectGroup;
     @Input private String currentVersion;
     @Input @Optional private String previousVersion;
     @InputFiles private Jar sourcesJar;
+
     @Input private String pomTaskName;
 
-    @InputFile private File previousPom;
-    @InputFile private File previousSourcesJar;
-
-    @OutputFile private File comparisonResult;
+    //Not using @InputFile annotation on purpose below. @InputFile makes Gradle fail early
+    // when the file path specified but file does not exist (@Optional does not help).
+    // Using @Input is enough for this use case
+    @Input @Optional private File previousPom;
+    @Input @Optional private File previousSourcesJar;
 
     /**
      * File that stores text result of the comparison.
