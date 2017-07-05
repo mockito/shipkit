@@ -3,16 +3,16 @@ package org.shipkit.internal.gradle.release;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.ReleaseNeededTask;
-import org.shipkit.internal.comparison.PublicationsComparatorTask;
+import org.shipkit.gradle.java.ComparePublicationsTask;
 import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitBranchPlugin;
+import org.shipkit.internal.gradle.java.ComparePublicationsPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
 /**
- * Adds tasks for checking if release is needed
+ * Adds tasks for checking if release is needed.
  *
  * Applies following plugins and preconfigures tasks provided by those plugins:
  *
@@ -60,11 +60,12 @@ public class ReleaseNeededPlugin implements Plugin<Project> {
 
                 project.allprojects(new Action<Project>() {
                     public void execute(final Project subproject) {
-                        subproject.getPlugins().withType(PublicationsComparatorPlugin.class, new Action<PublicationsComparatorPlugin>() {
-                            public void execute(PublicationsComparatorPlugin p) {
+                        subproject.getPlugins().withType(ComparePublicationsPlugin.class, new Action<ComparePublicationsPlugin>() {
+                            public void execute(ComparePublicationsPlugin p) {
                                 // make this task depend on all comparePublications tasks
-                                Task task = subproject.getTasks().getByName(PublicationsComparatorPlugin.COMPARE_PUBLICATIONS_TASK);
-                                t.addPublicationsComparator((PublicationsComparatorTask) task);
+                                ComparePublicationsTask task = (ComparePublicationsTask) subproject.getTasks().getByName(ComparePublicationsPlugin.COMPARE_PUBLICATIONS_TASK);
+                                t.dependsOn(task);
+                                t.getComparisonResults().add(task.getComparisonResult());
                             }
                         });
                     }

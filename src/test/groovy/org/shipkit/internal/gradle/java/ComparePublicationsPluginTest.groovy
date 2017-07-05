@@ -1,20 +1,20 @@
-package org.shipkit.internal.gradle.release
+package org.shipkit.internal.gradle.java
 
 import com.jfrog.bintray.gradle.BintrayExtension
 import org.gradle.testfixtures.ProjectBuilder
+import org.shipkit.gradle.java.ComparePublicationsTask
 import org.shipkit.gradle.ReleaseConfiguration
-import org.shipkit.internal.comparison.DownloadPreviousReleaseArtifactsTask
-import org.shipkit.internal.comparison.PublicationsComparatorTask
+import org.shipkit.gradle.java.DownloadPreviousPublicationsTask
 import org.shipkit.internal.gradle.ShipkitBintrayPlugin
 import org.shipkit.internal.gradle.VersioningPlugin
 import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin
 import testutil.PluginSpecification
 
-class PublicationsComparatorPluginTest extends PluginSpecification {
+class ComparePublicationsPluginTest extends PluginSpecification {
 
     def "applies"() {
         expect:
-        project.plugins.apply("org.shipkit.publications-comparator")
+        project.plugins.apply(ComparePublicationsPlugin)
     }
 
     def "configures comparePublications task correctly"() {
@@ -29,11 +29,11 @@ class PublicationsComparatorPluginTest extends PluginSpecification {
         }
 
         when:
-        child.plugins.apply("org.shipkit.publications-comparator")
+        child.plugins.apply(ComparePublicationsPlugin)
         child.evaluate()
 
         then:
-        PublicationsComparatorTask task = child.getTasks().getByName(PublicationsComparatorPlugin.COMPARE_PUBLICATIONS_TASK)
+        ComparePublicationsTask task = child.getTasks().getByName(ComparePublicationsPlugin.COMPARE_PUBLICATIONS_TASK)
         task.getProjectGroup() == "org.group"
         task.getCurrentVersion() == "1.0.1"
         task.getPreviousVersion() == "1.0.0"
@@ -50,10 +50,10 @@ class PublicationsComparatorPluginTest extends PluginSpecification {
         parent.plugins.apply(VersioningPlugin)
 
         when:
-        child.plugins.apply("org.shipkit.publications-comparator")
+        child.plugins.apply(ComparePublicationsPlugin)
 
         then:
-        PublicationsComparatorTask task = child.getTasks().getByName(PublicationsComparatorPlugin.COMPARE_PUBLICATIONS_TASK);
+        ComparePublicationsTask task = child.getTasks().getByName(ComparePublicationsPlugin.COMPARE_PUBLICATIONS_TASK);
 
         task.getCurrentVersion() == "0.1.1"
         task.getPreviousVersion() == "0.1.0"
@@ -71,15 +71,15 @@ class PublicationsComparatorPluginTest extends PluginSpecification {
         releaseConfig.gitHub.repository = "repo"
 
         when:
-        child.plugins.apply("org.shipkit.publications-comparator")
+        child.plugins.apply(ComparePublicationsPlugin)
         child.evaluate()
 
         then:
-        DownloadPreviousReleaseArtifactsTask task = child.getTasks()
-                .getByName(PublicationsComparatorPlugin.DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK);
+        DownloadPreviousPublicationsTask task = child.getTasks()
+                .getByName(ComparePublicationsPlugin.DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK);
 
-        task.previousVersionPomUrl.contains("bintray.com")
-        task.previousVersionSourcesJarUrl.contains("bintray.com")
+        task.previousPomUrl.contains("bintray.com")
+        task.previousSourcesJarUrl.contains("bintray.com")
     }
 
     def "leaves previousVersionPomLocalFile and previousVersionSourcesJarLocalFile null if BintrayPlugin is NOT applied"() {
@@ -88,15 +88,15 @@ class PublicationsComparatorPluginTest extends PluginSpecification {
         def child = new ProjectBuilder().withName("child").withParent(parent).build()
 
         when:
-        child.plugins.apply("org.shipkit.publications-comparator")
+        child.plugins.apply(ComparePublicationsPlugin)
         child.evaluate()
 
         then:
-        DownloadPreviousReleaseArtifactsTask task = child.getTasks()
-                .getByName(PublicationsComparatorPlugin.DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK);
+        DownloadPreviousPublicationsTask task = child.getTasks()
+                .getByName(ComparePublicationsPlugin.DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK);
 
-        task.previousVersionPomUrl == null
-        task.previousVersionSourcesJarUrl == null
+        task.previousPomUrl == null
+        task.previousSourcesJarUrl == null
     }
 
     def "sets correctly local files in download and comparison tasks"() {
@@ -109,23 +109,23 @@ class PublicationsComparatorPluginTest extends PluginSpecification {
         conf.setPreviousReleaseVersion("1.0.0")
 
         when:
-        child.plugins.apply("org.shipkit.publications-comparator")
+        child.plugins.apply(ComparePublicationsPlugin)
         child.evaluate()
 
         then:
-        DownloadPreviousReleaseArtifactsTask downloadTask = child.getTasks()
-                .getByName(PublicationsComparatorPlugin.DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK)
-        PublicationsComparatorTask comparisonTask = child.getTasks()
-                .getByName(PublicationsComparatorPlugin.COMPARE_PUBLICATIONS_TASK)
+        DownloadPreviousPublicationsTask downloadTask = child.getTasks()
+                .getByName(ComparePublicationsPlugin.DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK)
+        ComparePublicationsTask comparisonTask = child.getTasks()
+                .getByName(ComparePublicationsPlugin.COMPARE_PUBLICATIONS_TASK)
 
         def basePath = child.getBuildDir().absolutePath + "/previous-release-artifacts/child-1.0.0";
         def expectedPom = new File(basePath + ".pom")
         def expectedSourcesJar = new File(basePath + "-sources.jar")
 
-        downloadTask.previousVersionPomLocalFile == expectedPom
-        downloadTask.previousVersionSourcesJarLocalFile == expectedSourcesJar
+        downloadTask.previousPom == expectedPom
+        downloadTask.previousSourcesJar == expectedSourcesJar
 
-        comparisonTask.previousVersionPomFile == expectedPom
-        comparisonTask.previousVersionSourcesJarFile == expectedSourcesJar
+        comparisonTask.previousPom == expectedPom
+        comparisonTask.previousSourcesJar == expectedSourcesJar
     }
 }

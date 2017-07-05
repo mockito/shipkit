@@ -7,19 +7,23 @@ import org.shipkit.internal.util.ExposedForTesting;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import static java.lang.String.format;
 import static org.shipkit.internal.util.ArgumentValidation.notNull;
 
-class ZipComparator{
+public class ZipComparator{
 
     private final DirectoryDiffGenerator directoryDiffGenerator;
 
 
-    ZipComparator() {
+    public ZipComparator() {
         directoryDiffGenerator = new DirectoryDiffGenerator();
     }
 

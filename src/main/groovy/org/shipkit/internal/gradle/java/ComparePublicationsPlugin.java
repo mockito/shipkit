@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle.release;
+package org.shipkit.internal.gradle.java;
 
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
@@ -6,15 +6,13 @@ import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.bundling.Jar;
+import org.shipkit.gradle.java.ComparePublicationsTask;
 import org.shipkit.gradle.ReleaseConfiguration;
-import org.shipkit.internal.comparison.DownloadPreviousReleaseArtifactsTask;
-import org.shipkit.internal.comparison.PublicationsComparatorTask;
+import org.shipkit.gradle.java.DownloadPreviousPublicationsTask;
 import org.shipkit.internal.comparison.artifact.DefaultArtifactUrlResolver;
 import org.shipkit.internal.comparison.artifact.DefaultArtifactUrlResolverFactory;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
 import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
-import org.shipkit.internal.gradle.java.JavaLibraryPlugin;
-import org.shipkit.internal.gradle.java.JavaPublishPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
 import java.io.File;
@@ -36,9 +34,9 @@ import java.io.File;
  *     <li>comparePublications</li>
  * </ul>
  */
-public class PublicationsComparatorPlugin implements Plugin<Project> {
+public class ComparePublicationsPlugin implements Plugin<Project> {
 
-    private static final Logger LOG = Logging.getLogger(PublicationsComparatorPlugin.class);
+    private static final Logger LOG = Logging.getLogger(ComparePublicationsPlugin.class);
 
     final static String DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK = "downloadPreviousReleaseArtifacts";
     public final static String COMPARE_PUBLICATIONS_TASK = "comparePublications";
@@ -56,9 +54,9 @@ public class PublicationsComparatorPlugin implements Plugin<Project> {
         final File previousVersionPomLocalFile = new File(basePreviousVersionArtifactPath + ".pom");
         final File previousVersionSourcesJarLocalFile = new File(basePreviousVersionArtifactPath + "-sources.jar");
 
-        TaskMaker.task(project, DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK, DownloadPreviousReleaseArtifactsTask.class, new Action<DownloadPreviousReleaseArtifactsTask>() {
+        TaskMaker.task(project, DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK, DownloadPreviousPublicationsTask.class, new Action<DownloadPreviousPublicationsTask>() {
             @Override
-            public void execute(final DownloadPreviousReleaseArtifactsTask t) {
+            public void execute(final DownloadPreviousPublicationsTask t) {
                 t.setDescription("Downloads artifacts of last released version and stores it locally for comparison");
 
                 DeferredConfiguration.deferredConfiguration(project, new Runnable() {
@@ -67,48 +65,30 @@ public class PublicationsComparatorPlugin implements Plugin<Project> {
                         DefaultArtifactUrlResolver artifactUrlResolver =
                                 new DefaultArtifactUrlResolverFactory().getDefaultResolver(project, sourcesJar.getBaseName(), conf.getPreviousReleaseVersion());
 
-                        String previousVersionPomUrl = getDefaultIfNull(t.getPreviousVersionPomUrl(), "previousVersionPomUrl", ".pom", artifactUrlResolver);
-                        t.setPreviousVersionPomUrl(previousVersionPomUrl);
-                        String previousVersionSourcesJarUrl = getDefaultIfNull(t.getPreviousVersionSourcesJarUrl(), "previousSourcesJarUrl", "-sources.jar", artifactUrlResolver);
-                        t.setPreviousVersionSourcesJarUrl(previousVersionSourcesJarUrl);
+                        String previousVersionPomUrl = getDefaultIfNull(t.getPreviousPomUrl(), "previousVersionPomUrl", ".pom", artifactUrlResolver);
+                        t.setPreviousPomUrl(previousVersionPomUrl);
+                        String previousVersionSourcesJarUrl = getDefaultIfNull(t.getPreviousSourcesJarUrl(), "previousSourcesJarUrl", "-sources.jar", artifactUrlResolver);
+                        t.setPreviousSourcesJarUrl(previousVersionSourcesJarUrl);
 
-                        t.setPreviousVersionPomLocalFile(previousVersionPomLocalFile);
-                        t.setPreviousVersionSourcesJarLocalFile(previousVersionSourcesJarLocalFile);
+                        t.setPreviousPom(previousVersionPomLocalFile);
+                        t.setPreviousSourcesJar(previousVersionSourcesJarLocalFile);
                     }
                 });
             }
         });
 
-        /*
-        TODO ww make this puppy incremental :)
-
-        I suggest we split the functionality of this task into 2 separate tasks:
-         - 1st gets the previously released files (we will make it incremental)
-         - 2nd performs comparison (does not have to be incremental, it does not have download operation)
-
-        I suggest that the JavaBintrayPlugin applies PublicationsComparatorPlugin because the former has access to Bintray extension
-
-        It is more Gradle style (effective, incremental, easy to work with),
-        when we divide operations into tasks and can pipe the inputs and outputs.
-        See how we have done it in:
-         - ContributorsPlugin: fetcher task + configurer task
-         - ReleaseNotesPlugin: contributors fetcher + release notes fetcher + release notes builder
-
-        Bonus (long term, Gradle craftsmanship :) - it would be great to divide the comparison operations even further and have:
-         1. download previous releases (incremental)
-         2. compare and produce comparison result object that we serialize to file or produce some 'diff' files (incremental)
-         3. release needed task would deserialize results and read it or check for presence of 'diff' files (non-incremental)
-        */
-        TaskMaker.task(project, COMPARE_PUBLICATIONS_TASK, PublicationsComparatorTask.class, new Action<PublicationsComparatorTask>() {
-            public void execute(final PublicationsComparatorTask t) {
+        TaskMaker.task(project, COMPARE_PUBLICATIONS_TASK, ComparePublicationsTask.class, new Action<ComparePublicationsTask>() {
+            public void execute(final ComparePublicationsTask t) {
                 t.setDescription("Compares artifacts and poms between last version and the currently built one to see if there are any differences");
 
                 t.dependsOn(DOWNLOAD_PREVIOUS_RELEASE_ARTIFACTS_TASK);
 
+                t.setComparisonResult(new File(project.getBuildDir(), "publications-comparison.txt"));
+
                 t.setCurrentVersion(project.getVersion().toString());
                 t.setPreviousVersion(conf.getPreviousReleaseVersion());
-                t.setPreviousVersionPomFile(previousVersionPomLocalFile);
-                t.setPreviousVersionSourcesJarFile(previousVersionSourcesJarLocalFile);
+                t.setPreviousPom(previousVersionPomLocalFile);
+                t.setPreviousSourcesJar(previousVersionSourcesJarLocalFile);
 
                 //Set local sources jar for comparison with previously released
                 t.compareSourcesJar(sourcesJar);
