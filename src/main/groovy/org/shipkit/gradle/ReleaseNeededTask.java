@@ -153,7 +153,7 @@ public class ReleaseNeededTask extends DefaultTask {
     @ExposedForTesting
     boolean publicationsChanged() {
         if (comparisonResults.isEmpty()) {
-            return false;
+            return true;
         }
 
         boolean changed = false;

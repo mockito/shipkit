@@ -47,11 +47,8 @@ class ReleaseNeededTaskTest extends Specification {
     }
 
     def "release is needed when no comparison results"() {
-        when:
-        task.releaseNeeded()
-
-        then:
-        !task.publicationsChanged()
+        expect:
+        task.publicationsChanged()
     }
 
     def "should fail if release not needed and mode is explosive"() {
