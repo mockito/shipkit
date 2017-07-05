@@ -45,7 +45,7 @@ public class BasicValidator {
     }
 
     static String notNullEnv(String envVarName, String envVarValue, String message) {
-        if (StringUtil.isEmpty(envVarValue)) {
+        if (!StringUtil.isEmpty(envVarValue)) {
             LOGGER.info("Environment variable '" + envVarName + "' is found and will be used.");
             return envVarValue;
         } else {

@@ -6,13 +6,32 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.release.GradlePortalPublishTask;
+import org.shipkit.internal.gradle.configuration.BasicValidator;
 import org.shipkit.internal.gradle.configuration.LazyConfiguration;
 import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
+import org.shipkit.internal.util.EnvVariables;
+
+import javax.inject.Inject;
+
+import static org.shipkit.internal.gradle.util.StringUtil.isEmpty;
 
 //TODO SF javadoc
 public class GradlePortalReleasePlugin implements Plugin<Project> {
+
+    final static String PUBLISH_KEY_ENV = "GRADLE_PUBLISH_KEY";
+    final static String PUBLISH_SECRET_ENV = "GRADLE_PUBLISH_SECRET";
+    final static String PERFORM_PUBLISH_TASK = "performPublishPlugins";
+    private final EnvVariables envVariables;
+
+    GradlePortalReleasePlugin(EnvVariables envVariables) {
+        this.envVariables = envVariables;
+    }
+
+    @Inject public GradlePortalReleasePlugin() {
+        this(new EnvVariables());
+    }
 
     @Override
     public void apply(final Project project) {
@@ -20,16 +39,17 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
         project.getPlugins().apply(ReleasePlugin.class);
         project.getPlugins().apply("com.gradle.plugin-publish");
 
-        TaskMaker.task(project, "performPublishPlugins", GradlePortalPublishTask.class, new Action<GradlePortalPublishTask>() {
+        TaskMaker.task(project, PERFORM_PUBLISH_TASK, GradlePortalPublishTask.class, new Action<GradlePortalPublishTask>() {
             public void execute(final GradlePortalPublishTask t) {
                 t.setDescription("Publishes to Gradle Plugin Portal by delegating to 'publishPlugins' task.");
                 t.setDryRun(conf.isDryRun());
-                t.setPublishKey(System.getenv("GRADLE_PUBLISH_KEY"));
-                t.setPublishSecret(System.getenv("GRADLE_PUBLISH_SECRET"));
+                configureKey(t);
+                configureSecret(t);
                 LazyConfiguration.lazyConfiguration(t, new Runnable() {
                     @Override
                     public void run() {
-                        //TODO log and validate secrets
+                        validateSetting(t.getPublishKey(), "publishKey", PUBLISH_KEY_ENV, t);
+                        validateSetting(t.getPublishSecret(), "publishSecret", PUBLISH_SECRET_ENV, t);
                     }
                 });
 
@@ -41,5 +61,28 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
                 gitPush.mustRunAfter("buildArchives"); //run git push as late as possible
             }
         });
+    }
+
+    private static void validateSetting(String value, String settingName, String publishKeyEnv, GradlePortalPublishTask task) {
+        BasicValidator.notNull(value, publishKeyEnv, "Gradle Plugin Portal '" + settingName + "' is required. " +
+                "Export '" + publishKeyEnv + "' env var or configure '" + task.getName() + "' task.");
+    }
+
+    private void configureKey(GradlePortalPublishTask t) {
+        Object key = t.getProject().findProperty("gradle.publish.key");
+        if (!isEmpty(key)) {
+            t.setPublishKey(key.toString());
+        } else {
+            t.setPublishKey(envVariables.getenv(PUBLISH_KEY_ENV));
+        }
+    }
+
+    private void configureSecret(GradlePortalPublishTask t) {
+        Object secret = t.getProject().findProperty("gradle.publish.secret");
+        if (!isEmpty(secret)) {
+            t.setPublishSecret(secret.toString());
+        } else {
+            t.setPublishSecret(envVariables.getenv(PUBLISH_SECRET_ENV));
+        }
     }
 }
