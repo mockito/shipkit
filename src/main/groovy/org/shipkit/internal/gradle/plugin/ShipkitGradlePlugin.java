@@ -20,7 +20,7 @@ import org.shipkit.internal.gradle.TravisPlugin;
  *     <li></li>
  * </ul>
  */
-public class GradlePluginReleasingPlugin implements Plugin<Project> {
+public class ShipkitGradlePlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
