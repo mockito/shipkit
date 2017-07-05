@@ -3,6 +3,7 @@ package org.shipkit.internal.gradle.configuration;
 import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
+import org.shipkit.internal.gradle.util.StringUtil;
 
 /**
  * Validates the inputs provided by users.
@@ -44,7 +45,7 @@ public class BasicValidator {
     }
 
     static String notNullEnv(String envVarName, String envVarValue, String message) {
-        if (envVarValue != null && !envVarValue.trim().isEmpty()) {
+        if (StringUtil.isEmpty(envVarValue)) {
             LOGGER.info("Environment variable '" + envVarName + "' is found and will be used.");
             return envVarValue;
         } else {

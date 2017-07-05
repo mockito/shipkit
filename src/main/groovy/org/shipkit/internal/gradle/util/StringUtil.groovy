@@ -25,9 +25,9 @@ class StringUtil {
     }
 
     /**
-     * Checks if input is empty
+     * Checks if input is empty, if input is not null its 'toString()' value will be used.
      */
-    static boolean isEmpty(String input) {
-        return input == null || input.isEmpty();
+    static boolean isEmpty(Object input) {
+        return input == null || input.toString().isEmpty();
     }
 }
