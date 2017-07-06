@@ -66,7 +66,7 @@ class GradlePortalReleasePluginTest extends PluginSpecification {
     }
 
     def "sets key based on env var"() {
-        env.getenv(GradlePortalReleasePlugin.PUBLISH_KEY_ENV) >> "123"
+        env.getNonEmptyEnv(GradlePortalReleasePlugin.PUBLISH_KEY_ENV) >> "123"
         new GradlePortalReleasePlugin(env).apply(project)
         GradlePortalPublishTask t = project.tasks[PERFORM_PUBLISH_TASK]
 
@@ -75,7 +75,7 @@ class GradlePortalReleasePluginTest extends PluginSpecification {
     }
 
     def "sets secret based on env var"() {
-        env.getenv(GradlePortalReleasePlugin.PUBLISH_SECRET_ENV) >> "ksh"
+        env.getNonEmptyEnv(GradlePortalReleasePlugin.PUBLISH_SECRET_ENV) >> "ksh"
         new GradlePortalReleasePlugin(env).apply(project)
         GradlePortalPublishTask t = project.tasks[PERFORM_PUBLISH_TASK]
 
