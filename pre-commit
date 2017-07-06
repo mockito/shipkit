@@ -7,7 +7,7 @@ git stash -q --keep-index
 
 echo "Running git pre-commit hook"
 
-./gradlew check test
+./gradlew check
 
 RESULT=$?
 
