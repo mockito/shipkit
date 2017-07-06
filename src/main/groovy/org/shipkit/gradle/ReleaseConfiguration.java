@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.shipkit.internal.gradle.util.team.TeamParser.validateTeamMembers;
 
 /**
@@ -54,7 +54,7 @@ public class ReleaseConfiguration {
         gitHub.setWriteAuthUser("dummy");
 
         releaseNotes.setFile("docs/release-notes.md");
-        releaseNotes.setIgnoreCommitsContaining(asList("[ci skip]"));
+        releaseNotes.setIgnoreCommitsContaining(singletonList("[ci skip]"));
         releaseNotes.setLabelMapping(Collections.<String, String>emptyMap());
 
         team.setContributors(Collections.<String>emptyList());
