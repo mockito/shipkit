@@ -36,6 +36,11 @@ import static org.shipkit.internal.gradle.util.StringUtil.isEmpty;
  * <ul>
  *     <li>'performPublishPlugins' of type {@link GradlePortalPublishTask}</li>
  * </ul>
+ *
+ * Adds behavior:
+ * <ul>
+ *     <li>Skips 'performPublishPlugins' task if dryRun is enabled, see {@link ReleaseConfiguration#dryRun}</li>
+ * </ul>
  */
 public class GradlePortalReleasePlugin implements Plugin<Project> {
 
@@ -66,7 +71,6 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
         TaskMaker.task(project, PERFORM_PUBLISH_TASK, GradlePortalPublishTask.class, new Action<GradlePortalPublishTask>() {
             public void execute(final GradlePortalPublishTask t) {
                 t.setDescription("Publishes to Gradle Plugin Portal by delegating to 'publishPlugins' task.");
-                t.setDryRun(conf.isDryRun());
                 configureKey(t);
                 configureSecret(t);
                 LazyConfiguration.lazyConfiguration(t, new Runnable() {
