@@ -11,6 +11,7 @@ class E2ETestingPluginTest extends Specification {
         E2ETestingPlugin.E2ETest sut = new E2ETestingPlugin.E2ETest(project)
 
         when:
+        project.plugins.apply(E2ETestingPlugin)
         sut.create("https://github.com/mockito/mockito")
 
         then:
@@ -23,6 +24,7 @@ class E2ETestingPluginTest extends Specification {
         E2ETestingPlugin.E2ETest sut = new E2ETestingPlugin.E2ETest(project)
 
         when:
+        project.plugins.apply(E2ETestingPlugin)
         sut.create("https://github.com/xx/yyy/")
 
         then:
