@@ -1,8 +1,11 @@
 package org.shipkit.internal.gradle.e2e;
 
+import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.shipkit.internal.gradle.git.CloneGitRepositoryTask;
+import org.gradle.api.Task;
+import org.shipkit.internal.gradle.util.TaskMaker;
 
 import java.io.File;
 
@@ -23,7 +26,15 @@ import static org.shipkit.internal.gradle.util.StringUtil.capitalize;
  */
 public class E2ETestingPlugin implements Plugin<Project> {
 
+    public static final String RUN_ALL_E2E_TESTS_TASK = "runAllE2ETests";
+
     public void apply(final Project project) {
+        TaskMaker.task(project, RUN_ALL_E2E_TESTS_TASK, new Action<Task>() {
+            @Override
+            public void execute(Task task) {
+                task.setDescription("Runs all e2e tests.");
+            }
+        });
         project.getExtensions().create("e2eTest", E2ETest.class, project);
     }
 
@@ -78,8 +89,13 @@ public class E2ETestingPlugin implements Plugin<Project> {
             run.setWorkDir(copy.getTargetDir());
             run.setRepoName(repoName);
 
+            Task runAllTask = project.getTasks().findByName(RUN_ALL_E2E_TESTS_TASK);
+            runAllTask.dependsOn(run);
+
             // Using Gradle's composite builds ("--include-build") so that we're picking up current version of tools
-            run.setCommand(asList("./gradlew", "publishToMavenLocal", "testRelease",
+            run.setCommand(asList("./gradlew",
+                    "releaseNeeded", "performRelease",
+                    "releaseCleanUp", "-PdryRun",
                     "-x", "gitPush", "-x", "bintrayUpload",
                     "--include-build", project.getRootDir().getAbsolutePath(), "-s"));
 

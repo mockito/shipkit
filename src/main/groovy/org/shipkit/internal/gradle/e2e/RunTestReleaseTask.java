@@ -26,7 +26,7 @@ public class RunTestReleaseTask extends DefaultTask {
 
     @TaskAction
     public void runTest() {
-        LOG.lifecycle("  Run test of {}. The output will be save in {}", repoName, buildOutput.getAbsoluteFile());
+        LOG.lifecycle("  Run test of {}. The output will be saved in {}", repoName, buildOutput.getAbsoluteFile());
         ProcessRunner processRunner = Exec.getProcessRunner(workDir, buildOutput);
         processRunner.run(command);
     }

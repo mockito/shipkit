@@ -1,0 +1,7 @@
+apply plugin: 'base' // for clean task, TODO ms: push it to the plugin, make 'check' depend on e2e test
+
+apply plugin: 'org.shipkit.e2e-test'
+
+// TODO: WW when new version of E2ETestingPlugin is released, uncomment these lines
+//e2eTest.create("https://github.com/mockito/shipkit-example")
+//e2eTest.create("https://github.com/mockito/mockito")

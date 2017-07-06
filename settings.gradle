@@ -1,3 +1,3 @@
 rootProject.name="shipkit"
 
-include "e2eTests:mockito", "e2eTests:shipkitExample"
+include "e2eTests"
