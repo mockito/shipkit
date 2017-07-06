@@ -8,7 +8,9 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.specs.Spec;
 import org.shipkit.gradle.ReleaseConfiguration;
+import org.shipkit.gradle.UpdateReleaseNotesTask;
 import org.shipkit.gradle.release.GradlePortalPublishTask;
+import org.shipkit.internal.gradle.ReleaseNotesPlugin;
 import org.shipkit.internal.gradle.configuration.BasicValidator;
 import org.shipkit.internal.gradle.configuration.LazyConfiguration;
 import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
@@ -80,6 +82,9 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
                 });
             }
         });
+
+        UpdateReleaseNotesTask updateNotes = (UpdateReleaseNotesTask) project.getTasks().getByName(ReleaseNotesPlugin.UPDATE_NOTES_TASK);
+        updateNotes.setPublicationRepository("https://plugins.gradle.org/plugin/org.shipkit.java");
     }
 
     private static void validateSetting(String value, String settingName, String publishKeyEnv, String projectProperty, GradlePortalPublishTask task) {
