@@ -76,4 +76,12 @@ class GradlePortalReleasePluginTest extends PluginSpecification {
         expect:
         t.publishSecret == 'ksh'
     }
+
+    def "dry run"() {
+        project.shipkit.dryRun = true
+        project.plugins.apply(GradlePortalReleasePlugin.class)
+
+        expect:
+        project.tasks[PERFORM_PUBLISH_TASK].execute()
+    }
 }

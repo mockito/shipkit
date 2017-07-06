@@ -4,6 +4,9 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
+import org.gradle.api.specs.Spec;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.release.GradlePortalPublishTask;
 import org.shipkit.internal.gradle.configuration.BasicValidator;
@@ -19,6 +22,8 @@ import static org.shipkit.internal.gradle.util.StringUtil.isEmpty;
 
 //TODO SF javadoc
 public class GradlePortalReleasePlugin implements Plugin<Project> {
+
+    private final static Logger LOG = Logging.getLogger(GradlePortalReleasePlugin.class);
 
     final static String PUBLISH_KEY_ENV = "GRADLE_PUBLISH_KEY";
     final static String PUBLISH_SECRET_ENV = "GRADLE_PUBLISH_SECRET";
@@ -59,6 +64,16 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
                 performRelease.dependsOn(t); //perform release will actually publish the plugins
                 t.mustRunAfter(gitPush); //git push is easier to revers than perform release
                 gitPush.mustRunAfter("buildArchives"); //run git push as late as possible
+
+                t.onlyIf(new Spec<Task>() {
+                    @Override
+                    public boolean isSatisfiedBy(Task t) {
+                        if (conf.isDryRun()) {
+                            LOG.info("dryRun is enabled, skipping '{}' using 'onlyIf'", t.getName());
+                        }
+                        return !conf.isDryRun();
+                    }
+                });
             }
         });
     }
