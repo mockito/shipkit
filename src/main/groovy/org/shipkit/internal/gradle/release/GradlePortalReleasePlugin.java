@@ -66,7 +66,8 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
 
                 performRelease.dependsOn(t); //perform release will actually publish the plugins
                 t.mustRunAfter(gitPush); //git push is easier to revers than perform release
-                gitPush.mustRunAfter("buildArchives"); //run git push as late as possible
+                gitPush.mustRunAfter("buildArchives"); //so that we first build plugins to be published, then do git push
+                t.dependsOn("buildArchives");
 
                 t.onlyIf(new Spec<Task>() {
                     @Override
