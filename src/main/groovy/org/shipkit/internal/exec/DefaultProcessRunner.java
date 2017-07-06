@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -20,7 +21,7 @@ public class DefaultProcessRunner implements ProcessRunner {
     private static final Logger LOG = Logging.getLogger(DefaultProcessRunner.class);
     private final File workDir;
     private final File outputLogFile;
-    private String secretValue;
+    private List<String> secretValues = Collections.emptyList();
 
     /**
      * Calls {@link #DefaultProcessRunner(File, File)}
@@ -81,10 +82,13 @@ public class DefaultProcessRunner implements ProcessRunner {
     }
 
     private String mask(String text) {
-        if (secretValue == null) {
+        if (secretValues.isEmpty()) {
             return text;
         }
-        return text.replace(secretValue, "[SECRET]");
+        for (String s : secretValues) {
+            text = text.replace(s, "[SECRET]");
+        }
+        return text;
     }
 
     private static String readFully(BufferedReader reader) throws IOException {
@@ -124,7 +128,14 @@ public class DefaultProcessRunner implements ProcessRunner {
      * @return this runner
      */
     public DefaultProcessRunner setSecretValue(String secretValue) {
-        this.secretValue = secretValue;
+        return setSecretValues(asList(secretValue));
+    }
+
+    /**
+     * @param secretValues all values will be masked from the output and logging
+     */
+    public DefaultProcessRunner setSecretValues(List<String> secretValues) {
+        this.secretValues = secretValues;
         return this;
     }
 
