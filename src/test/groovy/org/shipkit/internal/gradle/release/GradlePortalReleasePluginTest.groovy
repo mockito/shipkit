@@ -18,7 +18,7 @@ class GradlePortalReleasePluginTest extends PluginSpecification {
     }
 
     def "validates publish key"() {
-        project.plugins.apply(GradlePortalReleasePlugin.class)
+        new GradlePortalReleasePlugin(env).apply(project)
 
         when:
         LazyConfiguration.forceConfiguration(project.tasks[PERFORM_PUBLISH_TASK])
@@ -32,7 +32,7 @@ class GradlePortalReleasePluginTest extends PluginSpecification {
     }
 
     def "validates publish secret"() {
-        project.plugins.apply(GradlePortalReleasePlugin.class)
+        new GradlePortalReleasePlugin(env).apply(project)
         GradlePortalPublishTask t = project.tasks[PERFORM_PUBLISH_TASK]
         t.publishKey = "foo"
 
