@@ -106,7 +106,7 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
     }
 
     private static void validateSetting(String value, String settingName, String publishKeyEnv, String projectProperty, GradlePortalPublishTask task) {
-        BasicValidator.notNull(value, publishKeyEnv, "Gradle Plugin Portal '" + settingName + "' is required. Resolution options:\n" +
+        BasicValidator.notNull(value, "Gradle Plugin Portal '" + settingName + "' is required. Resolution options:\n" +
                 " - export '" + publishKeyEnv + "' env var (recommended for CI, don't commit secrets to VCS!)\n" +
                 " - use '" + projectProperty + "' project property\n" +
                 " - configure '" + task.getName() + "' task in build file");
