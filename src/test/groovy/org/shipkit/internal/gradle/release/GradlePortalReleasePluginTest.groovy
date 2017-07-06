@@ -25,7 +25,10 @@ class GradlePortalReleasePluginTest extends PluginSpecification {
 
         then:
         def ex = thrown(GradleException)
-        ex.message == "Gradle Plugin Portal 'publishKey' is required. Export 'GRADLE_PUBLISH_KEY' env var or configure 'performPublishPlugins' task."
+        ex.message == """Gradle Plugin Portal 'publishKey' is required. Resolution options:
+ - export 'GRADLE_PUBLISH_KEY' env var (recommended for CI, don't commit secrets to VCS!)
+ - use 'gradle.publish.key' project property
+ - configure 'performPublishPlugins' task in build file"""
     }
 
     def "validates publish secret"() {
@@ -38,7 +41,10 @@ class GradlePortalReleasePluginTest extends PluginSpecification {
 
         then:
         def ex = thrown(GradleException)
-        ex.message == "Gradle Plugin Portal 'publishSecret' is required. Export 'GRADLE_PUBLISH_SECRET' env var or configure 'performPublishPlugins' task."
+        ex.message == """Gradle Plugin Portal 'publishSecret' is required. Resolution options:
+ - export 'GRADLE_PUBLISH_SECRET' env var (recommended for CI, don't commit secrets to VCS!)
+ - use 'gradle.publish.secret' project property
+ - configure 'performPublishPlugins' task in build file"""
     }
 
     def "sets key based on project property"() {

@@ -28,6 +28,9 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
     final static String PUBLISH_KEY_ENV = "GRADLE_PUBLISH_KEY";
     final static String PUBLISH_SECRET_ENV = "GRADLE_PUBLISH_SECRET";
     final static String PERFORM_PUBLISH_TASK = "performPublishPlugins";
+    private final static String PUBLISH_KEY_PROPERTY = "gradle.publish.key";
+    private final static String PUBLISH_KEY_SECRET = "gradle.publish.secret";
+
     private final EnvVariables envVariables;
 
     GradlePortalReleasePlugin(EnvVariables envVariables) {
@@ -53,8 +56,8 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
                 LazyConfiguration.lazyConfiguration(t, new Runnable() {
                     @Override
                     public void run() {
-                        validateSetting(t.getPublishKey(), "publishKey", PUBLISH_KEY_ENV, t);
-                        validateSetting(t.getPublishSecret(), "publishSecret", PUBLISH_SECRET_ENV, t);
+                        validateSetting(t.getPublishKey(), "publishKey", PUBLISH_KEY_ENV, PUBLISH_KEY_PROPERTY, t);
+                        validateSetting(t.getPublishSecret(), "publishSecret", PUBLISH_SECRET_ENV, PUBLISH_KEY_SECRET, t);
                     }
                 });
 
@@ -78,13 +81,15 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
         });
     }
 
-    private static void validateSetting(String value, String settingName, String publishKeyEnv, GradlePortalPublishTask task) {
-        BasicValidator.notNull(value, publishKeyEnv, "Gradle Plugin Portal '" + settingName + "' is required. " +
-                "Export '" + publishKeyEnv + "' env var or configure '" + task.getName() + "' task.");
+    private static void validateSetting(String value, String settingName, String publishKeyEnv, String projectProperty, GradlePortalPublishTask task) {
+        BasicValidator.notNull(value, publishKeyEnv, "Gradle Plugin Portal '" + settingName + "' is required. Resolution options:\n" +
+                " - export '" + publishKeyEnv + "' env var (recommended for CI, don't commit secrets to VCS!)\n" +
+                " - use '" + projectProperty + "' project property\n" +
+                " - configure '" + task.getName() + "' task in build file");
     }
 
     private void configureKey(GradlePortalPublishTask t) {
-        Object key = t.getProject().findProperty("gradle.publish.key");
+        Object key = t.getProject().findProperty(PUBLISH_KEY_PROPERTY);
         if (!isEmpty(key)) {
             t.setPublishKey(key.toString());
         } else {
@@ -93,7 +98,7 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
     }
 
     private void configureSecret(GradlePortalPublishTask t) {
-        Object secret = t.getProject().findProperty("gradle.publish.secret");
+        Object secret = t.getProject().findProperty(PUBLISH_KEY_SECRET);
         if (!isEmpty(secret)) {
             t.setPublishSecret(secret.toString());
         } else {
