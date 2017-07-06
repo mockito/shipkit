@@ -56,8 +56,11 @@ class VersioningPluginTest extends PluginSpecification {
         versionInfo.notableVersions == [] as LinkedList
     }
 
-    def "adds version bumped changes to GitCommitTask if GitPlugin applied"() {
+    def "should add version bumped changes to GitCommitTask if GitPlugin applied"() {
         given:
+        project.file(VersioningPlugin.VERSION_FILE_NAME) << "version=0.9.0\npreviousVersion=0.8.114\n"
+
+        and:
         project.plugins.apply(ReleaseConfigurationPlugin).configuration.gitHub.repository = "http://github.com"
         project.plugins.apply(GitPlugin)
 
@@ -67,11 +70,11 @@ class VersioningPluginTest extends PluginSpecification {
         then:
         GitCommitTask gitCommitTask = project.tasks.getByName(GitPlugin.GIT_COMMIT_TASK)
         gitCommitTask.files.contains(project.file(VersioningPlugin.VERSION_FILE_NAME).absolutePath)
-        gitCommitTask.aggregatedCommitMessage.contains("version bumped")
+        gitCommitTask.aggregatedCommitMessage.contains("0.9.0 release (previous 0.8.114)")
     }
 
     @Override
-    void createReleaseConfiguration(){
+    void createReleaseConfiguration() {
         // ReleaseConfiguration is not needed in this test
     }
 }

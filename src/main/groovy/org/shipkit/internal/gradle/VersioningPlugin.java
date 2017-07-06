@@ -14,7 +14,9 @@ import org.shipkit.internal.version.Version;
 import org.shipkit.internal.version.VersionInfo;
 
 import java.io.File;
-import java.util.Arrays;
+
+import static java.lang.String.format;
+import static java.util.Collections.singletonList;
 
 /**
  * The plugin adds following tasks:
@@ -40,7 +42,7 @@ import java.util.Arrays;
  */
 public class VersioningPlugin implements Plugin<Project> {
 
-    private static Logger LOG = Logging.getLogger(VersioningPlugin.class);
+    private static final Logger LOG = Logging.getLogger(VersioningPlugin.class);
 
     public static final String VERSION_FILE_NAME = "version.properties";
 
@@ -52,7 +54,7 @@ public class VersioningPlugin implements Plugin<Project> {
 
         final File versionFile = project.file(VERSION_FILE_NAME);
 
-        VersionInfo versionInfo = versionFile.exists() ?
+        final VersionInfo versionInfo = versionFile.exists() ?
                 Version.versionInfo(versionFile) :
                 Version.defaultVersionInfo(versionFile, project.getVersion().toString());
 
@@ -72,7 +74,8 @@ public class VersioningPlugin implements Plugin<Project> {
             public void execute(final BumpVersionFileTask t) {
                 t.setDescription("Increments version number in " + versionFile.getName());
                 t.setVersionFile(versionFile);
-                GitPlugin.registerChangesForCommitIfApplied(Arrays.asList(versionFile), "version bumped", t);
+                GitPlugin.registerChangesForCommitIfApplied(singletonList(versionFile),
+                        format("%s release (previous %s)", version, versionInfo.getPreviousVersion()), t);
             }
         });
 
