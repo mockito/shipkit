@@ -86,7 +86,9 @@ public class DefaultProcessRunner implements ProcessRunner {
             return text;
         }
         for (String s : secretValues) {
-            text = text.replace(s, "[SECRET]");
+            if (s != null) {
+                text = text.replace(s, "[SECRET]");
+            }
         }
         return text;
     }
