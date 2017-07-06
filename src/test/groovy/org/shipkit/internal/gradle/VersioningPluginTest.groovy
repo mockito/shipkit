@@ -1,6 +1,10 @@
 package org.shipkit.internal.gradle
 
 import org.shipkit.gradle.BumpVersionFileTask
+import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin
+import org.shipkit.internal.gradle.git.GitCommitTask
+import org.shipkit.internal.gradle.git.GitPlugin
+import org.shipkit.internal.gradle.init.InitVersioningTask
 import org.shipkit.internal.version.VersionInfo
 import testutil.PluginSpecification
 
@@ -67,7 +71,7 @@ class VersioningPluginTest extends PluginSpecification {
     }
 
     @Override
-    void configureReleaseConfigurationDefaults(){
+    void createReleaseConfiguration(){
         // ReleaseConfiguration is not needed in this test
     }
 }

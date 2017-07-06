@@ -5,19 +5,21 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.shipkit.gradle.exec.ShipkitExecTask;
-import org.shipkit.internal.gradle.GitPlugin;
-import org.shipkit.internal.gradle.ReleaseNeededPlugin;
 import org.shipkit.internal.gradle.ReleaseNotesPlugin;
 import org.shipkit.internal.gradle.VersioningPlugin;
+import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
 import static java.util.Arrays.asList;
-import static org.shipkit.internal.gradle.ReleaseNeededPlugin.RELEASE_NEEDED;
 import static org.shipkit.internal.gradle.ReleaseNotesPlugin.UPDATE_NOTES_TASK;
 import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
+import static org.shipkit.internal.gradle.release.ReleaseNeededPlugin.RELEASE_NEEDED;
 
 /**
- * Applies plugins:
+ * Release automation: notes generation, tagging, versioning.
+ * <p>
+ * Applies:
+ *
  * <ul>
  *     <li>{@link ReleaseNotesPlugin}</li>
  *     <li>{@link VersioningPlugin}</li>
@@ -40,7 +42,6 @@ public class ReleasePlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
         project.getPlugins().apply(ReleaseNotesPlugin.class);
-        project.getPlugins().apply(VersioningPlugin.class);
         project.getPlugins().apply(GitPlugin.class);
         project.getPlugins().apply(ReleaseNeededPlugin.class);
 
