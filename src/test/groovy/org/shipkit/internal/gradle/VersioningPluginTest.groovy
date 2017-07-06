@@ -73,6 +73,24 @@ class VersioningPluginTest extends PluginSpecification {
         gitCommitTask.aggregatedCommitMessage.contains("0.9.0 release (previous 0.8.114)")
     }
 
+    def "should skip previous version in release commit message if not available"() {
+        given:
+        project.file(VersioningPlugin.VERSION_FILE_NAME) << "version=0.9.0\n"
+
+        and:
+        project.plugins.apply(ReleaseConfigurationPlugin).configuration.gitHub.repository = "http://github.com"
+        project.plugins.apply(GitPlugin)
+
+        when:
+        project.plugins.apply(VersioningPlugin)
+
+        then:
+        GitCommitTask gitCommitTask = project.tasks.getByName(GitPlugin.GIT_COMMIT_TASK)
+        gitCommitTask.files.contains(project.file(VersioningPlugin.VERSION_FILE_NAME).absolutePath)
+        gitCommitTask.aggregatedCommitMessage.contains("0.9.0 release")
+        !gitCommitTask.aggregatedCommitMessage.contains("previous")
+    }
+
     @Override
     void createReleaseConfiguration() {
         // ReleaseConfiguration is not needed in this test

@@ -9,6 +9,7 @@ import org.shipkit.gradle.BumpVersionFileTask;
 import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.init.InitPlugin;
 import org.shipkit.internal.gradle.init.InitVersioningTask;
+import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.version.Version;
 import org.shipkit.internal.version.VersionInfo;
@@ -74,8 +75,8 @@ public class VersioningPlugin implements Plugin<Project> {
             public void execute(final BumpVersionFileTask t) {
                 t.setDescription("Increments version number in " + versionFile.getName());
                 t.setVersionFile(versionFile);
-                GitPlugin.registerChangesForCommitIfApplied(singletonList(versionFile),
-                        format("%s release (previous %s)", version, versionInfo.getPreviousVersion()), t);
+                String versionChangeMessage = formatVersionInformationInCommitMessage(version, versionInfo.getPreviousVersion());
+                GitPlugin.registerChangesForCommitIfApplied(singletonList(versionFile), versionChangeMessage, t);
             }
         });
 
@@ -87,6 +88,15 @@ public class VersioningPlugin implements Plugin<Project> {
                 project.getTasks().getByName(InitPlugin.INIT_SHIPKIT_TASK).dependsOn(t);
             }
         });
+    }
+
+    private String formatVersionInformationInCommitMessage(String version, String previousVersion) {
+        String versionMessage = format("%s release", version);
+        if (StringUtil.isEmpty(previousVersion)) {
+            return versionMessage;
+        } else {
+            return format("%s (previous %s)", versionMessage, previousVersion);
+        }
     }
 
 }
