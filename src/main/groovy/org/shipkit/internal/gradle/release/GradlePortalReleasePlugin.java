@@ -93,7 +93,7 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
         if (!isEmpty(key)) {
             t.setPublishKey(key.toString());
         } else {
-            t.setPublishKey(envVariables.getenv(PUBLISH_KEY_ENV));
+            t.setPublishKey(envVariables.getNonEmptyEnv(PUBLISH_KEY_ENV));
         }
     }
 
@@ -102,7 +102,7 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
         if (!isEmpty(secret)) {
             t.setPublishSecret(secret.toString());
         } else {
-            t.setPublishSecret(envVariables.getenv(PUBLISH_SECRET_ENV));
+            t.setPublishSecret(envVariables.getNonEmptyEnv(PUBLISH_SECRET_ENV));
         }
     }
 }
