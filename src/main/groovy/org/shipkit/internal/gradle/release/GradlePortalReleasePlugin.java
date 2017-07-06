@@ -22,7 +22,21 @@ import javax.inject.Inject;
 
 import static org.shipkit.internal.gradle.util.StringUtil.isEmpty;
 
-//TODO SF javadoc
+/**
+ * Automated releases to Gradle Plugin portal.
+ * Sets up task dependencies and applies configuration needed for automated releases of Gradle plugins.
+ *
+ * Applies:
+ * <ul>
+ *     <li>{@link ReleasePlugin}</li>
+ *     <li>com.gradle.plugin-publish</li>
+ * </ul>
+ *
+ * Adds tasks:
+ * <ul>
+ *     <li>'performPublishPlugins' of type {@link GradlePortalPublishTask}</li>
+ * </ul>
+ */
 public class GradlePortalReleasePlugin implements Plugin<Project> {
 
     private final static Logger LOG = Logging.getLogger(GradlePortalReleasePlugin.class);
