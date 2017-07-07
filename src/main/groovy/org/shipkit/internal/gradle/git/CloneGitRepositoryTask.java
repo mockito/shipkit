@@ -33,7 +33,7 @@ public class CloneGitRepositoryTask extends DefaultTask {
 
     private String repositoryUrl;
     private File targetDir;
-    private int numberOfCommitsToClone;
+    private int depth;
 
     @TaskAction
     public void cloneRepository() {
@@ -48,9 +48,9 @@ public class CloneGitRepositoryTask extends DefaultTask {
         List<String> result = new ArrayList<String>();
         result.add("git");
         result.add("clone");
-        if(numberOfCommitsToClone != 0) {
+        if(depth != 0) {
             result.add("--depth");
-            result.add(valueOf(numberOfCommitsToClone));
+            result.add(valueOf(depth));
         }
         result.add(repositoryUrl);
         result.add(targetDir.getAbsolutePath());
@@ -106,17 +106,17 @@ public class CloneGitRepositoryTask extends DefaultTask {
      * Truncate a history to the specified number of commits. In other words it makes a shallow clone.
      * This input is optional, default set to 0 (zero) what means a full clone
      */
-    public int getNumberOfCommitsToClone() {
-        return numberOfCommitsToClone;
+    public int getDepth() {
+        return depth;
     }
 
     /**
-     * See {@link #getNumberOfCommitsToClone()}
-     * @param numberOfCommitsToClone
+     * See {@link #getDepth()}
+     * @param depth
      */
     @Optional
     @Input
-    public void setNumberOfCommitsToClone(int numberOfCommitsToClone) {
-        this.numberOfCommitsToClone = numberOfCommitsToClone;
+    public void setDepth(int depth) {
+        this.depth = depth;
     }
 }

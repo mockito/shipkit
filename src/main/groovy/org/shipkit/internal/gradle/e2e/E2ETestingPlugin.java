@@ -3,115 +3,29 @@ package org.shipkit.internal.gradle.e2e;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.shipkit.internal.gradle.git.CloneGitRepositoryTask;
-import org.gradle.api.Task;
 import org.shipkit.internal.gradle.util.TaskMaker;
-
-import java.io.File;
-
-import static java.util.Arrays.asList;
-import static org.shipkit.internal.gradle.util.StringUtil.capitalize;
 
 /**
  * This plugin tests your library end-to-end (e2e) using client projects.
- * Plugin clones client projects to '$buildDir/project-name-pristine' first, next clone project from 'pristine' to
- * '$buildDir/project-name-work' and execute 'testRelease' task using the newest shipkit version
+ * It adds e2eTest task which can be configured to run tests for certain repositories
+ * See {@link E2ETestTask} for more information
  *
  * Adds tasks:
  * <ul>
- *     <li>cloneProjectFromGitHub$projectName - {@link CloneGitRepositoryTask}</li>
- *     <li>cloneProjectToWorkDir$projectName - {@link CloneGitRepositoryTask}</li>
- *     <li>runTest$projectName - {@link RunTestReleaseTask}</li>
+ *     <li>e2eTest - {@link E2ETestTask}</li>
  * </ul>
  */
 public class E2ETestingPlugin implements Plugin<Project> {
 
-    public static final String RUN_ALL_E2E_TESTS_TASK = "runAllE2ETests";
+    public static final String E2E_TEST_TASK = "e2eTest";
 
     public void apply(final Project project) {
-        TaskMaker.task(project, RUN_ALL_E2E_TESTS_TASK, new Action<Task>() {
+        TaskMaker.task(project, E2E_TEST_TASK, E2ETestTask.class, new Action<E2ETestTask>() {
             @Override
-            public void execute(Task task) {
+            public void execute(E2ETestTask task) {
                 task.setDescription("Runs all e2e tests.");
             }
         });
-        project.getExtensions().create("e2eTest", E2ETest.class, project);
-    }
-
-    //TODO ms - closer to the finish line we need to make this type public in one of the public packages
-    //this is how users will interface with configuring e2e tests
-    public static class E2ETest {
-
-        Project project;
-
-        public E2ETest(Project project) {
-            this.project = project;
-        }
-
-        void create(String gitHubRepoUrl) {
-            String repoName = extractRepoName(gitHubRepoUrl);
-            CloneGitRepositoryTask clone = createCloneProjectFromGitHub(gitHubRepoUrl, repoName);
-            CloneGitRepositoryTask workDirCloneTask = createCloneProjectToWorkDirTask(repoName, clone);
-            createRunTestReleaseTask(repoName, workDirCloneTask);
-        }
-
-        private CloneGitRepositoryTask createCloneProjectFromGitHub(String gitHubRepoUrl, String repoName) {
-            CloneGitRepositoryTask clone = project.getTasks().create(
-                    "cloneProjectFromGitHub" + capitalize(repoName),
-                    CloneGitRepositoryTask.class);
-            clone.setRepositoryUrl(gitHubRepoUrl);
-            clone.setTargetDir(new File(project.getBuildDir(), repoName + "-pristine"));
-            clone.setNumberOfCommitsToClone(50);
-            // For now for easier testing
-            clone.dependsOn("clean");
-            return clone;
-        }
-
-        private CloneGitRepositoryTask createCloneProjectToWorkDirTask(String repoName, CloneGitRepositoryTask clone) {
-            // Clone from *-pristine to *-work. Copy task will not work because of ignoring git specific files:
-            // https://discuss.gradle.org/t/copy-git-specific-files/11970
-            // Furthermore we can verify push to pristine origin
-            File workDir = new File(project.getBuildDir(), repoName + "-work");
-            CloneGitRepositoryTask copy = project.getTasks().create(
-                    "cloneProjectToWorkDir" + capitalize(repoName),
-                    CloneGitRepositoryTask.class);
-            copy.dependsOn(clone);
-            copy.setRepositoryUrl(clone.getTargetDir().getAbsolutePath());
-            copy.setTargetDir(workDir);
-            return copy;
-        }
-
-        private void createRunTestReleaseTask(String repoName, CloneGitRepositoryTask copy) {
-            RunTestReleaseTask run = project.getTasks().create(
-                    "runTestRelease" + capitalize(repoName),
-                    RunTestReleaseTask.class);
-            run.dependsOn(copy);
-            run.setWorkDir(copy.getTargetDir());
-            run.setRepoName(repoName);
-
-            Task runAllTask = project.getTasks().findByName(RUN_ALL_E2E_TESTS_TASK);
-            runAllTask.dependsOn(run);
-
-            // Using Gradle's composite builds ("--include-build") so that we're picking up current version of tools
-            run.setCommand(asList("./gradlew",
-                    "releaseNeeded", "performRelease",
-                    "releaseCleanUp", "-PdryRun",
-                    "-x", "gitPush", "-x", "bintrayUpload",
-                    "--include-build", project.getRootDir().getAbsolutePath(), "-s"));
-
-            // Build log in separate file instead of including it in the console of the parent build
-            // Otherwise the output will be really messy
-            run.setBuildOutputFile(new File(project.getBuildDir(), repoName + "-build.log"));
-        }
-
-        private String extractRepoName(String gitHubRepo) {
-            String text = gitHubRepo.trim();
-            if(text.lastIndexOf('/') == text.length() - 1) {
-                // cut last slash
-                text = text.substring(0, text.length() - 1);
-            }
-            return text.substring(text.lastIndexOf('/') + 1, text.length());
-        }
     }
 
 }

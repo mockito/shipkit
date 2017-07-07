@@ -30,7 +30,7 @@ class CloneGitRepositoryTaskTest extends Specification {
     def "clone a shallow repository"() {
         task.repositoryUrl = "url"
         task.targetDir = tempFolder
-        task.numberOfCommitsToClone = 50
+        task.depth = 50
 
         expect:
         task.getCloneCommand() == ["git", "clone", "--depth", "50", "url", tempFolder.getAbsolutePath()]
