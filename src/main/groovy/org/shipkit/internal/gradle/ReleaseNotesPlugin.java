@@ -14,7 +14,8 @@ import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.version.VersionInfo;
 
 import java.io.File;
-import java.util.Arrays;
+
+import static java.util.Collections.singletonList;
 
 /**
  * The plugin adds following tasks:
@@ -67,7 +68,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
                 if(!previewMode){
                     File releaseNotesFile = project.file(conf.getReleaseNotes().getFile());
                     GitPlugin.registerChangesForCommitIfApplied(
-                        Arrays.asList(releaseNotesFile), "release notes updated", t);
+                            singletonList(releaseNotesFile), "release notes updated", t);
                     t.getOutputs().file(releaseNotesFile);
                 }
             }

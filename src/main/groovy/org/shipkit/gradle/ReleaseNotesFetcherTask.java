@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 /**
  * Fetches release notes data information from Git and GitHub and serializes it to {@link #outputFile}.
@@ -199,7 +199,7 @@ public class ReleaseNotesFetcherTask extends DefaultTask {
         ReleaseNotesGenerator generator = ReleaseNotesGenerators.releaseNotesGenerator(
                 gitWorkDir, gitHubApiUrl, gitHubRepository, gitHubReadOnlyAuthToken, new IgnoredCommit(ignoreCommitsContaining));
 
-        List<String> targetVersions = previousVersion == null ? new ArrayList<String>() : asList(previousVersion);
+        List<String> targetVersions = previousVersion == null ? new ArrayList<String>() : singletonList(previousVersion);
         Collection<ReleaseNotesData> releaseNotes = generator.generateReleaseNotesData(
                 version, targetVersions, tagPrefix, gitHubLabels, onlyPullRequests);
 
