@@ -1,86 +1,63 @@
 package org.shipkit.internal.gradle.release
 
 import org.gradle.api.GradleException
-import org.shipkit.gradle.release.GradlePortalPublishTask
 import org.shipkit.internal.gradle.configuration.LazyConfiguration
 import org.shipkit.internal.util.EnvVariables
 import testutil.PluginSpecification
 
-import static org.shipkit.internal.gradle.release.GradlePortalReleasePlugin.PERFORM_PUBLISH_TASK
+import static org.shipkit.internal.gradle.release.GradlePortalReleasePlugin.PUBLISH_PLUGINS_TASK
 
 class GradlePortalReleasePluginTest extends PluginSpecification {
 
     def env = Mock(EnvVariables)
 
-    def "applies"() {
-        expect:
-        project.plugins.apply(GradlePortalReleasePlugin.class)
-    }
-
     def "validates publish key"() {
         new GradlePortalReleasePlugin(env).apply(project)
 
         when:
-        LazyConfiguration.forceConfiguration(project.tasks[PERFORM_PUBLISH_TASK])
+        LazyConfiguration.forceConfiguration(project.tasks[PUBLISH_PLUGINS_TASK])
 
         then:
         def ex = thrown(GradleException)
-        ex.message == """Gradle Plugin Portal 'publishKey' is required. Resolution options:
+        ex.message == """Gradle Plugin Portal 'gradle.publish.key' is required. Options:
  - export 'GRADLE_PUBLISH_KEY' env var (recommended for CI, don't commit secrets to VCS!)
- - use 'gradle.publish.key' project property
- - configure 'performPublishPlugins' task in build file"""
+ - use 'gradle.publish.key' project property"""
     }
 
     def "validates publish secret"() {
         new GradlePortalReleasePlugin(env).apply(project)
-        GradlePortalPublishTask t = project.tasks[PERFORM_PUBLISH_TASK]
-        t.publishKey = "foo"
+        project.ext.set(GradlePortalReleasePlugin.PUBLISH_KEY_PROPERTY, "key")
 
         when:
-        LazyConfiguration.forceConfiguration(project.tasks[PERFORM_PUBLISH_TASK])
+        LazyConfiguration.forceConfiguration(project.tasks[PUBLISH_PLUGINS_TASK])
 
         then:
         def ex = thrown(GradleException)
-        ex.message == """Gradle Plugin Portal 'publishSecret' is required. Resolution options:
+        ex.message == """Gradle Plugin Portal 'gradle.publish.secret' is required. Options:
  - export 'GRADLE_PUBLISH_SECRET' env var (recommended for CI, don't commit secrets to VCS!)
- - use 'gradle.publish.secret' project property
- - configure 'performPublishPlugins' task in build file"""
+ - use 'gradle.publish.secret' project property"""
     }
 
-    def "sets key based on project property"() {
-        project.ext.'gradle.publish.key' = 'abc'
-        project.plugins.apply(GradlePortalReleasePlugin.class)
-        GradlePortalPublishTask t = project.tasks[PERFORM_PUBLISH_TASK]
+    def "uses existing project properties"() {
+        new GradlePortalReleasePlugin(env).apply(project)
+        project.ext.set(GradlePortalReleasePlugin.PUBLISH_KEY_PROPERTY, "key")
+        project.ext.set(GradlePortalReleasePlugin.PUBLISH_SECRET_PROPERTY, "secret")
 
-        expect:
-        t.publishKey == 'abc'
-    }
-
-    def "sets secret based on project property"() {
-        project.ext.'gradle.publish.secret' = 'shh'
-        project.plugins.apply(GradlePortalReleasePlugin.class)
-        GradlePortalPublishTask t = project.tasks[PERFORM_PUBLISH_TASK]
-
-        expect:
-        t.publishSecret == 'shh'
+        expect: //no exception thrown
+        LazyConfiguration.forceConfiguration(project.tasks[PUBLISH_PLUGINS_TASK])
     }
 
     def "sets key based on env var"() {
         env.getNonEmptyEnv(GradlePortalReleasePlugin.PUBLISH_KEY_ENV) >> "123"
+        env.getNonEmptyEnv(GradlePortalReleasePlugin.PUBLISH_SECRET_ENV) >> "abc"
+
+        when:
         new GradlePortalReleasePlugin(env).apply(project)
-        GradlePortalPublishTask t = project.tasks[PERFORM_PUBLISH_TASK]
+        LazyConfiguration.forceConfiguration(project.tasks[PUBLISH_PLUGINS_TASK])
 
-        expect:
-        t.publishKey == '123'
-    }
-
-    def "sets secret based on env var"() {
-        env.getNonEmptyEnv(GradlePortalReleasePlugin.PUBLISH_SECRET_ENV) >> "ksh"
-        new GradlePortalReleasePlugin(env).apply(project)
-        GradlePortalPublishTask t = project.tasks[PERFORM_PUBLISH_TASK]
-
-        expect:
-        t.publishSecret == 'ksh'
+        then:
+        project.ext.get(GradlePortalReleasePlugin.PUBLISH_KEY_PROPERTY) == "123"
+        project.ext.get(GradlePortalReleasePlugin.PUBLISH_SECRET_PROPERTY) == "abc"
     }
 
     def "dry run effectively disables the task"() {
@@ -88,9 +65,9 @@ class GradlePortalReleasePluginTest extends PluginSpecification {
         project.plugins.apply(GradlePortalReleasePlugin.class)
 
         when:
-        project.tasks[PERFORM_PUBLISH_TASK].execute()
+        project.tasks[PUBLISH_PLUGINS_TASK].execute()
 
         then:
-        noExceptionThrown() //normally the task would fail because inputs are not set
+        noExceptionThrown() //normally the task would fail because it is not configured
     }
 }
