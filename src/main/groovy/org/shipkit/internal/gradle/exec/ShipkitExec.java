@@ -1,22 +1,24 @@
 package org.shipkit.internal.gradle.exec;
 
 import org.gradle.api.Action;
+import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.process.ExecResult;
 import org.gradle.process.ExecSpec;
 import org.shipkit.gradle.exec.ExecCommand;
-import org.shipkit.gradle.exec.ShipkitExecTask;
 import org.shipkit.internal.exec.ExternalProcessStream;
 import org.shipkit.internal.gradle.util.StringUtil;
+
+import java.util.Collection;
 
 public class ShipkitExec {
 
     private final static Logger LOG = Logging.getLogger(ShipkitExec.class);
 
-    public void execCommands(ShipkitExecTask task) {
-        for (final ExecCommand execCommand : task.getExecCommands()) {
-            ExecResult result = task.getProject().exec(new Action<ExecSpec>() {
+    public void execCommands(Collection<ExecCommand> execCommands, Project project) {
+        for (final ExecCommand execCommand : execCommands) {
+            ExecResult result = project.exec(new Action<ExecSpec>() {
                 @Override
                 public void execute(ExecSpec spec) {
                     spec.setIgnoreExitValue(true);

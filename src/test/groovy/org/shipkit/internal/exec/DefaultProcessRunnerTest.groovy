@@ -62,4 +62,12 @@ class DefaultProcessRunnerTest extends Specification {
         thrown(GradleException)
         log.lifecycle("ls [SECRET] xx [SECRET] yy")
     }
+
+    def "ignores null secrets"() {
+        when:
+        new DefaultProcessRunner(tmp.root).setSecretValue(null).run("ls")
+
+        then:
+        noExceptionThrown()
+    }
 }
