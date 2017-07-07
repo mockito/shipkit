@@ -83,11 +83,14 @@ class GradlePortalReleasePluginTest extends PluginSpecification {
         t.publishSecret == 'ksh'
     }
 
-    def "dry run"() {
+    def "dry run effectively disables the task"() {
         project.shipkit.dryRun = true
         project.plugins.apply(GradlePortalReleasePlugin.class)
 
-        expect:
+        when:
         project.tasks[PERFORM_PUBLISH_TASK].execute()
+
+        then:
+        noExceptionThrown() //normally the task would fail because inputs are not set
     }
 }
