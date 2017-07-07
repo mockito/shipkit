@@ -11,6 +11,7 @@ import org.shipkit.internal.gradle.ReleaseNotesPlugin;
 import org.shipkit.internal.gradle.VersioningPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
+import org.shipkit.internal.gradle.util.TaskSuccessfulMessage;
 
 import static java.util.Arrays.asList;
 import static org.shipkit.internal.gradle.ReleaseNotesPlugin.UPDATE_NOTES_TASK;
@@ -66,12 +67,7 @@ public class ReleasePlugin implements Plugin<Project> {
                 //releaseNeeded is used here only to execute the code paths in the release needed task (extra testing)
                 t.getExecCommands().add(execCommand("Performing relase in dry run, with cleanup"
                         , asList("./gradlew", RELEASE_NEEDED, PERFORM_RELEASE_TASK, RELEASE_CLEAN_UP_TASK, "-PdryRun")));
-                t.doLast(new Action<Task>() {
-                    @Override
-                    public void execute(Task task) {
-                        LOG.lifecycle("  The release test was successful. Ship it!");
-                    }
-                });
+                TaskSuccessfulMessage.logOnSuccess(t, "  The release test was successful. Ship it!");
             }
         });
 

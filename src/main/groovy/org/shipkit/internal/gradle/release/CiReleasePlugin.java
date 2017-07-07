@@ -3,7 +3,6 @@ package org.shipkit.internal.gradle.release;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.StopExecutionException;
@@ -11,6 +10,7 @@ import org.gradle.process.ExecResult;
 import org.shipkit.gradle.exec.ShipkitExecTask;
 import org.shipkit.internal.gradle.git.GitSetupPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
+import org.shipkit.internal.gradle.util.TaskSuccessfulMessage;
 
 import static java.util.Arrays.asList;
 import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
@@ -60,12 +60,7 @@ public class CiReleasePlugin implements Plugin<Project> {
                 task.getExecCommands().add(execCommand(
                         "Performing the release", asList("./gradlew", ReleasePlugin.PERFORM_RELEASE_TASK)));
 
-                task.doLast(new Action<Task>() {
-                    @Override
-                    public void execute(Task t) {
-                        LOG.lifecycle("  New version was shipped! Thank you for using Shipkit!");
-                    }
-                });
+                TaskSuccessfulMessage.logOnSuccess(task, "  New version was shipped! Thank you for using Shipkit!");
             }
         });
     }
