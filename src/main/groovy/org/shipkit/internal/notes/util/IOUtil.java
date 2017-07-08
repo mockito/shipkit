@@ -124,7 +124,7 @@ public class IOUtil {
             p = new PrintWriter(new OutputStreamWriter(new FileOutputStream(target), "UTF-8"));
             p.write(content);
         } catch (Exception e) {
-            throw new RuntimeException("Problems writing text to file: " + target);
+            throw new RuntimeException("Problems writing text to file: " + target, e);
         } finally {
             close(p);
         }
