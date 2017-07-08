@@ -7,34 +7,12 @@ class E2ETestingPluginTest extends Specification {
 
     def project = new ProjectBuilder().build()
 
-    def "e2e with example project by default"() {
-        project.plugins.apply("org.shipkit.e2e-test")
-
-        expect:
-        project.tasks.'runTestReleaseShipkit-example'
-    }
-
-    def "should extract project name correctly"() {
-        E2ETestingPlugin.E2ETest sut = new E2ETestingPlugin.E2ETest(project)
-
+    def "should apply plugin and create e2eTest task"() {
         when:
-        sut.create("https://github.com/mockito/mockito")
+        project.plugins.apply(E2ETestingPlugin)
 
         then:
-        project.tasks.runTestReleaseMockito
-        project.tasks.cloneProjectFromGitHubMockito
-        project.tasks.cloneProjectToWorkDirMockito
+        project.tasks.e2eTest
     }
 
-    def "should extract project name correctly when slash is the last char in url"() {
-        E2ETestingPlugin.E2ETest sut = new E2ETestingPlugin.E2ETest(project)
-
-        when:
-        sut.create("https://github.com/xx/yyy/")
-
-        then:
-        project.tasks.runTestReleaseYyy
-        project.tasks.cloneProjectFromGitHubYyy
-        project.tasks.cloneProjectToWorkDirYyy
-    }
 }
