@@ -18,6 +18,7 @@ apply plugin: 'codenarc'
 
 apply from: 'gradle/java6-compatibility.gradle'
 apply from: 'gradle/precommit.gradle'
+apply from: 'gradle/e2e-test.gradle'
 
 apply plugin: 'org.shipkit.gradle-plugin'
 

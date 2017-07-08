@@ -1,0 +1,19 @@
+sourceSets {
+    e2eTest {
+        groovy {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+        }
+    }
+}
+
+configurations {
+    e2eTestCompile.extendsFrom testCompile
+    e2eTestRuntime.extendsFrom testRuntime
+}
+
+task e2eTest(type:Test){
+    description = "Run e2e tests (located in src/e2eTest/...)."
+    testClassesDir = project.sourceSets.e2eTest.output.classesDir
+    classpath = project.sourceSets.e2eTest.runtimeClasspath
+}
