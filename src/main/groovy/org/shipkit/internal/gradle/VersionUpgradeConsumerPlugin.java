@@ -4,6 +4,8 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Exec;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.git.GitPushTask;
@@ -20,6 +22,7 @@ import org.shipkit.internal.util.ExposedForTesting;
 import javax.inject.Inject;
 
 /**
+ * BEWARE! This plugin is in incubating state, so its API may change in the future!
  * The plugin adds following tasks:
  *
  * <ul>
@@ -32,9 +35,12 @@ import javax.inject.Inject;
  *     <li>performVersionUpgrade - task aggregating all of the above</li>
  * </ul>
  *
- *
+ * Plugin should be used in client projects that want to have automated version upgrades of some other dependency, that use the producer version of this plugin.
+ * Project with the producer plugin applied would then clone a fork of client project and run './gradlew performVersionUpgrade -PdependencyNewVersion=${VERSION}' on it.
  */
 public class VersionUpgradeConsumerPlugin implements Plugin<Project> {
+
+    private static final Logger LOG = Logging.getLogger(VersionUpgradeConsumerPlugin.class);
 
     public static final String VERSION_UPGRADE_CHECKOUT_BASE_BRANCH = "versionUpgradeCheckoutBaseBranch";
     public static final String VERSION_UPGRADE_CHECKOUT_VERSION_BRANCH = "versionUpgradeCheckoutVersionBranch";
@@ -68,6 +74,7 @@ public class VersionUpgradeConsumerPlugin implements Plugin<Project> {
 
     @Override
     public void apply(final Project project) {
+        LOG.lifecycle("Applying VersionUpgradeConsumerPlugin, beware that it's is INCUBATING state, so its API may change!");
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
 
         TaskMaker.task(project, VERSION_UPGRADE_CHECKOUT_BASE_BRANCH, GitCheckOutTask.class, new Action<GitCheckOutTask>() {
@@ -111,7 +118,7 @@ public class VersionUpgradeConsumerPlugin implements Plugin<Project> {
                     public void run() {
                         task.setNewVersion(getShipkitNewVersion(project));
                         String file = getDependencyFile(project);
-                        task.setConfigFile(project.file(file));
+                        task.setBuildFile(project.file(file));
                         task.setDependencyPattern(getDependencyPattern(project));
                     }
                 });

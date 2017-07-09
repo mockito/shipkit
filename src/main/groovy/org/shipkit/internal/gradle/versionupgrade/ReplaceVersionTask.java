@@ -10,7 +10,7 @@ import java.io.File;
 
 /**
  * Replaces version of given dependency with {@link ReplaceVersionTask#newVersion}
- * in the given {@link ReplaceVersionTask#configFile}
+ * in the given {@link ReplaceVersionTask#buildFile}
  * Use {@link ReplaceVersionTask#dependencyPattern} to tell Shipkit how it should
  * replace the dependency. You should set it to regex pattern that contains
  * {@value #VERSION_PLACEHOLDER} instead of version number.
@@ -23,18 +23,18 @@ public class ReplaceVersionTask extends DefaultTask{
     public static final String VERSION_REGEX = "[0-9.]+";
 
     private String newVersion;
-    private File configFile;
+    private File buildFile;
     private String dependencyPattern;
 
     @TaskAction
     public void replaceVersion(){
-        LOG.lifecycle("  Replacing version in '{}' using pattern '{}' and version '{}'.", configFile, dependencyPattern, newVersion);
+        LOG.lifecycle("  Replacing version in '{}' using pattern '{}' and version '{}'.", buildFile, dependencyPattern, newVersion);
         String versionPattern = dependencyPattern.replace(VERSION_PLACEHOLDER, VERSION_REGEX);
         String replacement = dependencyPattern.replace(VERSION_PLACEHOLDER, newVersion);
 
-        String content = IOUtil.readFully(configFile);
+        String content = IOUtil.readFully(buildFile);
         String updatedContent = content.replaceAll(versionPattern ,replacement);
-        IOUtil.writeFile(configFile.getAbsoluteFile(), updatedContent);
+        IOUtil.writeFile(buildFile.getAbsoluteFile(), updatedContent);
     }
 
     /**
@@ -52,17 +52,17 @@ public class ReplaceVersionTask extends DefaultTask{
     }
 
     /**
-     * Config file where dependency will be updated
+     * Build file where dependency will be updated
      */
-    public File getConfigFile() {
-        return configFile;
+    public File getBuildFile() {
+        return buildFile;
     }
 
     /**
-     * See {@link #getConfigFile()}
+     * See {@link #getBuildFile()}
      */
-    public void setConfigFile(File configFile) {
-        this.configFile = configFile;
+    public void setBuildFile(File buildFile) {
+        this.buildFile = buildFile;
     }
 
     /**

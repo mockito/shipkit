@@ -18,7 +18,7 @@ class ReplaceVersionTaskTest extends Specification {
 
         configFile << "dependencies{ compile org.shipkit:shipkit:0.1.2 }"
 
-        replaceVersionTask.configFile = configFile
+        replaceVersionTask.buildFile = configFile
         replaceVersionTask.newVersion = "0.2.3"
         replaceVersionTask.dependencyPattern = "org.shipkit:shipkit:{VERSION}"
 

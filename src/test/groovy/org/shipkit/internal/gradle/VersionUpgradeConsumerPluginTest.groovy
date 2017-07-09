@@ -63,7 +63,7 @@ class VersionUpgradeConsumerPluginTest extends PluginSpecification {
         then:
         def task = project.tasks.versionUpgradeReplaceVersion
         task.newVersion == "0.1.2"
-        task.configFile == dependencyFile
+        task.buildFile == dependencyFile
         task.dependencyPattern == "shipkit:{VERSION}"
     }
 
@@ -79,7 +79,7 @@ class VersionUpgradeConsumerPluginTest extends PluginSpecification {
         then:
         def task = project.tasks.versionUpgradeReplaceVersion
         task.newVersion == "0.1.2"
-        task.configFile == project.file("build.gradle")
+        task.buildFile == project.file("build.gradle")
         task.dependencyPattern == "org.shipkit:shipkit:{VERSION}"
     }
 
