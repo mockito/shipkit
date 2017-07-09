@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle.autoupdate
+package org.shipkit.internal.gradle.versionupgrade
 
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule

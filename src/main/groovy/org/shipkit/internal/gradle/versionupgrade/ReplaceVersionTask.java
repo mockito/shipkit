@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle.autoupdate;
+package org.shipkit.internal.gradle.versionupgrade;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.Logger;
@@ -13,7 +13,7 @@ import java.io.File;
  * in the given {@link ReplaceVersionTask#configFile}
  * Use {@link ReplaceVersionTask#dependencyPattern} to tell Shipkit how it should
  * replace the dependency. You should set it to regex pattern that contains
- * {@link ReplaceVersionTask.VERSION_PLACEHOLDER} instead of version number.
+ * {@value #VERSION_PLACEHOLDER} instead of version number.
  */
 public class ReplaceVersionTask extends DefaultTask{
 
@@ -66,7 +66,7 @@ public class ReplaceVersionTask extends DefaultTask{
     }
 
     /**
-     * Regex pattern which is used to replace dependency, should contain {@link VERSION_PLACEHOLDER}
+     * Regex pattern which is used to replace dependency, should contain {@value #VERSION_PLACEHOLDER}
      * instead of version. Eg. "org.shipkit:shipkit:{VERSION}"
      */
     public String getDependencyPattern() {
