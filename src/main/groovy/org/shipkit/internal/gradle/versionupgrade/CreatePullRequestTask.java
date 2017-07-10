@@ -43,11 +43,7 @@ public class CreatePullRequestTask extends DefaultTask{
             "  \"base\": \"" + baseBranch + "\"" +
             "}";
 
-        try {
-            gitHubApi.post("/repos/" + repositoryUrl + "/pulls", body);
-        } catch(IOException e){
-            LOG.error("  Creating a pull request failed.\n  {}", e.getMessage());
-        }
+        gitHubApi.post("/repos/" + repositoryUrl + "/pulls", body);
     }
 
 
