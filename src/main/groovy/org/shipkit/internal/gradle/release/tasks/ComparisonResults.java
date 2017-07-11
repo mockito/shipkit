@@ -32,10 +32,10 @@ class ComparisonResults {
             description = "\n  Compared " + comparisons + " publication(s). Changes since previous release:\n" + sb;
             resultsIdentical = false;
         } else if (comparisons > 0) {
-            description = "\n  Compared " + comparisons + " publication(s). No changes since previous release!";
+            description = "\n  Compared " + comparisons + " publication(s). No changes since previous release!\n";
             resultsIdentical = true;
         } else {
-            description = "\n  Publication comparison was skipped (no comparison result files found).";
+            description = "\n  Publication comparison was skipped (no comparison result files found).\n";
             resultsIdentical = false;
         }
     }

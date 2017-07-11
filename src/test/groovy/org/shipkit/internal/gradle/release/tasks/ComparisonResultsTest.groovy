@@ -18,13 +18,13 @@ class ComparisonResultsTest extends Specification {
     def "describes results"() {
         expect:
         new ComparisonResults([]).description ==
-            "\n  Publication comparison was skipped (no comparison result files found)."
+            "\n  Publication comparison was skipped (no comparison result files found).\n"
         new ComparisonResults([diff, empty]).description ==
             "\n  Compared 2 publication(s). Changes since previous release:\ndiff"
         new ComparisonResults([empty]).description ==
-            "\n  Compared 1 publication(s). No changes since previous release!"
+            "\n  Compared 1 publication(s). No changes since previous release!\n"
         new ComparisonResults([new File("does not exist")]).description ==
-            "\n  Publication comparison was skipped (no comparison result files found)."
+            "\n  Publication comparison was skipped (no comparison result files found).\n"
     }
 
     def "knows if results are identical"() {
