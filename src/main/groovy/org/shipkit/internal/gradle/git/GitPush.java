@@ -55,7 +55,7 @@ public class GitPush {
         }
     }
 
-    static String getWriteToken(ReleaseConfiguration conf, String writeTokenEnvValue) {
+    public static String getWriteToken(ReleaseConfiguration conf, String writeTokenEnvValue) {
         String token = conf.getLenient().getGitHub().getWriteAuthToken();
         if (token != null) {
             LOG.lifecycle("  'git push' uses GitHub write token specified in shipkit configuration.");
