@@ -10,6 +10,7 @@ import org.gradle.process.ExecResult;
 import org.shipkit.gradle.exec.ShipkitExecTask;
 import org.shipkit.internal.gradle.git.GitSetupPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
+import org.shipkit.internal.gradle.util.TaskSuccessfulMessage;
 
 import static java.util.Arrays.asList;
 import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
@@ -34,7 +35,7 @@ public class CiReleasePlugin implements Plugin<Project> {
     private final static Logger LOG = Logging.getLogger(CiReleasePlugin.class);
 
     @Override
-    public void apply(Project project) {
+    public void apply(final Project project) {
         project.getPlugins().apply(ReleasePlugin.class);
         project.getPlugins().apply(GitSetupPlugin.class);
 
@@ -58,6 +59,8 @@ public class CiReleasePlugin implements Plugin<Project> {
                         "Preparing working copy for the release", asList("./gradlew", GitSetupPlugin.CI_RELEASE_PREPARE_TASK)));
                 task.getExecCommands().add(execCommand(
                         "Performing the release", asList("./gradlew", ReleasePlugin.PERFORM_RELEASE_TASK)));
+
+                TaskSuccessfulMessage.logOnSuccess(task, "  Release " + project.getVersion() + " was shipped! Thank you for using Shipkit!");
             }
         });
     }

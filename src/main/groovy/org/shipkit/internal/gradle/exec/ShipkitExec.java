@@ -31,6 +31,7 @@ public class ShipkitExec {
                     LOG.lifecycle("  " + execCommand.getDescription() + ":\n    " + StringUtil.join(execCommand.getCommandLine(), " "));
                 }
             });
+            LOG.lifecycle("  External process {} completed.", execCommand.getLoggingPrefix().trim());
             execCommand.getResultAction().execute(result);
         }
     }

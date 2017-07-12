@@ -4,11 +4,7 @@ import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.ReleaseNeededTask;
-import org.shipkit.internal.notes.util.IOUtil;
 import org.shipkit.internal.util.EnvVariables;
-
-import java.io.File;
-import java.util.List;
 
 public class ReleaseNeeded {
 
@@ -37,16 +33,18 @@ public class ReleaseNeeded {
         boolean releasableBranch = task.getBranch() != null && task.getBranch().matches(task.getReleasableBranchRegex());
         LOG.lifecycle("  Current branch '{}' matches '{}': {}", task.getBranch(), task.getReleasableBranchRegex(), releasableBranch);
 
-        boolean publicationsChanged = publicationsChanged(task.getComparisonResults());
+        ComparisonResults results = new ComparisonResults(task.getComparisonResults());
+        boolean publicationsIdentical = results.areResultsIdentical();
+        LOG.lifecycle(results.getDescription());
 
-        boolean releaseNotNeeded = !publicationsChanged || skipEnvVariable || skippedByCommitMessage || task.isPullRequest() || !releasableBranch;
+        boolean releaseNotNeeded = publicationsIdentical || skipEnvVariable || skippedByCommitMessage || task.isPullRequest() || !releasableBranch;
 
         String message = "  Release is needed: " + !releaseNotNeeded +
                 "\n    - skip by env variable: " + skipEnvVariable +
                 "\n    - skip by commit message: " + skippedByCommitMessage +
-                "\n    - is pull request build:  " + task.isPullRequest() +
-                "\n    - is releasable branch:  " + releasableBranch +
-                "\n    - publications changed since previous release:  " + publicationsChanged;
+                "\n    - is pull request build: " + task.isPullRequest() +
+                "\n    - is releasable branch: " + releasableBranch +
+                "\n    - publications same as previous release: " + publicationsIdentical;
 
         if (releaseNotNeeded && task.isExplosive()) {
             throw new GradleException(message);
@@ -55,26 +53,5 @@ public class ReleaseNeeded {
         }
 
         return !releaseNotNeeded;
-    }
-
-    private static boolean containsDifferences(File comparisonResult) {
-        return comparisonResult.isFile() && comparisonResult.length() > 0;
-    }
-
-    public static boolean publicationsChanged(List<File> comparisonResults) {
-        if (comparisonResults.isEmpty()) {
-            return true;
-        }
-
-        boolean changed = false;
-        LOG.lifecycle("\n  Results of publications comparison:\n");
-        for (File result : comparisonResults) {
-            if (containsDifferences(result)) {
-                LOG.lifecycle(IOUtil.readFully(result));
-                changed = true;
-            }
-        }
-
-        return changed;
     }
 }
