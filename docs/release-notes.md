@@ -1,3 +1,6 @@
+**0.9.3 (2017-07-12)** - [8 commits](https://github.com/mockito/shipkit/compare/v0.9.2...v0.9.3) by [Szczepan Faber](http://github.com/szczepiq) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.3-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.3)
+ - Logging tweaks to improve the clarity of the build log [(#306)](https://github.com/mockito/shipkit/pull/306)
+
 **0.9.2 (2017-07-08)** - [2 commits](https://github.com/mockito/shipkit/compare/v0.9.0...v0.9.2) by [Szczepan Faber](http://github.com/szczepiq) (1), [Wojtek Wilk](http://github.com/wwilk) (1) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.2-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.2)
  - Consumer newer Shipkit [(#305)](https://github.com/mockito/shipkit/pull/305)
 
