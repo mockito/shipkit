@@ -1,3 +1,6 @@
+**0.9.4 (2017-07-12)** - [5 commits](https://github.com/mockito/shipkit/compare/v0.9.3...v0.9.4) by [Wojtek Wilk](http://github.com/wwilk) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.4-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.4)
+ - AutoUpdateConsumerPlugin added #302 [(#304)](https://github.com/mockito/shipkit/pull/304)
+
 **0.9.3 (2017-07-12)** - [8 commits](https://github.com/mockito/shipkit/compare/v0.9.2...v0.9.3) by [Szczepan Faber](http://github.com/szczepiq) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.3-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.3)
  - Logging tweaks to improve the clarity of the build log [(#306)](https://github.com/mockito/shipkit/pull/306)
 
