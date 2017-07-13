@@ -10,8 +10,15 @@ import org.shipkit.internal.gradle.util.TaskMaker;
 import static org.shipkit.internal.gradle.util.BuildConventions.contributorsFile;
 
 /**
- * Adds and configures tasks for getting contributor git user to GitHub user mappings.
- * Useful for release notes and pom.xml generation. Adds tasks:
+ * Adds and configures tasks for getting contributor information from GitHub.
+ * Contributors information feeds release notes and pom.xml.
+ * <p>
+ * Applies plugins:
+ * <ul>
+ *     <li>{@link ReleaseConfigurationPlugin}</li>
+ * </ul>
+ *
+ * Adds tasks:
  * <ul>
  *     <li>fetchAllContributors - {@link AllContributorsFetcherTask}</li>
  * </ul>
