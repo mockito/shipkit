@@ -14,7 +14,7 @@ import org.shipkit.internal.version.VersionInfo;
 import java.io.File;
 
 /**
- * Adds extension for configuring the release to the root project.
+ * Adds Gradle DSL extension to the root project so that Shipkit can be configured.
  * Configuration properties are loaded from gradle/shipkit.gradle file when the plugin is applied.
  * This mechanism assures that all properties are accessible during configuration phase.
  * If such file is not present, it will be created automatically with required properties and example values.
