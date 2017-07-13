@@ -7,6 +7,7 @@ import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.gradle.ReleaseConfiguration;
+import org.shipkit.internal.gradle.notes.tasks.ContributorsFetcher;
 import org.shipkit.internal.notes.contributors.AllContributorsSerializer;
 import org.shipkit.internal.notes.contributors.Contributors;
 import org.shipkit.internal.notes.contributors.GitHubContributorsProvider;
@@ -26,13 +27,15 @@ import java.io.File;
  */
 public class ContributorsFetcherTask extends DefaultTask {
 
-    private static final Logger LOG = Logging.getLogger(ContributorsFetcherTask.class);
-
     @Input private String apiUrl;
     @Input private String repository;
     @Input private String readOnlyAuthToken;
-
     @OutputFile private File outputFile;
+
+    @TaskAction
+    public void fetchContributors() {
+        new ContributorsFetcher().fetchContributors(this);
+    }
 
     /**
      * See {@link ReleaseConfiguration.GitHub#getApiUrl()}
@@ -88,19 +91,5 @@ public class ContributorsFetcherTask extends DefaultTask {
      */
     public void setOutputFile(File outputFile) {
         this.outputFile = outputFile;
-    }
-
-    @TaskAction
-    public void fetchContributors() {
-        LOG.lifecycle("  Fetching all contributors for project");
-
-        GitHubContributorsProvider contributorsProvider = Contributors.getGitHubContributorsProvider(apiUrl, repository, readOnlyAuthToken);
-        ProjectContributorsSet contributors = contributorsProvider.getAllContributorsForProject();
-
-        AllContributorsSerializer serializer = new AllContributorsSerializer();
-        final String json = serializer.serialize(contributors);
-        IOUtil.writeFile(outputFile, json);
-
-        LOG.lifecycle("  Serialized all contributors into: {}", getProject().relativePath(outputFile));
     }
 }
