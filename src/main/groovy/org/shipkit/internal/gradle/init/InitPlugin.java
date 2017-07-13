@@ -6,7 +6,7 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.shipkit.gradle.InitTravisTask;
+import org.shipkit.gradle.init.InitTravisTask;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
