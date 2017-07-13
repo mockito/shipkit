@@ -17,20 +17,20 @@ class InitShipkitFileTaskTest extends Specification {
     def "does not modify shipkit config file if it already exists"() {
         given:
         def configFileContent = "shipkit{}"
-        task.configFile = tmp.newFile("shipkit.gradle")
-        task.configFile << configFileContent
+        task.shipkitFile = tmp.newFile("shipkit.gradle")
+        task.shipkitFile << configFileContent
 
         when:
         task.initShipkitConfigFile()
 
         then:
-        task.configFile.text == configFileContent
+        task.shipkitFile.text == configFileContent
     }
 
     def "uses fallback repo if call to gitOriginRepoProvider fails"() {
         given:
         def configFile = new File("${tmp.root.absolutePath}/shipkit.gradle")
-        task.configFile = configFile
+        task.shipkitFile = configFile
         def gitOriginRepoProvider = Mock(GitOriginRepoProvider)
         task.setGitOriginRepoProvider(gitOriginRepoProvider)
         gitOriginRepoProvider.getOriginGitRepo() >> {throw new RuntimeException()}
@@ -39,13 +39,13 @@ class InitShipkitFileTaskTest extends Specification {
         task.initShipkitConfigFile()
 
         then:
-        task.configFile.text.contains('gitHub.repository = "mockito/shipkit-example"')
+        task.shipkitFile.text.contains('gitHub.repository = "mockito/shipkit-example"')
     }
 
     def "creates default shipkit config file if it does not exist"() {
         given:
         def configFile = new File("${tmp.root.absolutePath}/shipkit.gradle")
-        task.configFile = configFile
+        task.shipkitFile = configFile
         def gitOriginRepoProvider = Mock(GitOriginRepoProvider)
         task.setGitOriginRepoProvider(gitOriginRepoProvider)
         gitOriginRepoProvider.getOriginGitRepo() >> "mockito/mockito"
@@ -54,7 +54,7 @@ class InitShipkitFileTaskTest extends Specification {
         task.initShipkitConfigFile()
 
         then:
-        task.configFile.text ==
+        task.shipkitFile.text ==
                 """//This file was created automatically and is intended to be checked-in.
 shipkit {
    gitHub.repository = \"mockito/mockito\"

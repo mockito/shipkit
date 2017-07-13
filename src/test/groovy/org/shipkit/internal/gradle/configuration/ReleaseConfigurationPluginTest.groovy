@@ -44,7 +44,7 @@ class ReleaseConfigurationPluginTest extends PluginSpecification {
 
         then:
         InitShipkitFileTask initConfigTask = root.tasks.findByName(ReleaseConfigurationPlugin.INIT_CONFIG_FILE_TASK)
-        initConfigTask.configFile == root.file(ReleaseConfigurationPlugin.CONFIG_FILE_RELATIVE_PATH)
+        initConfigTask.shipkitFile == root.file(ReleaseConfigurationPlugin.CONFIG_FILE_RELATIVE_PATH)
     }
 
     def "loads default properties if config file does not exist"() {

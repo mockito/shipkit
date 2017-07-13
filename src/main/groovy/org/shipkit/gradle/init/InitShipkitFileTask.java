@@ -21,7 +21,7 @@ public class InitShipkitFileTask extends DefaultTask{
 
     private static final Logger LOG = Logging.getLogger(InitShipkitFileTask.class);
 
-    private File configFile;
+    private File shipkitFile;
     private GitOriginRepoProvider gitOriginRepoProvider;
     public static final String FALLBACK_GITHUB_REPO = "mockito/shipkit-example";
 
@@ -31,12 +31,12 @@ public class InitShipkitFileTask extends DefaultTask{
     }
 
     @TaskAction public void initShipkitConfigFile(){
-        if(configFile.exists()){
-            LOG.lifecycle("  Shipkit configuration already exists, nothing to do. Configuration file: {}", configFile.getPath());
+        if(shipkitFile.exists()){
+            LOG.lifecycle("  Shipkit configuration already exists, nothing to do. Configuration file: {}", shipkitFile.getPath());
         } else{
             createShipKitConfigFile();
             LOG.lifecycle("  Shipkit configuration created at {}!\n" +
-                    "  You can modify it manually. Remember to check it into VCS!", configFile.getPath());
+                    "  You can modify it manually. Remember to check it into VCS!", shipkitFile.getPath());
         }
     }
 
@@ -57,7 +57,7 @@ public class InitShipkitFileTask extends DefaultTask{
 
                         .resolve();
 
-        IOUtil.writeFile(configFile, content);
+        IOUtil.writeFile(shipkitFile, content);
     }
 
     private String getOriginGitRepo() {
@@ -66,18 +66,18 @@ public class InitShipkitFileTask extends DefaultTask{
         } catch (Exception e) {
             LOG.lifecycle("  Problems getting url of git remote origin (run with --debug to find out more).\n" +
                     "  Using fallback '" + FALLBACK_GITHUB_REPO + "' instead.\n" +
-                    "  Please update GitHub repository in '" + configFile + "' file.\n");
+                    "  Please update GitHub repository in '" + shipkitFile + "' file.\n");
             LOG.debug("  Problems getting url of git remote origin", e);
             return FALLBACK_GITHUB_REPO;
         }
     }
 
-    public File getConfigFile() {
-        return configFile;
+    public File getShipkitFile() {
+        return shipkitFile;
     }
 
-    public void setConfigFile(File configFile) {
-        this.configFile = configFile;
+    public void setShipkitFile(File shipkitFile) {
+        this.shipkitFile = shipkitFile;
     }
 
     @ExposedForTesting

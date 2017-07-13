@@ -50,9 +50,9 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
             configuration = project.getRootProject().getExtensions()
                     .create("shipkit", ReleaseConfiguration.class);
 
-            final File configFile = project.file(CONFIG_FILE_RELATIVE_PATH);
+            final File shipkitFile = project.file(CONFIG_FILE_RELATIVE_PATH);
 
-            loadConfigFromFile(project.getRootProject(), configFile);
+            loadConfigFromFile(project.getRootProject(), shipkitFile);
 
             if (project.hasProperty(DRY_RUN_PROPERTY)) {
                 configuration.setDryRun(true);
@@ -66,7 +66,7 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
                 @Override
                 public void execute(InitShipkitFileTask t) {
                     t.setDescription("Creates Shipkit configuration file unless it already exists");
-                    t.setConfigFile(configFile);
+                    t.setShipkitFile(shipkitFile);
 
                     project.getTasks().getByName(InitPlugin.INIT_SHIPKIT_TASK).dependsOn(t);
                 }
