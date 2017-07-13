@@ -33,7 +33,6 @@ class ReleaseConfigurationGettersAndSettersTest extends Specification {
         setter = row.setter
         getter = row.getter
         obj = row.object
-
     }
 
     def getValueForSetter(Method setter) {
