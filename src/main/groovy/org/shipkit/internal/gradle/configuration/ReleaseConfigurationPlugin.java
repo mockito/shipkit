@@ -36,8 +36,8 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
 
     private ReleaseConfiguration configuration;
 
-    public static final String CONFIG_FILE_RELATIVE_PATH = "gradle/shipkit.gradle";
-    static final String INIT_CONFIG_FILE_TASK = "initConfigFile";
+    public static final String SHIPKIT_FILE_RELATIVE_PATH = "gradle/shipkit.gradle";
+    static final String INIT_SHIPKIT_FILE_TASK = "initShipkitFile";
     public static final String DRY_RUN_PROPERTY = "dryRun";
 
     public void apply(final Project project) {
@@ -50,7 +50,7 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
             configuration = project.getRootProject().getExtensions()
                     .create("shipkit", ReleaseConfiguration.class);
 
-            final File shipkitFile = project.file(CONFIG_FILE_RELATIVE_PATH);
+            final File shipkitFile = project.file(SHIPKIT_FILE_RELATIVE_PATH);
 
             loadConfigFromFile(project.getRootProject(), shipkitFile);
 
@@ -62,7 +62,7 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
 
             configuration.setPreviousReleaseVersion(info.getPreviousVersion());
 
-            TaskMaker.task(project, INIT_CONFIG_FILE_TASK, InitShipkitFileTask.class, new Action<InitShipkitFileTask>() {
+            TaskMaker.task(project, INIT_SHIPKIT_FILE_TASK, InitShipkitFileTask.class, new Action<InitShipkitFileTask>() {
                 @Override
                 public void execute(InitShipkitFileTask t) {
                     t.setDescription("Creates Shipkit configuration file unless it already exists");
@@ -78,8 +78,8 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
         }
     }
 
-    private void loadConfigFromFile(Project rootProject, File configFile) {
-        if (!configFile.exists()) {
+    private void loadConfigFromFile(Project rootProject, File shipkitFile) {
+        if (!shipkitFile.exists()) {
             // sets some defaults so that they can't be used to run any task (except for bootstrap ones)
             // but also configuration doesn't fail when running Shipkit for the first time
             // and configuration files are not created yet
@@ -92,7 +92,7 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
             rootProject.apply(new Action<ObjectConfigurationAction>() {
                 @Override
                 public void execute(ObjectConfigurationAction objectConfigurationAction) {
-                    objectConfigurationAction.from(CONFIG_FILE_RELATIVE_PATH);
+                    objectConfigurationAction.from(SHIPKIT_FILE_RELATIVE_PATH);
                 }
             });
         }

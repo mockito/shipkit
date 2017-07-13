@@ -11,7 +11,7 @@ import java.io.File;
  * Generated file is intended to be checked in.
  * If the file already exists, this task does nothing.
  */
-public class InitShipkitFileTask extends DefaultTask{
+public class InitShipkitFileTask extends DefaultTask {
 
     private File shipkitFile;
 
@@ -23,7 +23,8 @@ public class InitShipkitFileTask extends DefaultTask{
         this.shipkitFile = shipkitFile;
     }
 
-    @TaskAction public void initShipkitConfigFile(){
+    @TaskAction
+    public void initShipkitFile() {
         new InitShipkitFile().initShipkitFile(this);
     }
 }

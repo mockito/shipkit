@@ -25,7 +25,7 @@ class PluginSpecification extends Specification{
 
     void setup(){
         initProject()
-        createConfigFile()
+        createShipkitFile()
         createReleaseConfiguration()
     }
 
@@ -33,11 +33,11 @@ class PluginSpecification extends Specification{
         project = new ProjectBuilder().withProjectDir(tmp.root).build()
     }
 
-    void createConfigFile(){
+    void createShipkitFile(){
         def rootPath = tmp.root.absolutePath
-        def configFile = new File(rootPath + "/" + ReleaseConfigurationPlugin.CONFIG_FILE_RELATIVE_PATH);
-        IOUtil.createParentDirectory(configFile)
-        configFile << "shipkit { }"
+        def shipkitFile = new File(rootPath + "/" + ReleaseConfigurationPlugin.SHIPKIT_FILE_RELATIVE_PATH);
+        IOUtil.createParentDirectory(shipkitFile)
+        shipkitFile << "shipkit { }"
     }
 
     ReleaseConfiguration applyReleaseConfiguration(){

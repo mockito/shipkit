@@ -38,18 +38,18 @@ class ReleaseConfigurationPluginTest extends PluginSpecification {
         root.plugins.apply(ReleaseConfigurationPlugin).configuration.dryRun
     }
 
-    def "configures initConfigFile task correctly"() {
+    def "configures initShipkitFile task correctly"() {
         when:
         root.plugins.apply(ReleaseConfigurationPlugin)
 
         then:
-        InitShipkitFileTask initConfigTask = root.tasks.findByName(ReleaseConfigurationPlugin.INIT_CONFIG_FILE_TASK)
-        initConfigTask.shipkitFile == root.file(ReleaseConfigurationPlugin.CONFIG_FILE_RELATIVE_PATH)
+        InitShipkitFileTask task = root.tasks.findByName(ReleaseConfigurationPlugin.INIT_SHIPKIT_FILE_TASK)
+        task.shipkitFile == root.file(ReleaseConfigurationPlugin.SHIPKIT_FILE_RELATIVE_PATH)
     }
 
     def "loads default properties if config file does not exist"() {
         given:
-        assert !root.file(ReleaseConfigurationPlugin.CONFIG_FILE_RELATIVE_PATH).exists()
+        assert !root.file(ReleaseConfigurationPlugin.SHIPKIT_FILE_RELATIVE_PATH).exists()
 
         when:
         def conf = root.plugins.apply(ReleaseConfigurationPlugin).configuration
@@ -67,7 +67,7 @@ class ReleaseConfigurationPluginTest extends PluginSpecification {
     }
 
     @Override
-    void createConfigFile(){
+    void createShipkitFile(){
         // config file created in setup is not needed in this test
     }
 }
