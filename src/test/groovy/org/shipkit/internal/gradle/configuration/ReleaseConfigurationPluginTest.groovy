@@ -2,7 +2,7 @@ package org.shipkit.internal.gradle.configuration
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
-import org.shipkit.gradle.init.InitConfigFileTask
+import org.shipkit.gradle.init.InitShipkitFileTask
 import testutil.PluginSpecification
 
 class ReleaseConfigurationPluginTest extends PluginSpecification {
@@ -43,7 +43,7 @@ class ReleaseConfigurationPluginTest extends PluginSpecification {
         root.plugins.apply(ReleaseConfigurationPlugin)
 
         then:
-        InitConfigFileTask initConfigTask = root.tasks.findByName(ReleaseConfigurationPlugin.INIT_CONFIG_FILE_TASK)
+        InitShipkitFileTask initConfigTask = root.tasks.findByName(ReleaseConfigurationPlugin.INIT_CONFIG_FILE_TASK)
         initConfigTask.configFile == root.file(ReleaseConfigurationPlugin.CONFIG_FILE_RELATIVE_PATH)
     }
 

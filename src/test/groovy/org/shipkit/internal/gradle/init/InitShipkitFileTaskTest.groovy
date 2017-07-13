@@ -3,16 +3,16 @@ package org.shipkit.internal.gradle.init
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import org.shipkit.gradle.init.InitConfigFileTask
+import org.shipkit.gradle.init.InitShipkitFileTask
 import org.shipkit.internal.notes.vcs.GitOriginRepoProvider
 import spock.lang.Specification
 
-class InitConfigFileTaskTest extends Specification {
+class InitShipkitFileTaskTest extends Specification {
 
     @Rule
     TemporaryFolder tmp = new TemporaryFolder()
 
-    def task = new ProjectBuilder().build().tasks.create("initConfigFile", InitConfigFileTask)
+    def task = new ProjectBuilder().build().tasks.create("initConfigFile", InitShipkitFileTask)
 
     def "does not modify shipkit config file if it already exists"() {
         given:

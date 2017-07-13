@@ -13,15 +13,19 @@ import org.shipkit.internal.util.TemplateResolver;
 
 import java.io.File;
 
-public class InitConfigFileTask extends DefaultTask{
+/**
+ * Initializes Shipkit configuration file with some default values.
+ * Generated file is intended to be checked in.
+ */
+public class InitShipkitFileTask extends DefaultTask{
 
-    private static final Logger LOG = Logging.getLogger(InitConfigFileTask.class);
+    private static final Logger LOG = Logging.getLogger(InitShipkitFileTask.class);
 
     private File configFile;
     private GitOriginRepoProvider gitOriginRepoProvider;
     public static final String FALLBACK_GITHUB_REPO = "mockito/shipkit-example";
 
-    public InitConfigFileTask(){
+    public InitShipkitFileTask(){
         ProcessRunner runner = new DefaultProcessRunner(getProject().getProjectDir());
         gitOriginRepoProvider = new GitOriginRepoProvider(runner);
     }

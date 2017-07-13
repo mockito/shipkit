@@ -6,7 +6,7 @@ import org.gradle.api.Project;
 import org.gradle.api.plugins.ObjectConfigurationAction;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.internal.gradle.VersioningPlugin;
-import org.shipkit.gradle.init.InitConfigFileTask;
+import org.shipkit.gradle.init.InitShipkitFileTask;
 import org.shipkit.internal.gradle.init.InitPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.version.VersionInfo;
@@ -62,9 +62,9 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
 
             configuration.setPreviousReleaseVersion(info.getPreviousVersion());
 
-            TaskMaker.task(project, INIT_CONFIG_FILE_TASK, InitConfigFileTask.class, new Action<InitConfigFileTask>() {
+            TaskMaker.task(project, INIT_CONFIG_FILE_TASK, InitShipkitFileTask.class, new Action<InitShipkitFileTask>() {
                 @Override
-                public void execute(InitConfigFileTask t) {
+                public void execute(InitShipkitFileTask t) {
                     t.setDescription("Creates Shipkit configuration file unless it already exists");
                     t.setConfigFile(configFile);
 
