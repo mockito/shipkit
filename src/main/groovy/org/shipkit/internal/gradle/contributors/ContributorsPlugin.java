@@ -34,10 +34,9 @@ public class ContributorsPlugin implements Plugin<Project> {
     }
 
     private void fetchAllTask(final Project project, final ReleaseConfiguration conf) {
-        project.getTasks().create(FETCH_ALL_CONTRIBUTORS_TASK, FetchContributorsTask.class, new Action<FetchContributorsTask>() {
+        TaskMaker.task(project, FETCH_ALL_CONTRIBUTORS_TASK, FetchContributorsTask.class, new Action<FetchContributorsTask>() {
             @Override
             public void execute(final FetchContributorsTask task) {
-                task.setGroup(TaskMaker.TASK_GROUP);
                 task.setDescription("Fetch info about all project contributors from GitHub and store it in file");
                 task.setOutputFile(contributorsFile(project));
                 task.setApiUrl(conf.getGitHub().getApiUrl());
@@ -46,7 +45,6 @@ public class ContributorsPlugin implements Plugin<Project> {
                 task.setEnabled(conf.getTeam().getContributors().isEmpty());
             }
         });
-
     }
 }
 
