@@ -7,7 +7,7 @@ import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.ReleaseNotesFetcherTask;
 import org.shipkit.gradle.UpdateReleaseNotesTask;
 import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
-import org.shipkit.gradle.notes.ContributorsFetcherTask;
+import org.shipkit.gradle.notes.FetchContributorsTask;
 import org.shipkit.internal.gradle.contributors.ContributorsPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
@@ -54,7 +54,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
             }
         });
 
-        final ContributorsFetcherTask contributorsFetcher = (ContributorsFetcherTask) project.getTasks().getByName(ContributorsPlugin.FETCH_ALL_CONTRIBUTORS_TASK);
+        final FetchContributorsTask contributorsFetcher = (FetchContributorsTask) project.getTasks().getByName(ContributorsPlugin.FETCH_ALL_CONTRIBUTORS_TASK);
 
         TaskMaker.task(project, UPDATE_NOTES_TASK, UpdateReleaseNotesTask.class, new Action<UpdateReleaseNotesTask>() {
             public void execute(final UpdateReleaseNotesTask t) {
@@ -79,7 +79,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
                                                final ReleaseNotesFetcherTask releaseNotesFetcher,
                                                final Project project,
                                                final ReleaseConfiguration conf,
-                                               final ContributorsFetcherTask contributorsFetcher) {
+                                               final FetchContributorsTask contributorsFetcher) {
         task.dependsOn(releaseNotesFetcher);
         task.dependsOn(contributorsFetcher);
 

@@ -4,7 +4,7 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.shipkit.gradle.ReleaseConfiguration;
-import org.shipkit.gradle.notes.ContributorsFetcherTask;
+import org.shipkit.gradle.notes.FetchContributorsTask;
 import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
@@ -21,7 +21,7 @@ import static org.shipkit.internal.gradle.util.BuildConventions.contributorsFile
  *
  * Adds tasks:
  * <ul>
- *     <li>fetchAllContributors - {@link ContributorsFetcherTask}</li>
+ *     <li>fetchAllContributors - {@link FetchContributorsTask}</li>
  * </ul>
  */
 public class ContributorsPlugin implements Plugin<Project> {
@@ -34,9 +34,9 @@ public class ContributorsPlugin implements Plugin<Project> {
     }
 
     private void fetchAllTask(final Project project, final ReleaseConfiguration conf) {
-        project.getTasks().create(FETCH_ALL_CONTRIBUTORS_TASK, ContributorsFetcherTask.class, new Action<ContributorsFetcherTask>() {
+        project.getTasks().create(FETCH_ALL_CONTRIBUTORS_TASK, FetchContributorsTask.class, new Action<FetchContributorsTask>() {
             @Override
-            public void execute(final ContributorsFetcherTask task) {
+            public void execute(final FetchContributorsTask task) {
                 task.setGroup(TaskMaker.TASK_GROUP);
                 task.setDescription("Fetch info about all project contributors from GitHub and store it in file");
                 task.setOutputFile(contributorsFile(project));
