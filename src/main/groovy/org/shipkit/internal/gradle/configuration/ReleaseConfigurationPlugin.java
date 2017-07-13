@@ -6,7 +6,7 @@ import org.gradle.api.Project;
 import org.gradle.api.plugins.ObjectConfigurationAction;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.internal.gradle.VersioningPlugin;
-import org.shipkit.internal.gradle.init.InitConfigFileTask;
+import org.shipkit.gradle.init.InitConfigFileTask;
 import org.shipkit.internal.gradle.init.InitPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.version.VersionInfo;

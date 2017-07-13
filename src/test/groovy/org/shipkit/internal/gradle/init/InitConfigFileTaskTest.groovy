@@ -3,6 +3,7 @@ package org.shipkit.internal.gradle.init
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
+import org.shipkit.gradle.init.InitConfigFileTask
 import org.shipkit.internal.notes.vcs.GitOriginRepoProvider
 import spock.lang.Specification
 
