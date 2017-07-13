@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle.contributors;
+package org.shipkit.gradle.notes;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.Logger;
@@ -24,9 +24,9 @@ import java.io.File;
  * https://developer.github.com/v3/repos/commits/
  * This way, we can also fetch the most recent contributors, necessary for correct release notes information.
  */
-public class AllContributorsFetcherTask extends DefaultTask {
+public class ContributorsFetcherTask extends DefaultTask {
 
-    private static final Logger LOG = Logging.getLogger(AllContributorsFetcherTask.class);
+    private static final Logger LOG = Logging.getLogger(ContributorsFetcherTask.class);
 
     @Input private String apiUrl;
     @Input private String repository;
