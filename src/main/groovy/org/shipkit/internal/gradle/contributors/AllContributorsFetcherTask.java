@@ -16,10 +16,13 @@ import org.shipkit.internal.notes.util.IOUtil;
 import java.io.File;
 
 /**
- * Fetch data about all project contributors and store it in file.
- * It is used later in generation pom.xml.
- * It use GitHub repos/contributors endpoint: https://developer.github.com/v3/repos/#list-contributors
- * "Contributors data is cached for performance reasons. This endpoint may return information that is a few hours old."
+ * Fetches data about all project contributors and stores it in file.
+ * The data feeds release notes generation and pom.xml content.
+ * It uses GitHub repos/contributors endpoint: https://developer.github.com/v3/repos/#list-contributors
+ * This endpoint is cached by GitHub and may return information a few hours old.
+ * Therefore, we also fetch recent contributors from GitHub using the "commit" end point:
+ * https://developer.github.com/v3/repos/commits/
+ * This way, we can also fetch the most recent contributors, necessary for correct release notes information.
  */
 public class AllContributorsFetcherTask extends DefaultTask {
 
