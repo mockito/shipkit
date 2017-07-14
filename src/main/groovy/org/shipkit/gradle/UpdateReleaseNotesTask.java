@@ -216,7 +216,7 @@ public class UpdateReleaseNotesTask extends DefaultTask {
      * Input to the release notes generation,
      * serialized release notes data objects of type {@link ReleaseNotesData}.
      * They are used to generate formatted release notes.
-     * The data file is generate by {@link ReleaseNotesFetcherTask}.
+     * The data file is generate by {@link FetchReleaseNotesTask}.
      */
     @InputFile
     public File getReleaseNotesData() {

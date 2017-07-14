@@ -23,7 +23,7 @@ import static java.util.Collections.singletonList;
 /**
  * Fetches release notes data information from Git and GitHub and serializes it to {@link #outputFile}.
  */
-public class ReleaseNotesFetcherTask extends DefaultTask {
+public class FetchReleaseNotesTask extends DefaultTask {
 
     @Input @Optional private String previousVersion;
     @Input private String version = getProject().getVersion().toString();

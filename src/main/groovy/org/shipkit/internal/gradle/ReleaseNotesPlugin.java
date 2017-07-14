@@ -4,7 +4,7 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.shipkit.gradle.ReleaseConfiguration;
-import org.shipkit.gradle.ReleaseNotesFetcherTask;
+import org.shipkit.gradle.FetchReleaseNotesTask;
 import org.shipkit.gradle.UpdateReleaseNotesTask;
 import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
 import org.shipkit.gradle.notes.FetchContributorsTask;
@@ -30,7 +30,7 @@ import static java.util.Collections.singletonList;
  * The plugin adds following tasks:
  *
  * <ul>
- *     <li>fetchReleaseNotes - fetches release notes data, see {@link ReleaseNotesFetcherTask}</li>
+ *     <li>fetchReleaseNotes - fetches release notes data, see {@link FetchReleaseNotesTask}</li>
  *     <li>updateReleaseNotes - updates release notes file in place, or only displays preview if project property 'preview' exists, see {@link UpdateReleaseNotesTask}</li>
  * </ul>
  *
@@ -51,8 +51,8 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     }
 
     private static void releaseNotesTasks(final Project project, final ReleaseConfiguration conf) {
-        final ReleaseNotesFetcherTask releaseNotesFetcher = TaskMaker.task(project, FETCH_NOTES_TASK, ReleaseNotesFetcherTask.class, new Action<ReleaseNotesFetcherTask>() {
-            public void execute(final ReleaseNotesFetcherTask t) {
+        final FetchReleaseNotesTask releaseNotesFetcher = TaskMaker.task(project, FETCH_NOTES_TASK, FetchReleaseNotesTask.class, new Action<FetchReleaseNotesTask>() {
+            public void execute(final FetchReleaseNotesTask t) {
                 t.setDescription("Fetches release notes data from Git and GitHub and serializes them to a file");
                 t.setOutputFile(new File(project.getBuildDir(), "detailed-release-notes.ser"));
                 t.setGitHubApiUrl(conf.getGitHub().getApiUrl());
@@ -85,7 +85,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     }
 
     private static void configureDetailedNotes(final UpdateReleaseNotesTask task,
-                                               final ReleaseNotesFetcherTask releaseNotesFetcher,
+                                               final FetchReleaseNotesTask releaseNotesFetcher,
                                                final Project project,
                                                final ReleaseConfiguration conf,
                                                final FetchContributorsTask contributorsFetcher) {
