@@ -8,7 +8,7 @@ import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.BumpVersionFileTask;
 import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.init.InitPlugin;
-import org.shipkit.internal.gradle.init.InitVersioningTask;
+import org.shipkit.gradle.init.InitVersioningTask;
 import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.version.Version;
