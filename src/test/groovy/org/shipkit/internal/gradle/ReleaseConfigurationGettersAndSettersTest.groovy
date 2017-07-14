@@ -23,7 +23,7 @@ class ReleaseConfigurationGettersAndSettersTest extends Specification {
     }
 
     @Unroll
-    def "setter #setter.name value should be the same like #getter.name"(row, Method setter, Method getter, Object obj) {
+    def "value assigned to #setter.name should be returned by #getter.name"(row, Method setter, Method getter, Object obj) {
         def valueForSetter = getValueForSetter(setter)
         setter.invoke(obj, valueForSetter)
 
