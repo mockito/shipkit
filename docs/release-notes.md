@@ -1,3 +1,6 @@
+**0.9.5 (2017-07-14)** - [5 commits](https://github.com/mockito/shipkit/compare/v0.9.4...v0.9.5) by [Adrian Nicos](https://github.com/anicos) (4), [Szczepan Faber](http://github.com/szczepiq) (1) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.5-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.5)
+ - Test improvement - reflection rather than implement individual unit test for each property [(#307)](https://github.com/mockito/shipkit/pull/307)
+
 **0.9.4 (2017-07-12)** - [5 commits](https://github.com/mockito/shipkit/compare/v0.9.3...v0.9.4) by [Wojtek Wilk](http://github.com/wwilk) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.4-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.4)
  - AutoUpdateConsumerPlugin added #302 [(#304)](https://github.com/mockito/shipkit/pull/304)
 
