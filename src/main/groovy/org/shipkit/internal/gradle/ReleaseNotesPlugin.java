@@ -18,6 +18,15 @@ import java.io.File;
 import static java.util.Collections.singletonList;
 
 /**
+ * Adds and configures tasks for generating release notes.
+ *
+ * Applies plugins:
+ * <ul>
+ *     <li>{@link ReleaseConfigurationPlugin}</li>
+ *     <li>{@link VersioningPlugin}</li>
+ *     <li>{@link ContributorsPlugin}</li>
+ * </ul>
+ *
  * The plugin adds following tasks:
  *
  * <ul>
