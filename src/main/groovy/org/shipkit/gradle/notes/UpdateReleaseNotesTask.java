@@ -1,4 +1,4 @@
-package org.shipkit.gradle;
+package org.shipkit.gradle.notes;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
@@ -8,6 +8,7 @@ import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.TaskAction;
+import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.internal.gradle.util.FileUtil;
 import org.shipkit.internal.gradle.util.ReleaseNotesSerializer;
 import org.shipkit.internal.gradle.util.team.TeamMember;
