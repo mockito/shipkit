@@ -12,6 +12,8 @@ class ReleaseConfigurationGettersAndSettersTest extends Specification {
 
     @Shared
     def conf = new ReleaseConfiguration()
+    @Shared
+    int counter = 0
 
     def "default values"() {
         conf.team.developers.empty
@@ -36,23 +38,24 @@ class ReleaseConfigurationGettersAndSettersTest extends Specification {
     }
 
     def getValueForSetter(Method setter) {
+        counter++;
         if (setter.parameters[0].type == String.class) {
-            return "some string"
+            return 'some string' + counter
         }
 
         if (setter.parameters[0].type.name == "boolean") {
-            return true;
+            return (counter % 2 == 0);
         }
 
         if (setter.parameters[0].type == Map.class) {
             def emptyMap = [:]
-            emptyMap.put("key", "value")
+            emptyMap.put('key' + counter, 'value' + +counter)
             return emptyMap
         }
 
         if (setter.parameters[0].type == Collection.class) {
             def collection = []
-            collection << "anicos:Adrian Nicos"
+            collection << 'anicos:Adrian Nicos' + counter
             return collection
         }
 
