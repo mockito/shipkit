@@ -6,23 +6,15 @@ import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.gradle.ReleaseConfiguration;
-import org.shipkit.internal.gradle.util.ReleaseNotesSerializer;
-import org.shipkit.internal.notes.generator.ReleaseNotesGenerator;
-import org.shipkit.internal.notes.generator.ReleaseNotesGenerators;
-import org.shipkit.internal.notes.model.ReleaseNotesData;
-import org.shipkit.internal.notes.util.IOUtil;
-import org.shipkit.internal.notes.vcs.IgnoredCommit;
+import org.shipkit.internal.gradle.notes.tasks.FetchReleaseNotes;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-
-import static java.util.Collections.singletonList;
 
 /**
- * Fetches release notes data information from Git and GitHub and serializes it to {@link #outputFile}.
+ * Fetches release notes data information from Git and GitHub
+ * and serializes it to file specified with {@link #outputFile}.
  */
 public class FetchReleaseNotesTask extends DefaultTask {
 
@@ -37,6 +29,11 @@ public class FetchReleaseNotesTask extends DefaultTask {
     @Input private Collection<String> gitHubLabels = Collections.emptyList();
     @Input private Collection<String> ignoreCommitsContaining;
     @OutputFile private File outputFile;
+
+    @TaskAction
+    public void fetchReleaseNotes() {
+        new FetchReleaseNotes().fetchReleaseNotes(this);
+    }
 
     /**
      * See {@link ReleaseConfiguration.GitHub#getUrl()}
@@ -193,19 +190,5 @@ public class FetchReleaseNotesTask extends DefaultTask {
      */
     public void setIgnoreCommitsContaining(Collection<String> ignoreCommitsContaining) {
         this.ignoreCommitsContaining = ignoreCommitsContaining;
-    }
-
-    @TaskAction
-    public void generateReleaseNotes() {
-        ReleaseNotesGenerator generator = ReleaseNotesGenerators.releaseNotesGenerator(
-                gitWorkDir, gitHubApiUrl, gitHubRepository, gitHubReadOnlyAuthToken, new IgnoredCommit(ignoreCommitsContaining));
-
-        List<String> targetVersions = previousVersion == null ? new ArrayList<String>() : singletonList(previousVersion);
-        Collection<ReleaseNotesData> releaseNotes = generator.generateReleaseNotesData(
-                version, targetVersions, tagPrefix, gitHubLabels, onlyPullRequests);
-
-        ReleaseNotesSerializer releaseNotesSerializer = new ReleaseNotesSerializer();
-        final String serializedData = releaseNotesSerializer.serialize(releaseNotes);
-        IOUtil.writeFile(getOutputFile(), serializedData);
     }
 }
