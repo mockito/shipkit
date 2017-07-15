@@ -12,6 +12,7 @@ import org.shipkit.internal.notes.model.ReleaseNotesData;
 import java.io.File;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 /**
@@ -20,20 +21,23 @@ import java.util.Map;
  */
 public class UpdateReleaseNotesTask extends DefaultTask {
 
-    private String previousVersion;
+    //Due to the preview mode, we set the input/output of this property in the plugin implementation
     private File releaseNotesFile;
-    private String gitHubUrl;
-    private String gitHubRepository;
-    private Map<String, String> gitHubLabelMapping = new LinkedHashMap<String, String>();
-    private String publicationRepository;
-    private File releaseNotesData;
-    private Collection<String> developers;
-    private Collection<String> contributors;
-    private File contributorsDataFile;
-    private boolean emphasizeVersion;
-    private String version;
-    private String tagPrefix;
     private boolean previewMode;
+
+    @Input @Optional private String previousVersion;
+    @Input private String gitHubUrl;
+    @Input private String gitHubRepository;
+    @Input private Map<String, String> gitHubLabelMapping = new LinkedHashMap<String, String>();
+    @Input private String publicationRepository;
+    @InputFile private File releaseNotesData;
+    @Input private Collection<String> developers = new LinkedList<String>();
+    @Input private Collection<String> contributors = new LinkedList<String>();
+    @InputFile private File contributorsDataFile;
+
+    @Input private boolean emphasizeVersion;
+    @Input private String version;
+    @Input private String tagPrefix;
 
     /**
      * Generates incremental release notes and appends it to the top of release notes file.
@@ -74,7 +78,6 @@ public class UpdateReleaseNotesTask extends DefaultTask {
     /**
      * The version we are generating the release notes for.
      */
-    @Input
     public String getVersion() {
         return version;
     }
@@ -89,7 +92,6 @@ public class UpdateReleaseNotesTask extends DefaultTask {
     /**
      * See {@link ReleaseConfiguration.Git#getTagPrefix()}
      */
-    @Input
     public String getTagPrefix() {
         return tagPrefix;
     }
@@ -105,7 +107,6 @@ public class UpdateReleaseNotesTask extends DefaultTask {
      * GitHub URL address, for example: https://github.com
      * See {@link ReleaseConfiguration.GitHub#getUrl()}
      */
-    @Input
     public String getGitHubUrl() {
         return gitHubUrl;
     }
@@ -121,7 +122,6 @@ public class UpdateReleaseNotesTask extends DefaultTask {
      * Name of the GitHub repository in format "user|org/repository",
      * for example: "mockito/mockito"
      */
-    @Input
     public String getGitHubRepository() {
         return gitHubRepository;
     }
@@ -140,8 +140,6 @@ public class UpdateReleaseNotesTask extends DefaultTask {
      * in which groups of issues are generated in release notes.
      * Examples: ['java-9': 'Java 9 support', 'BDD': 'Behavior-Driven Development support']
      */
-    @Input
-    @Optional
     public Map<String, String> getGitHubLabelMapping() {
         return gitHubLabelMapping;
     }
@@ -157,7 +155,6 @@ public class UpdateReleaseNotesTask extends DefaultTask {
      * The target repository where the publications / binaries are published to.
      * Shown in the release notes.
      */
-    @Input
     public String getPublicationRepository() {
         return publicationRepository;
     }
@@ -172,8 +169,6 @@ public class UpdateReleaseNotesTask extends DefaultTask {
     /**
      * Previous released version we generate the release notes from.
      */
-    @Input
-    @Optional
     public String getPreviousVersion() {
         return previousVersion;
     }
@@ -191,7 +186,6 @@ public class UpdateReleaseNotesTask extends DefaultTask {
      * They are used to generate formatted release notes.
      * The data file is generate by {@link FetchReleaseNotesTask}.
      */
-    @InputFile
     public File getReleaseNotesData() {
         return releaseNotesData;
     }
@@ -206,7 +200,7 @@ public class UpdateReleaseNotesTask extends DefaultTask {
     /**
      * Developers as configured in {@link ReleaseConfiguration.Team#getDevelopers()}
      */
-    @Input public Collection<String> getDevelopers() {
+    public Collection<String> getDevelopers() {
         return developers;
     }
 
@@ -220,7 +214,7 @@ public class UpdateReleaseNotesTask extends DefaultTask {
     /**
      * Contributors as configured in {@link ReleaseConfiguration.Team#getContributors()}
      */
-    @Input public Collection<String> getContributors() {
+    public Collection<String> getContributors() {
         return contributors;
     }
 
@@ -242,7 +236,7 @@ public class UpdateReleaseNotesTask extends DefaultTask {
     /**
      * File name from reads contributors from GitHub
      */
-    @InputFile public File getContributorsDataFile() {
+    public File getContributorsDataFile() {
         return contributorsDataFile;
     }
 
