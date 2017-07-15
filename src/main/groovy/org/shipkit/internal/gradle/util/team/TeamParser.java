@@ -8,14 +8,14 @@ import java.util.Collection;
 import static org.shipkit.internal.util.ArgumentValidation.notNull;
 
 /**
- * Parses team members configurable via {@link ReleaseConfiguration.Team#getDevelopers()}
- * and {@link ReleaseConfiguration.Team#getContributors()}
+ * Parses team members configurable via {@link org.shipkit.gradle.ReleaseConfiguration.Team#getDevelopers()}
+ * and {@link org.shipkit.gradle.ReleaseConfiguration.Team#getContributors()}
  */
 public class TeamParser {
 
     /**
-     * Validates team memberes configured via {@link ReleaseConfiguration.Team#getDevelopers()}
-     * and {@link ReleaseConfiguration.Team#getContributors()}
+     * Validates team memberes configured via {@link org.shipkit.gradle.ReleaseConfiguration.Team#getDevelopers()}
+     * and {@link org.shipkit.gradle.ReleaseConfiguration.Team#getContributors()}
      */
     public static void validateTeamMembers(Collection<String> teamMembers) throws InvalidInput {
         for (String member : teamMembers) {
@@ -25,8 +25,8 @@ public class TeamParser {
 
     /**
      * Thrown when the team members are not configured correctly in
-     * {@link ReleaseConfiguration.Team#getDevelopers()}
-     * or {@link ReleaseConfiguration.Team#getContributors()}
+     * {@link org.shipkit.gradle.ReleaseConfiguration.Team#getDevelopers()}
+     * or {@link org.shipkit.gradle.ReleaseConfiguration.Team#getContributors()}
      */
     public static class InvalidInput extends GradleException {
         InvalidInput(String message) {
@@ -35,8 +35,8 @@ public class TeamParser {
     }
 
     /**
-     * Parses single person notation provided via {@link ReleaseConfiguration.Team#getDevelopers()}
-     * and {@link ReleaseConfiguration.Team#getContributors()}
+     * Parses single person notation provided via {@link org.shipkit.gradle.ReleaseConfiguration.Team#getDevelopers()}
+     * and {@link org.shipkit.gradle.ReleaseConfiguration.Team#getContributors()}
      */
     public static TeamMember parsePerson(String notation) throws InvalidInput {
         notNull(notation, "Team member notation cannot be null");

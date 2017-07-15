@@ -3,8 +3,8 @@ package org.shipkit.internal.gradle.util.team;
 import org.shipkit.gradle.ReleaseConfiguration;
 
 /**
- * Represents team member configurable via {@link ReleaseConfiguration.Team#getDevelopers()}
- * and {@link ReleaseConfiguration.Team#getContributors()}
+ * Represents team member configurable via {@link org.shipkit.gradle.ReleaseConfiguration.Team#getDevelopers()}
+ * and {@link org.shipkit.gradle.ReleaseConfiguration.Team#getContributors()}
  */
 public class TeamMember {
     public final String gitHubUser;

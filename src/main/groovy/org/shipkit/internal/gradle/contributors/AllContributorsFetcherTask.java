@@ -32,7 +32,7 @@ public class AllContributorsFetcherTask extends DefaultTask {
     @OutputFile private File outputFile;
 
     /**
-     * See {@link ReleaseConfiguration.GitHub#getApiUrl()}
+     * See {@link org.shipkit.gradle.ReleaseConfiguration.GitHub#getApiUrl()}
      */
     public String getApiUrl() {
         return apiUrl;
@@ -46,7 +46,7 @@ public class AllContributorsFetcherTask extends DefaultTask {
     }
 
     /**
-     * See {@link ReleaseConfiguration.GitHub#getRepository()}
+     * See {@link org.shipkit.gradle.ReleaseConfiguration.GitHub#getRepository()}
      */
     public String getRepository() {
         return repository;
@@ -60,7 +60,7 @@ public class AllContributorsFetcherTask extends DefaultTask {
     }
 
     /**
-     * See {@link ReleaseConfiguration.GitHub#getReadOnlyAuthToken()}
+     * See {@link org.shipkit.gradle.ReleaseConfiguration.GitHub#getReadOnlyAuthToken()}
      */
     public String getReadOnlyAuthToken() {
         return readOnlyAuthToken;

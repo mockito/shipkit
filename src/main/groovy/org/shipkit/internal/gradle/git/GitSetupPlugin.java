@@ -28,11 +28,11 @@ import org.shipkit.internal.gradle.util.TaskMaker;
  *         Therefore we need to checkout real branch like "master"</li>
  *     <li>
  *         'setGitUserName' - sets generic user name so that CI server can commit code as neatly described robot,
- *         uses value from {@link ReleaseConfiguration.Git#getUser()}
+ *         uses value from {@link org.shipkit.gradle.ReleaseConfiguration.Git#getUser()}
  *     </li>
  *     <li>
  *         'setGitUserEmail' - sets generic user email so that CI server can commit code as neatly described robot,
- *         uses value from {@link ReleaseConfiguration.Git#getEmail()}
+ *         uses value from {@link org.shipkit.gradle.ReleaseConfiguration.Git#getEmail()}
  *     </li>
  *     <li>
  *         'ciReleasePrepare' - prepares for release from CI,
