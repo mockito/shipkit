@@ -19,21 +19,21 @@ import static java.util.Collections.singletonList;
 
 /**
  * Adds and configures tasks for generating release notes.
- *
+ * <p>
  * Applies plugins:
  * <ul>
- *     <li>{@link ReleaseConfigurationPlugin}</li>
- *     <li>{@link VersioningPlugin}</li>
- *     <li>{@link ContributorsPlugin}</li>
+ * <li>{@link ReleaseConfigurationPlugin}</li>
+ * <li>{@link VersioningPlugin}</li>
+ * <li>{@link ContributorsPlugin}</li>
  * </ul>
- *
+ * <p>
  * The plugin adds following tasks:
- *
+ * <p>
  * <ul>
- *     <li>fetchReleaseNotes - fetches release notes data, see {@link FetchReleaseNotesTask}</li>
- *     <li>updateReleaseNotes - updates release notes file in place, or only displays preview if project property 'preview' exists, see {@link UpdateReleaseNotesTask}</li>
+ * <li>fetchReleaseNotes - fetches release notes data, see {@link FetchReleaseNotesTask}</li>
+ * <li>updateReleaseNotes - updates release notes file in place, or only displays preview if project property 'preview' exists, see {@link UpdateReleaseNotesTask}</li>
  * </ul>
- *
+ * <p>
  * It also adds updates release notes changes if {@link GitPlugin} applied
  */
 public class ReleaseNotesPlugin implements Plugin<Project> {
@@ -74,10 +74,10 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
                 boolean previewMode = project.hasProperty(PREVIEW_PROJECT_PROPERTY);
                 t.setPreviewMode(previewMode);
 
-                if(!previewMode){
+                if (!previewMode) {
                     File releaseNotesFile = project.file(conf.getReleaseNotes().getFile());
                     GitPlugin.registerChangesForCommitIfApplied(
-                            singletonList(releaseNotesFile), "release notes updated", t);
+                        singletonList(releaseNotesFile), "release notes updated", t);
                     t.getOutputs().file(releaseNotesFile);
                 }
             }

@@ -1,42 +1,24 @@
 package org.shipkit.gradle.notes;
 
 import org.gradle.api.DefaultTask;
-import org.gradle.api.GradleException;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.gradle.ReleaseConfiguration;
-import org.shipkit.internal.gradle.util.FileUtil;
-import org.shipkit.internal.gradle.util.ReleaseNotesSerializer;
-import org.shipkit.internal.gradle.util.team.TeamMember;
-import org.shipkit.internal.gradle.util.team.TeamParser;
-import org.shipkit.internal.notes.contributors.AllContributorsSerializer;
-import org.shipkit.internal.notes.contributors.DefaultContributor;
-import org.shipkit.internal.notes.contributors.DefaultProjectContributorsSet;
-import org.shipkit.internal.notes.contributors.ProjectContributorsSet;
-import org.shipkit.internal.notes.format.ReleaseNotesFormatters;
-import org.shipkit.internal.notes.model.Contributor;
-import org.shipkit.internal.notes.model.ProjectContributor;
+import org.shipkit.internal.gradle.notes.tasks.UpdateReleaseNotes;
 import org.shipkit.internal.notes.model.ReleaseNotesData;
-import org.shipkit.internal.notes.util.IOUtil;
-import org.shipkit.internal.util.ExposedForTesting;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Generates incremental, detailed release notes text.
- * that can be appended to the release notes file or displayed in console as a preview.
+ * Generates incremental, detailed release notes text and appends them to the file {@link #getReleaseNotesFile()}.
+ * When preview mode is enabled ({@link #isPreviewMode()}), the new release notes content is displayed only (file is not updated).
  */
 public class UpdateReleaseNotesTask extends DefaultTask {
-
-    private static final Logger LOG = Logging.getLogger(UpdateReleaseNotesTask.class);
 
     private String previousVersion;
     private File releaseNotesFile;
@@ -53,22 +35,12 @@ public class UpdateReleaseNotesTask extends DefaultTask {
     private String tagPrefix;
     private boolean previewMode;
 
-    private IncrementalNotesGenerator incrementalNotesGenerator = new IncrementalNotesGenerator();
-
     /**
      * Generates incremental release notes and appends it to the top of release notes file.
-     * Run with -Ppreview if you only want to see preview of generated release notes, without appending them to the file.
      */
     @TaskAction
     public void updateReleaseNotes() {
-        String newContent = getNewContent();
-        if (previewMode){
-            LOG.lifecycle("  Preview of release notes update:\n" +
-                    "  ----------------\n" + newContent + "----------------");
-        } else{
-            FileUtil.appendToTop(newContent, getReleaseNotesFile());
-            LOG.lifecycle("  Successfully updated release notes!");
-        }
+        new UpdateReleaseNotes().updateReleaseNotes(this);
     }
 
     /**
@@ -286,95 +258,5 @@ public class UpdateReleaseNotesTask extends DefaultTask {
      */
     public boolean isEmphasizeVersion() {
         return emphasizeVersion;
-    }
-
-    private void assertConfigured() {
-        if(!previewMode) { // releaseNotesFile is not needed in preview mode
-            if (releaseNotesFile == null) {
-                throw new GradleException("'" + this.getPath() + ".releaseNotesFile' must be configured.");
-            }
-            if(releaseNotesFile.exists() && !releaseNotesFile.isFile()){
-                throw new GradleException("'" + this.getPath() + ".releaseNotesFile' must be a file.");
-            }
-            //TODO why do we need to create the file here? this method suppose to only validate
-            if(!releaseNotesFile.exists()){
-                try {
-                    IOUtil.createParentDirectory(releaseNotesFile);
-                    releaseNotesFile.createNewFile();
-                } catch (Exception e) {
-                    throw new GradleException("Failed to create file " + releaseNotesFile.getAbsolutePath() + ". You can create an empty file by yourself and restart the task." , e);
-                }
-            }
-        }
-
-    }
-
-    /**
-     * Generates new incremental content of the release notes.
-     */
-    String getNewContent() {
-        assertConfigured();
-        return incrementalNotesGenerator.generateNewContent();
-    }
-
-    @ExposedForTesting
-    void setIncrementalNotesGenerator(IncrementalNotesGenerator incrementalNotesGenerator){
-        this.incrementalNotesGenerator = incrementalNotesGenerator;
-    }
-
-    //TODO SF deduplicate and unit test
-    static Map<String, Contributor> contributorsMap(Collection<String> contributorsFromConfiguration,
-                                                    ProjectContributorsSet contributorsFromGitHub,
-                                                    Collection<String> developers) {
-        Map<String, Contributor> out = new HashMap<String, Contributor>();
-        for (String contributor : contributorsFromConfiguration) {
-            TeamMember member = TeamParser.parsePerson(contributor);
-            out.put(member.name, new DefaultContributor(member.name, member.gitHubUser,
-                    "http://github.com/" + member.gitHubUser));
-        }
-        for (ProjectContributor projectContributor : contributorsFromGitHub.getAllContributors()) {
-            out.put(projectContributor.getName(), projectContributor);
-        }
-        for (String developer : developers) {
-            TeamMember member = TeamParser.parsePerson(developer);
-            out.put(member.name, new DefaultContributor(member.name, member.gitHubUser,
-                    "http://github.com/" + member.gitHubUser));
-        }
-        return out;
-    }
-
-    class IncrementalNotesGenerator {
-        public String generateNewContent() {
-            LOG.lifecycle("  Building new release notes based on {}", releaseNotesFile);
-
-            Collection<ReleaseNotesData> data = new ReleaseNotesSerializer().deserialize(IOUtil.readFully(releaseNotesData));
-
-            String vcsCommitTemplate = getVcsCommitTemplate();
-
-            ProjectContributorsSet contributorsFromGitHub;
-            if(!contributors.isEmpty()) {
-                // if contributors are defined in shipkit.team.contributors don't deserialize them from file
-                contributorsFromGitHub = new DefaultProjectContributorsSet();
-            } else {
-                LOG.info("  Read project contributors from file " + contributorsDataFile.getAbsolutePath());
-                contributorsFromGitHub = new AllContributorsSerializer().deserialize(IOUtil.readFully(contributorsDataFile));
-            }
-
-            Map<String, Contributor> contributorsMap = contributorsMap(contributors, contributorsFromGitHub, developers);
-            String notes = ReleaseNotesFormatters.detailedFormatter(
-                    "", gitHubLabelMapping, vcsCommitTemplate, publicationRepository, contributorsMap, emphasizeVersion)
-                    .formatReleaseNotes(data);
-
-            return notes + "\n\n";
-        }
-    }
-
-    private String getVcsCommitTemplate() {
-        if(previousVersion != null) {
-            return gitHubUrl + "/" + gitHubRepository + "/compare/"
-                    + tagPrefix + previousVersion + "..." + tagPrefix + version;
-        } else{
-            return "";
-        }
     }
 }
