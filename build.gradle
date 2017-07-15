@@ -61,6 +61,16 @@ pluginBundle {
     }
 }
 
+
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
+    }
+}
+
+
 task fastInstall { Task t ->
     description = "Fast installation for quick local testing."
     t.dependsOn install
