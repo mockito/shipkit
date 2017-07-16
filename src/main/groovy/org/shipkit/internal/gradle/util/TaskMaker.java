@@ -18,10 +18,6 @@ public class TaskMaker {
 
     private static final Logger LOG = Logging.getLogger(TaskMaker.class);
 
-    //TODO remove this property, all current client of this property should be using factory methods
-    // available on this class to create tasks
-    public final static String TASK_GROUP = "Shipkit";
-
     /**
      * Creates exec task with preconfigured defaults
      */
@@ -52,7 +48,7 @@ public class TaskMaker {
     }
 
     private static <T extends Task> T configure(Action<T> configure, T task) {
-        task.setGroup(TASK_GROUP);
+        task.setGroup("Shipkit");
         configure.execute(task);
         if(task.getDescription() == null) {
             //TODO unit testable

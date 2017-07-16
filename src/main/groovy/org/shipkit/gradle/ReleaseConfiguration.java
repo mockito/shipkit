@@ -11,7 +11,8 @@ import static java.util.Collections.singletonList;
 import static org.shipkit.internal.gradle.util.team.TeamParser.validateTeamMembers;
 
 /**
- * Configuration of the releasing plugin.
+ * Shipkit configuration.
+ * Contains configuration that is used by Shipkit plugins to configure Shipkit tasks.
  * <p>
  * Example of a release configuration of a working example project
  * <a href="https://github.com/mockito/shipkit-example/blob/master/gradle/shipkit.gradle">on GitHub</a>.
