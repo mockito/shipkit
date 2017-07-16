@@ -16,36 +16,18 @@ import java.io.IOException;
  */
 public class CreatePullRequestTask extends DefaultTask{
 
-    private static final Logger LOG = Logging.getLogger(CreatePullRequestTask.class);
-
     private String repositoryUrl;
     private String gitHubApiUrl;
     private String authToken;
     private String title;
     private String headBranch;
     private String baseBranch;
-
-    private GitHubApi gitHubApi;
+    private boolean dryRun;
 
     @TaskAction
     public void createPullRequest() throws IOException {
-        if(gitHubApi == null) {
-            gitHubApi = new GitHubApi(gitHubApiUrl, authToken);
-        }
-
-        LOG.lifecycle("  Creating a pull request of title '{}' in repository '{}' between base = '{}' and head = '{}'.",
-            title, repositoryUrl, baseBranch, headBranch);
-
-        String body = "{" +
-            "  \"title\": \"" + title + "\"," +
-            "  \"body\": \"Please pull this in!\"," +
-            "  \"head\": \"" + headBranch + "\"," +
-            "  \"base\": \"" + baseBranch + "\"" +
-            "}";
-
-        gitHubApi.post("/repos/" + repositoryUrl + "/pulls", body);
+        new CreatePullRequest().createPullRequest(this);
     }
-
 
     /**
      * See {@link ReleaseConfiguration.GitHub#getRepository()}
@@ -131,8 +113,17 @@ public class CreatePullRequestTask extends DefaultTask{
         this.baseBranch = baseBranch;
     }
 
-    @ExposedForTesting
-    protected void setGitHubApi(GitHubApi gitHubApi){
-        this.gitHubApi = gitHubApi;
+    /**
+     * See {@link ReleaseConfiguration.GitHub#dryRun}
+     */
+    public void setDryRun(boolean dryRun) {
+        this.dryRun = dryRun;
+    }
+
+    /**
+     * See {@link ReleaseConfiguration.GitHub#dryRun}
+     */
+    public boolean isDryRun() {
+        return dryRun;
     }
 }

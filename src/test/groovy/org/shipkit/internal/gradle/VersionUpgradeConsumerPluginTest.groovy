@@ -1,139 +1,133 @@
 package org.shipkit.internal.gradle
 
+import org.gradle.api.tasks.Exec
 import org.shipkit.gradle.git.GitPushTask
+import org.shipkit.internal.gradle.configuration.DeferredConfiguration
+import org.shipkit.internal.gradle.git.GitCheckOutTask
 import org.shipkit.internal.gradle.versionupgrade.CreatePullRequestTask
-import org.shipkit.internal.gradle.configuration.LazyConfiguration
-import org.shipkit.internal.util.EnvVariables
+import org.shipkit.internal.gradle.versionupgrade.ReplaceVersionTask
 import testutil.PluginSpecification
 
 class VersionUpgradeConsumerPluginTest extends PluginSpecification {
 
-    def "should initialize VersionUpgradeConsumerPlugin correctly"() {
+    def "should initialize VersionUpgradeConsumerPlugin correctly and with default values"() {
         when:
-        project.plugins.apply(VersionUpgradeConsumerPlugin)
+        def versionUpgrade = project.plugins.apply(VersionUpgradeConsumerPlugin).versionUpgrade
 
         then:
-        project.tasks.versionUpgradeCheckoutBaseBranch
-        project.tasks.versionUpgradeCheckoutVersionBranch
-        project.tasks.versionUpgradeReplaceVersion
-        project.tasks.versionUpgradeGitCommit
-        project.tasks.versionUpgradeGitPush
-        project.tasks.versionUpgradeCreatePullRequest
+        versionUpgrade.buildFile == project.file("build.gradle")
+        versionUpgrade.baseBranch == "master"
+
+        project.tasks.checkoutBaseBranch
+        project.tasks.checkoutVersionBranch
+        project.tasks.replaceVersion
+        project.tasks.commitVersionUpgrade
+        project.tasks.pushVersionUpgrade
+        project.tasks.createPullRequest
         project.tasks.performVersionUpgrade
     }
 
-    def "should configure versionUpgradeCheckoutBaseBranch"() {
-        when:
-        project.extensions.baseBranch = "release/2.x"
-        project.plugins.apply(VersionUpgradeConsumerPlugin)
+    def "should configure VersionUpgrade extension basing on dependencyNewVersion parameter"() {
+        given:
+        project.extensions.dependencyNewVersion = "org.shipkit:shipkit:0.1.2"
 
-        def task = project.tasks.versionUpgradeCheckoutBaseBranch
-        LazyConfiguration.forceConfiguration(task)
+        when:
+        def versionUpgrade = project.plugins.apply(VersionUpgradeConsumerPlugin).versionUpgrade
+
+        then:
+        versionUpgrade.dependencyGroup == "org.shipkit"
+        versionUpgrade.dependencyName == "shipkit"
+        versionUpgrade.newVersion == "0.1.2"
+    }
+
+    def "should configure checkoutBaseBranch"() {
+        when:
+        def versionUpgrade = project.plugins.apply(VersionUpgradeConsumerPlugin).versionUpgrade
+        versionUpgrade.baseBranch = "release/2.x"
+
+        DeferredConfiguration.forceConfiguration(project)
+        def task = project.tasks.checkoutBaseBranch
 
         then:
         task.rev == "release/2.x"
         task.newBranch == false
     }
 
-    def "should configure versionUpgradeCheckoutVersionBranch"() {
+    def "should configure checkoutVersionBranch"() {
         when:
-        project.extensions.dependencyNewVersion = "0.1.2"
+        project.extensions.dependencyNewVersion = "org.shipkit:shipkit:0.1.2"
         project.plugins.apply(VersionUpgradeConsumerPlugin)
 
-        def task = project.tasks.versionUpgradeCheckoutVersionBranch
-        LazyConfiguration.forceConfiguration(task)
+        GitCheckOutTask task = project.tasks.checkoutVersionBranch
 
         then:
-        task.rev == "shipkit-version-bumped-0.1.2"
+        task.rev == "upgrade-shipkit-to-0.1.2"
         task.newBranch == true
     }
 
-    def "should configure versionUpgradeReplaceVersion"() {
+    def "should configure replaceVersion"() {
+        given:
+        project.extensions.dependencyNewVersion = "org.shipkit:shipkit:0.1.2"
+
+        when:
+        VersionUpgrade versionUpgrade = project.plugins.apply(VersionUpgradeConsumerPlugin).versionUpgrade
+        ReplaceVersionTask task = project.tasks.replaceVersion
+
+        then:
+        task.versionUpgrade == versionUpgrade
+    }
+
+    def "should configure gitCommitVersionUpgrade"() {
         given:
         def dependencyFile = tmp.newFile("gradle.properties")
-        project.extensions.dependencyNewVersion = "0.1.2"
-        project.extensions.dependencyBuildFile = dependencyFile
-        project.extensions.dependencyPattern = "shipkit:{VERSION}"
+        project.extensions.dependencyNewVersion = "org.shipkit:shipkit:1.2.30"
+
+        when:
+        def versionUpgrade = project.plugins.apply(VersionUpgradeConsumerPlugin).versionUpgrade
+        versionUpgrade.buildFile = dependencyFile
+        DeferredConfiguration.forceConfiguration(project)
+
+        Exec task = project.tasks.commitVersionUpgrade
+
+        then:
+        task.commandLine ==
+            ["git", "commit", "-m", "shipkit version upgraded to 1.2.30", dependencyFile.absolutePath]
+    }
+
+    def "should configure pushVersionUpgrade"() {
+        given:
+        project.extensions.dependencyNewVersion = "org.shipkit:shipkit:1.2.30"
 
         when:
         project.plugins.apply(VersionUpgradeConsumerPlugin)
 
-        LazyConfiguration.forceConfiguration(project.tasks.versionUpgradeReplaceVersion)
+        GitPushTask task = project.tasks.pushVersionUpgrade
 
         then:
-        def task = project.tasks.versionUpgradeReplaceVersion
-        task.newVersion == "0.1.2"
-        task.buildFile == dependencyFile
-        task.dependencyPattern == "shipkit:{VERSION}"
+        task.targets == ["upgrade-shipkit-to-1.2.30"]
     }
 
-    def "should configure versionUpgradeReplaceVersion with default values"() {
+    def "should configure createPullRequest"() {
         given:
-        project.extensions.dependencyNewVersion = "0.1.2"
-
-        when:
-        project.plugins.apply(VersionUpgradeConsumerPlugin)
-
-        LazyConfiguration.forceConfiguration(project.tasks.versionUpgradeReplaceVersion)
-
-        then:
-        def task = project.tasks.versionUpgradeReplaceVersion
-        task.newVersion == "0.1.2"
-        task.buildFile == project.file("build.gradle")
-        task.dependencyPattern == "org.shipkit:shipkit:{VERSION}"
-    }
-
-    def "should configure versionUpgradeGitCommit"() {
-        given:
-        def dependencyFile = tmp.newFile("gradle.properties")
-        project.extensions.dependencyNewVersion = "1.2.30"
-        project.extensions.dependencyBuildFile = dependencyFile
-
-        when:
-        project.plugins.apply(VersionUpgradeConsumerPlugin)
-
-        LazyConfiguration.forceConfiguration(project.tasks.versionUpgradeGitCommit)
-
-        then:
-        project.tasks.versionUpgradeGitCommit.commandLine ==
-            ["git", "commit", "-m", "Shipkit version updated to 1.2.30", dependencyFile.absolutePath]
-    }
-
-    def "should configure versionUpgradeGitPush"() {
-        given:
-        project.extensions.dependencyNewVersion = "1.2.30"
-
-        when:
-        project.plugins.apply(VersionUpgradeConsumerPlugin)
-
-        GitPushTask task = project.tasks.versionUpgradeGitPush
-        LazyConfiguration.forceConfiguration(task)
-
-        then:
-        task.targets == ["shipkit-version-bumped-1.2.30"]
-    }
-
-    def "should configure versionUpgradeCreatePullRequest"() {
-        given:
-        project.extensions.dependencyNewVersion = "1.2.30"
-        project.extensions.baseBranch = "release/2.x"
+        project.extensions.dependencyNewVersion = "org.shipkit:shipkit:1.2.30"
         conf.gitHub.apiUrl = "http://api.com"
         conf.gitHub.repository = "http://repository.com"
-
-        EnvVariables envVariables = Mock(EnvVariables)
-        envVariables.getenv("GH_WRITE_TOKEN") >> "token"
+        conf.gitHub.writeAuthToken = "writeToken"
 
         when:
-        new VersionUpgradeConsumerPlugin(envVariables).apply(project)
-        CreatePullRequestTask task = project.tasks.versionUpgradeCreatePullRequest
-        LazyConfiguration.forceConfiguration(task)
+        def versionUpgrade = project.plugins.apply(VersionUpgradeConsumerPlugin).versionUpgrade
+        versionUpgrade.baseBranch = "release/2.x"
+
+        DeferredConfiguration.forceConfiguration(project)
+
+        CreatePullRequestTask task = project.tasks.createPullRequest
 
         then:
         task.gitHubApiUrl == "http://api.com"
         task.repositoryUrl == "http://repository.com"
-        task.authToken == "token"
-        task.title == "Shipkit version bumped to 1.2.30"
+        task.authToken == "writeToken"
+        task.title == "shipkit version upgraded to 1.2.30"
         task.baseBranch == "release/2.x"
-        task.headBranch == "shipkit-version-bumped-1.2.30"
+        task.headBranch == "upgrade-shipkit-to-1.2.30"
     }
 }
