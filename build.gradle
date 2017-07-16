@@ -61,7 +61,7 @@ pluginBundle {
     }
 }
 
-
+//remove doclint warnings that pollute javadoc logs when building with java8
 if (JavaVersion.current().isJava8Compatible()) {
     allprojects {
         tasks.withType(Javadoc) {
@@ -69,7 +69,6 @@ if (JavaVersion.current().isJava8Compatible()) {
         }
     }
 }
-
 
 task fastInstall { Task t ->
     description = "Fast installation for quick local testing."
