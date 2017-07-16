@@ -6,6 +6,7 @@ import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.gradle.notes.tasks.FetchContributors;
+import org.shipkit.internal.notes.contributors.ContributorsProvider;
 
 import java.io.File;
 
@@ -85,4 +86,5 @@ public class FetchContributorsTask extends DefaultTask {
     public void setOutputFile(File outputFile) {
         this.outputFile = outputFile;
     }
+
 }

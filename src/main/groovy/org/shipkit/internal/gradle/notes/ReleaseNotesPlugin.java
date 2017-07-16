@@ -9,6 +9,7 @@ import org.shipkit.gradle.notes.FetchReleaseNotesTask;
 import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.contributors.ContributorsPlugin;
+import org.shipkit.internal.gradle.contributors.github.GithubContributorsPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.gradle.version.VersioningPlugin;
@@ -46,7 +47,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     public void apply(final Project project) {
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
         project.getPlugins().apply(VersioningPlugin.class);
-        project.getPlugins().apply(ContributorsPlugin.class);
+        project.getPlugins().apply(GithubContributorsPlugin.class);
 
         releaseNotesTasks(project, conf);
     }

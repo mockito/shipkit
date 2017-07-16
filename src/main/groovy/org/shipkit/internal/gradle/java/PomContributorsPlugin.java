@@ -27,11 +27,13 @@ import static org.shipkit.internal.gradle.util.Specs.withName;
  *     </li>
  * </ul>
  */
-public class PomContributorsPlugin implements Plugin<Project> {
+public abstract class PomContributorsPlugin implements Plugin<Project> {
+
+    abstract void applyContributorsPlugin(Project project);
 
     @Override
     public void apply(final Project project) {
-        project.getPlugins().apply(ContributorsPlugin.class);
+        applyContributorsPlugin(project);
 
         project.allprojects(new Action<Project>() {
             public void execute(final Project subproject) {

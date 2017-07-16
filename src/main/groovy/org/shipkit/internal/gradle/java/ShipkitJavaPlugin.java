@@ -28,7 +28,7 @@ import org.shipkit.internal.gradle.release.TravisPlugin;
 public class ShipkitJavaPlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
-        project.getPlugins().apply(PomContributorsPlugin.class);
+        project.getPlugins().apply(GithubPlugin.class);
         project.getPlugins().apply(BintrayReleasePlugin.class);
         project.getPlugins().apply(TravisPlugin.class);
 
