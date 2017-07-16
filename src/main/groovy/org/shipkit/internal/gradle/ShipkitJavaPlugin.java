@@ -9,9 +9,8 @@ import org.shipkit.internal.gradle.release.BintrayReleasePlugin;
 
 /**
  * Continuous delivery for Java with Travis and Bintray.
- * Intended for root project.
+ * Intended for root project of your Gradle project because it applies some configuration to 'allprojects'.
  * Adds plugins and tasks to setup automated releasing for a typical Java multi-project build.
- * Applies configuration and plugins to all Java subprojects in a multi-project Gradle build.
  * <p>
  * Applies following plugins:
  *
@@ -19,6 +18,12 @@ import org.shipkit.internal.gradle.release.BintrayReleasePlugin;
  *     <li>{@link PomContributorsPlugin}</li>
  *     <li>{@link BintrayReleasePlugin}</li>
  *     <li>{@link TravisPlugin}</li>
+ * </ul>
+ *
+ * Adds behavior:
+ * <ul>
+ *     <li>Applies {@link JavaBintrayPlugin} to all Java projects in a multi-project Gradle build
+ *          (all projects that use Gradle's "java" plugin).</li>
  * </ul>
  */
 public class ShipkitJavaPlugin implements Plugin<Project> {

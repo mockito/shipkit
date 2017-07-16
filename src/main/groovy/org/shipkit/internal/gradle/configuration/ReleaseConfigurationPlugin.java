@@ -6,7 +6,7 @@ import org.gradle.api.Project;
 import org.gradle.api.plugins.ObjectConfigurationAction;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.internal.gradle.VersioningPlugin;
-import org.shipkit.internal.gradle.init.InitConfigFileTask;
+import org.shipkit.gradle.init.InitShipkitFileTask;
 import org.shipkit.internal.gradle.init.InitPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.version.VersionInfo;
@@ -14,7 +14,7 @@ import org.shipkit.internal.version.VersionInfo;
 import java.io.File;
 
 /**
- * Adds extension for configuring the release to the root project.
+ * Adds Gradle DSL extension to the root project so that Shipkit can be configured.
  * Configuration properties are loaded from gradle/shipkit.gradle file when the plugin is applied.
  * This mechanism assures that all properties are accessible during configuration phase.
  * If such file is not present, it will be created automatically with required properties and example values.
@@ -36,8 +36,8 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
 
     private ReleaseConfiguration configuration;
 
-    public static final String CONFIG_FILE_RELATIVE_PATH = "gradle/shipkit.gradle";
-    static final String INIT_CONFIG_FILE_TASK = "initConfigFile";
+    public static final String SHIPKIT_FILE_RELATIVE_PATH = "gradle/shipkit.gradle";
+    static final String INIT_SHIPKIT_FILE_TASK = "initShipkitFile";
     public static final String DRY_RUN_PROPERTY = "dryRun";
 
     public void apply(final Project project) {
@@ -50,9 +50,9 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
             configuration = project.getRootProject().getExtensions()
                     .create("shipkit", ReleaseConfiguration.class);
 
-            final File configFile = project.file(CONFIG_FILE_RELATIVE_PATH);
+            final File shipkitFile = project.file(SHIPKIT_FILE_RELATIVE_PATH);
 
-            loadConfigFromFile(project.getRootProject(), configFile);
+            loadConfigFromFile(project.getRootProject(), shipkitFile);
 
             if (project.hasProperty(DRY_RUN_PROPERTY)) {
                 configuration.setDryRun(true);
@@ -62,11 +62,11 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
 
             configuration.setPreviousReleaseVersion(info.getPreviousVersion());
 
-            TaskMaker.task(project, INIT_CONFIG_FILE_TASK, InitConfigFileTask.class, new Action<InitConfigFileTask>() {
+            TaskMaker.task(project, INIT_SHIPKIT_FILE_TASK, InitShipkitFileTask.class, new Action<InitShipkitFileTask>() {
                 @Override
-                public void execute(InitConfigFileTask t) {
+                public void execute(InitShipkitFileTask t) {
                     t.setDescription("Creates Shipkit configuration file unless it already exists");
-                    t.setConfigFile(configFile);
+                    t.setShipkitFile(shipkitFile);
 
                     project.getTasks().getByName(InitPlugin.INIT_SHIPKIT_TASK).dependsOn(t);
                 }
@@ -78,8 +78,8 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
         }
     }
 
-    private void loadConfigFromFile(Project rootProject, File configFile) {
-        if (!configFile.exists()) {
+    private void loadConfigFromFile(Project rootProject, File shipkitFile) {
+        if (!shipkitFile.exists()) {
             // sets some defaults so that they can't be used to run any task (except for bootstrap ones)
             // but also configuration doesn't fail when running Shipkit for the first time
             // and configuration files are not created yet
@@ -92,7 +92,7 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
             rootProject.apply(new Action<ObjectConfigurationAction>() {
                 @Override
                 public void execute(ObjectConfigurationAction objectConfigurationAction) {
-                    objectConfigurationAction.from(CONFIG_FILE_RELATIVE_PATH);
+                    objectConfigurationAction.from(SHIPKIT_FILE_RELATIVE_PATH);
                 }
             });
         }

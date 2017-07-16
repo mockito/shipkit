@@ -12,7 +12,7 @@ import static org.shipkit.internal.gradle.util.Specs.withName;
 
 /**
  * Ensuring contributors are listed in pom file.
- * Intended to be applied to root project.
+ * Intended to be applied to the root project of your Gradle multi-project build.
  * <p>
  * Applies following plugins:
  * <ul>
@@ -21,7 +21,10 @@ import static org.shipkit.internal.gradle.util.Specs.withName;
  *
  * Other features:
  * <ul>
- *     <li>For all submodules that have {@link JavaPublishPlugin} plugin, add dependency on task that fetches all contributors.</li>
+ *     <li>Injects configuration to all projects that have {@link JavaPublishPlugin} plugin.
+ *     Makes sure that the task that generates pom file has dependency on task that fetches all contributors.
+ *     All contributors are listed in the pom file.
+ *     </li>
  * </ul>
  */
 public class PomContributorsPlugin implements Plugin<Project> {

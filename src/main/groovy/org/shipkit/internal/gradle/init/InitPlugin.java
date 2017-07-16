@@ -6,7 +6,7 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.shipkit.gradle.InitTravisTask;
+import org.shipkit.gradle.init.InitTravisTask;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
@@ -18,7 +18,10 @@ import java.io.File;
  *
  * Adds tasks:
  * <ul>
- *     <li>'initTravis' - of type {@link InitTravisTask} - generates '.travis.yml' file</li>
+ *     <li>'initTravis' - of type {@link InitTravisTask} - generates '.travis.yml' file.
+ *          The file is intended to be checked in to VCS (Git)</li>
+ *     <li>'initShipkit' - of type {@link org.gradle.api.DefaultTask} - depends on other 'init' tasks.
+ *          Run it to initialize Shipkit. Generated files are intended to be checked in to VCS (Git).</li>
  * </ul>
  */
 public class InitPlugin implements Plugin<Project> {

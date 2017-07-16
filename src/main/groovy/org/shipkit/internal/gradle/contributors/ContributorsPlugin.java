@@ -4,16 +4,24 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.shipkit.gradle.ReleaseConfiguration;
+import org.shipkit.gradle.notes.FetchContributorsTask;
 import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
 import static org.shipkit.internal.gradle.util.BuildConventions.contributorsFile;
 
 /**
- * Adds and configures tasks for getting contributor git user to GitHub user mappings.
- * Useful for release notes and pom.xml generation. Adds tasks:
+ * Adds and configures tasks for getting contributor information from GitHub.
+ * Contributors information feeds release notes and pom.xml.
+ * <p>
+ * Applies plugins:
  * <ul>
- *     <li>fetchAllContributors - {@link AllContributorsFetcherTask}</li>
+ *     <li>{@link ReleaseConfigurationPlugin}</li>
+ * </ul>
+ *
+ * Adds tasks:
+ * <ul>
+ *     <li>fetchAllContributors - {@link FetchContributorsTask}</li>
  * </ul>
  */
 public class ContributorsPlugin implements Plugin<Project> {
@@ -26,10 +34,9 @@ public class ContributorsPlugin implements Plugin<Project> {
     }
 
     private void fetchAllTask(final Project project, final ReleaseConfiguration conf) {
-        project.getTasks().create(FETCH_ALL_CONTRIBUTORS_TASK, AllContributorsFetcherTask.class, new Action<AllContributorsFetcherTask>() {
+        TaskMaker.task(project, FETCH_ALL_CONTRIBUTORS_TASK, FetchContributorsTask.class, new Action<FetchContributorsTask>() {
             @Override
-            public void execute(final AllContributorsFetcherTask task) {
-                task.setGroup(TaskMaker.TASK_GROUP);
+            public void execute(final FetchContributorsTask task) {
                 task.setDescription("Fetch info about all project contributors from GitHub and store it in file");
                 task.setOutputFile(contributorsFile(project));
                 task.setApiUrl(conf.getGitHub().getApiUrl());
@@ -38,7 +45,6 @@ public class ContributorsPlugin implements Plugin<Project> {
                 task.setEnabled(conf.getTeam().getContributors().isEmpty());
             }
         });
-
     }
 }
 
