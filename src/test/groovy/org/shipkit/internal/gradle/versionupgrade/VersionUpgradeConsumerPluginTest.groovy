@@ -43,7 +43,7 @@ class VersionUpgradeConsumerPluginTest extends PluginSpecification {
         def versionUpgrade = project.plugins.apply(VersionUpgradeConsumerPlugin).versionUpgrade
         versionUpgrade.baseBranch = "release/2.x"
 
-        DeferredConfiguration.forceConfiguration(project)
+        project.evaluate()
         def task = project.tasks.checkoutBaseBranch
 
         then:
@@ -83,7 +83,7 @@ class VersionUpgradeConsumerPluginTest extends PluginSpecification {
         when:
         def versionUpgrade = project.plugins.apply(VersionUpgradeConsumerPlugin).versionUpgrade
         versionUpgrade.buildFile = dependencyFile
-        DeferredConfiguration.forceConfiguration(project)
+        project.evaluate()
 
         Exec task = project.tasks.commitVersionUpgrade
 
@@ -116,7 +116,7 @@ class VersionUpgradeConsumerPluginTest extends PluginSpecification {
         def versionUpgrade = project.plugins.apply(VersionUpgradeConsumerPlugin).versionUpgrade
         versionUpgrade.baseBranch = "release/2.x"
 
-        DeferredConfiguration.forceConfiguration(project)
+        project.evaluate()
 
         CreatePullRequestTask task = project.tasks.createPullRequest
 
