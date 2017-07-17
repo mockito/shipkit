@@ -1,6 +1,5 @@
 package org.shipkit.internal.gradle.versionupgrade
 
-import org.shipkit.internal.gradle.VersionUpgradeConsumerExtension
 import spock.lang.Specification
 
 class DependencyNewVersionParserTest extends Specification {

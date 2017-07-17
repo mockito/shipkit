@@ -1,7 +1,5 @@
 package org.shipkit.internal.gradle.versionupgrade;
 
-import org.shipkit.internal.gradle.VersionUpgradeConsumerExtension;
-
 public class DependencyNewVersionParser {
 
     public static final String DEPENDENCY_NEW_VERSION_PATTERN =

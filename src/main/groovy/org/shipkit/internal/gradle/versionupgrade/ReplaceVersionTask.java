@@ -4,7 +4,6 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.internal.gradle.VersionUpgradeConsumerExtension;
 import org.shipkit.internal.notes.util.IOUtil;
 
 /**

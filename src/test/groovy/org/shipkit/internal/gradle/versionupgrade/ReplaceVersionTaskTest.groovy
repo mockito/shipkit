@@ -3,7 +3,6 @@ package org.shipkit.internal.gradle.versionupgrade
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import org.shipkit.internal.gradle.VersionUpgradeConsumerExtension
 import spock.lang.Specification
 
 class ReplaceVersionTaskTest extends Specification {

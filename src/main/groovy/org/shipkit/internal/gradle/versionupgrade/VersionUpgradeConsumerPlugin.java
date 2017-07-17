@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle;
+package org.shipkit.internal.gradle.versionupgrade;
 
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
@@ -10,9 +10,6 @@ import org.gradle.api.tasks.Exec;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.git.GitPushTask;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
-import org.shipkit.internal.gradle.versionupgrade.CreatePullRequestTask;
-import org.shipkit.internal.gradle.versionupgrade.DependencyNewVersionParser;
-import org.shipkit.internal.gradle.versionupgrade.ReplaceVersionTask;
 import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitCheckOutTask;
 import org.shipkit.internal.gradle.git.GitPush;
