@@ -42,7 +42,7 @@ class AllContributorsFetcher {
 
     private Set<ProjectContributor> extractContributors(List<JsonObject> page, final String readOnlyAuthToken) throws IOException, DeserializationException {
         //Since returned contributor does not have 'name' element, we need to fetch the user data to get his name
-        //TODO add static caching of this. Names don't change that often, let's just cache this forever in build cache.
+        //TODO (maybe) add static caching of this. Names don't change that often, let's just cache this forever in build cache.
         GitHubObjectFetcher objectFetcher = new GitHubObjectFetcher(readOnlyAuthToken);
         Function<JsonObject, ProjectContributor> projectContributorFetcherFunction = new ProjectContributorFetcherFunction(objectFetcher);
 

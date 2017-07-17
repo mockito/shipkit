@@ -10,20 +10,18 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.shipkit.internal.gradle.util.StringUtil.join;
 
-//TODO since this class is already public, probably it's best if we keep things simple and remove it from the public API
-//1. Remove the ProcessRunner interface and Exec class
-//2. Move the runner to the internal package
 public class DefaultProcessRunner implements ProcessRunner {
 
     private static final Logger LOG = Logging.getLogger(DefaultProcessRunner.class);
     private final File workDir;
     private final File outputLogFile;
-    private String secretValue;
+    private List<String> secretValues = Collections.emptyList();
 
     /**
      * Calls {@link #DefaultProcessRunner(File, File)}
@@ -84,10 +82,15 @@ public class DefaultProcessRunner implements ProcessRunner {
     }
 
     private String mask(String text) {
-        if (secretValue == null) {
+        if (secretValues.isEmpty()) {
             return text;
         }
-        return text.replace(secretValue, "[SECRET]");
+        for (String s : secretValues) {
+            if (s != null) {
+                text = text.replace(s, "[SECRET]");
+            }
+        }
+        return text;
     }
 
     private static String readFully(BufferedReader reader) throws IOException {
@@ -107,6 +110,9 @@ public class DefaultProcessRunner implements ProcessRunner {
         if(outputLogFile != null) {
             //TODO ms - can we make sure that the output does not have sensitive secret values
             //should we mask secret values in the output stored in file, too?
+            //TODO SF - good question. Currently secret values are masked (see invocation of this method)
+            //On Travis CI you can't see files in workspace, but maybe it would be good to publish this outputs somewhere
+            //for example gist.github.com (?), then we should mask secrets
             IOUtil.writeFile(outputLogFile, content);
         }
     }
@@ -127,7 +133,14 @@ public class DefaultProcessRunner implements ProcessRunner {
      * @return this runner
      */
     public DefaultProcessRunner setSecretValue(String secretValue) {
-        this.secretValue = secretValue;
+        return setSecretValues(asList(secretValue));
+    }
+
+    /**
+     * @param secretValues all values will be masked from the output and logging
+     */
+    public DefaultProcessRunner setSecretValues(List<String> secretValues) {
+        this.secretValues = secretValues;
         return this;
     }
 

@@ -1,6 +1,10 @@
 package org.shipkit.internal.gradle
 
 import org.shipkit.gradle.BumpVersionFileTask
+import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin
+import org.shipkit.internal.gradle.git.GitCommitTask
+import org.shipkit.internal.gradle.git.GitPlugin
+import org.shipkit.internal.gradle.init.InitVersioningTask
 import org.shipkit.internal.version.VersionInfo
 import testutil.PluginSpecification
 
@@ -52,8 +56,11 @@ class VersioningPluginTest extends PluginSpecification {
         versionInfo.notableVersions == [] as LinkedList
     }
 
-    def "adds version bumped changes to GitCommitTask if GitPlugin applied"() {
+    def "should add version bumped changes to GitCommitTask if GitPlugin applied"() {
         given:
+        project.file(VersioningPlugin.VERSION_FILE_NAME) << "version=0.9.0\npreviousVersion=0.8.114\n"
+
+        and:
         project.plugins.apply(ReleaseConfigurationPlugin).configuration.gitHub.repository = "http://github.com"
         project.plugins.apply(GitPlugin)
 
@@ -63,11 +70,29 @@ class VersioningPluginTest extends PluginSpecification {
         then:
         GitCommitTask gitCommitTask = project.tasks.getByName(GitPlugin.GIT_COMMIT_TASK)
         gitCommitTask.files.contains(project.file(VersioningPlugin.VERSION_FILE_NAME).absolutePath)
-        gitCommitTask.aggregatedCommitMessage.contains("version bumped")
+        gitCommitTask.aggregatedCommitMessage.contains("0.9.0 release (previous 0.8.114)")
+    }
+
+    def "should skip previous version in release commit message if not available"() {
+        given:
+        project.file(VersioningPlugin.VERSION_FILE_NAME) << "version=0.9.0\n"
+
+        and:
+        project.plugins.apply(ReleaseConfigurationPlugin).configuration.gitHub.repository = "http://github.com"
+        project.plugins.apply(GitPlugin)
+
+        when:
+        project.plugins.apply(VersioningPlugin)
+
+        then:
+        GitCommitTask gitCommitTask = project.tasks.getByName(GitPlugin.GIT_COMMIT_TASK)
+        gitCommitTask.files.contains(project.file(VersioningPlugin.VERSION_FILE_NAME).absolutePath)
+        gitCommitTask.aggregatedCommitMessage.contains("0.9.0 release")
+        !gitCommitTask.aggregatedCommitMessage.contains("previous")
     }
 
     @Override
-    void configureReleaseConfigurationDefaults(){
+    void createReleaseConfiguration() {
         // ReleaseConfiguration is not needed in this test
     }
 }

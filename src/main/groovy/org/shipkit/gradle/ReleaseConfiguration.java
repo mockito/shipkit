@@ -1,24 +1,24 @@
 package org.shipkit.gradle;
 
 import org.gradle.api.GradleException;
-import org.shipkit.internal.version.VersionInfo;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.shipkit.internal.gradle.util.team.TeamParser.validateTeamMembers;
 
 /**
- * Configuration of the releasing plugin.
+ * Shipkit configuration.
+ * Contains configuration that is used by Shipkit plugins to configure Shipkit tasks.
  * <p>
  * Example of a release configuration of a working example project
  * <a href="https://github.com/mockito/shipkit-example/blob/master/gradle/shipkit.gradle">on GitHub</a>.
  * <p>
- * For minimal and full configuration, see the
- * <a href="https://github.com/mockito/shipkit/issues/76">issue 76</a>
+ * Sophisticated example based on Mockito project:
+ * <a href="https://github.com/mockito/mockito/blob/release/2.x/gradle/shipkit.gradle">Mockito project</a>.
  */
 public class ReleaseConfiguration {
 
@@ -55,8 +55,7 @@ public class ReleaseConfiguration {
         gitHub.setWriteAuthUser("dummy");
 
         releaseNotes.setFile("docs/release-notes.md");
-        releaseNotes.setShowAboutInfo(Boolean.TRUE);
-        releaseNotes.setIgnoreCommitsContaining(asList("[ci skip]"));
+        releaseNotes.setIgnoreCommitsContaining(singletonList("[ci skip]"));
         releaseNotes.setLabelMapping(Collections.<String, String>emptyMap());
 
         team.setContributors(Collections.<String>emptyList());
@@ -66,7 +65,6 @@ public class ReleaseConfiguration {
     //TODO currently it's not clear when to use class fields and when to use the 'configuration' map
     //Let's make it clear in the docs
     private boolean dryRun;
-    private boolean publishAllJavaSubprojects = true;
 
     /**
      * See {@link #isDryRun()}
@@ -82,21 +80,6 @@ public class ReleaseConfiguration {
      */
     public boolean isDryRun() {
         return dryRun;
-    }
-
-    /**
-     * See {@link #isPublishAllJavaSubprojects()}}
-     */
-    public void setPublishAllJavaSubprojects(boolean publishAllJavaSubprojects) {
-        this.publishAllJavaSubprojects = publishAllJavaSubprojects;
-    }
-
-    /**
-     * org.shipkit.java-library plugin will be applied to every java subproject (project that applies Gradle's 'java'
-     * plugin) if this boolean is <code>true</code>.
-     */
-    public boolean isPublishAllJavaSubprojects() {
-        return publishAllJavaSubprojects;
     }
 
     public GitHub getGitHub() {
@@ -123,8 +106,7 @@ public class ReleaseConfiguration {
     }
 
     /**
-     * Return last previously released version number
-     * See {@link VersionInfo#getPreviousVersion()}
+     * Return last previously released version number.
      */
     public String getPreviousReleaseVersion() {
         return previousReleaseVersion;
@@ -133,7 +115,9 @@ public class ReleaseConfiguration {
     public class GitHub {
 
         /**
-         * GitHub URL address, for example: https://github.com
+         * GitHub URL address, for example: https://github.com.
+         * Useful when you are using on-premises GitHub Enterprise
+         * and your url is different than the default GitHub instance for Open Source
          */
         public String getUrl() {
             return getStringUrl("gitHub.url");
@@ -275,14 +259,6 @@ public class ReleaseConfiguration {
          */
         public void setIgnoreCommitsContaining(Collection<String> commitMessageParts) {
             configuration.put("releaseNotes.ignoreCommitsContaining", commitMessageParts);
-        }
-
-        public boolean isShowAboutInfo() {
-            return getBoolean("releaseNotes.showAboutInfo");
-        }
-
-        public void setShowAboutInfo(Boolean showAboutInfo) {
-            configuration.put("releaseNotes.showAboutInfo", showAboutInfo);
         }
     }
 
@@ -430,10 +406,6 @@ public class ReleaseConfiguration {
 
     private Collection<String> getCollection(String key) {
         return (Collection) getValue(key, "Please configure 'shipkit." + key + "' value (Collection).");
-    }
-
-    private Boolean getBoolean(String key) {
-        return (Boolean) getValue(key, "Please configure 'shipkit." + key + "' value (String).");
     }
 
     private Object getValue(String key, String message) {

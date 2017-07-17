@@ -5,7 +5,7 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import org.shipkit.gradle.ReleaseConfiguration
-import org.shipkit.internal.gradle.ReleaseConfigurationPlugin
+import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin
 import org.shipkit.internal.notes.util.IOUtil
 import spock.lang.Specification
 
@@ -21,31 +21,32 @@ class PluginSpecification extends Specification{
     TemporaryFolder tmp = new TemporaryFolder()
 
     Project project
+    ReleaseConfiguration conf
 
     void setup(){
         initProject()
-        createConfigFile()
-        configureReleaseConfigurationDefaults()
+        createShipkitFile()
+        createReleaseConfiguration()
     }
 
     void initProject() {
         project = new ProjectBuilder().withProjectDir(tmp.root).build()
     }
 
-    void createConfigFile(){
+    void createShipkitFile(){
         def rootPath = tmp.root.absolutePath
-        def configFile = new File(rootPath + "/" + ReleaseConfigurationPlugin.CONFIG_FILE_RELATIVE_PATH);
-        IOUtil.createParentDirectory(configFile)
-        configFile << "shipkit { }"
+        def shipkitFile = new File(rootPath + "/" + ReleaseConfigurationPlugin.SHIPKIT_FILE_RELATIVE_PATH);
+        IOUtil.createParentDirectory(shipkitFile)
+        shipkitFile << "shipkit { }"
     }
 
     ReleaseConfiguration applyReleaseConfiguration(){
         return project.plugins.apply(ReleaseConfigurationPlugin).configuration
     }
 
-    void configureReleaseConfigurationDefaults(){
-        def conf = applyReleaseConfiguration()
-        conf.gitHub.readOnlyAuthToken = "token"
-        conf.gitHub.repository = "repo"
+    void createReleaseConfiguration(){
+        conf = applyReleaseConfiguration()
+        this.conf.gitHub.readOnlyAuthToken = "token"
+        this.conf.gitHub.repository = "repo"
     }
 }

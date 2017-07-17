@@ -8,7 +8,7 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class StringUtil {
 
-    //TODO convert to Java at some point
+    //TODO (maybe) convert to Java at some point
 
     /**
      * Classic string join
@@ -22,6 +22,13 @@ class StringUtil {
      */
     static String capitalize(String input) {
         return input.capitalize();
+    }
+
+    /**
+     * Checks if input is empty, if input is not null its 'toString()' value will be used.
+     */
+    static boolean isEmpty(Object input) {
+        return input == null || isEmpty(input.toString());
     }
 
     /**

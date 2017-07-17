@@ -17,11 +17,6 @@ public class GitHubContributorsProvider implements ContributorsProvider {
     }
 
     @Override
-    public ContributorsSet mapContributorsToGitHubUser(Collection<String> authorNames, String fromRevision, String toRevision) {
-        throw new RuntimeException("Not supported any more! TODO: remove");
-    }
-
-    @Override
     public ProjectContributorsSet getAllContributorsForProject() {
         ProjectContributorsSet contributors = new AllContributorsFetcher().fetchAllContributorsForProject(apiUrl, repository, readOnlyAuthToken);
         Collection<Contributor> recent = new RecentContributorsFetcher().fetchContributorsSinceYesterday(apiUrl, repository, readOnlyAuthToken);

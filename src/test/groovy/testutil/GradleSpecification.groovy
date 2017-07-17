@@ -31,10 +31,12 @@ class GradleSpecification extends Specification {
                 classpath files("${RESOURCES_DIR}")
                 classpath "com.github.cliftonlabs:json-simple:2.1.2"
                 classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3"
+                classpath "com.gradle.publish:plugin-publish-plugin:0.9.6"
             }
             
             repositories {
                 jcenter()
+                maven { url "https://plugins.gradle.org/m2/" }
             }
         }"""
         settingsFile = projectDir.newFile('settings.gradle')

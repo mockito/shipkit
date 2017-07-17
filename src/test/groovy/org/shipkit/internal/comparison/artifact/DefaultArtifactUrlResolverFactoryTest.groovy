@@ -3,7 +3,7 @@ package org.shipkit.internal.comparison.artifact
 import org.apache.commons.lang.builder.EqualsBuilder
 import org.gradle.api.Project
 import org.gradle.api.plugins.PluginContainer
-import org.shipkit.internal.gradle.BintrayPlugin
+import org.shipkit.internal.gradle.ShipkitBintrayPlugin
 import spock.lang.Specification
 
 class DefaultArtifactUrlResolverFactoryTest extends Specification {
@@ -23,7 +23,7 @@ class DefaultArtifactUrlResolverFactoryTest extends Specification {
         given:
         def pluginContainer = Mock(PluginContainer)
         project.plugins >> pluginContainer
-        pluginContainer.hasPlugin(BintrayPlugin) >> true
+        pluginContainer.hasPlugin(ShipkitBintrayPlugin) >> true
 
         when:
         def result = underTest.getDefaultResolver(project, "artifactName", "0.0.1")

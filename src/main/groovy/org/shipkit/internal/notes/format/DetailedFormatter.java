@@ -1,8 +1,8 @@
 package org.shipkit.internal.notes.format;
 
 import org.shipkit.internal.gradle.util.StringUtil;
+import org.shipkit.internal.util.DateUtil;
 import org.shipkit.internal.util.MultiMap;
-import org.shipkit.internal.notes.internal.DateFormat;
 import org.shipkit.internal.notes.model.*;
 
 import java.text.MessageFormat;
@@ -21,11 +21,11 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
     private final String publicationRepository;
     private final Map<String, Contributor> contributors;
     private final boolean emphasizeVersion;
-    private final String informationAboutShipkit;
+    private final String header;
 
-    DetailedFormatter(String informationAboutShipkit, String introductionText, Map<String, String> labelMapping, String vcsCommitsLinkTemplate,
+    DetailedFormatter(String header, String introductionText, Map<String, String> labelMapping, String vcsCommitsLinkTemplate,
                       String publicationRepository, Map<String, Contributor> contributors, boolean emphasizeVersion) {
-        this.informationAboutShipkit = informationAboutShipkit;
+        this.header = header;
         this.introductionText = introductionText;
         this.labelMapping = labelMapping;
         this.vcsCommitsLinkTemplate = vcsCommitsLinkTemplate;
@@ -36,7 +36,7 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
 
     @Override
     public String formatReleaseNotes(Collection<ReleaseNotesData> data) {
-        StringBuilder sb = new StringBuilder(informationAboutShipkit);
+        StringBuilder sb = new StringBuilder(header);
         sb.append(introductionText == null ? "" : introductionText);
         if (data.isEmpty()) {
             sb.append("No release information.");
@@ -65,7 +65,7 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
     }
 
     private static String buildHeader(String version, Date date, String prefix, String postfix){
-        return prefix + version + " (" + DateFormat.formatDate(date) + ")" + postfix + " - ";
+        return prefix + version + " (" + DateUtil.formatDate(date) + ")" + postfix + " - ";
     }
 
     static String releaseSummary(String version, Date date, ContributionSet contributions, Map<String, Contributor> contributors,

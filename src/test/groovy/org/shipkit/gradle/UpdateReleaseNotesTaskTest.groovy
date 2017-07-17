@@ -4,9 +4,8 @@ import org.gradle.api.GradleException
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import org.shipkit.internal.notes.about.InfoAboutRemover
+import org.shipkit.internal.notes.header.HeaderRemover
 import spock.lang.Specification
-import spock.lang.Unroll
 
 class UpdateReleaseNotesTaskTest extends Specification {
 
@@ -16,51 +15,14 @@ class UpdateReleaseNotesTaskTest extends Specification {
     def project = new ProjectBuilder().build()
     def tasks = project.getTasks();
     def incrementalNotesGenerator = Mock(UpdateReleaseNotesTask.IncrementalNotesGenerator)
-    def infoAboutRemover = Mock(InfoAboutRemover)
+    def infoAboutRemover = Mock(HeaderRemover)
 
     UpdateReleaseNotesTask underTest = tasks.create("updateReleaseNotes", UpdateReleaseNotesTask)
 
     void setup(){
         underTest.incrementalNotesGenerator = incrementalNotesGenerator
-        underTest.infoAboutRemover = infoAboutRemover
+        underTest.headerRemover = infoAboutRemover
         underTest.gitHubUrl = "https://github.com"
-    }
-
-    @Unroll
-    def "should fail if gitHubUrl is not set"() {
-        given:
-        underTest.gitHubUrl = gitHubUrl
-
-        when:
-        underTest.updateReleaseNotes()
-
-        then:
-        def ex = thrown(GradleException)
-        ex.message == "':updateReleaseNotes.gitHubUrl' must be configured."
-
-        where:
-        gitHubUrl << ["     ", "", null]
-    }
-
-    def "should fail if gitHubRepository null" (){
-        when:
-        underTest.updateReleaseNotes()
-
-        then:
-        def ex = thrown(GradleException)
-        ex.message == "':updateReleaseNotes.gitHubRepository' must be configured."
-    }
-
-    def "should fail if gitHubRepository empty" (){
-        given:
-        underTest.gitHubRepository == ""
-
-        when:
-        underTest.updateReleaseNotes()
-
-        then:
-        def ex = thrown(GradleException)
-        ex.message == "':updateReleaseNotes.gitHubRepository' must be configured."
     }
 
     def "should fail if releaseNotesFile is not configured and not in preview mode" (){
@@ -130,7 +92,7 @@ class UpdateReleaseNotesTaskTest extends Specification {
         underTest.updateReleaseNotes()
 
         then:
-        1 * infoAboutRemover.removeAboutInfoIfExist(file)
+        1 * infoAboutRemover.removeHeaderIfExist(file)
     }
 
     def "should not modify releaseNotesFile if in preview mode" (){

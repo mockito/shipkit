@@ -1,7 +1,7 @@
 package org.shipkit.internal.notes.vcs
 
 import org.shipkit.internal.exec.ProcessRunner
-import org.shipkit.internal.notes.internal.DateFormat
+import org.shipkit.internal.util.DateUtil
 import spock.lang.Specification
 
 class RevisionDateProviderTest extends Specification {
@@ -15,9 +15,9 @@ class RevisionDateProviderTest extends Specification {
         runner.run("git", "log", "--pretty=%ad", "--date=iso", "v3.0.0", "-n", "1") >> "2017-04-11 13:59:59 +0000"
 
         expect:
-        DateFormat.formatDate(provider.getDate("v1.0.0")) == "2017-01-29"
-        DateFormat.formatDate(provider.getDate("v2.0.0")) == "2017-01-30"
-        DateFormat.formatDate(provider.getDate("v3.0.0")) == "2017-04-11"
+        DateUtil.formatDate(provider.getDate("v1.0.0")) == "2017-01-29"
+        DateUtil.formatDate(provider.getDate("v2.0.0")) == "2017-01-30"
+        DateUtil.formatDate(provider.getDate("v3.0.0")) == "2017-04-11"
     }
 
     def "fails if revision number is incorrect what causes git call to fail"() {

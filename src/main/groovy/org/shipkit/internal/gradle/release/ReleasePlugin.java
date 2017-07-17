@@ -4,20 +4,25 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.shipkit.gradle.exec.CompositeExecTask;
-import org.shipkit.gradle.exec.ExecCommand;
-import org.shipkit.internal.gradle.GitPlugin;
-import org.shipkit.internal.gradle.ReleaseNeededPlugin;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
+import org.shipkit.gradle.exec.ShipkitExecTask;
 import org.shipkit.internal.gradle.ReleaseNotesPlugin;
 import org.shipkit.internal.gradle.VersioningPlugin;
+import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
+import org.shipkit.internal.gradle.util.TaskSuccessfulMessage;
 
 import static java.util.Arrays.asList;
-import static org.shipkit.internal.gradle.ReleaseNeededPlugin.RELEASE_NEEDED;
 import static org.shipkit.internal.gradle.ReleaseNotesPlugin.UPDATE_NOTES_TASK;
+import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
+import static org.shipkit.internal.gradle.release.ReleaseNeededPlugin.RELEASE_NEEDED;
 
 /**
- * Applies plugins:
+ * Release automation: notes generation, tagging, versioning.
+ * <p>
+ * Applies:
+ *
  * <ul>
  *     <li>{@link ReleaseNotesPlugin}</li>
  *     <li>{@link VersioningPlugin}</li>
@@ -33,6 +38,8 @@ import static org.shipkit.internal.gradle.ReleaseNotesPlugin.UPDATE_NOTES_TASK;
  */
 public class ReleasePlugin implements Plugin<Project> {
 
+    private final static Logger LOG = Logging.getLogger(ReleasePlugin.class);
+
     public static final String PERFORM_RELEASE_TASK = "performRelease";
     public static final String TEST_RELEASE_TASK = "testRelease";
     public static final String RELEASE_CLEAN_UP_TASK = "releaseCleanUp";
@@ -40,7 +47,6 @@ public class ReleasePlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
         project.getPlugins().apply(ReleaseNotesPlugin.class);
-        project.getPlugins().apply(VersioningPlugin.class);
         project.getPlugins().apply(GitPlugin.class);
         project.getPlugins().apply(ReleaseNeededPlugin.class);
 
@@ -54,14 +60,14 @@ public class ReleasePlugin implements Plugin<Project> {
             }
         });
 
-        TaskMaker.task(project, TEST_RELEASE_TASK, CompositeExecTask.class, new Action<CompositeExecTask>() {
-            //TODO rename CompositeExecTask because it can have one action
-            public void execute(CompositeExecTask task) {
-                task.setDescription("Tests the release procedure and cleans up. Safe to be invoked multiple times.");
+        TaskMaker.task(project, TEST_RELEASE_TASK, ShipkitExecTask.class, new Action<ShipkitExecTask>() {
+            public void execute(ShipkitExecTask t) {
+                t.setDescription("Tests the release procedure and cleans up. Safe to be invoked multiple times.");
                 //releaseCleanUp is already set up to run all his "subtasks" after performRelease is performed
                 //releaseNeeded is used here only to execute the code paths in the release needed task (extra testing)
-                task.getExecCommands().add(new ExecCommand(asList(
-                    "./gradlew", RELEASE_NEEDED, PERFORM_RELEASE_TASK, RELEASE_CLEAN_UP_TASK, "-Pshipkit.dryRun")));
+                t.getExecCommands().add(execCommand("Performing relase in dry run, with cleanup"
+                        , asList("./gradlew", RELEASE_NEEDED, PERFORM_RELEASE_TASK, RELEASE_CLEAN_UP_TASK, "-PdryRun")));
+                TaskSuccessfulMessage.logOnSuccess(t, "  The release test was successful. Ship it!");
             }
         });
 

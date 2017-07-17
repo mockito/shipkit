@@ -3,16 +3,19 @@ package org.shipkit.internal.gradle;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.shipkit.gradle.UpdateReleaseNotesTask;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.ReleaseNotesFetcherTask;
+import org.shipkit.gradle.UpdateReleaseNotesTask;
+import org.shipkit.gradle.notes.FetchContributorsTask;
+import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
+import org.shipkit.internal.gradle.contributors.ContributorsPlugin;
+import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.version.VersionInfo;
 
 import java.io.File;
-import java.util.Arrays;
 
-import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
+import static java.util.Collections.singletonList;
 
 /**
  * The plugin adds following tasks:
@@ -26,6 +29,7 @@ import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.de
  */
 public class ReleaseNotesPlugin implements Plugin<Project> {
 
+    public static final String PREVIEW_PROJECT_PROPERTY = "preview";
     private static final String FETCH_NOTES_TASK = "fetchReleaseNotes";
     public static final String UPDATE_NOTES_TASK = "updateReleaseNotes";
 
@@ -50,7 +54,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
             }
         });
 
-        final AllContributorsFetcherTask contributorsFetcher = (AllContributorsFetcherTask) project.getTasks().getByName(ContributorsPlugin.FETCH_ALL_CONTRIBUTORS_TASK);
+        final FetchContributorsTask contributorsFetcher = (FetchContributorsTask) project.getTasks().getByName(ContributorsPlugin.FETCH_ALL_CONTRIBUTORS_TASK);
 
         TaskMaker.task(project, UPDATE_NOTES_TASK, UpdateReleaseNotesTask.class, new Action<UpdateReleaseNotesTask>() {
             public void execute(final UpdateReleaseNotesTask t) {
@@ -58,13 +62,13 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
 
                 configureDetailedNotes(t, releaseNotesFetcher, project, conf, contributorsFetcher);
 
-                boolean previewMode = project.hasProperty(UpdateReleaseNotesTask.PREVIEW_PROJECT_PROPERTY);
+                boolean previewMode = project.hasProperty(PREVIEW_PROJECT_PROPERTY);
                 t.setPreviewMode(previewMode);
 
                 if(!previewMode){
                     File releaseNotesFile = project.file(conf.getReleaseNotes().getFile());
                     GitPlugin.registerChangesForCommitIfApplied(
-                        Arrays.asList(releaseNotesFile), "release notes updated", t);
+                            singletonList(releaseNotesFile), "release notes updated", t);
                     t.getOutputs().file(releaseNotesFile);
                 }
             }
@@ -75,7 +79,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
                                                final ReleaseNotesFetcherTask releaseNotesFetcher,
                                                final Project project,
                                                final ReleaseConfiguration conf,
-                                               final AllContributorsFetcherTask contributorsFetcher) {
+                                               final FetchContributorsTask contributorsFetcher) {
         task.dependsOn(releaseNotesFetcher);
         task.dependsOn(contributorsFetcher);
 
@@ -84,18 +88,13 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
 
         task.setDevelopers(conf.getTeam().getDevelopers());
         task.setContributors(conf.getTeam().getContributors());
-        task.setGitHubLabelMapping(conf.getReleaseNotes().getLabelMapping()); //TODO make it optional
-        task.setReleaseNotesFile(project.file(conf.getReleaseNotes().getFile())); //TODO add sensible default
+        task.setGitHubLabelMapping(conf.getReleaseNotes().getLabelMapping());
+        task.setReleaseNotesFile(project.file(conf.getReleaseNotes().getFile()));
         task.setGitHubUrl(conf.getGitHub().getUrl());
         task.setGitHubRepository(conf.getGitHub().getRepository());
         task.setPreviousVersion(project.getExtensions().getByType(VersionInfo.class).getPreviousVersion());
-        task.setShowAboutInfo(conf.getReleaseNotes().isShowAboutInfo());
 
-        deferredConfiguration(project, new Runnable() {
-            public void run() {
-                task.setReleaseNotesData(releaseNotesFetcher.getOutputFile());
-                task.setContributorsDataFile(contributorsFetcher.getOutputFile());
-            }
-        });
+        task.setReleaseNotesData(releaseNotesFetcher.getOutputFile());
+        task.setContributorsDataFile(contributorsFetcher.getOutputFile());
     }
 }
