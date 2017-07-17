@@ -26,9 +26,15 @@ public class FetchContributorsTask extends DefaultTask {
     @Input private String readOnlyAuthToken;
     @OutputFile private File outputFile;
 
+    private ContributorsProvider contributorsProvider;
+
+    public void setContributorsProvider(ContributorsProvider contributorsProvider) {
+        this.contributorsProvider = contributorsProvider;
+    }
+
     @TaskAction
     public void fetchContributors() {
-        new FetchContributors().fetchContributors(this);
+        new FetchContributors().fetchContributors(contributorsProvider, this);
     }
 
     /**
