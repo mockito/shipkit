@@ -1,28 +1,23 @@
 package org.shipkit.internal.gradle.versionupgrade;
 
 import org.gradle.api.DefaultTask;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.gradle.ReleaseConfiguration;
-import org.shipkit.internal.util.ExposedForTesting;
-import org.shipkit.internal.util.GitHubApi;
 
 import java.io.IOException;
 
 /**
- * Creates a pull request in {@link CreatePullRequestTask#repositoryUrl} of title {@link CreatePullRequestTask#title}
- * between {@link CreatePullRequestTask#baseBranch} and {@link CreatePullRequestTask#headBranch}
+ * Creates a pull request in {@link CreatePullRequestTask#repositoryUrl} between
+ * {@link VersionUpgradeConsumerExtension#baseBranch} and {@link CreatePullRequestTask#headBranch}
  */
 public class CreatePullRequestTask extends DefaultTask{
 
     private String repositoryUrl;
     private String gitHubApiUrl;
     private String authToken;
-    private String title;
     private String headBranch;
-    private String baseBranch;
     private boolean dryRun;
+    private VersionUpgradeConsumerExtension versionUpgrade;
 
     @TaskAction
     public void createPullRequest() throws IOException {
@@ -72,20 +67,6 @@ public class CreatePullRequestTask extends DefaultTask{
     }
 
     /**
-     * Title of pull request
-     */
-    public String getTitle() {
-        return title;
-    }
-
-    /**
-     * See {@link #getTitle()}
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    /**
      * Head branch of pull request
      */
     public String getHeadBranch() {
@@ -99,18 +80,12 @@ public class CreatePullRequestTask extends DefaultTask{
         this.headBranch = headBranch;
     }
 
-    /**
-     * Base branch of pull request
-     */
-    public String getBaseBranch() {
-        return baseBranch;
+    public VersionUpgradeConsumerExtension getVersionUpgrade() {
+        return versionUpgrade;
     }
 
-    /**
-     * See {@link #getBaseBranch()}
-     */
-    public void setBaseBranch(String baseBranch) {
-        this.baseBranch = baseBranch;
+    public void setVersionUpgrade(VersionUpgradeConsumerExtension versionUpgrade) {
+        this.versionUpgrade = versionUpgrade;
     }
 
     /**

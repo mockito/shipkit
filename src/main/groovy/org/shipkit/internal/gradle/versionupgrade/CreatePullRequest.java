@@ -21,15 +21,27 @@ class CreatePullRequest {
         }
 
         LOG.lifecycle("  Creating a pull request of title '{}' in repository '{}' between base = '{}' and head = '{}'.",
-            task.getTitle(), task.getRepositoryUrl(), task.getBaseBranch(), task.getHeadBranch());
+            getTitle(task), task.getRepositoryUrl(), task.getVersionUpgrade().getBaseBranch(), task.getHeadBranch());
 
         String body = "{" +
-            "  \"title\": \"" + task.getTitle() + "\"," +
-            "  \"body\": \"Please pull this in!\"," +
+            "  \"title\": \"" + getTitle(task) + "\"," +
+            "  \"body\": \"" + getMessage(task) + "\"," +
             "  \"head\": \"" + task.getHeadBranch() + "\"," +
-            "  \"base\": \"" + task.getBaseBranch() + "\"" +
+            "  \"base\": \"" + task.getVersionUpgrade().getBaseBranch() + "\"" +
             "}";
 
         gitHubApi.post("/repos/" + task.getRepositoryUrl() + "/pulls", body);
+    }
+
+    private String getMessage(CreatePullRequestTask task){
+        return String.format("This pull request was automatically created by Shipkit's" +
+         " \"version-upgrade-customer\" Gradle plugin (http://shipkit.org)." +
+        " Please merge it so that you are using fresh version of \"%s\" dependency.",
+            task.getVersionUpgrade().getDependencyName());
+    }
+
+    private String getTitle(CreatePullRequestTask task){
+        VersionUpgradeConsumerExtension versionUpgrade = task.getVersionUpgrade();
+        return String.format("Version of %s upgraded to %s", versionUpgrade.getDependencyName(), versionUpgrade.getNewVersion());
     }
 }

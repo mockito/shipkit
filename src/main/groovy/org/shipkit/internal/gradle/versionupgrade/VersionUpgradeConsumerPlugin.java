@@ -149,15 +149,8 @@ public class VersionUpgradeConsumerPlugin implements Plugin<Project> {
                 task.setRepositoryUrl(conf.getGitHub().getRepository());
                 task.setDryRun(conf.isDryRun());
                 task.setAuthToken(conf.getGitHub().getWriteAuthToken());
-                task.setTitle(String.format("%s version upgraded to %s", versionUpgrade.getDependencyName(), versionUpgrade.getNewVersion()));
                 task.setHeadBranch(getVersionBranchName(versionUpgrade));
-
-                DeferredConfiguration.deferredConfiguration(project, new Runnable() {
-                    @Override
-                    public void run() {
-                        task.setBaseBranch(versionUpgrade.getBaseBranch());
-                    }
-                });
+                task.setVersionUpgrade(versionUpgrade);
             }
         });
 

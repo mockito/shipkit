@@ -2,7 +2,6 @@ package org.shipkit.internal.gradle.versionupgrade
 
 import org.gradle.api.tasks.Exec
 import org.shipkit.gradle.git.GitPushTask
-import org.shipkit.internal.gradle.configuration.DeferredConfiguration
 import org.shipkit.internal.gradle.git.GitCheckOutTask
 import testutil.PluginSpecification
 
@@ -114,18 +113,13 @@ class VersionUpgradeConsumerPluginTest extends PluginSpecification {
 
         when:
         def versionUpgrade = project.plugins.apply(VersionUpgradeConsumerPlugin).versionUpgrade
-        versionUpgrade.baseBranch = "release/2.x"
-
-        project.evaluate()
-
         CreatePullRequestTask task = project.tasks.createPullRequest
 
         then:
         task.gitHubApiUrl == "http://api.com"
         task.repositoryUrl == "http://repository.com"
         task.authToken == "writeToken"
-        task.title == "shipkit version upgraded to 1.2.30"
-        task.baseBranch == "release/2.x"
+        task.versionUpgrade == versionUpgrade
         task.headBranch == "upgrade-shipkit-to-1.2.30"
     }
 }
