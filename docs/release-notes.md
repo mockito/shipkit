@@ -1,3 +1,6 @@
+**0.9.7 (2017-07-17)** - [5 commits](https://github.com/mockito/shipkit/compare/v0.9.6...v0.9.7) by jpetryk (4), [Szczepan Faber](http://github.com/szczepiq) (1) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.7-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.7)
+ - Remove javadoc warnings [(#309)](https://github.com/mockito/shipkit/pull/309)
+
 **0.9.6 (2017-07-16)** - [16 commits](https://github.com/mockito/shipkit/compare/v0.9.5...v0.9.6) by [Szczepan Faber](http://github.com/szczepiq) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.6-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.6)
  - Public API tidy up pre 1.0 [(#308)](https://github.com/mockito/shipkit/pull/308)
 
