@@ -1,3 +1,6 @@
+**0.9.8 (2017-07-17)** - [7 commits](https://github.com/mockito/shipkit/compare/v0.9.7...v0.9.8) by [Wojtek Wilk](http://github.com/wwilk) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.8-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.8)
+ - Refactoring of VersionUpgradeConsumerPlugin #302 [(#312)](https://github.com/mockito/shipkit/pull/312)
+
 **0.9.7 (2017-07-17)** - [5 commits](https://github.com/mockito/shipkit/compare/v0.9.6...v0.9.7) by jpetryk (4), [Szczepan Faber](http://github.com/szczepiq) (1) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.7-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.7)
  - Remove javadoc warnings [(#309)](https://github.com/mockito/shipkit/pull/309)
 
