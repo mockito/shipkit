@@ -9,7 +9,16 @@ import org.shipkit.internal.gradle.contributors.ContributorsPlugin;
 import org.shipkit.internal.notes.contributors.ContributorsProvider;
 import org.shipkit.internal.notes.contributors.github.Contributors;
 
-
+/**
+ * Adds and configures tasks for getting contributor information from GitHub.
+ * Intended to be applied to the root project of your Gradle multi-project build.
+ * <p>
+ * Applies following plugins:
+ * <ul>
+ *     <li>{@link ReleaseConfigurationPlugin}</li>
+ *     <li>{@link ContributorsPlugin}</li>
+ * </ul>
+ */
 public class GithubContributorsPlugin implements Plugin<Project> {
 
     public void apply(final Project project) {

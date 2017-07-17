@@ -31,6 +31,7 @@ public class PomContributorsPlugin implements Plugin<Project> {
 
     @Override
     public void apply(final Project project) {
+        project.getPlugins().apply(ContributorsPlugin.class);
         project.allprojects(new Action<Project>() {
             public void execute(final Project subproject) {
                 subproject.getPlugins().withType(JavaPublishPlugin.class, new Action<Plugin>() {

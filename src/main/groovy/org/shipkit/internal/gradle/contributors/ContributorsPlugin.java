@@ -11,7 +11,7 @@ import org.shipkit.internal.gradle.util.TaskMaker;
 import static org.shipkit.internal.gradle.util.BuildConventions.contributorsFile;
 
 /**
- * Adds and configures tasks for getting contributor information from GitHub.
+ * Adds and preconfigures tasks for getting contributor information.
  * Contributors information feeds release notes and pom.xml.
  * <p>
  * Applies plugins:

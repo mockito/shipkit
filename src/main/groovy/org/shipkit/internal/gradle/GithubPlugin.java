@@ -7,6 +7,7 @@ import org.shipkit.internal.gradle.java.GithubPomContributorsPlugin;
 
 /**
  * This plugin applies other plugins which make shipkit work with Github.
+ * Intended to be applied to the root project of your Gradle multi-project build.
  * <p>
  * Applies following plugins:
  *
