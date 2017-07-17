@@ -23,8 +23,13 @@ public class GithubContributorsPlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
-        final FetchContributorsTask task = project.getPlugins().apply(ContributorsPlugin.class).getFetchContributorsTask();
+        project.getPlugins().apply(ContributorsPlugin.class);
 
+        final FetchContributorsTask task = (FetchContributorsTask) project.getTasks().getByName(ContributorsPlugin.FETCH_ALL_CONTRIBUTORS_TASK);
+        configureGithub(conf, task);
+    }
+
+    private void configureGithub(ReleaseConfiguration conf, FetchContributorsTask task) {
         task.setDescription("Fetch info about all project contributors from GitHub and store it in file");
         task.setApiUrl(conf.getGitHub().getApiUrl());
         task.setReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());

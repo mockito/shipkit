@@ -46,6 +46,7 @@ public class ContributorsPlugin implements Plugin<Project> {
             }
         });
     }
+
 }
 
 
