@@ -4,6 +4,8 @@ import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
+import org.shipkit.internal.util.ExposedForTesting;
+import org.shipkit.internal.util.MultiMap;
 
 /**
  * Deferred configuration of Gradle objects (tasks, projects) so that they can reflect user-specified values.

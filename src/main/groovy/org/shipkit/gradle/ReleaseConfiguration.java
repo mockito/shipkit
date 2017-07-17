@@ -1,6 +1,8 @@
 package org.shipkit.gradle;
 
 import org.gradle.api.GradleException;
+import org.shipkit.internal.util.EnvVariables;
+import org.shipkit.internal.util.ExposedForTesting;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -31,10 +33,17 @@ public class ReleaseConfiguration {
     private final boolean lenient;
 
     private String previousReleaseVersion;
+    private EnvVariables envVariables = new EnvVariables();
 
     ReleaseConfiguration(Map<String, Object> configuration, boolean lenient) {
         this.configuration = configuration;
         this.lenient = lenient;
+    }
+
+    @ExposedForTesting
+    ReleaseConfiguration(EnvVariables envVariables){
+        this();
+        this.envVariables = envVariables;
     }
 
     public ReleaseConfiguration() {
@@ -198,8 +207,18 @@ public class ReleaseConfiguration {
          * if this value is not specified.
          */
         public String getWriteAuthToken() {
-            return (String) getValue("gitHub.writeAuthToken",
-                    "Please export 'GH_WRITE_TOKEN' env variable first!\n" +
+            String key = "gitHub.writeAuthToken";
+            String value = (String) configuration.get(key);
+
+            if(value != null){
+                return value;
+            }
+
+            String envVar = envVariables.getenv("GH_WRITE_TOKEN");
+            if(envVar != null){
+                return envVar;
+            }
+            throw new GradleException("Please export 'GH_WRITE_TOKEN' env variable first!\n" +
                     "  The value of that variable is automatically used by Shipkit.\n" +
                     "  It is highly recommended to keep write token secure and store env variable with your CI configuration.\n" +
                     "  Alternatively, you can configure the write token explicitly:\n" +

@@ -84,7 +84,7 @@ public class GitPlugin implements Plugin<Project> {
                 t.getTargets().add(GitUtil.getTag(conf, project));
                 t.setDryRun(conf.isDryRun());
 
-                GitPush.setPushUrl(t, conf, System.getenv(WRITE_TOKEN_ENV));
+                GitPush.setPushUrl(t, conf);
 
                 project.getPlugins().apply(GitBranchPlugin.class)
                         .provideBranchTo(t, new Action<String>() {

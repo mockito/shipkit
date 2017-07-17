@@ -12,15 +12,20 @@ class ReplaceVersionTaskTest extends Specification {
 
     def "replaces version"() {
         given:
-        def tasksContainer = new ProjectBuilder().build().tasks
-        def replaceVersionTask = tasksContainer.create("replaceVersion", ReplaceVersionTask)
         def configFile = tmp.newFile("build.gradle")
 
         configFile << "dependencies{ compile org.shipkit:shipkit:0.1.2 }"
 
-        replaceVersionTask.buildFile = configFile
-        replaceVersionTask.newVersion = "0.2.3"
-        replaceVersionTask.dependencyPattern = "org.shipkit:shipkit:{VERSION}"
+        def versionUpgrade = new VersionUpgradeConsumerExtension(
+            dependencyGroup: "org.shipkit",
+            dependencyName: "shipkit",
+            newVersion: "0.2.3",
+            buildFile: configFile
+        )
+        def tasksContainer = new ProjectBuilder().build().tasks
+        def replaceVersionTask = tasksContainer.create("replaceVersion", ReplaceVersionTask)
+
+        replaceVersionTask.versionUpgrade = versionUpgrade
 
         when:
         replaceVersionTask.replaceVersion()
