@@ -1,13 +1,16 @@
 package org.shipkit.internal.gradle.java;
 
 
+import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.shipkit.internal.gradle.contributors.github.GithubContributorsPlugin;
 
-public class GithubPomContributorsPlugin extends PomContributorsPlugin {
+public class GithubPomContributorsPlugin implements Plugin<Project> {
 
     @Override
-    void applyContributorsPlugin(Project project) {
+    public void apply(Project project) {
         project.getPlugins().apply(GithubContributorsPlugin.class);
+        project.getPlugins().apply(PomContributorsPlugin.class);
     }
+
 }
