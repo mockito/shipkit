@@ -15,13 +15,13 @@ class UpdateReleaseNotesTaskTest extends Specification {
     def project = new ProjectBuilder().build()
     def tasks = project.getTasks();
     def incrementalNotesGenerator = Mock(UpdateReleaseNotesTask.IncrementalNotesGenerator)
-    def infoAboutRemover = Mock(HeaderRemover)
+    def headerRemover = Mock(HeaderRemover)
 
     UpdateReleaseNotesTask underTest = tasks.create("updateReleaseNotes", UpdateReleaseNotesTask)
 
     void setup(){
         underTest.incrementalNotesGenerator = incrementalNotesGenerator
-        underTest.headerRemover = infoAboutRemover
+        underTest.headerRemover = headerRemover
         underTest.gitHubUrl = "https://github.com"
     }
 
@@ -92,7 +92,7 @@ class UpdateReleaseNotesTaskTest extends Specification {
         underTest.updateReleaseNotes()
 
         then:
-        1 * infoAboutRemover.removeHeaderIfExist(file)
+        1 * headerRemover.removeHeaderIfExist(file)
     }
 
     def "should not modify releaseNotesFile if in preview mode" (){
