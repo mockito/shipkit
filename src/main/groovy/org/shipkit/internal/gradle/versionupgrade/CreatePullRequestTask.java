@@ -48,42 +48,42 @@ public class CreatePullRequestTask extends DefaultTask{
 
 
     /**
-     * See {@link ReleaseConfiguration.GitHub#getRepository()}
+     * See {@link org.shipkit.gradle.ReleaseConfiguration.GitHub#getRepository()}
      */
     public String getRepositoryUrl() {
         return repositoryUrl;
     }
 
     /**
-     * See {@link ReleaseConfiguration.GitHub#getRepository()}
+     * See {@link org.shipkit.gradle.ReleaseConfiguration.GitHub#getRepository()}
      */
     public void setRepositoryUrl(String repositoryUrl) {
         this.repositoryUrl = repositoryUrl;
     }
 
     /**
-     * See {@link ReleaseConfiguration.GitHub#getApiUrl()}
+     * See {@link org.shipkit.gradle.ReleaseConfiguration.GitHub#getApiUrl()}
      */
     public String getGitHubApiUrl() {
         return gitHubApiUrl;
     }
 
     /**
-     * See {@link ReleaseConfiguration.GitHub#getApiUrl()}
+     * See {@link org.shipkit.gradle.ReleaseConfiguration.GitHub#getApiUrl()}
      */
     public void setGitHubApiUrl(String gitHubApiUrl) {
         this.gitHubApiUrl = gitHubApiUrl;
     }
 
     /**
-     * See {@link ReleaseConfiguration.GitHub#getWriteAuthToken()}
+     * See {@link org.shipkit.gradle.ReleaseConfiguration.GitHub#getWriteAuthToken()}
      */
     public String getAuthToken() {
         return authToken;
     }
 
     /**
-     * See {@link ReleaseConfiguration.GitHub#getWriteAuthToken()}
+     * See {@link org.shipkit.gradle.ReleaseConfiguration.GitHub#getWriteAuthToken()}
      */
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
