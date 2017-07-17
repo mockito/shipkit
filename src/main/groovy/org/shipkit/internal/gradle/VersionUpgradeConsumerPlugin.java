@@ -63,7 +63,7 @@ public class VersionUpgradeConsumerPlugin implements Plugin<Project> {
     public static final String CREATE_PULL_REQUEST = "createPullRequest";
     public static final String PERFORM_VERSION_UPGRADE = "performVersionUpgrade";
 
-    public static final String DEPENDENCY_NEW_VERSION = "dependencyNewVersion";
+    public static final String DEPENDENCY_PROJECT_PROPERTY = "dependency";
 
     private VersionUpgrade versionUpgrade;
 
@@ -78,7 +78,7 @@ public class VersionUpgradeConsumerPlugin implements Plugin<Project> {
         versionUpgrade.setBuildFile(project.file("build.gradle"));
         versionUpgrade.setBaseBranch("master");
 
-        String dependencyNewVersion = (String) project.getProperties().get(DEPENDENCY_NEW_VERSION);
+        String dependencyNewVersion = (String) project.getProperties().get(DEPENDENCY_PROJECT_PROPERTY);
         if(dependencyNewVersion != null) {
             DependencyNewVersionParser dependencyNewVersionParser = new DependencyNewVersionParser(dependencyNewVersion);
             if (dependencyNewVersionParser.isValid()) {

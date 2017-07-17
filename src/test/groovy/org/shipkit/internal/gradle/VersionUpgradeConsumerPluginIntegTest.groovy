@@ -20,7 +20,7 @@ class VersionUpgradeConsumerPluginIntegTest extends GradleSpecification {
         projectDir.newFile("version.properties") << "version=1.0.0"
 
         expect:
-        def result = pass("performVersionUpgrade", "-PdependencyNewVersion=org.shipkit:shipkit:0.2.3", "-m", "-s")
+        def result = pass("performVersionUpgrade", "-Pdependency=org.shipkit:shipkit:0.2.3", "-m", "-s")
         result.tasks.join("\n") == """:checkoutBaseBranch=SKIPPED
 :checkoutVersionBranch=SKIPPED
 :replaceVersion=SKIPPED

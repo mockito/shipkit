@@ -29,7 +29,7 @@ class VersionUpgradeConsumerPluginTest extends PluginSpecification {
 
     def "should configure VersionUpgrade extension basing on dependencyNewVersion parameter"() {
         given:
-        project.extensions.dependencyNewVersion = "org.shipkit:shipkit:0.1.2"
+        project.extensions.dependency = "org.shipkit:shipkit:0.1.2"
 
         when:
         def versionUpgrade = project.plugins.apply(VersionUpgradeConsumerPlugin).versionUpgrade
@@ -55,7 +55,7 @@ class VersionUpgradeConsumerPluginTest extends PluginSpecification {
 
     def "should configure checkoutVersionBranch"() {
         when:
-        project.extensions.dependencyNewVersion = "org.shipkit:shipkit:0.1.2"
+        project.extensions.dependency = "org.shipkit:shipkit:0.1.2"
         project.plugins.apply(VersionUpgradeConsumerPlugin)
 
         GitCheckOutTask task = project.tasks.checkoutVersionBranch
@@ -67,7 +67,7 @@ class VersionUpgradeConsumerPluginTest extends PluginSpecification {
 
     def "should configure replaceVersion"() {
         given:
-        project.extensions.dependencyNewVersion = "org.shipkit:shipkit:0.1.2"
+        project.extensions.dependency = "org.shipkit:shipkit:0.1.2"
 
         when:
         VersionUpgrade versionUpgrade = project.plugins.apply(VersionUpgradeConsumerPlugin).versionUpgrade
@@ -80,7 +80,7 @@ class VersionUpgradeConsumerPluginTest extends PluginSpecification {
     def "should configure gitCommitVersionUpgrade"() {
         given:
         def dependencyFile = tmp.newFile("gradle.properties")
-        project.extensions.dependencyNewVersion = "org.shipkit:shipkit:1.2.30"
+        project.extensions.dependency = "org.shipkit:shipkit:1.2.30"
 
         when:
         def versionUpgrade = project.plugins.apply(VersionUpgradeConsumerPlugin).versionUpgrade
@@ -96,7 +96,7 @@ class VersionUpgradeConsumerPluginTest extends PluginSpecification {
 
     def "should configure pushVersionUpgrade"() {
         given:
-        project.extensions.dependencyNewVersion = "org.shipkit:shipkit:1.2.30"
+        project.extensions.dependency = "org.shipkit:shipkit:1.2.30"
 
         when:
         project.plugins.apply(VersionUpgradeConsumerPlugin)
@@ -109,7 +109,7 @@ class VersionUpgradeConsumerPluginTest extends PluginSpecification {
 
     def "should configure createPullRequest"() {
         given:
-        project.extensions.dependencyNewVersion = "org.shipkit:shipkit:1.2.30"
+        project.extensions.dependency = "org.shipkit:shipkit:1.2.30"
         conf.gitHub.apiUrl = "http://api.com"
         conf.gitHub.repository = "http://repository.com"
         conf.gitHub.writeAuthToken = "writeToken"
