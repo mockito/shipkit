@@ -1,7 +1,7 @@
 package org.shipkit.internal.gradle.versionupgrade
 
+import org.shipkit.internal.gradle.VersionUpgradeConsumerExtension
 import spock.lang.Specification
-import spock.lang.Unroll
 
 class DependencyNewVersionParserTest extends Specification {
 
@@ -12,18 +12,37 @@ class DependencyNewVersionParserTest extends Specification {
         parser = new DependencyNewVersionParser("SHIP-kit_group1:SHIP-kit_parser1:0.1.2")
 
         expect:
-        parser.valid
-        parser.dependencyGroup == "SHIP-kit_group1"
-        parser.dependencyName == "SHIP-kit_parser1"
-        parser.newVersion == "0.1.2"
+        def versionUpgrade = new VersionUpgradeConsumerExtension()
+        parser.fillVersionUpgradeExtension(versionUpgrade)
+        versionUpgrade.dependencyGroup == "SHIP-kit_group1"
+        versionUpgrade.dependencyName == "SHIP-kit_parser1"
+        versionUpgrade.newVersion == "0.1.2"
     }
 
-    @Unroll
-    def "should identify invalid dependencyNewVersion"() {
+    def "should throw exception when invalid dependencyNewVersion"() {
         given:
         parser = new DependencyNewVersionParser("1.2.3")
 
-        expect:
-        !parser.valid
+        when:
+        parser.fillVersionUpgradeExtension(new VersionUpgradeConsumerExtension())
+
+        then:
+        def ex = thrown(IllegalArgumentException)
+        ex.message == "  Incorrect format of property 'dependency', it should match the pattern " +
+            "'[A-Za-z0-9.\\-_]+:[A-Za-z0-9.\\-_]+:[0-9.]+', eg. 'org.shipkit:shipkit:1.2.3'."
+    }
+
+    def "should leave versionUpgrade empty when dependencyNewVersion = null"() {
+        given:
+        parser = new DependencyNewVersionParser(null)
+
+        when:
+        def versionUpgrade = new VersionUpgradeConsumerExtension()
+        parser.fillVersionUpgradeExtension(versionUpgrade)
+
+        then:
+        versionUpgrade.dependencyGroup == null
+        versionUpgrade.dependencyName == null
+        versionUpgrade.newVersion == null
     }
 }

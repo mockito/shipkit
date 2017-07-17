@@ -70,7 +70,7 @@ class VersionUpgradeConsumerPluginTest extends PluginSpecification {
         project.extensions.dependency = "org.shipkit:shipkit:0.1.2"
 
         when:
-        VersionUpgrade versionUpgrade = project.plugins.apply(VersionUpgradeConsumerPlugin).versionUpgrade
+        VersionUpgradeConsumerExtension versionUpgrade = project.plugins.apply(VersionUpgradeConsumerPlugin).versionUpgrade
         ReplaceVersionTask task = project.tasks.replaceVersion
 
         then:

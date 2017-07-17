@@ -4,16 +4,14 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.internal.gradle.VersionUpgrade;
+import org.shipkit.internal.gradle.VersionUpgradeConsumerExtension;
 import org.shipkit.internal.notes.util.IOUtil;
 
-import java.io.File;
-
 /**
- * Replaces version of given dependency with {@link VersionUpgrade#newVersion}
- * in the given {@link VersionUpgrade#buildFile}
+ * Replaces version of given dependency with {@link VersionUpgradeConsumerExtension#newVersion}
+ * in the given {@link VersionUpgradeConsumerExtension#buildFile}
  * To replace the dependency this task uses following regex pattern:
- * "{@link VersionUpgrade#dependencyGroup}:{@link VersionUpgrade#dependencyName}:{@value VERSION_REGEX}
+ * "{@link VersionUpgradeConsumerExtension#dependencyGroup}:{@link VersionUpgradeConsumerExtension#dependencyName}:{@value VERSION_REGEX}
  */
 public class ReplaceVersionTask extends DefaultTask{
 
@@ -21,7 +19,7 @@ public class ReplaceVersionTask extends DefaultTask{
 
     public static final String VERSION_REGEX = "[0-9.]+";
 
-    private VersionUpgrade versionUpgrade;
+    private VersionUpgradeConsumerExtension versionUpgrade;
 
     @TaskAction
     public void replaceVersion(){
@@ -36,11 +34,11 @@ public class ReplaceVersionTask extends DefaultTask{
         IOUtil.writeFile(versionUpgrade.getBuildFile().getAbsoluteFile(), updatedContent);
     }
 
-    public VersionUpgrade getVersionUpgrade() {
+    public VersionUpgradeConsumerExtension getVersionUpgrade() {
         return versionUpgrade;
     }
 
-    public void setVersionUpgrade(VersionUpgrade versionUpgrade) {
+    public void setVersionUpgrade(VersionUpgradeConsumerExtension versionUpgrade) {
         this.versionUpgrade = versionUpgrade;
     }
 }

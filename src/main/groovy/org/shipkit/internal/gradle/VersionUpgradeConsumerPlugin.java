@@ -65,30 +65,22 @@ public class VersionUpgradeConsumerPlugin implements Plugin<Project> {
 
     public static final String DEPENDENCY_PROJECT_PROPERTY = "dependency";
 
-    private VersionUpgrade versionUpgrade;
+    private VersionUpgradeConsumerExtension versionUpgrade;
 
     @Override
     public void apply(final Project project) {
         LOG.lifecycle("Applying VersionUpgradeConsumerPlugin, beware that it's is INCUBATING state, so its API may change!");
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
 
-        versionUpgrade = project.getExtensions().create("versionUpgrade", VersionUpgrade.class);
+        versionUpgrade = project.getExtensions().create("versionUpgrade", VersionUpgradeConsumerExtension.class);
 
         // set defaults
         versionUpgrade.setBuildFile(project.file("build.gradle"));
         versionUpgrade.setBaseBranch("master");
 
-        String dependencyNewVersion = (String) project.getProperties().get(DEPENDENCY_PROJECT_PROPERTY);
-        if(dependencyNewVersion != null) {
-            DependencyNewVersionParser dependencyNewVersionParser = new DependencyNewVersionParser(dependencyNewVersion);
-            if (dependencyNewVersionParser.isValid()) {
-                versionUpgrade.setDependencyGroup(dependencyNewVersionParser.getDependencyGroup());
-                versionUpgrade.setDependencyName(dependencyNewVersionParser.getDependencyName());
-                versionUpgrade.setNewVersion(dependencyNewVersionParser.getNewVersion());
-            } else {
-                throw new IllegalArgumentException("");
-            }
-        }
+        String dependency = (String) project.findProperty(DEPENDENCY_PROJECT_PROPERTY);
+
+        new DependencyNewVersionParser(dependency).fillVersionUpgradeExtension(versionUpgrade);
 
         TaskMaker.task(project, CHECKOUT_BASE_BRANCH, GitCheckOutTask.class, new Action<GitCheckOutTask>() {
             @Override
@@ -186,11 +178,11 @@ public class VersionUpgradeConsumerPlugin implements Plugin<Project> {
         });
     }
 
-    private String getVersionBranchName(VersionUpgrade versionUpgrade){
+    private String getVersionBranchName(VersionUpgradeConsumerExtension versionUpgrade){
         return "upgrade-" + versionUpgrade.getDependencyName() + "-to-" + versionUpgrade.getNewVersion();
     }
 
-    public VersionUpgrade getVersionUpgrade(){
+    public VersionUpgradeConsumerExtension getVersionUpgrade(){
         return versionUpgrade;
     }
 

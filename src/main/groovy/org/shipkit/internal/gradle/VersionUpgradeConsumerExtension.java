@@ -5,7 +5,7 @@ import java.io.File;
 /**
  * Configuration of {@link VersionUpgradeConsumerPlugin}
  */
-public class VersionUpgrade {
+public class VersionUpgradeConsumerExtension {
     private String baseBranch;
     private File buildFile;
     private String newVersion;

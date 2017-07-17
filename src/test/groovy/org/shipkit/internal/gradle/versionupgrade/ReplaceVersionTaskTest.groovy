@@ -3,7 +3,7 @@ package org.shipkit.internal.gradle.versionupgrade
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import org.shipkit.internal.gradle.VersionUpgrade
+import org.shipkit.internal.gradle.VersionUpgradeConsumerExtension
 import spock.lang.Specification
 
 class ReplaceVersionTaskTest extends Specification {
@@ -17,7 +17,7 @@ class ReplaceVersionTaskTest extends Specification {
 
         configFile << "dependencies{ compile org.shipkit:shipkit:0.1.2 }"
 
-        def versionUpgrade = new VersionUpgrade(
+        def versionUpgrade = new VersionUpgradeConsumerExtension(
             dependencyGroup: "org.shipkit",
             dependencyName: "shipkit",
             newVersion: "0.2.3",

@@ -1,5 +1,7 @@
 package org.shipkit.internal.gradle.versionupgrade;
 
+import org.shipkit.internal.gradle.VersionUpgradeConsumerExtension;
+
 public class DependencyNewVersionParser {
 
     public static final String DEPENDENCY_NEW_VERSION_PATTERN =
@@ -11,23 +13,36 @@ public class DependencyNewVersionParser {
         this.dependencyNewVersion = dependencyNewVersion;
     }
 
-    public boolean isValid(){
+    private boolean isValid(){
         return dependencyNewVersion.matches(DEPENDENCY_NEW_VERSION_PATTERN);
     }
 
-    public String getDependencyGroup(){
+    private String getDependencyGroup(){
         return splitDependency()[0];
     }
 
-    public String getDependencyName(){
+    private String getDependencyName(){
         return splitDependency()[1];
     }
 
-    public String getNewVersion(){
+    private String getNewVersion(){
         return splitDependency()[2];
     }
 
     private String[] splitDependency(){
         return dependencyNewVersion.split(":");
+    }
+
+    public void fillVersionUpgradeExtension(VersionUpgradeConsumerExtension versionUpgrade){
+        if(dependencyNewVersion != null) {
+            if(!isValid()){
+                throw new IllegalArgumentException(
+                    String.format("  Incorrect format of property 'dependency', it should match the pattern '%s', eg. 'org.shipkit:shipkit:1.2.3'.",
+                        DEPENDENCY_NEW_VERSION_PATTERN));
+            }
+            versionUpgrade.setDependencyGroup(getDependencyGroup());
+            versionUpgrade.setDependencyName(getDependencyName());
+            versionUpgrade.setNewVersion(getNewVersion());
+        }
     }
 }
