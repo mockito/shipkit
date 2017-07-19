@@ -30,13 +30,15 @@ class CreatePullRequest {
             "  \"base\": \"" + task.getVersionUpgrade().getBaseBranch() + "\"" +
             "}";
 
+        System.out.println(body);
+
         gitHubApi.post("/repos/" + task.getRepositoryUrl() + "/pulls", body);
     }
 
     private String getMessage(CreatePullRequestTask task){
         return String.format("This pull request was automatically created by Shipkit's" +
-         " \"version-upgrade-customer\" Gradle plugin (http://shipkit.org)." +
-        " Please merge it so that you are using fresh version of \"%s\" dependency.",
+         " 'version-upgrade-customer' Gradle plugin (http://shipkit.org)." +
+        " Please merge it so that you are using fresh version of '%s' dependency.",
             task.getVersionUpgrade().getDependencyName());
     }
 

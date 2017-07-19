@@ -32,29 +32,6 @@ public class GitPush {
         return args;
     }
 
-    /**
-     * Configures url on the git push task, ensuring secrecy of the write token.
-     * Write token is optional.
-     */
-    public static void setPushUrl(GitPushTask pushTask, ReleaseConfiguration conf) {
-        String ghUser = conf.getGitHub().getWriteAuthUser();
-        String ghRepo = conf.getGitHub().getRepository();
-        String writeToken = conf.getGitHub().getWriteAuthToken();//getWriteToken(conf, writeTokenEnvValue);
-        setPushUrl(pushTask, writeToken, ghUser, ghRepo);
-    }
-
-    static void setPushUrl(GitPushTask pushTask, String writeToken, String ghUser, String ghRepo) {
-        if (writeToken != null) {
-            String url = MessageFormat.format("https://{0}:{1}@github.com/{2}.git", ghUser, writeToken, ghRepo);
-            pushTask.setUrl(url);
-            pushTask.setSecretValue(writeToken);
-        } else {
-            LOG.lifecycle("  'git push' does not use GitHub write token because it was not specified.");
-            String url = MessageFormat.format("https://github.com/{0}.git", ghRepo);
-            pushTask.setUrl(url);
-        }
-    }
-
     public void gitPush(GitPushTask task) {
         new DefaultProcessRunner(task.getProject().getProjectDir())
                 .setSecretValue(task.getSecretValue())
