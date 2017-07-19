@@ -1,3 +1,6 @@
+**0.9.9 (2017-07-19)** - [13 commits](https://github.com/mockito/shipkit/compare/v0.9.8...v0.9.9) by [Szczepan Faber](http://github.com/szczepiq) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.9-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.9)
+ - Another round of polishing public API before 1.0 [(#311)](https://github.com/mockito/shipkit/pull/311)
+
 **0.9.8 (2017-07-17)** - [7 commits](https://github.com/mockito/shipkit/compare/v0.9.7...v0.9.8) by [Wojtek Wilk](http://github.com/wwilk) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.8-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.8)
  - Refactoring of VersionUpgradeConsumerPlugin #302 [(#312)](https://github.com/mockito/shipkit/pull/312)
 
