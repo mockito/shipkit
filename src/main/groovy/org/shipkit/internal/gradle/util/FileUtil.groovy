@@ -21,6 +21,8 @@ class FileUtil {
      * Appends content to the top of the file.
      */
     static void appendToTop(String content, File notesFile) {
+        notesFile.getParentFile().mkdirs()
+        notesFile.createNewFile()
         def existing = notesFile.text
         notesFile.text = content + existing
     }

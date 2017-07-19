@@ -38,8 +38,6 @@ import static org.shipkit.internal.gradle.release.ReleaseNeededPlugin.RELEASE_NE
  */
 public class ReleasePlugin implements Plugin<Project> {
 
-    private final static Logger LOG = Logging.getLogger(ReleasePlugin.class);
-
     public static final String PERFORM_RELEASE_TASK = "performRelease";
     public static final String TEST_RELEASE_TASK = "testRelease";
     public static final String RELEASE_CLEAN_UP_TASK = "releaseCleanUp";

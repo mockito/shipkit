@@ -4,8 +4,8 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.shipkit.gradle.ReleaseConfiguration;
-import org.shipkit.gradle.ReleaseNotesFetcherTask;
-import org.shipkit.gradle.UpdateReleaseNotesTask;
+import org.shipkit.gradle.notes.FetchReleaseNotesTask;
+import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
 import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
 import org.shipkit.gradle.notes.FetchContributorsTask;
 import org.shipkit.internal.gradle.contributors.ContributorsPlugin;
@@ -18,13 +18,22 @@ import java.io.File;
 import static java.util.Collections.singletonList;
 
 /**
- * The plugin adds following tasks:
- *
+ * Adds and configures tasks for generating release notes.
+ * <p>
+ * Applies plugins:
  * <ul>
- *     <li>fetchReleaseNotes - fetches release notes data, see {@link ReleaseNotesFetcherTask}</li>
- *     <li>updateReleaseNotes - updates release notes file in place, or only displays preview if project property 'preview' exists, see {@link UpdateReleaseNotesTask}</li>
+ * <li>{@link ReleaseConfigurationPlugin}</li>
+ * <li>{@link VersioningPlugin}</li>
+ * <li>{@link ContributorsPlugin}</li>
  * </ul>
- *
+ * <p>
+ * The plugin adds following tasks:
+ * <p>
+ * <ul>
+ * <li>fetchReleaseNotes - fetches release notes data, see {@link FetchReleaseNotesTask}</li>
+ * <li>updateReleaseNotes - updates release notes file in place, or only displays preview if project property 'preview' exists, see {@link UpdateReleaseNotesTask}</li>
+ * </ul>
+ * <p>
  * It also adds updates release notes changes if {@link GitPlugin} applied
  */
 public class ReleaseNotesPlugin implements Plugin<Project> {
@@ -42,8 +51,8 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     }
 
     private static void releaseNotesTasks(final Project project, final ReleaseConfiguration conf) {
-        final ReleaseNotesFetcherTask releaseNotesFetcher = TaskMaker.task(project, FETCH_NOTES_TASK, ReleaseNotesFetcherTask.class, new Action<ReleaseNotesFetcherTask>() {
-            public void execute(final ReleaseNotesFetcherTask t) {
+        final FetchReleaseNotesTask releaseNotesFetcher = TaskMaker.task(project, FETCH_NOTES_TASK, FetchReleaseNotesTask.class, new Action<FetchReleaseNotesTask>() {
+            public void execute(final FetchReleaseNotesTask t) {
                 t.setDescription("Fetches release notes data from Git and GitHub and serializes them to a file");
                 t.setOutputFile(new File(project.getBuildDir(), "detailed-release-notes.ser"));
                 t.setGitHubApiUrl(conf.getGitHub().getApiUrl());
@@ -65,10 +74,10 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
                 boolean previewMode = project.hasProperty(PREVIEW_PROJECT_PROPERTY);
                 t.setPreviewMode(previewMode);
 
-                if(!previewMode){
+                if (!previewMode) {
                     File releaseNotesFile = project.file(conf.getReleaseNotes().getFile());
                     GitPlugin.registerChangesForCommitIfApplied(
-                            singletonList(releaseNotesFile), "release notes updated", t);
+                        singletonList(releaseNotesFile), "release notes updated", t);
                     t.getOutputs().file(releaseNotesFile);
                 }
             }
@@ -76,7 +85,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     }
 
     private static void configureDetailedNotes(final UpdateReleaseNotesTask task,
-                                               final ReleaseNotesFetcherTask releaseNotesFetcher,
+                                               final FetchReleaseNotesTask releaseNotesFetcher,
                                                final Project project,
                                                final ReleaseConfiguration conf,
                                                final FetchContributorsTask contributorsFetcher) {
