@@ -6,7 +6,7 @@ import org.gradle.api.logging.Logging;
 import java.io.File;
 import java.util.Set;
 
-import static org.shipkit.internal.gradle.plugin.PluginDiscoveryPlugin.DOT_PROPERTIES;
+import static org.shipkit.internal.gradle.plugin.PluginUtil.DOT_PROPERTIES;
 
 
 public class PluginValidator {

@@ -9,10 +9,12 @@ import java.io.File;
 import java.util.Set;
 
 public class PluginUtil {
+    static final String DOT_PROPERTIES = ".properties";
+
     static Set<File> discoverGradlePluginPropertyFiles(Project project) {
         final JavaPluginConvention java = project.getConvention().getPlugin(JavaPluginConvention.class);
         FileTree resources = java.getSourceSets().getByName("main").getResources();
-        FileTree plugins = resources.matching(new PatternSet().include("META-INF/gradle-plugins/*.properties"));
+        FileTree plugins = resources.matching(new PatternSet().include("META-INF/gradle-plugins/*" + DOT_PROPERTIES));
         return plugins.getFiles();
     }
 

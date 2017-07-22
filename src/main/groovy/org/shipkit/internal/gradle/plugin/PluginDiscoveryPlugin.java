@@ -15,6 +15,8 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.Set;
 
+import static org.shipkit.internal.gradle.plugin.PluginUtil.DOT_PROPERTIES;
+
 /**
  * This plugin discovers gradle plugins and adds them to the {@link PluginBundleExtension}.
  *
@@ -25,7 +27,6 @@ import java.util.Set;
 public class PluginDiscoveryPlugin implements Plugin<Project> {
 
     private static Logger LOG = Logging.getLogger(PluginDiscoveryPlugin.class);
-    static final String DOT_PROPERTIES = ".properties";
 
     @Override
     public void apply(final Project project) {
