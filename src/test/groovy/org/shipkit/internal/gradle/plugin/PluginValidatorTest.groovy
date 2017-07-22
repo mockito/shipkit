@@ -8,30 +8,24 @@ class PluginValidatorTest extends PluginSpecification {
     private static final String META_INF_GRADLE_PLUGINS = 'src/main/resources/META-INF/gradle-plugins'
     private static final String PLUGIN_PACKAGE = 'src/main/groovy/org/sipkit/gradle/'
 
-    def "validate plugin properties files"() {
+    def "validate plugin properties files"(propertiesFileName, className, extension) {
         given:
         project.file(META_INF_GRADLE_PLUGINS).mkdirs()
         project.file(PLUGIN_PACKAGE).mkdirs()
-        def propertiesFile = project.file("$META_INF_GRADLE_PLUGINS/org.sipkit.test.properties") << "implementation-class=org.shipkit.gradle.TestPlugin"
-        def pluginFile = project.file("$PLUGIN_PACKAGE/TestPlugin.java") << "TODO content"
+        def propertiesFile = project.file("$META_INF_GRADLE_PLUGINS/${propertiesFileName}.properties") << "implementation-class=org.shipkit.gradle.$className"
+        def pluginFile = project.file("$PLUGIN_PACKAGE/${className}.${extension}") << "TODO content"
 
         when:
         new PluginValidator().validate([pluginFile] as Set<File>, [propertiesFile] as Set<File>)
         then:
-        true
-    }
+        noExceptionThrown()
 
-    def "validate plugin properties files (groovy plugin)"() {
-        given:
-        project.file(META_INF_GRADLE_PLUGINS).mkdirs()
-        project.file(PLUGIN_PACKAGE).mkdirs()
-        def propertiesFile = project.file("$META_INF_GRADLE_PLUGINS/org.sipkit.test.properties") << "implementation-class=org.shipkit.gradle.TestPlugin"
-        def pluginFile = project.file("$PLUGIN_PACKAGE/TestPlugin.groovy") << "TODO content"
-
-        when:
-        new PluginValidator().validate([pluginFile] as Set<File>, [propertiesFile] as Set<File>)
-        then:
-        true
+        where:
+        propertiesFileName      | className          | extension
+        'org.shipkit.test'      | 'TestPlugin'       | 'java'
+        'org.shipkit.test'      | 'TestPlugin'       | 'groovy'
+        'org.shipkit.my-sample' | 'MySamplePlugin'   | 'java'
+        'org.shipkit.my-sample' | 'MySamplePlugin'   | 'groovy'
     }
 
 
