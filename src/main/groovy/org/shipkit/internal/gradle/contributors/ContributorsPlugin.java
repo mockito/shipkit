@@ -37,7 +37,7 @@ public class ContributorsPlugin implements Plugin<Project> {
         TaskMaker.task(project, FETCH_ALL_CONTRIBUTORS_TASK, FetchContributorsTask.class, new Action<FetchContributorsTask>() {
             @Override
             public void execute(final FetchContributorsTask task) {
-                task.setDescription("Fetch info about all project contributors from GitHub and store it in file");
+                task.setDescription("Fetches info about project contributors from GitHub and stores it in file");
                 task.setOutputFile(contributorsFile(project));
                 task.setApiUrl(conf.getGitHub().getApiUrl());
                 task.setReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
