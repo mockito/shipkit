@@ -9,7 +9,7 @@ import org.gradle.api.logging.Logging;
 import org.gradle.api.publish.maven.MavenPublication;
 import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.internal.gradle.util.team.TeamMember;
-import org.shipkit.internal.notes.contributors.AllContributorsSerializer;
+import org.shipkit.internal.notes.contributors.ProjectContributorsSerializer;
 import org.shipkit.internal.notes.contributors.ProjectContributorsSet;
 import org.shipkit.internal.notes.util.IOUtil;
 
@@ -40,7 +40,7 @@ public class PomCustomizer {
                 LOG.info("  Read project contributors from file: " + contributorsFile.getAbsolutePath());
 
                 // It can happens that contributorsFile doesn't exist e.g. when shipkit.team.contributors is NOT empty
-                ProjectContributorsSet contributorsFromGitHub = new AllContributorsSerializer()
+                ProjectContributorsSet contributorsFromGitHub = new ProjectContributorsSerializer()
                         .deserialize(IOUtil.readFullyOrDefault(contributorsFile, "[]"));
                 LOG.info("  Customizing pom for publication " + publication.getName() + " in " + project.toString() +
                         "\n   - Module name (project.archivesBaseName): " + archivesBaseName +

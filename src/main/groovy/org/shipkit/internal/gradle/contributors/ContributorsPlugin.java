@@ -21,12 +21,12 @@ import static org.shipkit.internal.gradle.util.BuildConventions.contributorsFile
  *
  * Adds tasks:
  * <ul>
- *     <li>fetchAllContributors - {@link FetchContributorsTask}</li>
+ *     <li>fetchContributors - {@link FetchContributorsTask}</li>
  * </ul>
  */
 public class ContributorsPlugin implements Plugin<Project> {
 
-    public final static String FETCH_ALL_CONTRIBUTORS_TASK = "fetchAllContributors";
+    public final static String FETCH_ALL_CONTRIBUTORS_TASK = "fetchContributors";
 
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();

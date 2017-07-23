@@ -17,11 +17,11 @@ import java.util.Set;
  * Gets all contributors from the repository
  * https://developer.github.com/v3/repos/#list-contributors
  */
-class AllContributorsFetcher {
+class ContributorsFetcher {
 
-    private static final Logger LOG = Logging.getLogger(AllContributorsFetcher.class);
+    private static final Logger LOG = Logging.getLogger(ContributorsFetcher.class);
 
-    ProjectContributorsSet fetchAllContributorsForProject(String apiUrl, String repository, String readOnlyAuthToken) {
+    ProjectContributorsSet fetchContributorsForProject(String apiUrl, String repository, String readOnlyAuthToken) {
         LOG.lifecycle("  Querying GitHub API for all contributors for project");
         ProjectContributorsSet result = new DefaultProjectContributorsSet();
 

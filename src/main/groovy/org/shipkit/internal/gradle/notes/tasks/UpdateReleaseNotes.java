@@ -7,7 +7,7 @@ import org.shipkit.internal.gradle.util.FileUtil;
 import org.shipkit.internal.gradle.util.ReleaseNotesSerializer;
 import org.shipkit.internal.gradle.util.team.TeamMember;
 import org.shipkit.internal.gradle.util.team.TeamParser;
-import org.shipkit.internal.notes.contributors.AllContributorsSerializer;
+import org.shipkit.internal.notes.contributors.ProjectContributorsSerializer;
 import org.shipkit.internal.notes.contributors.DefaultContributor;
 import org.shipkit.internal.notes.contributors.DefaultProjectContributorsSet;
 import org.shipkit.internal.notes.contributors.ProjectContributorsSet;
@@ -75,7 +75,7 @@ public class UpdateReleaseNotes {
             contributorsFromGitHub = new DefaultProjectContributorsSet();
         } else {
             LOG.info("  Read project contributors from file " + task.getContributorsDataFile().getAbsolutePath());
-            contributorsFromGitHub = new AllContributorsSerializer().deserialize(IOUtil.readFully(task.getContributorsDataFile()));
+            contributorsFromGitHub = new ProjectContributorsSerializer().deserialize(IOUtil.readFully(task.getContributorsDataFile()));
         }
 
         Map<String, Contributor> contributorsMap = contributorsMap(task.getContributors(), contributorsFromGitHub, task.getDevelopers());

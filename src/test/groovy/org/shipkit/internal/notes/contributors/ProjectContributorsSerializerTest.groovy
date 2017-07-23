@@ -3,9 +3,9 @@ package org.shipkit.internal.notes.contributors
 import spock.lang.Specification
 import spock.lang.Subject
 
-class AllContributorsSerializerTest extends Specification {
+class ProjectContributorsSerializerTest extends Specification {
 
-    @Subject serializer = new AllContributorsSerializer()
+    @Subject serializer = new ProjectContributorsSerializer()
 
     def "serialization and deserialization of one contributor"() {
         def contributors = new DefaultProjectContributorsSet()

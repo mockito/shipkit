@@ -3,7 +3,7 @@ package org.shipkit.internal.gradle.notes.tasks;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.notes.FetchContributorsTask;
-import org.shipkit.internal.notes.contributors.AllContributorsSerializer;
+import org.shipkit.internal.notes.contributors.ProjectContributorsSerializer;
 import org.shipkit.internal.notes.contributors.Contributors;
 import org.shipkit.internal.notes.contributors.GitHubContributorsProvider;
 import org.shipkit.internal.notes.contributors.ProjectContributorsSet;
@@ -20,7 +20,7 @@ public class FetchContributors {
             task.getApiUrl(), task.getRepository(), task.getReadOnlyAuthToken());
         ProjectContributorsSet contributors = contributorsProvider.getAllContributorsForProject();
 
-        AllContributorsSerializer serializer = new AllContributorsSerializer();
+        ProjectContributorsSerializer serializer = new ProjectContributorsSerializer();
         final String json = serializer.serialize(contributors);
         IOUtil.writeFile(task.getOutputFile(), json);
 
