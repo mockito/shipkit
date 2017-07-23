@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle
+package org.shipkit.internal.gradle.version
 
 import org.shipkit.gradle.version.BumpVersionFileTask
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin

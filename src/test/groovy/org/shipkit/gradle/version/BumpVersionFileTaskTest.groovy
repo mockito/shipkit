@@ -1,4 +1,4 @@
-package org.shipkit.gradle
+package org.shipkit.gradle.version
 
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
