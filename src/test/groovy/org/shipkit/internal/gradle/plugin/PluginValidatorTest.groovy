@@ -12,11 +12,11 @@ class PluginValidatorTest extends PluginSpecification {
         given:
         project.file(META_INF_GRADLE_PLUGINS).mkdirs()
         project.file(PLUGIN_PACKAGE).mkdirs()
-        def propertiesFile = project.file("$META_INF_GRADLE_PLUGINS/${propertiesFileName}.properties") << "implementation-class=org.shipkit.gradle.$className"
-        def pluginFile = project.file("$PLUGIN_PACKAGE/${className}.${extension}") << "TODO content"
+        Set propertiesFiles = [project.file("$META_INF_GRADLE_PLUGINS/${propertiesFileName}.properties") << "implementation-class=org.shipkit.gradle.$className"]
+        Set pluginFiles = [project.file("$PLUGIN_PACKAGE/${className}.${extension}") << "some content"]
 
         when:
-        new PluginValidator().validate([pluginFile] as Set<File>, [propertiesFile] as Set<File>)
+        new PluginValidator().validate(pluginFiles, propertiesFiles)
         then:
         noExceptionThrown()
 
@@ -33,11 +33,13 @@ class PluginValidatorTest extends PluginSpecification {
         given:
         project.file(META_INF_GRADLE_PLUGINS).mkdirs()
         project.file(PLUGIN_PACKAGE).mkdirs()
-        def pluginFile = project.file("$PLUGIN_PACKAGE/TestPlugin.java") << "TODO content"
-        def pluginFile2 = project.file("$PLUGIN_PACKAGE/AnotherTestPlugin.java") << "TODO content"
+        def pluginFile = project.file("$PLUGIN_PACKAGE/TestPlugin.java") << "some content"
+        def pluginFile2 = project.file("$PLUGIN_PACKAGE/AnotherTestPlugin.java") << "some content"
+        Set pluginFiles = [pluginFile, pluginFile2]
+        Set propertiesFiles = []
 
         when:
-        new PluginValidator().validate([pluginFile, pluginFile2] as Set<File>, [] as Set<File>)
+        new PluginValidator().validate(pluginFiles, propertiesFiles)
         then:
         RuntimeException ex = thrown()
         ex.message.contains 'no properties file found for plugin(s):'
@@ -49,11 +51,12 @@ class PluginValidatorTest extends PluginSpecification {
         given:
         project.file(META_INF_GRADLE_PLUGINS).mkdirs()
         project.file(PLUGIN_PACKAGE).mkdirs()
-        def propertiesFile = project.file("$META_INF_GRADLE_PLUGINS/org.sipkit.test2.properties") << "implementation-class=org.shipkit.gradle.TestPlugin"
-        def pluginFile = project.file("$PLUGIN_PACKAGE/TestPlugin.java") << "TODO content"
+        Set propertiesFiles = [project.file("$META_INF_GRADLE_PLUGINS/org.sipkit.test2.properties") << "implementation-class=org.shipkit.gradle.TestPlugin"]
+        def pluginFile = project.file("$PLUGIN_PACKAGE/TestPlugin.java") << "some content"
+        Set pluginFiles = [pluginFile]
 
         when:
-        new PluginValidator().validate([pluginFile] as Set<File>, [propertiesFile] as Set<File>)
+        new PluginValidator().validate(pluginFiles, propertiesFiles)
         then:
         RuntimeException ex = thrown()
         ex.message.contains 'no properties file found for plugin(s):'
