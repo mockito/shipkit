@@ -3,6 +3,7 @@ package org.shipkit.gradle
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
+import org.shipkit.gradle.version.BumpVersionFileTask
 import org.shipkit.internal.version.Version
 import spock.lang.Specification
 

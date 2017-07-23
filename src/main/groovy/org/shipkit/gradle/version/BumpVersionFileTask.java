@@ -1,4 +1,4 @@
-package org.shipkit.gradle;
+package org.shipkit.gradle.version;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.Logger;

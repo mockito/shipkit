@@ -1,6 +1,6 @@
 package org.shipkit.internal.gradle
 
-import org.shipkit.gradle.BumpVersionFileTask
+import org.shipkit.gradle.version.BumpVersionFileTask
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin
 import org.shipkit.internal.gradle.git.GitCommitTask
 import org.shipkit.internal.gradle.git.GitPlugin
