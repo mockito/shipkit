@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle
+package org.shipkit.internal.gradle.notes
 
 import org.shipkit.internal.gradle.git.GitCommitTask
 import org.shipkit.internal.gradle.git.GitPlugin

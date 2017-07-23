@@ -8,11 +8,11 @@ import org.gradle.api.logging.Logging;
 import org.gradle.api.specs.Spec;
 import org.shipkit.gradle.ShipkitConfiguration;
 import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
-import org.shipkit.internal.gradle.ReleaseNotesPlugin;
 import org.shipkit.internal.gradle.configuration.BasicValidator;
 import org.shipkit.internal.gradle.configuration.LazyConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
+import org.shipkit.internal.gradle.notes.ReleaseNotesPlugin;
 import org.shipkit.internal.util.EnvVariables;
 
 import javax.inject.Inject;
