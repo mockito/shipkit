@@ -1,23 +1,13 @@
 package org.shipkit.internal.gradle
 
 import org.shipkit.gradle.BumpVersionFileTask
-import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin
+import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin
 import org.shipkit.internal.gradle.git.GitCommitTask
 import org.shipkit.internal.gradle.git.GitPlugin
-import org.shipkit.gradle.init.InitVersioningTask
 import org.shipkit.internal.version.VersionInfo
 import testutil.PluginSpecification
 
 class VersioningPluginTest extends PluginSpecification {
-
-    def "should initialize initVersioning task properly"() {
-        when:
-        project.plugins.apply(VersioningPlugin)
-
-        then:
-        InitVersioningTask task = project.getTasks().findByName(VersioningPlugin.INIT_VERSIONING_TASK)
-        task.versionFile == project.file(VersioningPlugin.VERSION_FILE_NAME)
-    }
 
     def "should initialize bumpVersionFile task properly"() {
         when:
@@ -61,7 +51,7 @@ class VersioningPluginTest extends PluginSpecification {
         project.file(VersioningPlugin.VERSION_FILE_NAME) << "version=0.9.0\npreviousVersion=0.8.114\n"
 
         and:
-        project.plugins.apply(ReleaseConfigurationPlugin).configuration.gitHub.repository = "http://github.com"
+        project.plugins.apply(ShipkitConfigurationPlugin).configuration.gitHub.repository = "http://github.com"
         project.plugins.apply(GitPlugin)
 
         when:
@@ -78,7 +68,7 @@ class VersioningPluginTest extends PluginSpecification {
         project.file(VersioningPlugin.VERSION_FILE_NAME) << "version=0.9.0\n"
 
         and:
-        project.plugins.apply(ReleaseConfigurationPlugin).configuration.gitHub.repository = "http://github.com"
+        project.plugins.apply(ShipkitConfigurationPlugin).configuration.gitHub.repository = "http://github.com"
         project.plugins.apply(GitPlugin)
 
         when:
@@ -92,7 +82,7 @@ class VersioningPluginTest extends PluginSpecification {
     }
 
     @Override
-    void createReleaseConfiguration() {
-        // ReleaseConfiguration is not needed in this test
+    void createShipkitConfiguration() {
+        // ShipkitConfiguration is not needed in this test
     }
 }

@@ -7,8 +7,6 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.BumpVersionFileTask;
 import org.shipkit.internal.gradle.git.GitPlugin;
-import org.shipkit.internal.gradle.init.InitPlugin;
-import org.shipkit.gradle.init.InitVersioningTask;
 import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.version.Version;
@@ -48,11 +46,8 @@ public class VersioningPlugin implements Plugin<Project> {
     public static final String VERSION_FILE_NAME = "version.properties";
 
     public static final String BUMP_VERSION_FILE_TASK = "bumpVersionFile";
-    static final String INIT_VERSIONING_TASK = "initVersioning";
 
     public void apply(final Project project) {
-        project.getPlugins().apply(InitPlugin.class);
-
         final File versionFile = project.file(VERSION_FILE_NAME);
 
         final VersionInfo versionInfo = versionFile.exists() ?
@@ -79,15 +74,6 @@ public class VersioningPlugin implements Plugin<Project> {
                 GitPlugin.registerChangesForCommitIfApplied(singletonList(versionFile), versionChangeMessage, t);
             }
         });
-
-        TaskMaker.task(project, INIT_VERSIONING_TASK, InitVersioningTask.class, new Action<InitVersioningTask>() {
-            @Override
-            public void execute(InitVersioningTask t) {
-                t.setDescription("Creates version.properties file if it doesn't exist");
-                t.setVersionFile(versionFile);
-                project.getTasks().getByName(InitPlugin.INIT_SHIPKIT_TASK).dependsOn(t);
-            }
-        });
     }
 
     private String formatVersionInformationInCommitMessage(String version, String previousVersion) {
@@ -98,5 +84,4 @@ public class VersioningPlugin implements Plugin<Project> {
             return format("%s (previous %s)", versionMessage, previousVersion);
         }
     }
-
 }
