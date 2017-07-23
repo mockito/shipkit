@@ -4,7 +4,7 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.shipkit.gradle.ShipkitConfiguration;
-import org.shipkit.gradle.ReleaseNeededTask;
+import org.shipkit.gradle.release.ReleaseNeededTask;
 import org.shipkit.gradle.java.ComparePublicationsTask;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitBranchPlugin;

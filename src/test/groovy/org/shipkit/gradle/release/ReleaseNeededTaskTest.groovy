@@ -1,7 +1,8 @@
-package org.shipkit.gradle
+package org.shipkit.gradle.release
 
 import org.gradle.api.GradleException
 import org.gradle.testfixtures.ProjectBuilder
+import org.shipkit.gradle.release.ReleaseNeededTask
 import org.shipkit.internal.gradle.release.tasks.ReleaseNeeded
 import org.shipkit.internal.util.EnvVariables
 import spock.lang.Specification

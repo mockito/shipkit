@@ -3,7 +3,7 @@ package org.shipkit.internal.gradle.release.tasks;
 import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.shipkit.gradle.ReleaseNeededTask;
+import org.shipkit.gradle.release.ReleaseNeededTask;
 import org.shipkit.internal.util.EnvVariables;
 
 public class ReleaseNeeded {

@@ -1,4 +1,4 @@
-package org.shipkit.gradle;
+package org.shipkit.gradle.release;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
@@ -19,7 +19,6 @@ import java.util.List;
  *  - the current Git branch does not match release-eligibility regex ({@link #getReleasableBranchRegex()}.
  *  - binaries have not changes since the previous release
  */
-//TODO move to 'release' subpackage and also move surrounding classes to better packages
 public class ReleaseNeededTask extends DefaultTask {
 
     private String branch;
