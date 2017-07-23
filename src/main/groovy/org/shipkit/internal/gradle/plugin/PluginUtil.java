@@ -9,23 +9,25 @@ import org.gradle.api.tasks.util.PatternSet;
 import java.io.File;
 import java.util.Set;
 
-public class PluginUtil {
+class PluginUtil {
     static final String DOT_PROPERTIES = ".properties";
 
     static Set<File> discoverGradlePluginPropertyFiles(Project project) {
         FileTree resources = getMainSourceSet(project).getResources();
-        FileTree plugins = resources.matching(new PatternSet().include("META-INF/gradle-plugins/*" + DOT_PROPERTIES));
-        return plugins.getFiles();
+        return getFilteredFileset(resources, "META-INF/gradle-plugins/*" + DOT_PROPERTIES);
     }
 
     static Set<File> discoverGradlePlugins(Project project) {
         FileTree allJava = getMainSourceSet(project).getAllJava();
-        FileTree plugins = allJava.matching(new PatternSet().include("**/*Plugin.java").include("**/*Plugin.groovy"));
-        return plugins.getFiles();
+        return getFilteredFileset(allJava, "**/*Plugin.java", "**/*Plugin.groovy");
     }
 
     private static SourceSet getMainSourceSet(Project project) {
         final JavaPluginConvention java = project.getConvention().getPlugin(JavaPluginConvention.class);
         return java.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
+    }
+
+    private static Set<File> getFilteredFileset(FileTree fileTree, String... includes) {
+        return fileTree.matching(new PatternSet().include(includes)).getFiles();
     }
 }
