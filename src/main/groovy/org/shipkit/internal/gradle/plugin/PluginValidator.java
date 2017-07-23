@@ -1,5 +1,6 @@
 package org.shipkit.internal.gradle.plugin;
 
+import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 
@@ -57,7 +58,7 @@ public class PluginValidator {
                 sb.append(missingPropertiesFiles.get(pluginName));
                 sb.append(")");
             }
-            throw new RuntimeException(sb.toString());
+            throw new GradleException(sb.toString());
         }
     }
 
@@ -84,10 +85,9 @@ public class PluginValidator {
     }
 
     private String extractPluginName(String pluginFilename) {
-        String pluginName = null;
         if (pluginFilename.endsWith("Plugin.java") || pluginFilename.endsWith("Plugin.groovy")) {
-            pluginName = pluginFilename.substring(0, pluginFilename.lastIndexOf("Plugin."));
+            return pluginFilename.substring(0, pluginFilename.lastIndexOf("Plugin."));
         }
-        return pluginName;
+        return null;
     }
 }
