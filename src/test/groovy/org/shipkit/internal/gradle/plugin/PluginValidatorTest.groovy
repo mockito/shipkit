@@ -34,12 +34,15 @@ class PluginValidatorTest extends PluginSpecification {
         project.file(META_INF_GRADLE_PLUGINS).mkdirs()
         project.file(PLUGIN_PACKAGE).mkdirs()
         def pluginFile = project.file("$PLUGIN_PACKAGE/TestPlugin.java") << "TODO content"
+        def pluginFile2 = project.file("$PLUGIN_PACKAGE/AnotherTestPlugin.java") << "TODO content"
 
         when:
-        new PluginValidator().validate([pluginFile] as Set<File>, [] as Set<File>)
+        new PluginValidator().validate([pluginFile, pluginFile2] as Set<File>, [] as Set<File>)
         then:
         RuntimeException ex = thrown()
-        ex.message.contains 'no properties file found for plugin \'Test\''
+        ex.message.contains 'no properties file found for plugin(s):'
+        ex.message.contains "\'Test\' ($pluginFile)"
+        ex.message.contains "\'AnotherTest\' ($pluginFile2)"
     }
 
     def "validate missing properties file not matching"() {
@@ -53,7 +56,8 @@ class PluginValidatorTest extends PluginSpecification {
         new PluginValidator().validate([pluginFile] as Set<File>, [propertiesFile] as Set<File>)
         then:
         RuntimeException ex = thrown()
-        ex.message.contains 'no properties file found for plugin \'Test\''
+        ex.message.contains 'no properties file found for plugin(s):'
+        ex.message.contains "\'Test\' ($pluginFile)"
     }
 
 }
