@@ -11,6 +11,7 @@ import org.shipkit.gradle.notes.FetchContributorsTask;
 import org.shipkit.internal.gradle.contributors.ContributorsPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
+import org.shipkit.internal.gradle.version.VersioningPlugin;
 import org.shipkit.internal.version.VersionInfo;
 
 import java.io.File;

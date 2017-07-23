@@ -9,7 +9,7 @@ import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.BumpVersionFileTask;
 import org.shipkit.gradle.init.InitTravisTask;
 import org.shipkit.gradle.init.InitVersioningTask;
-import org.shipkit.internal.gradle.VersioningPlugin;
+import org.shipkit.internal.gradle.version.VersioningPlugin;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
 import org.shipkit.internal.gradle.util.TaskMaker;
 

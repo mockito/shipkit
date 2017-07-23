@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle;
+package org.shipkit.internal.gradle.version;
 
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
