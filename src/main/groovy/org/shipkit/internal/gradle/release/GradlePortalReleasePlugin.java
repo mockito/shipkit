@@ -6,12 +6,12 @@ import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.specs.Spec;
-import org.shipkit.gradle.ReleaseConfiguration;
+import org.shipkit.gradle.ShipkitConfiguration;
 import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
 import org.shipkit.internal.gradle.ReleaseNotesPlugin;
 import org.shipkit.internal.gradle.configuration.BasicValidator;
 import org.shipkit.internal.gradle.configuration.LazyConfiguration;
-import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
+import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.util.EnvVariables;
 
@@ -33,7 +33,7 @@ import static org.shipkit.internal.gradle.util.StringUtil.isEmpty;
  *     <li>Sets 'gradle.publish.key', 'gradle.publish.secret' project properties based on env variables:
  *          GRADLE_PUBLISH_KEY, GRADLE_PUBLISH_SECRET</li>
  *     <li>Validates presence of publish key and secret if 'publishPlugins' task is in the task graph</li>
- *     <li>Skips 'publishPlugins' task if dryRun is enabled, see {@link ReleaseConfiguration#dryRun}</li>
+ *     <li>Skips 'publishPlugins' task if dryRun is enabled, see {@link ShipkitConfiguration#dryRun}</li>
  * </ul>
  */
 public class GradlePortalReleasePlugin implements Plugin<Project> {
@@ -58,7 +58,7 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
 
     @Override
     public void apply(final Project project) {
-        final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
+        final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
         project.getPlugins().apply(ReleasePlugin.class);
         project.getPlugins().apply("com.gradle.plugin-publish");
 

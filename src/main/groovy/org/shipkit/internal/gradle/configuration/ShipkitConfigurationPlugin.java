@@ -4,7 +4,7 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ObjectConfigurationAction;
-import org.shipkit.gradle.ReleaseConfiguration;
+import org.shipkit.gradle.ShipkitConfiguration;
 import org.shipkit.internal.gradle.VersioningPlugin;
 import org.shipkit.gradle.init.InitShipkitFileTask;
 import org.shipkit.internal.gradle.init.InitPlugin;
@@ -21,7 +21,7 @@ import java.io.File;
  * Important: it will add to the root project because this is where the configuration belong to!
  * Adds following behavior:
  * <ul>
- *     <li>Adds and preconfigures 'shipkit' extension of type {@link ReleaseConfiguration}</li>
+ *     <li>Adds and preconfigures 'shipkit' extension of type {@link ShipkitConfiguration}</li>
  *     <li>Configures 'shipkit.dryRun' setting based on 'dryRun' Gradle project property</li>
  * </ul>
  *
@@ -32,9 +32,9 @@ import java.io.File;
  *     <li>{@link VersioningPlugin}</li>
  * </ul>
  */
-public class ReleaseConfigurationPlugin implements Plugin<Project> {
+public class ShipkitConfigurationPlugin implements Plugin<Project> {
 
-    private ReleaseConfiguration configuration;
+    private ShipkitConfiguration configuration;
 
     public static final String SHIPKIT_FILE_RELATIVE_PATH = "gradle/shipkit.gradle";
     static final String INIT_SHIPKIT_FILE_TASK = "initShipkitFile";
@@ -48,7 +48,7 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
             VersionInfo info = project.getExtensions().getByType(VersionInfo.class);
 
             configuration = project.getRootProject().getExtensions()
-                    .create("shipkit", ReleaseConfiguration.class);
+                    .create("shipkit", ShipkitConfiguration.class);
 
             final File shipkitFile = project.file(SHIPKIT_FILE_RELATIVE_PATH);
 
@@ -74,7 +74,7 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
 
         } else {
             //not root project, get extension from root project
-            configuration = project.getRootProject().getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
+            configuration = project.getRootProject().getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
         }
     }
 
@@ -101,7 +101,7 @@ public class ReleaseConfigurationPlugin implements Plugin<Project> {
     /**
      * Returns the release configuration instance that is hooked up to the root project
      */
-    public ReleaseConfiguration getConfiguration() {
+    public ShipkitConfiguration getConfiguration() {
         return configuration;
     }
 }

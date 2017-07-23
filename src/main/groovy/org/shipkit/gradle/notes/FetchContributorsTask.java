@@ -4,7 +4,7 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.gradle.ReleaseConfiguration;
+import org.shipkit.gradle.ShipkitConfiguration;
 import org.shipkit.internal.gradle.notes.tasks.FetchContributors;
 
 import java.io.File;
@@ -31,7 +31,7 @@ public class FetchContributorsTask extends DefaultTask {
     }
 
     /**
-     * See {@link org.shipkit.gradle.ReleaseConfiguration.GitHub#getApiUrl()}
+     * See {@link ShipkitConfiguration.GitHub#getApiUrl()}
      */
     public String getApiUrl() {
         return apiUrl;
@@ -45,7 +45,7 @@ public class FetchContributorsTask extends DefaultTask {
     }
 
     /**
-     * See {@link org.shipkit.gradle.ReleaseConfiguration.GitHub#getRepository()}
+     * See {@link ShipkitConfiguration.GitHub#getRepository()}
      */
     public String getRepository() {
         return repository;
@@ -59,7 +59,7 @@ public class FetchContributorsTask extends DefaultTask {
     }
 
     /**
-     * See {@link org.shipkit.gradle.ReleaseConfiguration.GitHub#getReadOnlyAuthToken()}
+     * See {@link ShipkitConfiguration.GitHub#getReadOnlyAuthToken()}
      */
     public String getReadOnlyAuthToken() {
         return readOnlyAuthToken;

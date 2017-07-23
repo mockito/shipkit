@@ -24,7 +24,7 @@ import static org.shipkit.internal.gradle.util.team.TeamParser.validateTeamMembe
  * Sophisticated example based on Mockito project:
  * <a href="https://github.com/mockito/mockito/blob/release/2.x/gradle/shipkit.gradle">Mockito project</a>.
  */
-public class ReleaseConfiguration {
+public class ShipkitConfiguration {
 
     private static final Logger LOG = Logging.getLogger(ReleaseConfiguration.class);
 
@@ -39,18 +39,18 @@ public class ReleaseConfiguration {
     private String previousReleaseVersion;
     private EnvVariables envVariables = new EnvVariables();
 
-    ReleaseConfiguration(Map<String, Object> configuration, boolean lenient) {
+    ShipkitConfiguration(Map<String, Object> configuration, boolean lenient) {
         this.configuration = configuration;
         this.lenient = lenient;
     }
 
     @ExposedForTesting
-    ReleaseConfiguration(EnvVariables envVariables){
+    ShipkitConfiguration(EnvVariables envVariables){
         this();
         this.envVariables = envVariables;
     }
 
-    public ReleaseConfiguration() {
+    public ShipkitConfiguration() {
         configuration = new HashMap<String, Object>();
         lenient = false;
 
@@ -450,7 +450,7 @@ public class ReleaseConfiguration {
      *
      * @return lenient copy of this configuration instance
      */
-    public ReleaseConfiguration getLenient() {
-        return new ReleaseConfiguration(configuration, true);
+    public ShipkitConfiguration getLenient() {
+        return new ShipkitConfiguration(configuration, true);
     }
 }

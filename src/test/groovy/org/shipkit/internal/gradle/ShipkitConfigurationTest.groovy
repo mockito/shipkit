@@ -1,15 +1,15 @@
 package org.shipkit.internal.gradle
 
 import org.gradle.api.GradleException
-import org.shipkit.gradle.ReleaseConfiguration
+import org.shipkit.gradle.ShipkitConfiguration
 import org.shipkit.internal.gradle.util.team.TeamParser
 import org.shipkit.internal.util.EnvVariables
 import spock.lang.Specification
 import spock.lang.Unroll
 
-class ReleaseConfigurationTest extends Specification {
+class ShipkitConfigurationTest extends Specification {
 
-    def conf = new ReleaseConfiguration()
+    def conf = new ShipkitConfiguration()
 
     def "default values"() {
         conf.team.developers.empty
@@ -44,7 +44,7 @@ class ReleaseConfigurationTest extends Specification {
         given:
         def envVariables = Mock(EnvVariables)
         envVariables.getenv("GH_WRITE_TOKEN") >> "writeToken"
-        conf = new ReleaseConfiguration(envVariables)
+        conf = new ShipkitConfiguration(envVariables)
 
         expect:
         conf.gitHub.writeAuthToken == "writeToken"
@@ -54,7 +54,7 @@ class ReleaseConfigurationTest extends Specification {
         given:
         def envVariables = Mock(EnvVariables)
         envVariables.getenv("GH_WRITE_TOKEN") >> "writeToken"
-        conf = new ReleaseConfiguration(envVariables)
+        conf = new ShipkitConfiguration(envVariables)
         conf.gitHub.writeAuthToken = "overriddenWriteToken"
 
         expect:

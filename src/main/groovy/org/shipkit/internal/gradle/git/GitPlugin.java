@@ -5,10 +5,10 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.Exec;
-import org.shipkit.gradle.ReleaseConfiguration;
+import org.shipkit.gradle.ShipkitConfiguration;
 import org.shipkit.gradle.git.GitPushTask;
 import org.shipkit.gradle.git.IdentifyGitBranchTask;
-import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
+import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.util.GitUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
@@ -48,7 +48,7 @@ public class GitPlugin implements Plugin<Project> {
     public static final String GIT_COMMIT_TASK = "gitCommit";
 
     public void apply(final Project project) {
-        final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
+        final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
         TaskMaker.task(project, GIT_COMMIT_TASK, GitCommitTask.class, new Action<GitCommitTask>() {
             public void execute(final GitCommitTask t) {
@@ -143,7 +143,7 @@ public class GitPlugin implements Plugin<Project> {
         return args;
     }
 
-    private List<String> getCommitCommand(ReleaseConfiguration conf, String aggregatedCommitMsg) {
+    private List<String> getCommitCommand(ShipkitConfiguration conf, String aggregatedCommitMsg) {
         List<String> args = new ArrayList<String>();
         args.add("git");
         args.add("commit");

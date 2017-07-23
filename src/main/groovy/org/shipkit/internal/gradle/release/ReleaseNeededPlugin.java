@@ -3,10 +3,10 @@ package org.shipkit.internal.gradle.release;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.shipkit.gradle.ReleaseConfiguration;
+import org.shipkit.gradle.ShipkitConfiguration;
 import org.shipkit.gradle.ReleaseNeededTask;
 import org.shipkit.gradle.java.ComparePublicationsTask;
-import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
+import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitBranchPlugin;
 import org.shipkit.internal.gradle.java.ComparePublicationsPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
@@ -17,7 +17,7 @@ import org.shipkit.internal.gradle.util.TaskMaker;
  * Applies following plugins and preconfigures tasks provided by those plugins:
  *
  * <ul>
- *     <li>{@link ReleaseConfigurationPlugin}</li>
+ *     <li>{@link ShipkitConfigurationPlugin}</li>
  *     <li>{@link GitBranchPlugin}</li>
  * </ul>
  *
@@ -35,7 +35,7 @@ public class ReleaseNeededPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
-        final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
+        final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
         //Task that throws an exception when release is not needed is very useful for CI workflows
         //Travis CI job will stop executing further commands if assertReleaseNeeded fails.
@@ -52,7 +52,7 @@ public class ReleaseNeededPlugin implements Plugin<Project> {
     }
 
     private static ReleaseNeededTask releaseNeededTask(final Project project, String taskName,
-                                                       final ReleaseConfiguration conf) {
+                                                       final ShipkitConfiguration conf) {
         return TaskMaker.task(project, taskName, ReleaseNeededTask.class, new Action<ReleaseNeededTask>() {
             public void execute(final ReleaseNeededTask t) {
                 t.setDescription("Asserts that criteria for the release are met and throws exception if release not needed.");

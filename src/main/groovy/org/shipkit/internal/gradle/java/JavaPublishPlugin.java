@@ -8,8 +8,8 @@ import org.gradle.api.logging.Logging;
 import org.gradle.api.publish.PublicationContainer;
 import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.api.tasks.bundling.Jar;
-import org.shipkit.gradle.ReleaseConfiguration;
-import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
+import org.shipkit.gradle.ShipkitConfiguration;
+import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.util.GradleDSLHelper;
 import org.shipkit.internal.gradle.util.PomCustomizer;
 import org.shipkit.internal.gradle.util.StringUtil;
@@ -39,7 +39,7 @@ public class JavaPublishPlugin implements Plugin<Project> {
     public final static String MAVEN_LOCAL_TASK = "publish" + StringUtil.capitalize(PUBLICATION_NAME) + "PublicationToMavenLocal";
 
     public void apply(final Project project) {
-        final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
+        final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
         project.getPlugins().apply(JavaLibraryPlugin.class);
         project.getPlugins().apply("maven-publish");

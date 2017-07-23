@@ -5,7 +5,7 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.shipkit.gradle.init.InitShipkitFileTask
 import testutil.PluginSpecification
 
-class ReleaseConfigurationPluginTest extends PluginSpecification {
+class ShipkitConfigurationPluginTest extends PluginSpecification {
 
     Project root
     Project subproject
@@ -17,17 +17,17 @@ class ReleaseConfigurationPluginTest extends PluginSpecification {
 
     def "singleton configuration, root applied first"() {
         expect:
-        root.plugins.apply(ReleaseConfigurationPlugin).configuration == subproject.plugins.apply(ReleaseConfigurationPlugin).configuration
+        root.plugins.apply(ShipkitConfigurationPlugin).configuration == subproject.plugins.apply(ShipkitConfigurationPlugin).configuration
     }
 
     def "singleton configuration, subproject applied first"() {
         expect:
-        subproject.plugins.apply(ReleaseConfigurationPlugin).configuration == root.plugins.apply(ReleaseConfigurationPlugin).configuration
+        subproject.plugins.apply(ShipkitConfigurationPlugin).configuration == root.plugins.apply(ShipkitConfigurationPlugin).configuration
     }
 
     def "dry run off by default"() {
         expect:
-        !root.plugins.apply(ReleaseConfigurationPlugin).configuration.dryRun
+        !root.plugins.apply(ShipkitConfigurationPlugin).configuration.dryRun
     }
 
     def "configures dry run based on project property"() {
@@ -35,24 +35,24 @@ class ReleaseConfigurationPluginTest extends PluginSpecification {
         root.ext.'dryRun' = ''
 
         then:
-        root.plugins.apply(ReleaseConfigurationPlugin).configuration.dryRun
+        root.plugins.apply(ShipkitConfigurationPlugin).configuration.dryRun
     }
 
     def "configures initShipkitFile task correctly"() {
         when:
-        root.plugins.apply(ReleaseConfigurationPlugin)
+        root.plugins.apply(ShipkitConfigurationPlugin)
 
         then:
-        InitShipkitFileTask task = root.tasks.findByName(ReleaseConfigurationPlugin.INIT_SHIPKIT_FILE_TASK)
-        task.shipkitFile == root.file(ReleaseConfigurationPlugin.SHIPKIT_FILE_RELATIVE_PATH)
+        InitShipkitFileTask task = root.tasks.findByName(ShipkitConfigurationPlugin.INIT_SHIPKIT_FILE_TASK)
+        task.shipkitFile == root.file(ShipkitConfigurationPlugin.SHIPKIT_FILE_RELATIVE_PATH)
     }
 
     def "loads default properties if config file does not exist"() {
         given:
-        assert !root.file(ReleaseConfigurationPlugin.SHIPKIT_FILE_RELATIVE_PATH).exists()
+        assert !root.file(ShipkitConfigurationPlugin.SHIPKIT_FILE_RELATIVE_PATH).exists()
 
         when:
-        def conf = root.plugins.apply(ReleaseConfigurationPlugin).configuration
+        def conf = root.plugins.apply(ShipkitConfigurationPlugin).configuration
 
         then:
         conf.gitHub.url == "https://github.com"
@@ -62,7 +62,7 @@ class ReleaseConfigurationPluginTest extends PluginSpecification {
     }
 
     @Override
-    void createReleaseConfiguration(){
+    void createShipkitConfiguration(){
         // default are not needed in this test
     }
 

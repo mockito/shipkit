@@ -8,20 +8,20 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.shipkit.gradle.ReleaseConfiguration;
+import org.shipkit.gradle.ShipkitConfiguration;
 import org.shipkit.internal.gradle.configuration.LazyConfiguration;
-import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
+import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 
 import static org.shipkit.internal.gradle.configuration.BasicValidator.notNull;
 import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
 
 /**
  * Applies and configures "com.jfrog.bintray" plugin based on sensible defaults
- * and user-defined values in "shipkit" extension ({@link ReleaseConfiguration}).
+ * and user-defined values in "shipkit" extension ({@link ShipkitConfiguration}).
  *
  * Applies plugins:
  * <ul>
- *     <li>{@link ReleaseConfigurationPlugin} to the root project</li>
+ *     <li>{@link ShipkitConfigurationPlugin} to the root project</li>
  *     <li>"com.jfrog.bintray" to this project</li>
  * </ul>
  *
@@ -40,7 +40,7 @@ public class ShipkitBintrayPlugin implements Plugin<Project> {
     private final static Logger LOG = Logging.getLogger(ShipkitBintrayPlugin.class);
 
     public void apply(final Project project) {
-        final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
+        final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
         //TODO (maybe) since this plugin depends on bintray,
         // we need to either shade bintray plugin or ship this Gradle plugin in a separate jar

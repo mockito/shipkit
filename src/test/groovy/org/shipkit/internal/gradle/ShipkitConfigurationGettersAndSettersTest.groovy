@@ -1,6 +1,6 @@
 package org.shipkit.internal.gradle
 
-import org.shipkit.gradle.ReleaseConfiguration
+import org.shipkit.gradle.ShipkitConfiguration
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -8,10 +8,10 @@ import testutil.ReflectionUtil
 
 import java.lang.reflect.Method
 
-class ReleaseConfigurationGettersAndSettersTest extends Specification {
+class ShipkitConfigurationGettersAndSettersTest extends Specification {
 
     @Shared
-    def conf = new ReleaseConfiguration()
+    def conf = new ShipkitConfiguration()
     @Shared
     int counter = 0
 

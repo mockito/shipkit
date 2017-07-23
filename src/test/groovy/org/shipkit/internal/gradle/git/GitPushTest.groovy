@@ -1,6 +1,6 @@
 package org.shipkit.internal.gradle.git
 
-import org.shipkit.gradle.ReleaseConfiguration
+import org.shipkit.gradle.ShipkitConfiguration
 import org.shipkit.gradle.git.GitPushTask
 import spock.lang.Specification
 
@@ -9,12 +9,12 @@ import static org.shipkit.internal.gradle.git.GitPush.setPushUrl
 
 class GitPushTest extends Specification {
 
-    ReleaseConfiguration conf
-    ReleaseConfiguration.GitHub gitHubConf
+    ShipkitConfiguration conf
+    ShipkitConfiguration.GitHub gitHubConf
 
     void setup(){
-        conf = Mock(ReleaseConfiguration)
-        gitHubConf = Mock(ReleaseConfiguration.GitHub)
+        conf = Mock(ShipkitConfiguration)
+        gitHubConf = Mock(ShipkitConfiguration.GitHub)
         conf.getGitHub() >> gitHubConf
     }
 
