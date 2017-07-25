@@ -4,7 +4,6 @@ import org.shipkit.gradle.version.BumpVersionFileTask
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin
 import org.shipkit.internal.gradle.git.GitCommitTask
 import org.shipkit.internal.gradle.git.GitPlugin
-import org.shipkit.internal.gradle.version.VersioningPlugin
 import org.shipkit.internal.version.VersionInfo
 import testutil.PluginSpecification
 
