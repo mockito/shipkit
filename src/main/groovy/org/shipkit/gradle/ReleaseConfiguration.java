@@ -1,6 +1,8 @@
 package org.shipkit.gradle;
 
 import org.gradle.api.GradleException;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.shipkit.internal.util.EnvVariables;
 import org.shipkit.internal.util.ExposedForTesting;
 
@@ -23,6 +25,8 @@ import static org.shipkit.internal.gradle.util.team.TeamParser.validateTeamMembe
  * <a href="https://github.com/mockito/mockito/blob/release/2.x/gradle/shipkit.gradle">Mockito project</a>.
  */
 public class ReleaseConfiguration {
+
+    private static final Logger LOG = Logging.getLogger(ReleaseConfiguration.class);
 
     private final Map<String, Object> configuration;
 
@@ -218,11 +222,12 @@ public class ReleaseConfiguration {
             if(envVar != null){
                 return envVar;
             }
-            throw new GradleException("Please export 'GH_WRITE_TOKEN' env variable first!\n" +
-                    "  The value of that variable is automatically used by Shipkit.\n" +
-                    "  It is highly recommended to keep write token secure and store env variable with your CI configuration.\n" +
-                    "  Alternatively, you can configure the write token explicitly:\n" +
-                    "    shipkit.gitHub.writeAuthToken = 'secret'");
+            LOG.lifecycle("  BEWARE! Shipkit.gitHub.writeAuthToken is unspecified.\n" +
+                "  It may cause GitHub operations, that require write access, to fail.\n" +
+                "  It is highly recommended to keep write token secure and store env variable GH_WRITE_TOKEN with your CI configuration.\n" +
+                "  Alternatively, you can configure the write token explicitly:\n" +
+                "    shipkit.gitHub.writeAuthToken = 'secret'");
+            return null;
         }
 
         public void setWriteAuthToken(String writeAuthToken) {

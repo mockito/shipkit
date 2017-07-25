@@ -39,7 +39,7 @@ public class GitPush {
     public static void setPushUrl(GitPushTask pushTask, ReleaseConfiguration conf) {
         String ghUser = conf.getGitHub().getWriteAuthUser();
         String ghRepo = conf.getGitHub().getRepository();
-        String writeToken = conf.getGitHub().getWriteAuthToken();//getWriteToken(conf, writeTokenEnvValue);
+        String writeToken = conf.getGitHub().getWriteAuthToken();
         setPushUrl(pushTask, writeToken, ghUser, ghRepo);
     }
 
