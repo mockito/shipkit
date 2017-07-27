@@ -26,7 +26,7 @@ import static org.shipkit.internal.gradle.util.team.TeamParser.validateTeamMembe
  */
 public class ShipkitConfiguration {
 
-    private static final Logger LOG = Logging.getLogger(ReleaseConfiguration.class);
+    private static final Logger LOG = Logging.getLogger(ShipkitConfiguration.class);
 
     private final Map<String, Object> configuration;
 
@@ -45,7 +45,7 @@ public class ShipkitConfiguration {
     }
 
     @ExposedForTesting
-    ShipkitConfiguration(EnvVariables envVariables){
+    ShipkitConfiguration(EnvVariables envVariables) {
         this();
         this.envVariables = envVariables;
     }
