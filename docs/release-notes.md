@@ -1,3 +1,6 @@
+**0.9.11 (2017-07-27)** - [13 commits](https://github.com/mockito/shipkit/compare/v0.9.10...v0.9.11) by [Szczepan Faber](http://github.com/szczepiq) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.11-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.11)
+ - Public API clean up before 1.0 [(#316)](https://github.com/mockito/shipkit/pull/316)
+
 **0.9.10 (2017-07-26)** - [2 commits](https://github.com/mockito/shipkit/compare/v0.9.9...v0.9.10) by [Szczepan Faber](http://github.com/szczepiq) (1), [Wojtek Wilk](http://github.com/wwilk) (1) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.10-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.10)
  - Fixes #315. Returning null instead of throwing exception when ghWriteToken not specified [(#317)](https://github.com/mockito/shipkit/pull/317)
  - master branch does not build without env variables [(#315)](https://github.com/mockito/shipkit/issues/315)
