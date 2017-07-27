@@ -9,7 +9,7 @@ import java.io.File;
 
 /**
  * Initializes versioning for the project by creating version file.
- * Typically it is "version.properties" file project's root directory.
+ * Typically it is "version.properties" file in build root directory.
  * If the file exists, this task does nothing.
  * Generated file is intended to be checked in.
  */

@@ -1,21 +1,21 @@
 package org.shipkit.internal.gradle.util.team;
 
 import org.gradle.api.GradleException;
-import org.shipkit.gradle.ReleaseConfiguration;
+import org.shipkit.gradle.ShipkitConfiguration;
 
 import java.util.Collection;
 
 import static org.shipkit.internal.util.ArgumentValidation.notNull;
 
 /**
- * Parses team members configurable via {@link org.shipkit.gradle.ReleaseConfiguration.Team#getDevelopers()}
- * and {@link org.shipkit.gradle.ReleaseConfiguration.Team#getContributors()}
+ * Parses team members configurable via {@link ShipkitConfiguration.Team#getDevelopers()}
+ * and {@link ShipkitConfiguration.Team#getContributors()}
  */
 public class TeamParser {
 
     /**
-     * Validates team memberes configured via {@link org.shipkit.gradle.ReleaseConfiguration.Team#getDevelopers()}
-     * and {@link org.shipkit.gradle.ReleaseConfiguration.Team#getContributors()}
+     * Validates team memberes configured via {@link ShipkitConfiguration.Team#getDevelopers()}
+     * and {@link ShipkitConfiguration.Team#getContributors()}
      */
     public static void validateTeamMembers(Collection<String> teamMembers) throws InvalidInput {
         for (String member : teamMembers) {
@@ -25,8 +25,8 @@ public class TeamParser {
 
     /**
      * Thrown when the team members are not configured correctly in
-     * {@link org.shipkit.gradle.ReleaseConfiguration.Team#getDevelopers()}
-     * or {@link org.shipkit.gradle.ReleaseConfiguration.Team#getContributors()}
+     * {@link ShipkitConfiguration.Team#getDevelopers()}
+     * or {@link ShipkitConfiguration.Team#getContributors()}
      */
     public static class InvalidInput extends GradleException {
         InvalidInput(String message) {
@@ -35,8 +35,8 @@ public class TeamParser {
     }
 
     /**
-     * Parses single person notation provided via {@link org.shipkit.gradle.ReleaseConfiguration.Team#getDevelopers()}
-     * and {@link org.shipkit.gradle.ReleaseConfiguration.Team#getContributors()}
+     * Parses single person notation provided via {@link ShipkitConfiguration.Team#getDevelopers()}
+     * and {@link ShipkitConfiguration.Team#getContributors()}
      */
     public static TeamMember parsePerson(String notation) throws InvalidInput {
         notNull(notation, "Team member notation cannot be null");
@@ -55,6 +55,6 @@ public class TeamParser {
         return new InvalidInput("Invalid value of team member: '" + notation + "'" +
                 "\nIt should be: 'GITHUB_USER:FULL_NAME'" +
                 "\nExample of correct notation: 'szczepiq:Szczepan Faber'" +
-                "\nSee Javadoc for ReleaseConfiguration.Team class.");
+                "\nSee Javadoc for ShipkitConfiguration.Team class.");
     }
 }

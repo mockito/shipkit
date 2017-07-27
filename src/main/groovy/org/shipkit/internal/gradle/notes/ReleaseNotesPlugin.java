@@ -1,16 +1,17 @@
-package org.shipkit.internal.gradle;
+package org.shipkit.internal.gradle.notes;
 
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.shipkit.gradle.ReleaseConfiguration;
+import org.shipkit.gradle.ShipkitConfiguration;
 import org.shipkit.gradle.notes.FetchReleaseNotesTask;
 import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
-import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
+import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.gradle.notes.FetchContributorsTask;
 import org.shipkit.internal.gradle.contributors.ContributorsPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
+import org.shipkit.internal.gradle.version.VersioningPlugin;
 import org.shipkit.internal.version.VersionInfo;
 
 import java.io.File;
@@ -22,7 +23,7 @@ import static java.util.Collections.singletonList;
  * <p>
  * Applies plugins:
  * <ul>
- * <li>{@link ReleaseConfigurationPlugin}</li>
+ * <li>{@link ShipkitConfigurationPlugin}</li>
  * <li>{@link VersioningPlugin}</li>
  * <li>{@link ContributorsPlugin}</li>
  * </ul>
@@ -43,14 +44,14 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     public static final String UPDATE_NOTES_TASK = "updateReleaseNotes";
 
     public void apply(final Project project) {
-        final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
+        final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
         project.getPlugins().apply(VersioningPlugin.class);
         project.getPlugins().apply(ContributorsPlugin.class);
 
         releaseNotesTasks(project, conf);
     }
 
-    private static void releaseNotesTasks(final Project project, final ReleaseConfiguration conf) {
+    private static void releaseNotesTasks(final Project project, final ShipkitConfiguration conf) {
         final FetchReleaseNotesTask releaseNotesFetcher = TaskMaker.task(project, FETCH_NOTES_TASK, FetchReleaseNotesTask.class, new Action<FetchReleaseNotesTask>() {
             public void execute(final FetchReleaseNotesTask t) {
                 t.setDescription("Fetches release notes data from Git and GitHub and serializes them to a file");
@@ -87,7 +88,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     private static void configureDetailedNotes(final UpdateReleaseNotesTask task,
                                                final FetchReleaseNotesTask releaseNotesFetcher,
                                                final Project project,
-                                               final ReleaseConfiguration conf,
+                                               final ShipkitConfiguration conf,
                                                final FetchContributorsTask contributorsFetcher) {
         task.dependsOn(releaseNotesFetcher);
         task.dependsOn(contributorsFetcher);

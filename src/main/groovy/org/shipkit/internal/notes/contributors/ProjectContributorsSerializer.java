@@ -9,9 +9,9 @@ import org.shipkit.internal.notes.model.ProjectContributor;
 
 import java.util.Collection;
 
-public class AllContributorsSerializer {
+public class ProjectContributorsSerializer {
 
-    private static final Logger LOG = Logging.getLogger(AllContributorsSerializer.class);
+    private static final Logger LOG = Logging.getLogger(ProjectContributorsSerializer.class);
 
     public String serialize(ProjectContributorsSet contributorsSet) {
         Collection<ProjectContributor> allContributors = contributorsSet.getAllContributors();

@@ -4,17 +4,15 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.exec.ShipkitExecTask;
-import org.shipkit.internal.gradle.ReleaseNotesPlugin;
-import org.shipkit.internal.gradle.VersioningPlugin;
+import org.shipkit.internal.gradle.notes.ReleaseNotesPlugin;
+import org.shipkit.internal.gradle.version.VersioningPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.gradle.util.TaskSuccessfulMessage;
 
 import static java.util.Arrays.asList;
-import static org.shipkit.internal.gradle.ReleaseNotesPlugin.UPDATE_NOTES_TASK;
+import static org.shipkit.internal.gradle.notes.ReleaseNotesPlugin.UPDATE_NOTES_TASK;
 import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
 import static org.shipkit.internal.gradle.release.ReleaseNeededPlugin.RELEASE_NEEDED;
 

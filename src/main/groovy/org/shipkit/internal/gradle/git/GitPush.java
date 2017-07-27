@@ -2,7 +2,7 @@ package org.shipkit.internal.gradle.git;
 
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.shipkit.gradle.ReleaseConfiguration;
+import org.shipkit.gradle.ShipkitConfiguration;
 import org.shipkit.gradle.git.GitPushTask;
 import org.shipkit.internal.exec.DefaultProcessRunner;
 
@@ -36,7 +36,7 @@ public class GitPush {
      * Configures url on the git push task, ensuring secrecy of the write token.
      * Write token is optional.
      */
-    public static void setPushUrl(GitPushTask pushTask, ReleaseConfiguration conf) {
+    public static void setPushUrl(GitPushTask pushTask, ShipkitConfiguration conf) {
         String ghUser = conf.getGitHub().getWriteAuthUser();
         String ghRepo = conf.getGitHub().getRepository();
         String writeToken = conf.getGitHub().getWriteAuthToken();

@@ -5,7 +5,7 @@ import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.gradle.ReleaseConfiguration;
+import org.shipkit.gradle.ShipkitConfiguration;
 import org.shipkit.internal.gradle.notes.tasks.FetchReleaseNotes;
 
 import java.io.File;
@@ -36,7 +36,7 @@ public class FetchReleaseNotesTask extends DefaultTask {
     }
 
     /**
-     * See {@link ReleaseConfiguration.GitHub#getUrl()}
+     * See {@link ShipkitConfiguration.GitHub#getUrl()}
      */
     public String getGitHubApiUrl() {
         return gitHubApiUrl;
@@ -50,7 +50,7 @@ public class FetchReleaseNotesTask extends DefaultTask {
     }
 
     /**
-     * See {@link ReleaseConfiguration.GitHub#getReadOnlyAuthToken()}
+     * See {@link ShipkitConfiguration.GitHub#getReadOnlyAuthToken()}
      */
     public String getGitHubReadOnlyAuthToken() {
         return gitHubReadOnlyAuthToken;
@@ -64,7 +64,7 @@ public class FetchReleaseNotesTask extends DefaultTask {
     }
 
     /**
-     * See {@link ReleaseConfiguration.GitHub#getRepository()}
+     * See {@link ShipkitConfiguration.GitHub#getRepository()}
      */
     public String getGitHubRepository() {
         return gitHubRepository;
@@ -79,7 +79,7 @@ public class FetchReleaseNotesTask extends DefaultTask {
 
     /**
      * Previous released version we generate the release notes from.
-     * See {@link ReleaseConfiguration#getPreviousReleaseVersion()}
+     * See {@link ShipkitConfiguration#getPreviousReleaseVersion()}
      */
     public String getPreviousVersion() {
         return previousVersion;
@@ -135,7 +135,7 @@ public class FetchReleaseNotesTask extends DefaultTask {
     }
 
     /**
-     * See {@link ReleaseConfiguration.Git#getTagPrefix()}
+     * See {@link ShipkitConfiguration.Git#getTagPrefix()}
      */
     public String getTagPrefix() {
         return tagPrefix;
@@ -179,7 +179,7 @@ public class FetchReleaseNotesTask extends DefaultTask {
     }
 
     /**
-     * See {@link ReleaseConfiguration.ReleaseNotes#getIgnoreCommitsContaining()}
+     * See {@link ShipkitConfiguration.ReleaseNotes#getIgnoreCommitsContaining()}
      */
     public Collection<String> getIgnoreCommitsContaining() {
         return ignoreCommitsContaining;

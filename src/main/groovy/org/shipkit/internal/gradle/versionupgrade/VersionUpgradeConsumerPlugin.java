@@ -7,10 +7,10 @@ import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Exec;
-import org.shipkit.gradle.ReleaseConfiguration;
+import org.shipkit.gradle.ShipkitConfiguration;
 import org.shipkit.gradle.git.GitPushTask;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
-import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
+import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitCheckOutTask;
 import org.shipkit.internal.gradle.git.GitPush;
 import org.shipkit.internal.gradle.util.TaskMaker;
@@ -67,7 +67,7 @@ public class VersionUpgradeConsumerPlugin implements Plugin<Project> {
     @Override
     public void apply(final Project project) {
         LOG.lifecycle("Applying VersionUpgradeConsumerPlugin, beware that it's is INCUBATING state, so its API may change!");
-        final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
+        final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
         versionUpgrade = project.getExtensions().create("versionUpgrade", VersionUpgradeConsumerExtension.class);
 

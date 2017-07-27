@@ -1,4 +1,4 @@
-package org.shipkit.gradle
+package org.shipkit.gradle.release
 
 import org.gradle.api.GradleException
 import org.gradle.testfixtures.ProjectBuilder

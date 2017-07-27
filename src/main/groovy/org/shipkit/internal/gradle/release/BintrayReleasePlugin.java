@@ -7,9 +7,9 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
 import org.shipkit.internal.gradle.ShipkitBintrayPlugin;
-import org.shipkit.internal.gradle.ReleaseNotesPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.java.JavaBintrayPlugin;
+import org.shipkit.internal.gradle.notes.ReleaseNotesPlugin;
 import org.shipkit.internal.gradle.util.BintrayUtil;
 
 import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
