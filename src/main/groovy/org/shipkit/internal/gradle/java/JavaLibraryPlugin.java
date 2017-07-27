@@ -5,8 +5,8 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.file.CopySpec;
-import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.bundling.Jar;
+import org.shipkit.internal.gradle.util.JavaPluginUtil;
 
 /**
  * Makes a java library that has not only the main jar but also sources and javadoc jars.
@@ -48,11 +48,9 @@ public class JavaLibraryPlugin implements Plugin<Project> {
 
         ((Jar) project.getTasks().getByName("jar")).with(license);
 
-        final JavaPluginConvention java = project.getConvention().getPlugin(JavaPluginConvention.class);
-
         final Jar sourcesJar = project.getTasks().create(SOURCES_JAR_TASK, Jar.class, new Action<Jar>() {
             public void execute(Jar jar) {
-                jar.from(java.getSourceSets().getByName("main").getAllSource());
+                jar.from(JavaPluginUtil.getMainSourceSet(project).getAllSource());
                 jar.setClassifier("sources");
                 jar.with(license);
             }
