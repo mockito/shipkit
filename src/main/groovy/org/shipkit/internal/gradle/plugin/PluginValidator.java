@@ -1,8 +1,10 @@
 package org.shipkit.internal.gradle.plugin;
 
 import org.gradle.api.GradleException;
+import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
+import org.gradle.api.tasks.SourceSet;
 
 import java.io.File;
 import java.util.*;
@@ -14,7 +16,24 @@ public class PluginValidator {
 
     private static final Logger LOG = Logging.getLogger(PluginValidator.class);
 
-    public void validate(Set<File> gradlePlugins, Set<File> gradleProperties) {
+    private Project project;
+
+    public PluginValidator(Project project) {
+        this.project = project;
+    }
+
+    public void validate(SourceSet sourceSet) {
+        Set<File> gradlePlugins;
+        Set<File> gradleProperties;
+
+        if (sourceSet == null) {
+           gradlePlugins = PluginUtil.discoverGradlePlugins(project);
+           gradleProperties = PluginUtil.discoverGradlePluginPropertyFiles(project);
+        } else {
+            gradlePlugins = PluginUtil.discoverGradlePlugins(sourceSet);
+            gradleProperties = PluginUtil.discoverGradlePluginPropertyFiles(sourceSet);
+        }
+
         ensurePluginsHavePropertiesFile(gradlePlugins, gradleProperties);
     }
 

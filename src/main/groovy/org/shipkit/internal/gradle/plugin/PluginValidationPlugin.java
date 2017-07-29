@@ -26,8 +26,6 @@ public class PluginValidationPlugin implements Plugin<Project> {
                     @Override
                     public void execute(PluginValidatorTask task) {
                         task.setDescription("Validates Gradle Plugins and their properties files");
-                        task.setGradlePlugins(PluginUtil.discoverGradlePlugins(project));
-                        task.setGradleProperties(PluginUtil.discoverGradlePluginPropertyFiles(project));
                     }
                 });
             }
