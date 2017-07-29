@@ -15,7 +15,16 @@ public class PluginValidatorTask extends DefaultTask {
 
     @TaskAction
     public void validate() {
-        new PluginValidator(getProject()).validate(sourceSet);
+        Set<File> gradlePlugins;
+        Set<File> gradleProperties;
+        if (sourceSet == null) {
+            gradlePlugins = PluginUtil.discoverGradlePlugins(getProject());
+            gradleProperties = PluginUtil.discoverGradlePluginPropertyFiles(getProject());
+        } else {
+            gradlePlugins = PluginUtil.discoverGradlePlugins(sourceSet);
+            gradleProperties = PluginUtil.discoverGradlePluginPropertyFiles(sourceSet);
+        }
+        new PluginValidator().validate(gradlePlugins, gradleProperties);
     }
 
     public void setSourceSet(SourceSet sourceSet) {
