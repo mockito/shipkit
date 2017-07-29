@@ -35,7 +35,7 @@ class PluginSpecification extends Specification{
 
     void createShipkitFile(){
         def rootPath = tmp.root.absolutePath
-        def shipkitFile = new File(rootPath + "/" + ShipkitConfigurationPlugin.SHIPKIT_FILE_RELATIVE_PATH);
+        def shipkitFile = new File(rootPath + "/gradle/shipkit.gradle");
         IOUtil.createParentDirectory(shipkitFile)
         shipkitFile << "shipkit { }"
     }

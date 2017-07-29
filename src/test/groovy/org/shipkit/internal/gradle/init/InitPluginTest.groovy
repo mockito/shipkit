@@ -1,6 +1,7 @@
 package org.shipkit.internal.gradle.init
 
 import org.gradle.testfixtures.ProjectBuilder
+import org.shipkit.gradle.init.InitShipkitFileTask
 import spock.lang.Specification
 
 import static InitPlugin.INIT_TRAVIS_TASK
@@ -29,5 +30,14 @@ class InitPluginTest extends Specification {
 
         then:
         project.file(".travis.yml").text == "foo"
+    }
+
+    def "initializes shipkit file task"() {
+        when:
+        project.plugins.apply(InitPlugin)
+
+        then:
+        InitShipkitFileTask task = project.tasks.findByName(InitPlugin.INIT_SHIPKIT_FILE_TASK)
+        task.shipkitFile == project.file("gradle/shipkit.gradle")
     }
 }
