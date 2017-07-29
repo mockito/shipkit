@@ -14,6 +14,7 @@ import org.shipkit.internal.gradle.release.GradlePortalReleasePlugin;
  * <ul>
  *     <li>{@link TravisPlugin}</li>
  *     <li>{@link PluginDiscoveryPlugin}</li>
+ *     <li>{@link PluginValidationPlugin}</li>
  *     <li>{@link CiReleasePlugin}</li>
  *     <li>{@link GradlePortalReleasePlugin}</li>
  * </ul>
@@ -24,6 +25,7 @@ public class ShipkitGradlePlugin implements Plugin<Project> {
     public void apply(Project project) {
         project.getPlugins().apply(TravisPlugin.class);
         project.getPlugins().apply(PluginDiscoveryPlugin.class);
+        project.getPlugins().apply(PluginValidationPlugin.class);
         project.getPlugins().apply(CiReleasePlugin.class);
         project.getPlugins().apply(GradlePortalReleasePlugin.class);
     }
