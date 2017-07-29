@@ -31,6 +31,7 @@ import java.io.File;
  * <ul>
  *     <li>'initTravis' - of type {@link InitTravisTask} - generates '.travis.yml' file (check it in!).</li>
  *     <li>'initVersioning' - of type {@link InitVersioningTask} - generates 'version.properties' file (check it in!).</li>
+ *     <li>'initShipkitFile' - of type {@link InitShipkitFileTask} - generates 'gradle/shipkit.gradle' file (check it in!).</li>
  *     <li>'initShipkit' - of type {@link org.gradle.api.DefaultTask} - depends on other 'init' tasks.
  *          Run it to initialize Shipkit. Generated files are intended to be checked in to VCS (Git).</li>
  * </ul>
