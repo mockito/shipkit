@@ -25,10 +25,8 @@ import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.de
  *     <li>"com.jfrog.bintray" to this project</li>
  * </ul>
  *
- * Configures "com.jfrog.bintray" plugin:
- * <ul>
- *     <li>Sets extension property: 'bintray.publish = true'</li>
- * </ul>
+ * Configures "com.jfrog.bintray" plugin with sensible defaults
+ * and with values specified in Shipkit file.
  */
 public class ShipkitBintrayPlugin implements Plugin<Project> {
 
