@@ -1,3 +1,6 @@
+**0.9.13 (2017-07-30)** - [10 commits](https://github.com/mockito/shipkit/compare/v0.9.12...v0.9.13) by [Szczepan Faber](http://github.com/szczepiq) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.13-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.13)
+ - Public API polish before 1.0 [(#318)](https://github.com/mockito/shipkit/pull/318)
+
 **0.9.12 (2017-07-29)** - [13 commits](https://github.com/mockito/shipkit/compare/v0.9.11...v0.9.12) by [epeee](https://github.com/epeee) (12), [Szczepan Faber](http://github.com/szczepiq) (1) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.12-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.12)
  - Automatically validate plugin property files [(#314)](https://github.com/mockito/shipkit/pull/314)
 
