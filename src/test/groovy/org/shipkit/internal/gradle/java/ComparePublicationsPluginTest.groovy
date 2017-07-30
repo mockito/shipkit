@@ -2,7 +2,7 @@ package org.shipkit.internal.gradle.java
 
 import com.jfrog.bintray.gradle.BintrayExtension
 import org.gradle.testfixtures.ProjectBuilder
-import org.shipkit.gradle.ShipkitConfiguration
+import org.shipkit.gradle.configuration.ShipkitConfiguration
 import org.shipkit.gradle.java.ComparePublicationsTask
 import org.shipkit.gradle.java.DownloadPreviousPublicationsTask
 import org.shipkit.internal.gradle.bintray.ShipkitBintrayPlugin

@@ -1,7 +1,7 @@
 package org.shipkit.internal.gradle.util
 
 import org.gradle.testfixtures.ProjectBuilder
-import org.shipkit.gradle.ShipkitConfiguration
+import org.shipkit.gradle.configuration.ShipkitConfiguration
 import spock.lang.Specification
 
 class GitUtilTest extends Specification {

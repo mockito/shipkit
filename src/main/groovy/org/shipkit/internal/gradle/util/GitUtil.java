@@ -1,7 +1,7 @@
 package org.shipkit.internal.gradle.util;
 
 import org.gradle.api.Project;
-import org.shipkit.gradle.ShipkitConfiguration;
+import org.shipkit.gradle.configuration.ShipkitConfiguration;
 
 /**
  * Git utilities

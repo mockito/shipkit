@@ -8,7 +8,7 @@ import org.gradle.api.logging.Logging;
 import org.gradle.api.publish.PublicationContainer;
 import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.api.tasks.bundling.Jar;
-import org.shipkit.gradle.ShipkitConfiguration;
+import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.util.GradleDSLHelper;
 import org.shipkit.internal.gradle.util.PomCustomizer;

@@ -6,7 +6,7 @@ import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.bundling.Jar;
-import org.shipkit.gradle.ShipkitConfiguration;
+import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.gradle.java.ComparePublicationsTask;
 import org.shipkit.gradle.java.DownloadPreviousPublicationsTask;
 import org.shipkit.internal.comparison.artifact.DefaultArtifactUrlResolver;

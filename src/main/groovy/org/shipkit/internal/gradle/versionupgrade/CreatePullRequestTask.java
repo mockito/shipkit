@@ -2,7 +2,7 @@ package org.shipkit.internal.gradle.versionupgrade;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.gradle.ShipkitConfiguration;
+import org.shipkit.gradle.configuration.ShipkitConfiguration;
 
 import java.io.IOException;
 

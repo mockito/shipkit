@@ -2,7 +2,7 @@ package org.shipkit.internal.gradle.util
 
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.testfixtures.ProjectBuilder
-import org.shipkit.gradle.ShipkitConfiguration
+import org.shipkit.gradle.configuration.ShipkitConfiguration
 import org.shipkit.internal.notes.contributors.DefaultProjectContributor
 import org.shipkit.internal.notes.contributors.DefaultProjectContributorsSet
 import spock.lang.Specification
