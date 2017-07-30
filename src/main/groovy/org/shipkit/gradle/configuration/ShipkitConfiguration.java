@@ -222,7 +222,7 @@ public class ShipkitConfiguration {
             if(envVar != null){
                 return envVar;
             }
-            LOG.lifecycle("  BEWARE! Shipkit.gitHub.writeAuthToken is unspecified.\n" +
+            LOG.info("  BEWARE! Shipkit.gitHub.writeAuthToken is unspecified.\n" +
                 "  It may cause GitHub operations, that require write access, to fail.\n" +
                 "  It is highly recommended to keep write token secure and store env variable GH_WRITE_TOKEN with your CI configuration.\n" +
                 "  Alternatively, you can configure the write token explicitly:\n" +
