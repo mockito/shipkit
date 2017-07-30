@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle.release;
+package org.shipkit.internal.gradle.bintray;
 
 import com.jfrog.bintray.gradle.BintrayExtension;
 import org.gradle.api.Action;
@@ -6,10 +6,10 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
-import org.shipkit.internal.gradle.ShipkitBintrayPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.java.JavaBintrayPlugin;
 import org.shipkit.internal.gradle.notes.ReleaseNotesPlugin;
+import org.shipkit.internal.gradle.release.ReleasePlugin;
 import org.shipkit.internal.gradle.util.BintrayUtil;
 
 import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;

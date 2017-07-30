@@ -3,7 +3,7 @@ package org.shipkit.internal.gradle.java;
 import com.jfrog.bintray.gradle.BintrayExtension;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.shipkit.internal.gradle.ShipkitBintrayPlugin;
+import org.shipkit.internal.gradle.bintray.ShipkitBintrayPlugin;
 
 import static org.shipkit.internal.gradle.java.JavaPublishPlugin.PUBLICATION_NAME;
 

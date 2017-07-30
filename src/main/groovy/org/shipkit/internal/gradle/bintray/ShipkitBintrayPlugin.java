@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle;
+package org.shipkit.internal.gradle.bintray;
 
 import com.jfrog.bintray.gradle.BintrayExtension;
 import com.jfrog.bintray.gradle.BintrayUploadTask;
