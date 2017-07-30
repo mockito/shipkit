@@ -1,7 +1,7 @@
 package org.shipkit.internal.gradle.util.team;
 
 import org.gradle.api.GradleException;
-import org.shipkit.gradle.ShipkitConfiguration;
+import org.shipkit.gradle.configuration.ShipkitConfiguration;
 
 import java.util.Collection;
 

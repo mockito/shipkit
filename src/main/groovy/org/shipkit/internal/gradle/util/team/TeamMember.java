@@ -1,6 +1,6 @@
 package org.shipkit.internal.gradle.util.team;
 
-import org.shipkit.gradle.ShipkitConfiguration;
+import org.shipkit.gradle.configuration.ShipkitConfiguration;
 
 /**
  * Represents team member configurable via {@link ShipkitConfiguration.Team#getDevelopers()}

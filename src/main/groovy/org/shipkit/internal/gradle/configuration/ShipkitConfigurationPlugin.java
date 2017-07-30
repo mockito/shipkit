@@ -4,11 +4,9 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ObjectConfigurationAction;
-import org.shipkit.gradle.ShipkitConfiguration;
-import org.shipkit.internal.gradle.version.VersioningPlugin;
-import org.shipkit.gradle.init.InitShipkitFileTask;
+import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.gradle.init.InitPlugin;
-import org.shipkit.internal.gradle.util.TaskMaker;
+import org.shipkit.internal.gradle.version.VersioningPlugin;
 import org.shipkit.internal.version.VersionInfo;
 
 import java.io.File;
@@ -18,7 +16,7 @@ import java.io.File;
  * Configuration properties are loaded from gradle/shipkit.gradle file when the plugin is applied.
  * This mechanism assures that all properties are accessible during configuration phase.
  * If such file is not present, it will be created automatically with required properties and example values.
- * Important: it will add to the root project because this is where the configuration belong to!
+ * Important: it will add to the root project because this is where the configuration belongs to!
  * Adds following behavior:
  * <ul>
  *     <li>Adds and preconfigures 'shipkit' extension of type {@link ShipkitConfiguration}</li>
@@ -37,8 +35,11 @@ public class ShipkitConfigurationPlugin implements Plugin<Project> {
     private ShipkitConfiguration configuration;
 
     public static final String SHIPKIT_FILE_RELATIVE_PATH = "gradle/shipkit.gradle";
-    static final String INIT_SHIPKIT_FILE_TASK = "initShipkitFile";
     public static final String DRY_RUN_PROPERTY = "dryRun";
+
+    public static File getShipkitFile(Project project) {
+        return new File(project.getRootDir(), "gradle/shipkit.gradle");
+    }
 
     public void apply(final Project project) {
         if (project.getParent() == null) {
@@ -50,9 +51,7 @@ public class ShipkitConfigurationPlugin implements Plugin<Project> {
             configuration = project.getRootProject().getExtensions()
                     .create("shipkit", ShipkitConfiguration.class);
 
-            final File shipkitFile = project.file(SHIPKIT_FILE_RELATIVE_PATH);
-
-            loadConfigFromFile(project.getRootProject(), shipkitFile);
+            loadConfigFromFile(project.getRootProject(), getShipkitFile(project));
 
             if (project.hasProperty(DRY_RUN_PROPERTY)) {
                 configuration.setDryRun(true);
@@ -61,24 +60,13 @@ public class ShipkitConfigurationPlugin implements Plugin<Project> {
             }
 
             configuration.setPreviousReleaseVersion(info.getPreviousVersion());
-
-            TaskMaker.task(project, INIT_SHIPKIT_FILE_TASK, InitShipkitFileTask.class, new Action<InitShipkitFileTask>() {
-                @Override
-                public void execute(InitShipkitFileTask t) {
-                    t.setDescription("Creates Shipkit configuration file unless it already exists");
-                    t.setShipkitFile(shipkitFile);
-
-                    project.getTasks().getByName(InitPlugin.INIT_SHIPKIT_TASK).dependsOn(t);
-                }
-            });
-
         } else {
             //not root project, get extension from root project
             configuration = project.getRootProject().getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
         }
     }
 
-    private void loadConfigFromFile(Project rootProject, File shipkitFile) {
+    private void loadConfigFromFile(final Project rootProject, File shipkitFile) {
         if (!shipkitFile.exists()) {
             // sets some defaults so that they can't be used to run any task (except for bootstrap ones)
             // but also configuration doesn't fail when running Shipkit for the first time
@@ -92,7 +80,7 @@ public class ShipkitConfigurationPlugin implements Plugin<Project> {
             rootProject.apply(new Action<ObjectConfigurationAction>() {
                 @Override
                 public void execute(ObjectConfigurationAction objectConfigurationAction) {
-                    objectConfigurationAction.from(SHIPKIT_FILE_RELATIVE_PATH);
+                    objectConfigurationAction.from(getShipkitFile(rootProject));
                 }
             });
         }

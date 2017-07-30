@@ -6,12 +6,14 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.shipkit.gradle.version.BumpVersionFileTask;
+import org.shipkit.gradle.init.InitShipkitFileTask;
 import org.shipkit.gradle.init.InitTravisTask;
 import org.shipkit.gradle.init.InitVersioningTask;
-import org.shipkit.internal.gradle.version.VersioningPlugin;
+import org.shipkit.gradle.version.BumpVersionFileTask;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
+import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
+import org.shipkit.internal.gradle.version.VersioningPlugin;
 
 import java.io.File;
 
@@ -29,6 +31,7 @@ import java.io.File;
  * <ul>
  *     <li>'initTravis' - of type {@link InitTravisTask} - generates '.travis.yml' file (check it in!).</li>
  *     <li>'initVersioning' - of type {@link InitVersioningTask} - generates 'version.properties' file (check it in!).</li>
+ *     <li>'initShipkitFile' - of type {@link InitShipkitFileTask} - generates 'gradle/shipkit.gradle' file (check it in!).</li>
  *     <li>'initShipkit' - of type {@link org.gradle.api.DefaultTask} - depends on other 'init' tasks.
  *          Run it to initialize Shipkit. Generated files are intended to be checked in to VCS (Git).</li>
  * </ul>
@@ -37,6 +40,7 @@ public class InitPlugin implements Plugin<Project> {
 
     private final static Logger LOG = Logging.getLogger(InitPlugin.class);
 
+    public static final String INIT_SHIPKIT_FILE_TASK = "initShipkitFile";
     public static final String INIT_VERSIONING_TASK = "initVersioning";
     public static final String INIT_SHIPKIT_TASK = "initShipkit";
     public static final String INIT_TRAVIS_TASK = "initTravis";
@@ -44,6 +48,7 @@ public class InitPlugin implements Plugin<Project> {
     @Override
     public void apply(final Project project) {
         project.getPlugins().apply(VersioningPlugin.class);
+        project.getPlugins().apply(ShipkitConfigurationPlugin.class);
 
         TaskMaker.task(project, INIT_TRAVIS_TASK, InitTravisTask.class, new Action<InitTravisTask>() {
             public void execute(InitTravisTask t) {
@@ -61,10 +66,18 @@ public class InitPlugin implements Plugin<Project> {
             }
         });
 
+        TaskMaker.task(project, INIT_SHIPKIT_FILE_TASK, InitShipkitFileTask.class, new Action<InitShipkitFileTask>() {
+            @Override
+            public void execute(InitShipkitFileTask t) {
+                t.setDescription("Creates Shipkit configuration file unless it already exists");
+                t.setShipkitFile(ShipkitConfigurationPlugin.getShipkitFile(project));
+            }
+        });
+
         TaskMaker.task(project, INIT_SHIPKIT_TASK, new Action<Task>() {
             public void execute(Task t) {
                 t.setDescription("Initializes Shipkit");
-                t.dependsOn(INIT_TRAVIS_TASK, INIT_VERSIONING_TASK);
+                t.dependsOn(INIT_TRAVIS_TASK, INIT_VERSIONING_TASK, INIT_SHIPKIT_FILE_TASK);
             }
         });
 

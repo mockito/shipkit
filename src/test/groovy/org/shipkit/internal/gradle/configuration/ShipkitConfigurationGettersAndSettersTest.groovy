@@ -1,6 +1,6 @@
-package org.shipkit.internal.gradle
+package org.shipkit.internal.gradle.configuration
 
-import org.shipkit.gradle.ShipkitConfiguration
+import org.shipkit.gradle.configuration.ShipkitConfiguration
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll

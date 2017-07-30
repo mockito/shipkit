@@ -4,7 +4,7 @@ import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import org.shipkit.gradle.ShipkitConfiguration
+import org.shipkit.gradle.configuration.ShipkitConfiguration
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin
 import org.shipkit.internal.notes.util.IOUtil
 import spock.lang.Specification
@@ -35,7 +35,7 @@ class PluginSpecification extends Specification{
 
     void createShipkitFile(){
         def rootPath = tmp.root.absolutePath
-        def shipkitFile = new File(rootPath + "/" + ShipkitConfigurationPlugin.SHIPKIT_FILE_RELATIVE_PATH);
+        def shipkitFile = new File(rootPath + "/gradle/shipkit.gradle");
         IOUtil.createParentDirectory(shipkitFile)
         shipkitFile << "shipkit { }"
     }

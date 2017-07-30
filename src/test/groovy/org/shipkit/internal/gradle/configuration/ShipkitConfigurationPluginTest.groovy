@@ -2,7 +2,6 @@ package org.shipkit.internal.gradle.configuration
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
-import org.shipkit.gradle.init.InitShipkitFileTask
 import testutil.PluginSpecification
 
 class ShipkitConfigurationPluginTest extends PluginSpecification {
@@ -36,15 +35,6 @@ class ShipkitConfigurationPluginTest extends PluginSpecification {
 
         then:
         root.plugins.apply(ShipkitConfigurationPlugin).configuration.dryRun
-    }
-
-    def "configures initShipkitFile task correctly"() {
-        when:
-        root.plugins.apply(ShipkitConfigurationPlugin)
-
-        then:
-        InitShipkitFileTask task = root.tasks.findByName(ShipkitConfigurationPlugin.INIT_SHIPKIT_FILE_TASK)
-        task.shipkitFile == root.file(ShipkitConfigurationPlugin.SHIPKIT_FILE_RELATIVE_PATH)
     }
 
     def "loads default properties if config file does not exist"() {

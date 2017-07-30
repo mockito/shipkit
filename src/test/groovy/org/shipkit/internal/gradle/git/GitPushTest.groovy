@@ -1,6 +1,6 @@
 package org.shipkit.internal.gradle.git
 
-import org.shipkit.gradle.ShipkitConfiguration
+import org.shipkit.gradle.configuration.ShipkitConfiguration
 import org.shipkit.gradle.git.GitPushTask
 import spock.lang.Specification
 

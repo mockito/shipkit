@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle;
+package org.shipkit.internal.gradle.bintray;
 
 import com.jfrog.bintray.gradle.BintrayExtension;
 import com.jfrog.bintray.gradle.BintrayUploadTask;
@@ -8,7 +8,7 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.shipkit.gradle.ShipkitConfiguration;
+import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.gradle.configuration.LazyConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 
@@ -25,10 +25,8 @@ import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.de
  *     <li>"com.jfrog.bintray" to this project</li>
  * </ul>
  *
- * Configures "com.jfrog.bintray" plugin:
- * <ul>
- *     <li>Sets extension property: 'bintray.publish = true'</li>
- * </ul>
+ * Configures "com.jfrog.bintray" plugin with sensible defaults
+ * and with values specified in Shipkit file.
  */
 public class ShipkitBintrayPlugin implements Plugin<Project> {
 
