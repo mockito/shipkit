@@ -4,7 +4,7 @@ import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import org.shipkit.internal.gradle.ShipkitJavaPlugin
+import org.shipkit.internal.gradle.java.ShipkitJavaPlugin
 import spock.lang.Specification
 
 /**

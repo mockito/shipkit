@@ -1,11 +1,10 @@
-package org.shipkit.internal.gradle;
+package org.shipkit.internal.gradle.java;
 
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.shipkit.internal.gradle.TravisPlugin;
 import org.shipkit.internal.gradle.bintray.BintrayReleasePlugin;
-import org.shipkit.internal.gradle.java.JavaBintrayPlugin;
-import org.shipkit.internal.gradle.java.PomContributorsPlugin;
 
 /**
  * Continuous delivery for Java with Travis and Bintray.
