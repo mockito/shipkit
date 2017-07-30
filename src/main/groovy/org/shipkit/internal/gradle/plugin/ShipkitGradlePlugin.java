@@ -2,9 +2,9 @@ package org.shipkit.internal.gradle.plugin;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.shipkit.internal.gradle.TravisPlugin;
 import org.shipkit.internal.gradle.release.CiReleasePlugin;
 import org.shipkit.internal.gradle.release.GradlePortalReleasePlugin;
+import org.shipkit.internal.gradle.release.TravisPlugin;
 
 /**
  * Automatically ships your Gradle plugins to the Plugin Portal.

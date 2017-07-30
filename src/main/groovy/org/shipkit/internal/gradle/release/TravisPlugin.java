@@ -1,20 +1,18 @@
-package org.shipkit.internal.gradle;
+package org.shipkit.internal.gradle.release;
 
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.shipkit.gradle.release.ReleaseNeededTask;
 import org.shipkit.gradle.git.IdentifyGitBranchTask;
+import org.shipkit.gradle.release.ReleaseNeededTask;
 import org.shipkit.internal.gradle.configuration.BasicValidator;
 import org.shipkit.internal.gradle.configuration.LazyConfiguration;
 import org.shipkit.internal.gradle.git.GitBranchPlugin;
 import org.shipkit.internal.gradle.git.GitCheckOutTask;
 import org.shipkit.internal.gradle.git.GitSetupPlugin;
 import org.shipkit.internal.gradle.util.StringUtil;
-import org.shipkit.internal.gradle.release.CiReleasePlugin;
-import org.shipkit.internal.gradle.release.ReleaseNeededPlugin;
 
 /**
  * Configures the release automation to be used with Travis CI.
