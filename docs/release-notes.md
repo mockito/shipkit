@@ -1,3 +1,6 @@
+**0.9.15 (2017-08-01)** - [3 commits](https://github.com/mockito/shipkit/compare/v0.9.14...v0.9.15) by epeee (2), [Wojtek Wilk](http://github.com/wwilk) (1) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.15-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.15)
+ - minor cleanup [(#323)](https://github.com/mockito/shipkit/pull/323)
+
 **0.9.14 (2017-07-31)** - [2 commits](https://github.com/mockito/shipkit/compare/v0.9.13...v0.9.14) by [Erhard Pointl](http://github.com/epeee) (1), [Szczepan Faber](http://github.com/szczepiq) (1) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.14-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.14)
  - Reduced the log level of a noisy message [(#320)](https://github.com/mockito/shipkit/pull/320)
 
