@@ -17,8 +17,10 @@ public class GitCommitImpl {
 
     public void commit(GitCommitTask task) {
         Collection<ExecCommand> commands = new LinkedList<ExecCommand>();
-        commands.add(execCommand("Adding files to git", getAddCommand(task.getFilesToCommit())));
-        commands.add(execCommand("Performing git commit", getCommitCommand(task)));
+        commands.add(execCommand("Adding files to git",
+            getAddCommand(task.getFilesToCommit())));
+        commands.add(execCommand("Performing git commit",
+            getCommitCommand(task.getGitUserName(), task.getGitUserEmail(), task.getDescriptions(), task.getCommitMessagePostfix())));
         new ShipkitExec().execCommands(commands, task.getProject());
     }
 
@@ -43,14 +45,15 @@ public class GitCommitImpl {
         return args;
     }
 
-    private List<String> getCommitCommand(GitCommitTask task) {
+    static List<String> getCommitCommand(String gitUserName, String gitUserEmail,
+                                         List<String> descriptions, String commitMessagePostfix) {
         List<String> args = new ArrayList<String>();
         args.add("git");
         args.add("commit");
         args.add("--author");
-        args.add(GitUtil.getGitGenericUserNotation(task.getGitUserName(), task.getGitUserEmail()));
+        args.add(GitUtil.getGitGenericUserNotation(gitUserName, gitUserEmail));
         args.add("-m");
-        args.add(GitUtil.getCommitMessage(getAggregatedCommitMessage(task.getDescriptions()), task.getCommitMessagePostfix()));
+        args.add(GitUtil.getCommitMessage(getAggregatedCommitMessage(descriptions), commitMessagePostfix));
         return args;
     }
 }

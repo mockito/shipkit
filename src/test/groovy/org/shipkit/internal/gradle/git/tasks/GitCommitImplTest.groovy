@@ -4,6 +4,7 @@ import spock.lang.Specification
 
 import static org.shipkit.internal.gradle.git.tasks.GitCommitImpl.getAddCommand
 import static org.shipkit.internal.gradle.git.tasks.GitCommitImpl.getAggregatedCommitMessage
+import static org.shipkit.internal.gradle.git.tasks.GitCommitImpl.getCommitCommand
 
 class GitCommitImplTest extends Specification {
 
@@ -19,5 +20,11 @@ class GitCommitImplTest extends Specification {
 
         expect:
         getAddCommand([f1, f2]) == ["git", "add", f1.absolutePath, f2.absolutePath]
+    }
+
+    def "git commit command"() {
+        expect:
+        getCommitCommand("joe", "doe", ["desc"], "by shipkit") ==
+            ["git", "commit", "--author", "joe <doe>", "-m", "desc by shipkit"]
     }
 }
