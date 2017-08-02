@@ -211,23 +211,10 @@ public class ShipkitConfiguration {
          * if this value is not specified.
          */
         public String getWriteAuthToken() {
-            String key = "gitHub.writeAuthToken";
-            String value = (String) configuration.get(key);
-
-            if(value != null){
-                return value;
-            }
-
-            String envVar = envVariables.getenv("GH_WRITE_TOKEN");
-            if(envVar != null){
-                return envVar;
-            }
-            LOG.info("  BEWARE! Shipkit.gitHub.writeAuthToken is unspecified.\n" +
-                "  It may cause GitHub operations, that require write access, to fail.\n" +
-                "  It is highly recommended to keep write token secure and store env variable GH_WRITE_TOKEN with your CI configuration.\n" +
-                "  Alternatively, you can configure the write token explicitly:\n" +
-                "    shipkit.gitHub.writeAuthToken = 'secret'");
-            return null;
+            return (String) getValue("gitHub.writeAuthToken", "GH_WRITE_TOKEN", "Please export 'GH_WRITE_TOKEN' variable first!\n" +
+                "It is highly recommended to keep write token secure and store env variable 'GH_WRITE_TOKEN' with your CI configuration." +
+                "Alternatively, you can configure GitHub write auth token explicitly (don't check this in to Git!):\n" +
+                "  shipkit.gitHub.writeAuthToken = 'secret'");
         }
 
         public void setWriteAuthToken(String writeAuthToken) {
@@ -433,10 +420,27 @@ public class ShipkitConfiguration {
     }
 
     private Object getValue(String key, String message) {
+        return getValue(key, null, message);
+    }
+
+    private Object getValue(String key, String envVarName, String message) {
         Object value = configuration.get(key);
-        if (value != null || lenient) {
+
+        if (value != null) {
             return value;
         }
+
+        if (envVarName != null) {
+            value = envVariables.getNonEmptyEnv(envVarName);
+            if (value != null) {
+                return value;
+            }
+        }
+
+        if (lenient) {
+            return null;
+        }
+
         throw new GradleException(message);
     }
 

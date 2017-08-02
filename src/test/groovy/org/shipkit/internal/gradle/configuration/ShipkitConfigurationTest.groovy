@@ -43,7 +43,7 @@ class ShipkitConfigurationTest extends Specification {
     def "should use env variable for writeAuthToken when it's not set explicitly"() {
         given:
         def envVariables = Mock(EnvVariables)
-        envVariables.getenv("GH_WRITE_TOKEN") >> "writeToken"
+        envVariables.getNonEmptyEnv("GH_WRITE_TOKEN") >> "writeToken"
         conf = new ShipkitConfiguration(envVariables)
 
         expect:
@@ -53,7 +53,7 @@ class ShipkitConfigurationTest extends Specification {
     def "should override env variable for writeAuthToken"() {
         given:
         def envVariables = Mock(EnvVariables)
-        envVariables.getenv("GH_WRITE_TOKEN") >> "writeToken"
+        envVariables.getNonEmptyEnv("GH_WRITE_TOKEN") >> "writeToken"
         conf = new ShipkitConfiguration(envVariables)
         conf.gitHub.writeAuthToken = "overriddenWriteToken"
 

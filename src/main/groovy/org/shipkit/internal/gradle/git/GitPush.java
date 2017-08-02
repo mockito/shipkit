@@ -39,7 +39,7 @@ public class GitPush {
     public static void setPushUrl(GitPushTask pushTask, ShipkitConfiguration conf) {
         String ghUser = conf.getGitHub().getWriteAuthUser();
         String ghRepo = conf.getGitHub().getRepository();
-        String writeToken = conf.getGitHub().getWriteAuthToken();
+        String writeToken = conf.getLenient().getGitHub().getWriteAuthToken();
         setPushUrl(pushTask, writeToken, ghUser, ghRepo);
     }
 
@@ -49,7 +49,7 @@ public class GitPush {
             pushTask.setUrl(url);
             pushTask.setSecretValue(writeToken);
         } else {
-            LOG.lifecycle("  'git push' does not use GitHub write token because it was not specified.");
+            LOG.lifecycle("  'git push' does not use GitHub auth token because it was not specified.");
             String url = MessageFormat.format("https://github.com/{0}.git", ghRepo);
             pushTask.setUrl(url);
         }
