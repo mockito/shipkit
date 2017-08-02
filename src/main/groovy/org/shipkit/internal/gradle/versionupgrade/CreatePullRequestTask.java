@@ -1,6 +1,7 @@
 package org.shipkit.internal.gradle.versionupgrade;
 
 import org.gradle.api.DefaultTask;
+import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 
@@ -12,10 +13,11 @@ import java.io.IOException;
  */
 public class CreatePullRequestTask extends DefaultTask{
 
-    private String repositoryUrl;
-    private String gitHubApiUrl;
-    private String authToken;
-    private String headBranch;
+    @Input private String repositoryUrl;
+    @Input private String gitHubApiUrl;
+    @Input private String authToken;
+    @Input private String headBranch;
+
     private boolean dryRun;
     private VersionUpgradeConsumerExtension versionUpgrade;
 
