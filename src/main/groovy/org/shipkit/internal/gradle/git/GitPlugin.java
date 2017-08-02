@@ -44,7 +44,6 @@ public class GitPlugin implements Plugin<Project> {
     static final String GIT_TAG_TASK = "gitTag";
     public static final String GIT_PUSH_TASK = "gitPush";
     public static final String PERFORM_GIT_PUSH_TASK = "performGitPush";
-    static final String WRITE_TOKEN_ENV = "GH_WRITE_TOKEN";
     public static final String GIT_COMMIT_TASK = "gitCommit";
 
     public void apply(final Project project) {
