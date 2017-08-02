@@ -4,6 +4,7 @@ import org.apache.commons.lang.RandomStringUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.Task
 import org.gradle.testfixtures.ProjectBuilder
+import org.shipkit.gradle.git.GitCommitTask
 import spock.lang.Specification
 
 import static java.io.File.separator

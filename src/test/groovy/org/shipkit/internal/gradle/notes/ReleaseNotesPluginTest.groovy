@@ -1,6 +1,6 @@
 package org.shipkit.internal.gradle.notes
 
-import org.shipkit.internal.gradle.git.GitCommitTask
+import org.shipkit.gradle.git.GitCommitTask
 import org.shipkit.internal.gradle.git.GitPlugin
 import testutil.PluginSpecification
 

@@ -6,6 +6,7 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.Exec;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
+import org.shipkit.gradle.git.GitCommitTask;
 import org.shipkit.gradle.git.GitPushTask;
 import org.shipkit.gradle.git.IdentifyGitBranchTask;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
