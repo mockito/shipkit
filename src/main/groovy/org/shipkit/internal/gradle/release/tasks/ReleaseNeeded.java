@@ -21,7 +21,7 @@ public class ReleaseNeeded {
     }
 
     public boolean releaseNeeded(ReleaseNeededTask task, EnvVariables envVariables) {
-        boolean skipEnvVariable = envVariables.getenv(SKIP_RELEASE_ENV) != null;
+        boolean skipEnvVariable = envVariables.getNonEmptyEnv(SKIP_RELEASE_ENV) != null;
         LOG.lifecycle("  Environment variable {} present: {}", SKIP_RELEASE_ENV, skipEnvVariable);
 
         boolean commitMessageEmpty = task.getCommitMessage() == null || task.getCommitMessage().trim().isEmpty();
