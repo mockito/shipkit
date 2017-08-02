@@ -3,7 +3,6 @@ package org.shipkit.internal.gradle.configuration
 import org.gradle.api.GradleException
 import org.shipkit.gradle.configuration.ShipkitConfiguration
 import org.shipkit.internal.gradle.util.team.TeamParser
-import org.shipkit.internal.util.EnvVariables
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -38,27 +37,6 @@ class ShipkitConfigurationTest extends Specification {
 
         when: conf.team.contributors = ["ala:"]
         then: thrown(TeamParser.InvalidInput.class)
-    }
-
-    def "should use env variable for writeAuthToken when it's not set explicitly"() {
-        given:
-        def envVariables = Mock(EnvVariables)
-        envVariables.getNonEmptyEnv("GH_WRITE_TOKEN") >> "writeToken"
-        conf = new ShipkitConfiguration(envVariables)
-
-        expect:
-        conf.gitHub.writeAuthToken == "writeToken"
-    }
-
-    def "should override env variable for writeAuthToken"() {
-        given:
-        def envVariables = Mock(EnvVariables)
-        envVariables.getNonEmptyEnv("GH_WRITE_TOKEN") >> "writeToken"
-        conf = new ShipkitConfiguration(envVariables)
-        conf.gitHub.writeAuthToken = "overriddenWriteToken"
-
-        expect:
-        conf.gitHub.writeAuthToken == "overriddenWriteToken"
     }
 
     @Unroll
