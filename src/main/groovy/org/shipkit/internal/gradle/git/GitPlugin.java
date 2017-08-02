@@ -13,10 +13,8 @@ import org.shipkit.internal.gradle.util.GitUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
 import static org.shipkit.internal.gradle.util.GitUtil.getTag;
 
 /**
@@ -52,16 +50,9 @@ public class GitPlugin implements Plugin<Project> {
         TaskMaker.task(project, GIT_COMMIT_TASK, GitCommitTask.class, new Action<GitCommitTask>() {
             public void execute(final GitCommitTask t) {
                 t.setDescription("Commits all changed files using generic --author and aggregated commit message");
-                //TODO WW create unit tests
-                //doFirst used so that commit operation can reflect changes added by other plugins configurations
-                //see GitCommitTask#addChange
-                t.doFirst(new Action<Task>() {
-                    @Override
-                    public void execute(Task task) {
-                        t.getExecCommands().add(execCommand("Adding files to git", getAddCommand(t.getFiles())));
-                        t.getExecCommands().add(execCommand("Performing git commit", getCommitCommand(conf, t.getAggregatedCommitMessage())));
-                    }
-                });
+                t.setGitUserName(conf.getGit().getUser());
+                t.setGitUserEmail(conf.getGit().getEmail());
+                t.setCommitMessagePostfix(conf.getGit().getCommitMessagePostfix());
             }
         });
 
@@ -70,7 +61,7 @@ public class GitPlugin implements Plugin<Project> {
                 t.mustRunAfter(GIT_COMMIT_TASK);
                 final String tag = GitUtil.getTag(conf, project);
                 t.setDescription("Creates new version tag '" + tag + "'");
-                t.commandLine("git", "tag", "-a", tag, "-m", GitUtil.getCommitMessage(conf, "Created new tag " + tag));
+                t.commandLine("git", "tag", "-a", tag, "-m", GitUtil.getCommitMessage("Created new tag " + tag, conf.getGit().getCommitMessagePostfix()));
             }
         });
 
@@ -132,25 +123,6 @@ public class GitPlugin implements Plugin<Project> {
                 t.mustRunAfter(performPush);
             }
         });
-    }
-
-    private List<String> getAddCommand(List<String> files) {
-        List<String> args = new ArrayList<String>();
-        args.add("git");
-        args.add("add");
-        args.addAll(files);
-        return args;
-    }
-
-    private List<String> getCommitCommand(ShipkitConfiguration conf, String aggregatedCommitMsg) {
-        List<String> args = new ArrayList<String>();
-        args.add("git");
-        args.add("commit");
-        args.add("--author");
-        args.add(GitUtil.getGitGenericUserNotation(conf));
-        args.add("-m");
-        args.add(GitUtil.getCommitMessage(conf, aggregatedCommitMsg));
-        return args;
     }
 
     public static void registerChangesForCommitIfApplied(final List<File> changedFiles,
