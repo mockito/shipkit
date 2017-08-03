@@ -4,8 +4,8 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.shipkit.gradle.ReleaseConfiguration;
-import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
+import org.shipkit.gradle.configuration.ShipkitConfiguration;
+import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.notes.vcs.IdentifyGitOriginRepoTask;
 import org.shipkit.internal.util.ResultHandler;
@@ -86,7 +86,7 @@ public class GitRemoteOriginPlugin implements Plugin<Project> {
         if(originTask.getExecutionException() != null){
             resultHandler.onFailure(originTask.getExecutionException());
         } else {
-            ReleaseConfiguration conf = originTask.getProject().getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
+            ShipkitConfiguration conf = originTask.getProject().getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
             String originUrl = GitAuthPlugin.getGitHubUrl(
                 conf.getGitHub().getWriteAuthUser(),
                 originTask.getOriginRepo(),

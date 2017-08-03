@@ -8,8 +8,9 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 /**
- * Generic Gradle task that allows composing multiple executable command line invocations.
- * Very useful for scenarios where we cannot easily use multiple Gradle Exec tasks.
+ * Generic Gradle task that has few advantages over Gradle's stock Exec task.
+ * It allows composing multiple executable command line invocations.
+ * It also adds nice prefix in all logging so that it's more visible that the output comes from external process.
  */
 public class ShipkitExecTask extends DefaultTask {
 

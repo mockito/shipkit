@@ -4,13 +4,17 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.shipkit.gradle.ReleaseConfiguration;
-import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
+import org.shipkit.gradle.configuration.ShipkitConfiguration;
+import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 
 import java.text.MessageFormat;
 
 /**
  * Configures extension GitAuth that contains GitHub authentication info.
+ * Applies plugins:
+ * <ul>
+ *     <li>{@link ShipkitConfigurationPlugin}</li>
+ * </ul>
  */
 public class GitAuthPlugin implements Plugin<Project> {
 
@@ -20,7 +24,7 @@ public class GitAuthPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
-        ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
+        ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
         String ghUser = conf.getGitHub().getWriteAuthUser();
         String writeToken = conf.getGitHub().getWriteAuthToken();
 
@@ -58,7 +62,7 @@ public class GitAuthPlugin implements Plugin<Project> {
 
         /**
          * Secret value to replace in {@link #configRepositoryUrl}.
-         * It may be null if {@link ReleaseConfiguration.GitHub#getWriteAuthToken()} is not specified.
+         * It may be null if {@link ShipkitConfiguration.GitHub#getWriteAuthToken()} is not specified.
          */
         public String getSecretValue() {
             return secretValue;
@@ -66,7 +70,7 @@ public class GitAuthPlugin implements Plugin<Project> {
 
         /**
          * URL of the GitHub repository, along with authentication data if it was specified.
-         * Repository is based on {@link ReleaseConfiguration.GitHub#getRepository()}
+         * Repository is based on {@link ShipkitConfiguration.GitHub#getRepository()}
          * It can be in one of the following formats:
          * - https://github.com/{repo}.git
          * - https://{ghUser}:{ghWriteToken}@github.com/{repo}.git

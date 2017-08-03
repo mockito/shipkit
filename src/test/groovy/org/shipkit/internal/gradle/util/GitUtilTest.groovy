@@ -1,12 +1,12 @@
 package org.shipkit.internal.gradle.util
 
 import org.gradle.testfixtures.ProjectBuilder
-import org.shipkit.gradle.ReleaseConfiguration
+import org.shipkit.gradle.configuration.ShipkitConfiguration
 import spock.lang.Specification
 
 class GitUtilTest extends Specification {
 
-    def conf = new ReleaseConfiguration()
+    def conf = new ShipkitConfiguration()
 
     def "tag" () {
         def project = new ProjectBuilder().build()

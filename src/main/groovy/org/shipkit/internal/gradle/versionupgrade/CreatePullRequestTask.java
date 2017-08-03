@@ -2,7 +2,7 @@ package org.shipkit.internal.gradle.versionupgrade;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.gradle.ReleaseConfiguration;
+import org.shipkit.gradle.configuration.ShipkitConfiguration;
 
 import java.io.IOException;
 
@@ -25,42 +25,42 @@ public class CreatePullRequestTask extends DefaultTask{
     }
 
     /**
-     * See {@link org.shipkit.gradle.ReleaseConfiguration.GitHub#getRepository()}
+     * See {@link ShipkitConfiguration.GitHub#getRepository()}
      */
     public String getRepositoryName() {
         return repositoryName;
     }
 
     /**
-     * See {@link org.shipkit.gradle.ReleaseConfiguration.GitHub#getRepository()}
+     * See {@link ShipkitConfiguration.GitHub#getRepository()}
      */
     public void setRepositoryName(String repositoryName) {
         this.repositoryName = repositoryName;
     }
 
     /**
-     * See {@link org.shipkit.gradle.ReleaseConfiguration.GitHub#getApiUrl()}
+     * See {@link ShipkitConfiguration.GitHub#getApiUrl()}
      */
     public String getGitHubApiUrl() {
         return gitHubApiUrl;
     }
 
     /**
-     * See {@link org.shipkit.gradle.ReleaseConfiguration.GitHub#getApiUrl()}
+     * See {@link ShipkitConfiguration.GitHub#getApiUrl()}
      */
     public void setGitHubApiUrl(String gitHubApiUrl) {
         this.gitHubApiUrl = gitHubApiUrl;
     }
 
     /**
-     * See {@link org.shipkit.gradle.ReleaseConfiguration.GitHub#getWriteAuthToken()}
+     * See {@link ShipkitConfiguration.GitHub#getWriteAuthToken()}
      */
     public String getAuthToken() {
         return authToken;
     }
 
     /**
-     * See {@link org.shipkit.gradle.ReleaseConfiguration.GitHub#getWriteAuthToken()}
+     * See {@link ShipkitConfiguration.GitHub#getWriteAuthToken()}
      */
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
@@ -89,14 +89,14 @@ public class CreatePullRequestTask extends DefaultTask{
     }
 
     /**
-     * See {@link ReleaseConfiguration.GitHub#dryRun}
+     * See {@link ShipkitConfiguration.GitHub#dryRun}
      */
     public void setDryRun(boolean dryRun) {
         this.dryRun = dryRun;
     }
 
     /**
-     * See {@link ReleaseConfiguration.GitHub#dryRun}
+     * See {@link ShipkitConfiguration.GitHub#dryRun}
      */
     public boolean isDryRun() {
         return dryRun;

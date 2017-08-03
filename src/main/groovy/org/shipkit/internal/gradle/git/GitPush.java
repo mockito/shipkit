@@ -1,12 +1,8 @@
 package org.shipkit.internal.gradle.git;
 
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
-import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.git.GitPushTask;
 import org.shipkit.internal.exec.DefaultProcessRunner;
 
-import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
 

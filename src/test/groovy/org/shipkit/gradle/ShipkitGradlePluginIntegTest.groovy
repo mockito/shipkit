@@ -24,7 +24,7 @@ class ShipkitGradlePluginIntegTest extends GradleSpecification {
         expect:
         def result = pass("performRelease", "-m", "-s")
         result.tasks.join("\n") == """:bumpVersionFile=SKIPPED
-:fetchAllContributors=SKIPPED
+:fetchContributors=SKIPPED
 :fetchReleaseNotes=SKIPPED
 :updateReleaseNotes=SKIPPED
 :gitCommit=SKIPPED

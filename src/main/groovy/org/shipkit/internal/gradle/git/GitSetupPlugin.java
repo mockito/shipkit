@@ -7,8 +7,8 @@ import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Exec;
-import org.shipkit.gradle.ReleaseConfiguration;
-import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
+import org.shipkit.gradle.configuration.ShipkitConfiguration;
+import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
@@ -28,11 +28,11 @@ import org.shipkit.internal.gradle.util.TaskMaker;
  *         Therefore we need to checkout real branch like "master"</li>
  *     <li>
  *         'setGitUserName' - sets generic user name so that CI server can commit code as neatly described robot,
- *         uses value from {@link org.shipkit.gradle.ReleaseConfiguration.Git#getUser()}
+ *         uses value from {@link ShipkitConfiguration.Git#getUser()}
  *     </li>
  *     <li>
  *         'setGitUserEmail' - sets generic user email so that CI server can commit code as neatly described robot,
- *         uses value from {@link org.shipkit.gradle.ReleaseConfiguration.Git#getEmail()}
+ *         uses value from {@link ShipkitConfiguration.Git#getEmail()}
  *     </li>
  *     <li>
  *         'ciReleasePrepare' - prepares for release from CI,
@@ -52,7 +52,7 @@ public class GitSetupPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
-        final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
+        final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
         TaskMaker.execTask(project, UNSHALLOW_TASK, new Action<Exec>() {
             public void execute(final Exec t) {

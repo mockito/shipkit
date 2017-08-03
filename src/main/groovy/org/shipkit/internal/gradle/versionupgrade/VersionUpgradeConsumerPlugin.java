@@ -7,11 +7,11 @@ import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Exec;
-import org.shipkit.gradle.ReleaseConfiguration;
+import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.gradle.git.GitPushTask;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
-import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitAuthPlugin;
+import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitCheckOutTask;
 import org.shipkit.internal.gradle.git.GitPullTask;
 import org.shipkit.internal.gradle.git.GitRemoteOriginPlugin;
@@ -23,7 +23,7 @@ import org.shipkit.internal.util.RethrowingResultHandler;
  * The plugin applies following plugins:
  *
  * <ul>
- *     <li>{@link ReleaseConfigurationPlugin}</li>
+ *     <li>{@link ShipkitConfigurationPlugin}</li>
  *     <li>{@link GitAuthPlugin}</li>
  * </ul>
  *
@@ -78,9 +78,9 @@ public class VersionUpgradeConsumerPlugin implements Plugin<Project> {
     @Override
     public void apply(final Project project) {
         LOG.lifecycle("Applying VersionUpgradeConsumerPlugin, beware that it's is INCUBATING state, so its API may change!");
-        final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
         final GitRemoteOriginPlugin gitOriginPlugin = project.getPlugins().apply(GitRemoteOriginPlugin.class);
         final GitAuthPlugin.GitAuth gitAuth = project.getPlugins().apply(GitAuthPlugin.class).getGitAuth();
+        final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
         versionUpgrade = project.getExtensions().create("versionUpgrade", VersionUpgradeConsumerExtension.class);
 

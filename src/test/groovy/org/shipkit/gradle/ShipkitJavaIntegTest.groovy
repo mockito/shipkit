@@ -54,7 +54,7 @@ class ShipkitJavaIntegTest extends GradleSpecification {
         def result = pass("performRelease", "-m", "-s")
         //git push and bintray upload tasks should run as late as possible
         result.tasks.join("\n") == """:bumpVersionFile=SKIPPED
-:fetchAllContributors=SKIPPED
+:fetchContributors=SKIPPED
 :fetchReleaseNotes=SKIPPED
 :updateReleaseNotes=SKIPPED
 :gitCommit=SKIPPED
