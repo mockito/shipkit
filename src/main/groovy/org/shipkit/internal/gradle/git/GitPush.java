@@ -15,8 +15,6 @@ import java.util.List;
  */
 public class GitPush {
 
-    private final static Logger LOG = Logging.getLogger(GitPush.class);
-
     /**
      * Constructs git push arguments based of the url, targets and dry run
      */

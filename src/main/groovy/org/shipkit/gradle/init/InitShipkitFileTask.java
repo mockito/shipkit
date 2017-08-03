@@ -13,6 +13,7 @@ import java.io.File;
  */
 public class InitShipkitFileTask extends DefaultTask {
 
+    private String originRepoName;
     private File shipkitFile;
 
     public File getShipkitFile() {
@@ -21,6 +22,14 @@ public class InitShipkitFileTask extends DefaultTask {
 
     public void setShipkitFile(File shipkitFile) {
         this.shipkitFile = shipkitFile;
+    }
+
+    public String getOriginRepoName() {
+        return originRepoName;
+    }
+
+    public void setOriginRepoName(String originRepoName) {
+        this.originRepoName = originRepoName;
     }
 
     @TaskAction

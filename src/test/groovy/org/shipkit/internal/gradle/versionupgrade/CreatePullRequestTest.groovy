@@ -13,7 +13,7 @@ class CreatePullRequestTest extends Specification {
         def versionUpgrade = new VersionUpgradeConsumerExtension(
             baseBranch: "master", dependencyName: "shipkit", newVersion: "0.1.5")
         createPullRequestTask.setHeadBranch("shipkit-version-upgraded-0.1.5")
-        createPullRequestTask.setRepositoryUrl("mockito/shipkit-example")
+        createPullRequestTask.setRepositoryName("mockito/shipkit-example")
         createPullRequestTask.setVersionUpgrade(versionUpgrade)
         def gitHubApi = Mock(GitHubApi)
 

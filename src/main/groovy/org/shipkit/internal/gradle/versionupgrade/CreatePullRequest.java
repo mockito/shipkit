@@ -21,7 +21,7 @@ class CreatePullRequest {
         }
 
         LOG.lifecycle("  Creating a pull request of title '{}' in repository '{}' between base = '{}' and head = '{}'.",
-            getTitle(task), task.getRepositoryUrl(), task.getVersionUpgrade().getBaseBranch(), task.getHeadBranch());
+            getTitle(task), task.getRepositoryName(), task.getVersionUpgrade().getBaseBranch(), task.getHeadBranch());
 
         String body = "{" +
             "  \"title\": \"" + getTitle(task) + "\"," +
@@ -32,7 +32,7 @@ class CreatePullRequest {
 
         System.out.println(body);
 
-        gitHubApi.post("/repos/" + task.getRepositoryUrl() + "/pulls", body);
+        gitHubApi.post("/repos/" + task.getRepositoryName() + "/pulls", body);
     }
 
     private String getMessage(CreatePullRequestTask task){

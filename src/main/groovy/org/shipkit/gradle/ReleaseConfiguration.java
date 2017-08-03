@@ -218,11 +218,12 @@ public class ReleaseConfiguration {
             if(envVar != null){
                 return envVar;
             }
-            throw new GradleException("Please export 'GH_WRITE_TOKEN' env variable first!\n" +
-                    "  The value of that variable is automatically used by Shipkit.\n" +
-                    "  It is highly recommended to keep write token secure and store env variable with your CI configuration.\n" +
-                    "  Alternatively, you can configure the write token explicitly:\n" +
-                    "    shipkit.gitHub.writeAuthToken = 'secret'");
+            return null;
+//            throw new GradleException("Please export 'GH_WRITE_TOKEN' env variable first!\n" +
+//                    "  The value of that variable is automatically used by Shipkit.\n" +
+//                    "  It is highly recommended to keep write token secure and store env variable with your CI configuration.\n" +
+//                    "  Alternatively, you can configure the write token explicitly:\n" +
+//                    "    shipkit.gitHub.writeAuthToken = 'secret'");
         }
 
         public void setWriteAuthToken(String writeAuthToken) {
