@@ -1,13 +1,14 @@
 package org.shipkit.internal.gradle.contributors.github;
 
+import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.shipkit.gradle.ReleaseConfiguration;
-import org.shipkit.gradle.notes.FetchContributorsTask;
+import org.shipkit.gradle.notes.GithubContributorsTask;
 import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
-import org.shipkit.internal.gradle.contributors.ContributorsPlugin;
-import org.shipkit.internal.notes.contributors.ContributorsProvider;
-import org.shipkit.internal.notes.contributors.github.Contributors;
+import org.shipkit.internal.gradle.util.TaskMaker;
+
+import static org.shipkit.internal.gradle.util.BuildConventions.contributorsFile;
 
 /**
  * Adds and configures tasks for getting contributor information from GitHub.
@@ -16,27 +17,36 @@ import org.shipkit.internal.notes.contributors.github.Contributors;
  * Applies following plugins:
  * <ul>
  *     <li>{@link ReleaseConfigurationPlugin}</li>
- *     <li>{@link ContributorsPlugin}</li>
+ * </ul>
+ *
+ * Adds tasks:
+ * <ul>
+ *     <li>fetchAllContributors - {@link GithubContributorsTask}</li>
  * </ul>
  */
 public class GithubContributorsPlugin implements Plugin<Project> {
 
+    public final static String FETCH_ALL_CONTRIBUTORS_TASK = "fetchAllContributors";
+
     public void apply(final Project project) {
         final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
-        project.getPlugins().apply(ContributorsPlugin.class);
 
-        final FetchContributorsTask task = (FetchContributorsTask) project.getTasks().getByName(ContributorsPlugin.FETCH_ALL_CONTRIBUTORS_TASK);
+        final GithubContributorsTask task = TaskMaker.task(project, FETCH_ALL_CONTRIBUTORS_TASK, GithubContributorsTask.class, new Action<GithubContributorsTask>() {
+            @Override
+            public void execute(final GithubContributorsTask task) {
+                task.setDescription("Fetch info about all project contributors and store it in file");
+                task.setOutputFile(contributorsFile(project));
+                task.setEnabled(conf.getTeam().getContributors().isEmpty());
+
+            }
+        });
         configureGithub(conf, task);
     }
 
-    private void configureGithub(ReleaseConfiguration conf, FetchContributorsTask task) {
+    private void configureGithub(ReleaseConfiguration conf, GithubContributorsTask task) {
         task.setDescription("Fetch info about all project contributors from GitHub and store it in file");
         task.setApiUrl(conf.getGitHub().getApiUrl());
         task.setReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
         task.setRepository(conf.getGitHub().getRepository());
-
-        ContributorsProvider contributorsProvider = Contributors.getGitHubContributorsProvider(
-            task.getApiUrl(), task.getRepository(), task.getReadOnlyAuthToken());
-        task.setContributorsProvider(contributorsProvider);
     }
 }

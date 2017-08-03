@@ -3,12 +3,11 @@ package org.shipkit.internal.gradle.notes;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
-import org.shipkit.gradle.notes.FetchContributorsTask;
 import org.shipkit.gradle.notes.FetchReleaseNotesTask;
 import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
-import org.shipkit.internal.gradle.contributors.ContributorsPlugin;
 import org.shipkit.internal.gradle.contributors.github.GithubContributorsPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
@@ -26,7 +25,6 @@ import static java.util.Collections.singletonList;
  * <ul>
  * <li>{@link ShipkitConfigurationPlugin}</li>
  * <li>{@link VersioningPlugin}</li>
- * <li>{@link ContributorsPlugin}</li>
  * </ul>
  * <p>
  * The plugin adds following tasks:
@@ -65,7 +63,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
             }
         });
 
-        final FetchContributorsTask contributorsFetcher = (FetchContributorsTask) project.getTasks().getByName(ContributorsPlugin.FETCH_ALL_CONTRIBUTORS_TASK);
+        final Task contributorsFetcher = project.getTasks().getByName(GithubContributorsPlugin.FETCH_ALL_CONTRIBUTORS_TASK);
 
         TaskMaker.task(project, UPDATE_NOTES_TASK, UpdateReleaseNotesTask.class, new Action<UpdateReleaseNotesTask>() {
             public void execute(final UpdateReleaseNotesTask t) {
@@ -90,7 +88,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
                                                final FetchReleaseNotesTask releaseNotesFetcher,
                                                final Project project,
                                                final ShipkitConfiguration conf,
-                                               final FetchContributorsTask contributorsFetcher) {
+                                               final Task contributorsFetcher) {
         task.dependsOn(releaseNotesFetcher);
         task.dependsOn(contributorsFetcher);
 
@@ -106,6 +104,6 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         task.setPreviousVersion(project.getExtensions().getByType(VersionInfo.class).getPreviousVersion());
 
         task.setReleaseNotesData(releaseNotesFetcher.getOutputFile());
-        task.setContributorsDataFile(contributorsFetcher.getOutputFile());
+        task.setContributorsDataFile(contributorsFetcher.getOutputs().getFiles().getSingleFile());
     }
 }

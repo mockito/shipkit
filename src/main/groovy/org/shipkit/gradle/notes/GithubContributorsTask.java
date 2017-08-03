@@ -7,6 +7,7 @@ import org.gradle.api.tasks.TaskAction;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.gradle.notes.tasks.FetchContributors;
 import org.shipkit.internal.notes.contributors.ContributorsProvider;
+import org.shipkit.internal.notes.contributors.github.Contributors;
 
 import java.io.File;
 
@@ -19,21 +20,16 @@ import java.io.File;
  * https://developer.github.com/v3/repos/commits/
  * This way, we can also fetch the most recent contributors, necessary for correct release notes information.
  */
-public class FetchContributorsTask extends DefaultTask {
+public class GithubContributorsTask extends DefaultTask {
 
     @Input private String apiUrl;
     @Input private String repository;
     @Input private String readOnlyAuthToken;
     @OutputFile private File outputFile;
 
-    private ContributorsProvider contributorsProvider;
-
-    public void setContributorsProvider(ContributorsProvider contributorsProvider) {
-        this.contributorsProvider = contributorsProvider;
-    }
-
     @TaskAction
     public void fetchContributors() {
+        ContributorsProvider contributorsProvider = Contributors.getGitHubContributorsProvider(getApiUrl(), getRepository(), getReadOnlyAuthToken());
         new FetchContributors().fetchContributors(contributorsProvider, this);
     }
 
