@@ -3,9 +3,9 @@ package org.shipkit.internal.gradle.contributors.github;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.shipkit.gradle.ReleaseConfiguration;
+import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.gradle.notes.GithubContributorsTask;
-import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
+import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
 import static org.shipkit.internal.gradle.util.BuildConventions.contributorsFile;
@@ -16,7 +16,7 @@ import static org.shipkit.internal.gradle.util.BuildConventions.contributorsFile
  * <p>
  * Applies following plugins:
  * <ul>
- *     <li>{@link ReleaseConfigurationPlugin}</li>
+ *     <li>{@link ShipkitConfigurationPlugin}</li>
  * </ul>
  *
  * Adds tasks:
@@ -26,10 +26,10 @@ import static org.shipkit.internal.gradle.util.BuildConventions.contributorsFile
  */
 public class GithubContributorsPlugin implements Plugin<Project> {
 
-    public final static String FETCH_ALL_CONTRIBUTORS_TASK = "fetchAllContributors";
+    public final static String FETCH_ALL_CONTRIBUTORS_TASK = "fetchContributors";
 
     public void apply(final Project project) {
-        final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
+        final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
         final GithubContributorsTask task = TaskMaker.task(project, FETCH_ALL_CONTRIBUTORS_TASK, GithubContributorsTask.class, new Action<GithubContributorsTask>() {
             @Override
@@ -43,7 +43,7 @@ public class GithubContributorsPlugin implements Plugin<Project> {
         configureGithub(conf, task);
     }
 
-    private void configureGithub(ReleaseConfiguration conf, GithubContributorsTask task) {
+    private void configureGithub(ShipkitConfiguration conf, GithubContributorsTask task) {
         task.setDescription("Fetch info about all project contributors from GitHub and store it in file");
         task.setApiUrl(conf.getGitHub().getApiUrl());
         task.setReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());

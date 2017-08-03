@@ -1,9 +1,12 @@
-package org.shipkit.internal.notes.contributors;
+package org.shipkit.internal.notes.contributors.github;
 
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.json.simple.DeserializationException;
 import org.json.simple.JsonObject;
+import org.shipkit.internal.notes.contributors.ConcurrentDispatcher;
+import org.shipkit.internal.notes.contributors.DefaultProjectContributorsSet;
+import org.shipkit.internal.notes.contributors.ProjectContributorsSet;
 import org.shipkit.internal.notes.model.ProjectContributor;
 import org.shipkit.internal.notes.util.Function;
 import org.shipkit.internal.notes.util.GitHubListFetcher;
@@ -17,9 +20,9 @@ import java.util.Set;
  * Gets all contributors from the repository
  * https://developer.github.com/v3/repos/#list-contributors
  */
-class ContributorsFetcher {
+class GithubContributorsFetcher {
 
-    private static final Logger LOG = Logging.getLogger(ContributorsFetcher.class);
+    private static final Logger LOG = Logging.getLogger(GithubContributorsFetcher.class);
 
     ProjectContributorsSet fetchContributorsForProject(String apiUrl, String repository, String readOnlyAuthToken) {
         LOG.lifecycle("  Querying GitHub API for all contributors for project");

@@ -3,9 +3,8 @@ package org.shipkit.internal.gradle.notes.tasks;
 import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
+import org.shipkit.internal.notes.contributors.ContributorsProvider;
 import org.shipkit.internal.notes.contributors.ProjectContributorsSerializer;
-import org.shipkit.internal.notes.contributors.github.Contributors;
-import org.shipkit.internal.notes.contributors.github.GitHubContributorsProvider;
 import org.shipkit.internal.notes.contributors.ProjectContributorsSet;
 import org.shipkit.internal.notes.util.IOUtil;
 

@@ -3,6 +3,7 @@ package org.shipkit.internal.gradle.java;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.shipkit.internal.gradle.GithubPlugin;
 import org.shipkit.internal.gradle.bintray.BintrayReleasePlugin;
 import org.shipkit.internal.gradle.release.TravisPlugin;
 

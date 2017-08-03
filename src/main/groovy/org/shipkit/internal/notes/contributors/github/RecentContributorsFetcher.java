@@ -18,7 +18,7 @@ import static org.shipkit.internal.util.DateUtil.yesterday;
  * Fetches recent contributors from GitHub using the "commit" end point.
  * Uses https://developer.github.com/v3/repos/commits/
  * We use it because the "contributors" endpoint does not return the most recent contributors as documented
- * (see {@link ContributorsFetcher}).
+ * (see {@link GithubContributorsFetcher}).
  */
 class RecentContributorsFetcher {
 
