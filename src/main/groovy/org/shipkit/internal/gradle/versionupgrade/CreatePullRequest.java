@@ -30,8 +30,6 @@ class CreatePullRequest {
             "  \"base\": \"" + task.getVersionUpgrade().getBaseBranch() + "\"" +
             "}";
 
-        System.out.println(body);
-
         gitHubApi.post("/repos/" + task.getRepositoryName() + "/pulls", body);
     }
 
