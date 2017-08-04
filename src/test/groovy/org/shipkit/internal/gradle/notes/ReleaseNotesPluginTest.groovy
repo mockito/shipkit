@@ -1,6 +1,6 @@
 package org.shipkit.internal.gradle.notes
 
-import org.shipkit.internal.gradle.git.GitCommitTask
+import org.shipkit.gradle.git.GitCommitTask
 import org.shipkit.internal.gradle.git.GitPlugin
 import testutil.PluginSpecification
 
@@ -20,8 +20,8 @@ class ReleaseNotesPluginTest extends PluginSpecification {
 
         then:
         GitCommitTask gitCommitTask = project.tasks.getByName(GitPlugin.GIT_COMMIT_TASK)
-        gitCommitTask.files.contains(project.file("docs/release-notes.md").absolutePath)
-        gitCommitTask.aggregatedCommitMessage.contains("release notes updated")
+        gitCommitTask.filesToCommit.contains(project.file("docs/release-notes.md"))
+        gitCommitTask.descriptions.contains("release notes updated")
     }
 
 }

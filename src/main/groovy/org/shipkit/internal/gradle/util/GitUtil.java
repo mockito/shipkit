@@ -12,8 +12,8 @@ public class GitUtil {
      * Returns Git generic user notation based on settings, for example:
      * "Mockito Release Tools &lt;mockito.release.tools@gmail.com&gt;"
      */
-    public static String getGitGenericUserNotation(ShipkitConfiguration conf) {
-        return conf.getGit().getUser() + " <" + conf.getGit().getEmail() + ">";
+    public static String getGitGenericUserNotation(String gitUserName, String gitUserEmail) {
+        return gitUserName + " <" + gitUserEmail + ">";
     }
 
     /**
@@ -26,11 +26,10 @@ public class GitUtil {
     /**
      * Returns Git commit message based on release configuration and the given message
      */
-    public static String getCommitMessage(ShipkitConfiguration conf, String message) {
-        String postfix = conf.getGit().getCommitMessagePostfix();
-        if (postfix.isEmpty()) {
+    public static String getCommitMessage(String message, String commitMessagePostfix) {
+        if (commitMessagePostfix.isEmpty()) {
             return message;
         }
-        return message + " " + postfix;
+        return message + " " + commitMessagePostfix;
     }
 }

@@ -8,10 +8,6 @@ import org.shipkit.internal.gradle.util.StringUtil;
  */
 public class EnvVariables {
 
-    public String getenv(String name) {
-        return System.getenv(name);
-    }
-
     /**
      * Returns env variable or null if the env variable is empty
      */
