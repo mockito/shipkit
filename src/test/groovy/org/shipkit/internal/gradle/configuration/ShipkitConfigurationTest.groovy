@@ -66,7 +66,10 @@ class ShipkitConfigurationTest extends Specification {
     }
 
     def "offers a way to find out if settings are configured"() {
+        conf.git.user = "foo"
+
         expect:
+        conf.lenient.git.user == "foo"
         conf.lenient.gitHub.repository == null
     }
 }

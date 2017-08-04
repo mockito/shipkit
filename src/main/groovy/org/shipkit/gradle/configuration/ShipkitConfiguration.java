@@ -32,10 +32,6 @@ public class ShipkitConfiguration {
 
     public ShipkitConfiguration() {
         this(new ShipkitConfigurationStore());
-    }
-
-    ShipkitConfiguration(ShipkitConfigurationStore store) {
-        this.store = store;
 
         //Configure default values
         git.setTagPrefix("v"); //so that tags are "v1.0", "v2.3.4"
@@ -56,6 +52,10 @@ public class ShipkitConfiguration {
 
         team.setContributors(Collections.<String>emptyList());
         team.setDevelopers(Collections.<String>emptyList());
+    }
+
+    ShipkitConfiguration(ShipkitConfigurationStore store) {
+        this.store = store;
     }
 
     private boolean dryRun;
