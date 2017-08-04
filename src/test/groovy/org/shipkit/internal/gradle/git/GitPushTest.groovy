@@ -28,10 +28,9 @@ class GitPushTest extends Specification {
 
     def "push url without write token"() {
         GitPushTask task = Mock(GitPushTask)
-        conf.gitHub.repository = "repo"
 
         when:
-        setPushUrl(task, conf)
+        setPushUrl(task, null, "joe", "repo")
 
         then:
         1 * task.setUrl("https://github.com/repo.git")
