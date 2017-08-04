@@ -1,4 +1,4 @@
-package org.shipkit.internal.notes.vcs;
+package org.shipkit.internal.gradle.git.tasks;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;

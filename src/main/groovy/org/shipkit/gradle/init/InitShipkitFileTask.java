@@ -32,10 +32,16 @@ public class InitShipkitFileTask extends DefaultTask {
         this.shipkitFile = shipkitFile;
     }
 
+    /**
+     * Name of the current git origin repo in the format "user/repo", eg. "mockito/shipkit"
+     */
     public String getOriginRepoName() {
         return originRepoName;
     }
 
+    /**
+     * See {@link #getOriginRepoName()}
+     */
     public void setOriginRepoName(String originRepoName) {
         this.originRepoName = originRepoName;
     }

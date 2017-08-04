@@ -1,6 +1,6 @@
 package org.shipkit.internal.gradle.git
 
-import org.shipkit.internal.notes.vcs.IdentifyGitOriginRepoTask
+import org.shipkit.internal.gradle.git.tasks.IdentifyGitOriginRepoTask
 import org.shipkit.internal.util.ResultHandler
 import testutil.PluginSpecification
 

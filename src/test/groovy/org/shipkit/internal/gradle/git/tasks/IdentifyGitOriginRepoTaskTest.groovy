@@ -1,4 +1,4 @@
-package org.shipkit.internal.notes.vcs
+package org.shipkit.internal.gradle.git.tasks
 
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification

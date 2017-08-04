@@ -7,7 +7,7 @@ import org.gradle.api.Task;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
-import org.shipkit.internal.notes.vcs.IdentifyGitOriginRepoTask;
+import org.shipkit.internal.gradle.git.tasks.IdentifyGitOriginRepoTask;
 import org.shipkit.internal.util.ResultHandler;
 
 /**
