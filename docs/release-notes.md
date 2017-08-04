@@ -1,3 +1,5 @@
+**0.9.21 (2017-08-04)** - no code changes (no commits) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.21-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.21)
+
 **0.9.20 (2017-08-04)** - no code changes (no commits) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.20-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.20)
 
 **0.9.19 (2017-08-04)** - [2 commits](https://github.com/mockito/shipkit/compare/v0.9.18...v0.9.19) by [Wojtek Wilk](http://github.com/wwilk) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.19-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.19)
