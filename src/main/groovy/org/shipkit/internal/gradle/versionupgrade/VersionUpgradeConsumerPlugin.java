@@ -10,17 +10,28 @@ import org.gradle.api.tasks.Exec;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.gradle.git.GitPushTask;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
+import org.shipkit.internal.gradle.git.GitAuthPlugin;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitCheckOutTask;
-import org.shipkit.internal.gradle.git.GitPush;
+import org.shipkit.internal.gradle.git.GitPullTask;
+import org.shipkit.internal.gradle.git.GitRemoteOriginPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
+import org.shipkit.internal.util.RethrowingResultHandler;
 
 /**
  * BEWARE! This plugin is in incubating state, so its API may change in the future!
- * The plugin adds following tasks:
+ * The plugin applies following plugins:
+ *
+ * <ul>
+ *     <li>{@link ShipkitConfigurationPlugin}</li>
+ *     <li>{@link GitAuthPlugin}</li>
+ * </ul>
+ *
+ * and adds following tasks:
  *
  * <ul>
  *     <li>checkoutVersionUpgradeBaseBranch - checkouts base branch - the branch to which version upgrade should be applied through pull request</li>
+ *     <li>pullUpstream - syncs the fork on which we perform version upgrade with the upstream repo</li>
  *     <li>checkoutVersionUpgradeVersionBranch - checkouts version branch - a new branch where version will be upgraded</li>
  *     <li>replaceVersion - replaces version in build file, using dependency pattern</li>
  *     <li>commitVersionUpgrade - commits replaced version</li>
@@ -53,6 +64,7 @@ public class VersionUpgradeConsumerPlugin implements Plugin<Project> {
     private static final Logger LOG = Logging.getLogger(VersionUpgradeConsumerPlugin.class);
 
     public static final String CHECKOUT_BASE_BRANCH = "checkoutBaseBranch";
+    public static final String PULL_UPSTREAM = "pullUpstream";
     public static final String CHECKOUT_VERSION_BRANCH = "checkoutVersionBranch";
     public static final String REPLACE_VERSION = "replaceVersion";
     public static final String COMMIT_VERSION_UPGRADE = "commitVersionUpgrade";
@@ -67,6 +79,8 @@ public class VersionUpgradeConsumerPlugin implements Plugin<Project> {
     @Override
     public void apply(final Project project) {
         LOG.lifecycle("  [INCUBATING] VersionUpgradeConsumerPlugin is incubating and its API may change");
+        final GitRemoteOriginPlugin gitOriginPlugin = project.getPlugins().apply(GitRemoteOriginPlugin.class);
+        final GitAuthPlugin.GitAuth gitAuth = project.getPlugins().apply(GitAuthPlugin.class).getGitAuth();
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
         versionUpgrade = project.getExtensions().create("versionUpgrade", VersionUpgradeConsumerExtension.class);
@@ -93,11 +107,34 @@ public class VersionUpgradeConsumerPlugin implements Plugin<Project> {
             }
         });
 
-        TaskMaker.task(project, CHECKOUT_VERSION_BRANCH, GitCheckOutTask.class, new Action<GitCheckOutTask>() {
+        TaskMaker.task(project, PULL_UPSTREAM, GitPullTask.class, new Action<GitPullTask>() {
             @Override
+            public void execute(final GitPullTask task) {
+                task.setDescription("Performs git pull from upstream repository.");
+                task.mustRunAfter(CHECKOUT_BASE_BRANCH);
+                task.setSecretValue(gitAuth.getSecretValue());
+                task.setDryRun(conf.isDryRun());
+
+                DeferredConfiguration.deferredConfiguration(project, new Runnable() {
+                    @Override
+                    public void run() {
+                        task.setRev(versionUpgrade.getBaseBranch());
+                    }
+                });
+
+                gitOriginPlugin.provideOriginTo(task, new RethrowingResultHandler<GitRemoteOriginPlugin.GitOriginAuth>() {
+                    @Override
+                    public void onSuccess(GitRemoteOriginPlugin.GitOriginAuth result) {
+                        task.setUrl(result.getOriginRepositoryUrl());
+                    }
+                });
+            }
+        });
+
+        TaskMaker.task(project, CHECKOUT_VERSION_BRANCH, GitCheckOutTask.class, new Action<GitCheckOutTask>() {
             public void execute(final GitCheckOutTask task) {
                 task.setDescription("Creates a new version branch and checks it out.");
-                task.mustRunAfter(CHECKOUT_BASE_BRANCH);
+                task.mustRunAfter(PULL_UPSTREAM);
                 task.setRev(getVersionBranchName(versionUpgrade));
                 task.setNewBranch(true);
             }
@@ -133,10 +170,17 @@ public class VersionUpgradeConsumerPlugin implements Plugin<Project> {
             public void execute(final GitPushTask task) {
                 task.setDescription("Pushes updated config file to an update branch.");
                 task.mustRunAfter(COMMIT_VERSION_UPGRADE);
-                GitPush.setPushUrl(task, conf);
+                task.setSecretValue(gitAuth.getSecretValue());
 
                 task.setDryRun(conf.isDryRun());
                 task.getTargets().add(getVersionBranchName(versionUpgrade));
+
+                gitOriginPlugin.provideOriginTo(task, new RethrowingResultHandler<GitRemoteOriginPlugin.GitOriginAuth>() {
+                    @Override
+                    public void onSuccess(GitRemoteOriginPlugin.GitOriginAuth result) {
+                        task.setUrl(result.getOriginRepositoryUrl());
+                    }
+                });
             }
         });
 
@@ -146,11 +190,17 @@ public class VersionUpgradeConsumerPlugin implements Plugin<Project> {
                 task.setDescription("Creates a pull request from branch with version upgraded to master");
                 task.mustRunAfter(PUSH_VERSION_UPGRADE);
                 task.setGitHubApiUrl(conf.getGitHub().getApiUrl());
-                task.setRepositoryUrl(conf.getGitHub().getRepository());
                 task.setDryRun(conf.isDryRun());
                 task.setAuthToken(conf.getGitHub().getWriteAuthToken());
                 task.setHeadBranch(getVersionBranchName(versionUpgrade));
                 task.setVersionUpgrade(versionUpgrade);
+
+                gitOriginPlugin.provideOriginTo(task, new RethrowingResultHandler<GitRemoteOriginPlugin.GitOriginAuth>() {
+                    @Override
+                    public void onSuccess(GitRemoteOriginPlugin.GitOriginAuth result) {
+                        task.setRepositoryName(result.getOriginRepositoryName());
+                    }
+                });
             }
         });
 
@@ -159,6 +209,7 @@ public class VersionUpgradeConsumerPlugin implements Plugin<Project> {
             public void execute(Task task) {
                 task.setDescription("Checkouts new version branch, updates Shipkit dependency in config file, commits and pushes.");
                 task.dependsOn(CHECKOUT_BASE_BRANCH);
+                task.dependsOn(PULL_UPSTREAM);
                 task.dependsOn(CHECKOUT_VERSION_BRANCH);
                 task.dependsOn(REPLACE_VERSION);
                 task.dependsOn(COMMIT_VERSION_UPGRADE);

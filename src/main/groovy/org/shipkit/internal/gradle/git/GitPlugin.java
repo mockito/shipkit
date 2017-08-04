@@ -47,6 +47,7 @@ public class GitPlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
+        final GitAuthPlugin.GitAuth gitAuth = project.getPlugins().apply(GitAuthPlugin.class).getGitAuth();
 
         TaskMaker.task(project, GIT_COMMIT_TASK, GitCommitTask.class, new Action<GitCommitTask>() {
             public void execute(final GitCommitTask t) {
@@ -74,8 +75,8 @@ public class GitPlugin implements Plugin<Project> {
                 t.dependsOn(GitBranchPlugin.IDENTIFY_GIT_BRANCH);
                 t.getTargets().add(GitUtil.getTag(conf, project));
                 t.setDryRun(conf.isDryRun());
-
-                GitPush.setPushUrl(t, conf);
+                t.setUrl(gitAuth.getConfigRepositoryUrl());
+                t.setSecretValue(gitAuth.getSecretValue());
 
                 project.getPlugins().apply(GitBranchPlugin.class)
                         .provideBranchTo(t, new Action<String>() {

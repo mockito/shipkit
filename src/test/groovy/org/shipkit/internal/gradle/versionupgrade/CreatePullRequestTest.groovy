@@ -13,7 +13,7 @@ class CreatePullRequestTest extends Specification {
         def versionUpgrade = new VersionUpgradeConsumerExtension(
             baseBranch: "master", dependencyName: "shipkit", newVersion: "0.1.5")
         createPullRequestTask.setHeadBranch("shipkit-version-upgraded-0.1.5")
-        createPullRequestTask.setRepositoryUrl("mockito/shipkit-example")
+        createPullRequestTask.setRepositoryName("mockito/shipkit-example")
         createPullRequestTask.setVersionUpgrade(versionUpgrade)
         def gitHubApi = Mock(GitHubApi)
 
@@ -24,8 +24,8 @@ class CreatePullRequestTest extends Specification {
         1 * gitHubApi.post("/repos/mockito/shipkit-example/pulls",
             '{  "title": "Version of shipkit upgraded to 0.1.5",' +
                 '  "body": "This pull request was automatically created by Shipkit\'s' +
-                            ' "version-upgrade-customer" Gradle plugin (http://shipkit.org).' +
-                            ' Please merge it so that you are using fresh version of "shipkit" dependency.",' +
+                            ' \'version-upgrade-customer\' Gradle plugin (http://shipkit.org).' +
+                            ' Please merge it so that you are using fresh version of \'shipkit\' dependency.",' +
                 '  "head": "shipkit-version-upgraded-0.1.5",' +
                 '  "base": "master"}')
     }

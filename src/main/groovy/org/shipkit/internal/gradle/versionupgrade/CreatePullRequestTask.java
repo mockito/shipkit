@@ -8,12 +8,12 @@ import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import java.io.IOException;
 
 /**
- * Creates a pull request in {@link CreatePullRequestTask#repositoryUrl} between
+ * Creates a pull request in {@link CreatePullRequestTask#repositoryName} between
  * {@link VersionUpgradeConsumerExtension#baseBranch} and {@link CreatePullRequestTask#headBranch}
  */
 public class CreatePullRequestTask extends DefaultTask{
 
-    @Input private String repositoryUrl;
+    @Input private String repositoryName;
     @Input private String gitHubApiUrl;
     @Input private String authToken;
     @Input private String headBranch;
@@ -29,15 +29,15 @@ public class CreatePullRequestTask extends DefaultTask{
     /**
      * See {@link ShipkitConfiguration.GitHub#getRepository()}
      */
-    public String getRepositoryUrl() {
-        return repositoryUrl;
+    public String getRepositoryName() {
+        return repositoryName;
     }
 
     /**
      * See {@link ShipkitConfiguration.GitHub#getRepository()}
      */
-    public void setRepositoryUrl(String repositoryUrl) {
-        this.repositoryUrl = repositoryUrl;
+    public void setRepositoryName(String repositoryName) {
+        this.repositoryName = repositoryName;
     }
 
     /**

@@ -3,6 +3,7 @@ package org.shipkit.internal.gradle.versionupgrade
 import org.gradle.api.tasks.Exec
 import org.shipkit.gradle.git.GitPushTask
 import org.shipkit.internal.gradle.git.GitCheckOutTask
+import org.shipkit.internal.gradle.git.GitPullTask
 import testutil.PluginSpecification
 
 class VersionUpgradeConsumerPluginTest extends PluginSpecification {
@@ -47,11 +48,33 @@ class VersionUpgradeConsumerPluginTest extends PluginSpecification {
         versionUpgrade.baseBranch = "release/2.x"
 
         project.evaluate()
-        def task = project.tasks.checkoutBaseBranch
+        GitCheckOutTask task = project.tasks.checkoutBaseBranch
 
         then:
         task.rev == "release/2.x"
         task.newBranch == false
+    }
+
+    def "should configure pullUpstream"() {
+        given:
+        conf.gitHub.url = "http://github.com"
+        conf.gitHub.repository = "mockito/shipkit"
+        conf.dryRun = true
+        conf.gitHub.writeAuthToken = "writeToken"
+        conf.gitHub.writeAuthUser = "writeUser"
+
+        when:
+        def versionUpgrade = project.plugins.apply(VersionUpgradeConsumerPlugin).versionUpgrade
+        versionUpgrade.baseBranch = "release/2.x"
+
+        project.evaluate()
+        GitPullTask task = project.tasks.pullUpstream
+
+        then:
+        //task.url == "https://writeUser:writeToken@github.com/mockito/shipkit.git"
+        task.rev == "release/2.x"
+        task.secretValue == "writeToken"
+        task.dryRun
     }
 
     def "should configure checkoutVersionBranch"() {
@@ -121,7 +144,6 @@ class VersionUpgradeConsumerPluginTest extends PluginSpecification {
 
         then:
         task.gitHubApiUrl == "http://api.com"
-        task.repositoryUrl == "http://repository.com"
         task.authToken == "writeToken"
         task.versionUpgrade == versionUpgrade
         task.headBranch == "upgrade-shipkit-to-1.2.30"

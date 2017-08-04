@@ -22,6 +22,8 @@ class VersionUpgradeConsumerPluginIntegTest extends GradleSpecification {
         expect:
         def result = pass("performVersionUpgrade", "-Pdependency=org.shipkit:shipkit:0.2.3", "-m", "-s")
         result.tasks.join("\n") == """:checkoutBaseBranch=SKIPPED
+:identifyGitOrigin=SKIPPED
+:pullUpstream=SKIPPED
 :checkoutVersionBranch=SKIPPED
 :replaceVersion=SKIPPED
 :commitVersionUpgrade=SKIPPED

@@ -2,7 +2,6 @@ package org.shipkit.internal.gradle.init.tasks
 
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import org.shipkit.internal.notes.vcs.GitOriginRepoProvider
 import spock.lang.Specification
 
 class InitShipkitFileTest extends Specification {
@@ -15,29 +14,18 @@ class InitShipkitFileTest extends Specification {
         shipkitFile << "foo"
 
         when:
-        InitShipkitFile.initShipkitFile(shipkitFile, tmp.root)
+        InitShipkitFile.initShipkitFile(shipkitFile, tmp.root, "mockito/mockito")
 
         then:
         shipkitFile.text == "foo"
     }
 
-    def "uses fallback repo if git call fails"() {
-        def shipkitFile = tmp.newFile()
-        def repoProvider = Mock(GitOriginRepoProvider)
-        repoProvider.getOriginGitRepo() >> { throw new RuntimeException() }
-
-        expect:
-        InitShipkitFile.getOriginGitRepo(repoProvider, shipkitFile) == "mockito/shipkit-example"
-    }
-
     def "creates default shipkit file if it does not exist"() {
         given:
         def shipkitFile = tmp.newFile()
-        def repoProvider = Mock(GitOriginRepoProvider)
-        repoProvider.getOriginGitRepo() >> "mockito/mockito"
 
         when:
-        InitShipkitFile.createShipkitFile(shipkitFile, repoProvider)
+        InitShipkitFile.createShipkitFile(shipkitFile, "mockito/mockito")
 
         then:
         shipkitFile.text ==

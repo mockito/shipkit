@@ -1,4 +1,4 @@
-package org.shipkit.internal.notes.vcs
+package org.shipkit.internal.gradle.git.tasks
 
 import org.shipkit.internal.exec.ProcessRunner
 import spock.lang.Specification

@@ -21,7 +21,7 @@ class CreatePullRequest {
         }
         LOG.lifecycle("  [INCUBATING] creating pull requests in incubating.");
         LOG.lifecycle("  Creating a pull request of title '{}' in repository '{}' between base = '{}' and head = '{}'.",
-            getTitle(task), task.getRepositoryUrl(), task.getVersionUpgrade().getBaseBranch(), task.getHeadBranch());
+            getTitle(task), task.getRepositoryName(), task.getVersionUpgrade().getBaseBranch(), task.getHeadBranch());
 
         String body = "{" +
             "  \"title\": \"" + getTitle(task) + "\"," +
@@ -30,13 +30,13 @@ class CreatePullRequest {
             "  \"base\": \"" + task.getVersionUpgrade().getBaseBranch() + "\"" +
             "}";
 
-        gitHubApi.post("/repos/" + task.getRepositoryUrl() + "/pulls", body);
+        gitHubApi.post("/repos/" + task.getRepositoryName() + "/pulls", body);
     }
 
     private String getMessage(CreatePullRequestTask task){
         return String.format("This pull request was automatically created by Shipkit's" +
-         " \"version-upgrade-customer\" Gradle plugin (http://shipkit.org)." +
-        " Please merge it so that you are using fresh version of \"%s\" dependency.",
+         " 'version-upgrade-customer' Gradle plugin (http://shipkit.org)." +
+        " Please merge it so that you are using fresh version of '%s' dependency.",
             task.getVersionUpgrade().getDependencyName());
     }
 

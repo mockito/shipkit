@@ -3,9 +3,12 @@ package org.shipkit.internal.gradle.configuration;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.gradle.api.plugins.ObjectConfigurationAction;
-import org.shipkit.gradle.configuration.ShipkitConfiguration;
+import org.shipkit.internal.gradle.git.GitRemoteOriginPlugin;
 import org.shipkit.internal.gradle.init.InitPlugin;
+import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.gradle.version.VersioningPlugin;
 import org.shipkit.internal.version.VersionInfo;
 
@@ -32,10 +35,10 @@ import java.io.File;
  */
 public class ShipkitConfigurationPlugin implements Plugin<Project> {
 
-    private ShipkitConfiguration configuration;
-
     public static final String SHIPKIT_FILE_RELATIVE_PATH = "gradle/shipkit.gradle";
     public static final String DRY_RUN_PROPERTY = "dryRun";
+
+    private ShipkitConfiguration configuration;
 
     public static File getShipkitFile(Project project) {
         return new File(project.getRootDir(), "gradle/shipkit.gradle");
@@ -60,6 +63,7 @@ public class ShipkitConfigurationPlugin implements Plugin<Project> {
             }
 
             configuration.setPreviousReleaseVersion(info.getPreviousVersion());
+
         } else {
             //not root project, get extension from root project
             configuration = project.getRootProject().getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
