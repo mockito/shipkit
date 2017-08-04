@@ -78,7 +78,7 @@ public class VersionUpgradeConsumerPlugin implements Plugin<Project> {
 
     @Override
     public void apply(final Project project) {
-        LOG.lifecycle("Applying VersionUpgradeConsumerPlugin, beware that it's is INCUBATING state, so its API may change!");
+        LOG.lifecycle("  [INCUBATING] VersionUpgradeConsumerPlugin is incubating and its API may change");
         final GitRemoteOriginPlugin gitOriginPlugin = project.getPlugins().apply(GitRemoteOriginPlugin.class);
         final GitAuthPlugin.GitAuth gitAuth = project.getPlugins().apply(GitAuthPlugin.class).getGitAuth();
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();

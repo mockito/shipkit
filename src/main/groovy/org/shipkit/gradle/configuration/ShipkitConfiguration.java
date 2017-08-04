@@ -1,14 +1,9 @@
 package org.shipkit.gradle.configuration;
 
-import org.gradle.api.GradleException;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
-import org.shipkit.internal.util.EnvVariables;
-import org.shipkit.internal.util.ExposedForTesting;
+import org.shipkit.internal.gradle.configuration.ShipkitConfigurationStore;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Collections.singletonList;
@@ -26,33 +21,17 @@ import static org.shipkit.internal.gradle.util.team.TeamParser.validateTeamMembe
  */
 public class ShipkitConfiguration {
 
-    private static final Logger LOG = Logging.getLogger(ShipkitConfiguration.class);
-
-    private final Map<String, Object> configuration;
+    private final ShipkitConfigurationStore store;
 
     private final GitHub gitHub = new GitHub();
     private final ReleaseNotes releaseNotes = new ReleaseNotes();
     private final Git git = new Git();
     private final Team team = new Team();
-    private final boolean lenient;
 
     private String previousReleaseVersion;
-    private EnvVariables envVariables = new EnvVariables();
-
-    ShipkitConfiguration(Map<String, Object> configuration, boolean lenient) {
-        this.configuration = configuration;
-        this.lenient = lenient;
-    }
-
-    @ExposedForTesting
-    ShipkitConfiguration(EnvVariables envVariables) {
-        this();
-        this.envVariables = envVariables;
-    }
 
     public ShipkitConfiguration() {
-        configuration = new HashMap<String, Object>();
-        lenient = false;
+        this(new ShipkitConfigurationStore());
 
         //Configure default values
         git.setTagPrefix("v"); //so that tags are "v1.0", "v2.3.4"
@@ -75,8 +54,10 @@ public class ShipkitConfiguration {
         team.setDevelopers(Collections.<String>emptyList());
     }
 
-    //TODO currently it's not clear when to use class fields and when to use the 'configuration' map
-    //Let's make it clear in the docs
+    ShipkitConfiguration(ShipkitConfigurationStore store) {
+        this.store = store;
+    }
+
     private boolean dryRun;
 
     /**
@@ -133,35 +114,35 @@ public class ShipkitConfiguration {
          * and your url is different than the default GitHub instance for Open Source
          */
         public String getUrl() {
-            return getStringUrl("gitHub.url");
+            return store.getStringUrl("gitHub.url");
         }
 
         /**
          * See {@link #getUrl()}
          */
         public void setUrl(String url) {
-            configuration.put("gitHub.url", url);
+            store.put("gitHub.url", url);
         }
 
         /**
          * GitHub API endpoint address, for example:  https://api.github.com
          */
         public String getApiUrl() {
-            return getStringUrl("gitHub.apiUrl");
+            return store.getStringUrl("gitHub.apiUrl");
         }
 
         /**
          * See {@link #getApiUrl()}
          */
         public void setApiUrl(String apiUrl) {
-            configuration.put("gitHub.apiUrl", apiUrl);
+            store.put("gitHub.apiUrl", apiUrl);
         }
 
         /**
          * GitHub repository name, for example: "mockito/shipkit"
          */
         public String getRepository() {
-            return getString("gitHub.repository");
+            return store.getString("gitHub.repository");
         }
 
         /**
@@ -170,7 +151,7 @@ public class ShipkitConfiguration {
          * @param repository name of the repo, including user or organization section, for example: "mockito/shipkit"
          */
         public void setRepository(String repository) {
-            configuration.put("gitHub.repository", repository);
+            store.put("gitHub.repository", repository);
         }
 
         /**
@@ -178,14 +159,14 @@ public class ShipkitConfiguration {
          * Needed for the release process to push changes.
          */
         public String getWriteAuthUser() {
-            return getString("gitHub.writeAuthUser");
+            return store.getString("gitHub.writeAuthUser");
         }
 
         /**
          * See {@link #getWriteAuthUser()}
          */
         public void setWriteAuthUser(String user) {
-            configuration.put("gitHub.writeAuthUser", user);
+            store.put("gitHub.writeAuthUser", user);
         }
 
         /**
@@ -193,14 +174,14 @@ public class ShipkitConfiguration {
          * Since the token is read-only it is ok to check that in to VCS.
          */
         public String getReadOnlyAuthToken() {
-            return getString("gitHub.readOnlyAuthToken");
+            return store.getString("gitHub.readOnlyAuthToken");
         }
 
         /**
          * See {@link #getReadOnlyAuthToken()}
          */
         public void setReadOnlyAuthToken(String token) {
-            configuration.put("gitHub.readOnlyAuthToken", token);
+            store.put("gitHub.readOnlyAuthToken", token);
         }
 
         /**
@@ -211,27 +192,14 @@ public class ShipkitConfiguration {
          * if this value is not specified.
          */
         public String getWriteAuthToken() {
-            String key = "gitHub.writeAuthToken";
-            String value = (String) configuration.get(key);
-
-            if(value != null){
-                return value;
-            }
-
-            String envVar = envVariables.getenv("GH_WRITE_TOKEN");
-            if(envVar != null){
-                return envVar;
-            }
-            LOG.info("  BEWARE! Shipkit.gitHub.writeAuthToken is unspecified.\n" +
-                "  It may cause GitHub operations, that require write access, to fail.\n" +
-                "  It is highly recommended to keep write token secure and store env variable GH_WRITE_TOKEN with your CI configuration.\n" +
-                "  Alternatively, you can configure the write token explicitly:\n" +
-                "    shipkit.gitHub.writeAuthToken = 'secret'");
-            return null;
+            return (String) store.getValue("gitHub.writeAuthToken", "GH_WRITE_TOKEN", "Please export 'GH_WRITE_TOKEN' variable first!\n" +
+                "It is highly recommended to keep write token secure and store env variable 'GH_WRITE_TOKEN' with your CI configuration." +
+                "Alternatively, you can configure GitHub write auth token explicitly (don't check this in to Git!):\n" +
+                "  shipkit.gitHub.writeAuthToken = 'secret'");
         }
 
         public void setWriteAuthToken(String writeAuthToken) {
-            configuration.put("gitHub.writeAuthToken", writeAuthToken);
+            store.put("gitHub.writeAuthToken", writeAuthToken);
         }
     }
 
@@ -241,14 +209,14 @@ public class ShipkitConfiguration {
          * Release notes file relative path, for example: "docs/release-notes.md"
          */
         public String getFile() {
-            return getString("releaseNotes.file");
+            return store.getString("releaseNotes.file");
         }
 
         /**
          * See {@link #getFile()}
          */
         public void setFile(String file) {
-            configuration.put("releaseNotes.file", file);
+            store.put("releaseNotes.file", file);
         }
 
         /**
@@ -259,14 +227,14 @@ public class ShipkitConfiguration {
          * Examples: ['java-9': 'Java 9 support', 'BDD': 'Behavior-Driven Development support']
          */
         public Map<String, String> getLabelMapping() {
-            return getMap("releaseNotes.labelMapping");
+            return store.getMap("releaseNotes.labelMapping");
         }
 
         /**
          * See {@link #getLabelMapping()}
          */
         public void setLabelMapping(Map<String, String> labelMapping) {
-            configuration.put("releaseNotes.labelMapping", labelMapping);
+            store.put("releaseNotes.labelMapping", labelMapping);
         }
 
         /**
@@ -275,14 +243,14 @@ public class ShipkitConfiguration {
          * that commit will be ignored and not used for generating release notes.
          */
         public Collection<String> getIgnoreCommitsContaining() {
-            return getCollection("releaseNotes.ignoreCommitsContaining");
+            return store.getCollection("releaseNotes.ignoreCommitsContaining");
         }
 
         /**
          * See {@link #getIgnoreCommitsContaining()}
          */
         public void setIgnoreCommitsContaining(Collection<String> commitMessageParts) {
-            configuration.put("releaseNotes.ignoreCommitsContaining", commitMessageParts);
+            store.put("releaseNotes.ignoreCommitsContaining", commitMessageParts);
         }
     }
 
@@ -294,14 +262,14 @@ public class ShipkitConfiguration {
          * For example: "shipkit"
          */
         public String getUser() {
-            return getString("git.user");
+            return store.getString("git.user");
         }
 
         /**
          * See {@link #getUser()} ()}
          */
         public void setUser(String user) {
-            configuration.put("git.user", user);
+            store.put("git.user", user);
         }
 
         /**
@@ -310,28 +278,28 @@ public class ShipkitConfiguration {
          * For example "shipkit.org@gmail.com"
          */
         public String getEmail() {
-            return getString("git.email");
+            return store.getString("git.email");
         }
 
         /**
          * See {@link #getEmail()}
          */
         public void setEmail(String email) {
-            configuration.put("git.email", email);
+            store.put("git.email", email);
         }
 
         /**
          * Regex to be used to identify branches that are entitled to be released, for example "master|release/.+"
          */
         public String getReleasableBranchRegex() {
-            return getString("git.releasableBranchRegex");
+            return store.getString("git.releasableBranchRegex");
         }
 
         /**
          * See {@link #getReleasableBranchRegex()}
          */
         public void setReleasableBranchRegex(String releasableBranchRegex) {
-            configuration.put("git.releasableBranchRegex", releasableBranchRegex);
+            store.put("git.releasableBranchRegex", releasableBranchRegex);
         }
 
         /**
@@ -340,14 +308,14 @@ public class ShipkitConfiguration {
          * Empty string is ok and it means that there is not prefix.
          */
         public String getTagPrefix() {
-            return getString("git.tagPrefix");
+            return store.getString("git.tagPrefix");
         }
 
         /**
          * See {@link #getTagPrefix()}
          */
         public void setTagPrefix(String tagPrefix) {
-            configuration.put("git.tagPrefix", tagPrefix);
+            store.put("git.tagPrefix", tagPrefix);
         }
 
         /**
@@ -356,7 +324,7 @@ public class ShipkitConfiguration {
          * By default it is configured to append "[ci skip]" keyword which will prevent CI builds on Travis CI.
          */
         public String getCommitMessagePostfix() {
-            return getString("git.commitMessagePostfix");
+            return store.getString("git.commitMessagePostfix");
         }
 
         /**
@@ -364,7 +332,7 @@ public class ShipkitConfiguration {
          */
         public void setCommitMessagePostfix(String commitMessagePostfix) {
             //TODO protect this setter and other relevant from invalid input (null value)
-            configuration.put("git.commitMessagePostfix", commitMessagePostfix);
+            store.put("git.commitMessagePostfix", commitMessagePostfix);
         }
     }
 
@@ -381,7 +349,7 @@ public class ShipkitConfiguration {
          * See POM reference for <a href="https://maven.apache.org/pom.html#Developers">Developers</a>.
          */
         public Collection<String> getDevelopers() {
-            return getCollection("team.developers");
+            return store.getCollection("team.developers");
         }
 
         /**
@@ -389,7 +357,7 @@ public class ShipkitConfiguration {
          */
         public void setDevelopers(Collection<String> developers) {
             validateTeamMembers(developers);
-            configuration.put("team.developers", developers);
+            store.put("team.developers", developers);
         }
 
         /**
@@ -400,7 +368,7 @@ public class ShipkitConfiguration {
          * See POM reference for <a href="https://maven.apache.org/pom.html#Contributors">Contributors</a>.
          */
         public Collection<String> getContributors() {
-            return getCollection("team.contributors");
+            return store.getCollection("team.contributors");
         }
 
         /**
@@ -408,36 +376,8 @@ public class ShipkitConfiguration {
          */
         public void setContributors(Collection<String> contributors) {
             validateTeamMembers(contributors);
-            configuration.put("team.contributors", contributors);
+            store.put("team.contributors", contributors);
         }
-    }
-
-    private String getStringUrl(String key) {
-        String url = getString(key);
-        if(url.endsWith("/")) {
-            return url.replaceAll("/*$", "");
-        }
-        return url;
-    }
-
-    private String getString(String key) {
-        return (String) getValue(key, "Please configure 'shipkit." + key + "' value (String).");
-    }
-
-    private Map getMap(String key) {
-        return (Map) getValue(key, "Please configure 'shipkit." + key + "' value (Map).");
-    }
-
-    private Collection<String> getCollection(String key) {
-        return (Collection) getValue(key, "Please configure 'shipkit." + key + "' value (Collection).");
-    }
-
-    private Object getValue(String key, String message) {
-        Object value = configuration.get(key);
-        if (value != null || lenient) {
-            return value;
-        }
-        throw new GradleException(message);
     }
 
     /**
@@ -451,6 +391,6 @@ public class ShipkitConfiguration {
      * @return lenient copy of this configuration instance
      */
     public ShipkitConfiguration getLenient() {
-        return new ShipkitConfiguration(configuration, true);
+        return new ShipkitConfiguration(store.getLenient());
     }
 }

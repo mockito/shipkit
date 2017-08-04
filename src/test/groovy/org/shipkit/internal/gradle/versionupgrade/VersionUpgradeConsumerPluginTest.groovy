@@ -8,6 +8,10 @@ import testutil.PluginSpecification
 
 class VersionUpgradeConsumerPluginTest extends PluginSpecification {
 
+    def setup() {
+        conf.gitHub.writeAuthToken = "secret"
+    }
+
     def "should initialize VersionUpgradeConsumerPlugin correctly and with default values"() {
         when:
         def versionUpgrade = project.plugins.apply(VersionUpgradeConsumerPlugin).versionUpgrade

@@ -1,8 +1,8 @@
 package org.shipkit.internal.gradle.version
 
+import org.shipkit.gradle.git.GitCommitTask
 import org.shipkit.gradle.version.BumpVersionFileTask
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin
-import org.shipkit.internal.gradle.git.GitCommitTask
 import org.shipkit.internal.gradle.git.GitPlugin
 import org.shipkit.internal.version.VersionInfo
 import testutil.PluginSpecification
@@ -58,9 +58,9 @@ class VersioningPluginTest extends PluginSpecification {
         project.plugins.apply(VersioningPlugin)
 
         then:
-        GitCommitTask gitCommitTask = project.tasks.getByName(GitPlugin.GIT_COMMIT_TASK)
-        gitCommitTask.files.contains(project.file(VersioningPlugin.VERSION_FILE_NAME).absolutePath)
-        gitCommitTask.aggregatedCommitMessage.contains("0.9.0 release (previous 0.8.114)")
+        GitCommitTask commit = project.tasks.getByName(GitPlugin.GIT_COMMIT_TASK)
+        commit.filesToCommit.contains(project.file(VersioningPlugin.VERSION_FILE_NAME))
+        commit.descriptions[0].contains("0.9.0 release (previous 0.8.114)")
     }
 
     def "should skip previous version in release commit message if not available"() {
@@ -75,10 +75,10 @@ class VersioningPluginTest extends PluginSpecification {
         project.plugins.apply(VersioningPlugin)
 
         then:
-        GitCommitTask gitCommitTask = project.tasks.getByName(GitPlugin.GIT_COMMIT_TASK)
-        gitCommitTask.files.contains(project.file(VersioningPlugin.VERSION_FILE_NAME).absolutePath)
-        gitCommitTask.aggregatedCommitMessage.contains("0.9.0 release")
-        !gitCommitTask.aggregatedCommitMessage.contains("previous")
+        GitCommitTask commit = project.tasks.getByName(GitPlugin.GIT_COMMIT_TASK)
+        commit.filesToCommit.contains(project.file(VersioningPlugin.VERSION_FILE_NAME))
+        commit.descriptions[0].contains("0.9.0 release")
+        !commit.descriptions[0].contains("previous")
     }
 
     @Override

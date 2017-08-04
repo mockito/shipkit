@@ -19,7 +19,7 @@ class ReleaseNeededTaskTest extends Specification {
         task.setBranch(branch)
         task.setPullRequest(pullRequest)
         def envVariables = Mock(EnvVariables)
-        envVariables.getenv("SKIP_RELEASE") >> skipEnvVar
+        envVariables.getNonEmptyEnv("SKIP_RELEASE") >> skipEnvVar
         comparisonResults.each {
             def f = File.createTempFile("shipkit-testing", "")
             f << it

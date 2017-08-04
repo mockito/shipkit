@@ -26,7 +26,7 @@ public class GitAuthPlugin implements Plugin<Project> {
     public void apply(Project project) {
         ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
         String ghUser = conf.getGitHub().getWriteAuthUser();
-        String writeToken = conf.getGitHub().getWriteAuthToken();
+        String writeToken = conf.getLenient().getGitHub().getWriteAuthToken();
 
         String configUrl = getGitHubUrl(ghUser, conf.getGitHub().getRepository(), writeToken);
         String secretValue = null;

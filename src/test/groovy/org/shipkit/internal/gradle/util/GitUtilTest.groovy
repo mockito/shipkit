@@ -18,22 +18,13 @@ class GitUtilTest extends Specification {
     }
 
     def "generic user notation" () {
-        def project = new ProjectBuilder().build()
-        project.version = "1.0.0"
-        conf.git.user = "shipkit-bot"
-        conf.git.email = "shipkit.org@gmail.com"
-
-        GitUtil.getGitGenericUserNotation(conf)
-
         expect:
-        GitUtil.getGitGenericUserNotation(conf) == "shipkit-bot <shipkit.org@gmail.com>"
+        GitUtil.getGitGenericUserNotation("shipkit-bot", "shipkit.org@gmail.com") == "shipkit-bot <shipkit.org@gmail.com>"
     }
 
     def "commit message" () {
-        conf.git.commitMessagePostfix = postfix
-
         expect:
-        GitUtil.getCommitMessage(conf, info) == message
+        GitUtil.getCommitMessage(info, postfix) == message
 
         where:
         info  | postfix     | message
