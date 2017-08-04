@@ -9,20 +9,14 @@ import static org.shipkit.internal.gradle.git.GitPush.setPushUrl
 
 class GitPushTest extends Specification {
 
-    ShipkitConfiguration conf
-    ShipkitConfiguration.GitHub gitHubConf
-
-    void setup(){
-        conf = Mock(ShipkitConfiguration)
-        gitHubConf = Mock(ShipkitConfiguration.GitHub)
-        conf.getGitHub() >> gitHubConf
-    }
+    def conf = new ShipkitConfiguration()
 
     def "push url with write token"() {
-        GitPushTask task = Mock(GitPushTask)
-        gitHubConf.getWriteAuthUser() >> "dummy"
-        gitHubConf.getWriteAuthToken() >> "secret"
-        gitHubConf.getRepository() >> "repo"
+        def task = Mock(GitPushTask)
+
+        conf.gitHub.writeAuthUser = "dummy"
+        conf.gitHub.writeAuthToken = "secret"
+        conf.gitHub.repository = "repo"
 
         when:
         setPushUrl(task, conf)
@@ -34,8 +28,7 @@ class GitPushTest extends Specification {
 
     def "push url without write token"() {
         GitPushTask task = Mock(GitPushTask)
-        gitHubConf.getRepository() >> "repo"
-        gitHubConf.getWriteAuthToken() >> null
+        conf.gitHub.repository = "repo"
 
         when:
         setPushUrl(task, conf)
