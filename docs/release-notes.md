@@ -1,3 +1,6 @@
+**0.9.18 (2017-08-04)** - [7 commits](https://github.com/mockito/shipkit/compare/v0.9.17...v0.9.18) by [Wojtek Wilk](http://github.com/wwilk) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.18-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.18)
+ - GitAuthPlugin introduced #302 [(#313)](https://github.com/mockito/shipkit/pull/313)
+
 **0.9.17 (2017-08-04)** - [15 commits](https://github.com/mockito/shipkit/compare/v0.9.16...v0.9.17) by [Szczepan Faber](http://github.com/szczepiq) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.17-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.17)
  - Public API clean up [(#324)](https://github.com/mockito/shipkit/pull/324)
 
