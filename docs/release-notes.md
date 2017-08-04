@@ -1,3 +1,6 @@
+**0.9.19 (2017-08-04)** - [2 commits](https://github.com/mockito/shipkit/compare/v0.9.18...v0.9.19) by [Wojtek Wilk](http://github.com/wwilk) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.19-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.19)
+ - Plugin-publish-plugin version upgraded [(#325)](https://github.com/mockito/shipkit/pull/325)
+
 **0.9.18 (2017-08-04)** - [7 commits](https://github.com/mockito/shipkit/compare/v0.9.17...v0.9.18) by [Wojtek Wilk](http://github.com/wwilk) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.18-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.18)
  - GitAuthPlugin introduced #302 [(#313)](https://github.com/mockito/shipkit/pull/313)
 
