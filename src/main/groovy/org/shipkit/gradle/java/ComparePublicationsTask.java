@@ -3,13 +3,12 @@ package org.shipkit.gradle.java;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.publish.maven.tasks.GenerateMavenPom;
 import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.bundling.Jar;
-import org.shipkit.gradle.ReleaseNeededTask;
+import org.shipkit.gradle.release.ReleaseNeededTask;
 import org.shipkit.internal.gradle.java.tasks.ComparePublications;
 
 import java.io.File;
@@ -19,7 +18,7 @@ import java.io.File;
  * from last published build. If it determines that there were no changes it advises the user to
  * skip publication of the new version artifacts (e.g. skip the release).
  * <p>
- * The outputs of this task are used by {@link org.shipkit.gradle.ReleaseNeededTask}.
+ * The outputs of this task are used by {@link ReleaseNeededTask}.
  * The {@link #getComparisonResult()} should be added to {@link ReleaseNeededTask#getComparisonResults()}.
  */
 public class ComparePublicationsTask extends DefaultTask {

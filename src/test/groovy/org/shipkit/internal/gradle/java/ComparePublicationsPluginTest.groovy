@@ -2,12 +2,12 @@ package org.shipkit.internal.gradle.java
 
 import com.jfrog.bintray.gradle.BintrayExtension
 import org.gradle.testfixtures.ProjectBuilder
-import org.shipkit.gradle.ReleaseConfiguration
+import org.shipkit.gradle.configuration.ShipkitConfiguration
 import org.shipkit.gradle.java.ComparePublicationsTask
 import org.shipkit.gradle.java.DownloadPreviousPublicationsTask
-import org.shipkit.internal.gradle.ShipkitBintrayPlugin
-import org.shipkit.internal.gradle.VersioningPlugin
-import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin
+import org.shipkit.internal.gradle.bintray.ShipkitBintrayPlugin
+import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin
+import org.shipkit.internal.gradle.version.VersioningPlugin
 import testutil.PluginSpecification
 
 class ComparePublicationsPluginTest extends PluginSpecification {
@@ -67,7 +67,7 @@ class ComparePublicationsPluginTest extends PluginSpecification {
         child.plugins.apply(ShipkitBintrayPlugin)
         child.getExtensions().getByType(BintrayExtension).user = "test";
 
-        def releaseConfig = parent.getExtensions().getByType(ReleaseConfiguration)
+        def releaseConfig = parent.getExtensions().getByType(ShipkitConfiguration)
         releaseConfig.gitHub.repository = "repo"
 
         when:
@@ -104,8 +104,8 @@ class ComparePublicationsPluginTest extends PluginSpecification {
         def parent = new ProjectBuilder().withProjectDir(tmp.root).withName("parent").build()
         def child = new ProjectBuilder().withName("child").withParent(parent).build()
 
-        child.plugins.apply(ReleaseConfigurationPlugin)
-        def conf = parent.getExtensions().getByType(ReleaseConfiguration)
+        child.plugins.apply(ShipkitConfigurationPlugin)
+        def conf = parent.getExtensions().getByType(ShipkitConfiguration)
         conf.setPreviousReleaseVersion("1.0.0")
 
         when:

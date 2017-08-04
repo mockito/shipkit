@@ -1,3 +1,31 @@
+**0.9.15 (2017-08-01)** - [3 commits](https://github.com/mockito/shipkit/compare/v0.9.14...v0.9.15) by epeee (2), [Wojtek Wilk](http://github.com/wwilk) (1) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.15-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.15)
+ - minor cleanup [(#323)](https://github.com/mockito/shipkit/pull/323)
+
+**0.9.14 (2017-07-31)** - [2 commits](https://github.com/mockito/shipkit/compare/v0.9.13...v0.9.14) by [Erhard Pointl](http://github.com/epeee) (1), [Szczepan Faber](http://github.com/szczepiq) (1) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.14-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.14)
+ - Reduced the log level of a noisy message [(#320)](https://github.com/mockito/shipkit/pull/320)
+
+**0.9.13 (2017-07-30)** - [10 commits](https://github.com/mockito/shipkit/compare/v0.9.12...v0.9.13) by [Szczepan Faber](http://github.com/szczepiq) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.13-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.13)
+ - Public API polish before 1.0 [(#318)](https://github.com/mockito/shipkit/pull/318)
+
+**0.9.12 (2017-07-29)** - [13 commits](https://github.com/mockito/shipkit/compare/v0.9.11...v0.9.12) by [epeee](https://github.com/epeee) (12), [Szczepan Faber](http://github.com/szczepiq) (1) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.12-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.12)
+ - Automatically validate plugin property files [(#314)](https://github.com/mockito/shipkit/pull/314)
+
+**0.9.11 (2017-07-27)** - [13 commits](https://github.com/mockito/shipkit/compare/v0.9.10...v0.9.11) by [Szczepan Faber](http://github.com/szczepiq) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.11-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.11)
+ - Public API clean up before 1.0 [(#316)](https://github.com/mockito/shipkit/pull/316)
+
+**0.9.10 (2017-07-26)** - [2 commits](https://github.com/mockito/shipkit/compare/v0.9.9...v0.9.10) by [Szczepan Faber](http://github.com/szczepiq) (1), [Wojtek Wilk](http://github.com/wwilk) (1) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.10-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.10)
+ - Fixes #315. Returning null instead of throwing exception when ghWriteToken not specified [(#317)](https://github.com/mockito/shipkit/pull/317)
+ - master branch does not build without env variables [(#315)](https://github.com/mockito/shipkit/issues/315)
+
+**0.9.9 (2017-07-19)** - [13 commits](https://github.com/mockito/shipkit/compare/v0.9.8...v0.9.9) by [Szczepan Faber](http://github.com/szczepiq) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.9-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.9)
+ - Another round of polishing public API before 1.0 [(#311)](https://github.com/mockito/shipkit/pull/311)
+
+**0.9.8 (2017-07-17)** - [7 commits](https://github.com/mockito/shipkit/compare/v0.9.7...v0.9.8) by [Wojtek Wilk](http://github.com/wwilk) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.8-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.8)
+ - Refactoring of VersionUpgradeConsumerPlugin #302 [(#312)](https://github.com/mockito/shipkit/pull/312)
+
+**0.9.7 (2017-07-17)** - [5 commits](https://github.com/mockito/shipkit/compare/v0.9.6...v0.9.7) by jpetryk (4), [Szczepan Faber](http://github.com/szczepiq) (1) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.7-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.7)
+ - Remove javadoc warnings [(#309)](https://github.com/mockito/shipkit/pull/309)
+
 **0.9.6 (2017-07-16)** - [16 commits](https://github.com/mockito/shipkit/compare/v0.9.5...v0.9.6) by [Szczepan Faber](http://github.com/szczepiq) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.6-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.6)
  - Public API tidy up pre 1.0 [(#308)](https://github.com/mockito/shipkit/pull/308)
 

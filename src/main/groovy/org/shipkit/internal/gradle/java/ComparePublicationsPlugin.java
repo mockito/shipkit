@@ -6,13 +6,13 @@ import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.bundling.Jar;
+import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.gradle.java.ComparePublicationsTask;
-import org.shipkit.gradle.ReleaseConfiguration;
 import org.shipkit.gradle.java.DownloadPreviousPublicationsTask;
 import org.shipkit.internal.comparison.artifact.DefaultArtifactUrlResolver;
 import org.shipkit.internal.comparison.artifact.DefaultArtifactUrlResolverFactory;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
-import org.shipkit.internal.gradle.configuration.ReleaseConfigurationPlugin;
+import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
 import java.io.File;
@@ -46,7 +46,7 @@ public class ComparePublicationsPlugin implements Plugin<Project> {
     @Override
     public void apply(final Project project) {
         project.getPlugins().apply(JavaPublishPlugin.class);
-        final ReleaseConfiguration conf = project.getPlugins().apply(ReleaseConfigurationPlugin.class).getConfiguration();
+        final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
         final Jar sourcesJar = (Jar) project.getTasks().getByName(JavaLibraryPlugin.SOURCES_JAR_TASK);
 
@@ -108,7 +108,7 @@ public class ComparePublicationsPlugin implements Plugin<Project> {
         });
     }
 
-    private String getBasePreviousVersionArtifactPath(Project project, ReleaseConfiguration conf, Jar sourcesJar) {
+    private String getBasePreviousVersionArtifactPath(Project project, ShipkitConfiguration conf, Jar sourcesJar) {
         return project.getBuildDir().getAbsolutePath() + PREVIOUS_ARTIFACTS_DIR
                 + File.separator + sourcesJar.getBaseName() + "-" + conf.getPreviousReleaseVersion();
     }

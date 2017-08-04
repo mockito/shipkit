@@ -3,7 +3,7 @@ package org.shipkit.internal.comparison.artifact
 import org.apache.commons.lang.builder.EqualsBuilder
 import org.gradle.api.Project
 import org.gradle.api.plugins.PluginContainer
-import org.shipkit.internal.gradle.ShipkitBintrayPlugin
+import org.shipkit.internal.gradle.bintray.ShipkitBintrayPlugin
 import spock.lang.Specification
 
 class DefaultArtifactUrlResolverFactoryTest extends Specification {

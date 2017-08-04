@@ -5,11 +5,8 @@ import com.gradle.publish.PluginConfig;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.file.FileTree;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.gradle.api.plugins.JavaPluginConvention;
-import org.gradle.api.tasks.util.PatternSet;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,6 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.Set;
+
+import static org.shipkit.internal.gradle.plugin.PluginUtil.DOT_PROPERTIES;
 
 /**
  * This plugin discovers gradle plugins and adds them to the {@link PluginBundleExtension}.
@@ -28,7 +27,6 @@ import java.util.Set;
 public class PluginDiscoveryPlugin implements Plugin<Project> {
 
     private static Logger LOG = Logging.getLogger(PluginDiscoveryPlugin.class);
-    private static final String DOT_PROPERTIES = ".properties";
 
     @Override
     public void apply(final Project project) {
@@ -37,7 +35,7 @@ public class PluginDiscoveryPlugin implements Plugin<Project> {
             public void execute(Plugin plugin) {
                 PluginBundleExtension extension = project.getExtensions().findByType(PluginBundleExtension.class);
 
-                Set<File> pluginPropertyFiles = discoverGradlePluginPropertyFiles(project);
+                Set<File> pluginPropertyFiles = PluginUtil.discoverGradlePluginPropertyFiles(project);
                 LOG.lifecycle("  Adding {} discovered Gradle plugins to 'pluginBundle'", pluginPropertyFiles.size());
                 for (File pluginPropertyFile : pluginPropertyFiles) {
                     PluginConfig config = new PluginConfig(generatePluginName(pluginPropertyFile.getName()));
@@ -48,13 +46,6 @@ public class PluginDiscoveryPlugin implements Plugin<Project> {
                 }
             }
         });
-    }
-
-    private Set<File> discoverGradlePluginPropertyFiles(Project project) {
-        final JavaPluginConvention java = project.getConvention().getPlugin(JavaPluginConvention.class);
-        FileTree resources = java.getSourceSets().getByName("main").getResources();
-        FileTree plugins = resources.matching(new PatternSet().include("META-INF/gradle-plugins/*.properties"));
-        return plugins.getFiles();
     }
 
     static String generatePluginName(String fileName) {

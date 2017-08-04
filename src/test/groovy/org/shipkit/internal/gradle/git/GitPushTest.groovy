@@ -1,56 +1,48 @@
 package org.shipkit.internal.gradle.git
 
-import org.shipkit.gradle.ReleaseConfiguration
+import org.shipkit.gradle.configuration.ShipkitConfiguration
 import org.shipkit.gradle.git.GitPushTask
 import spock.lang.Specification
 
-import static org.shipkit.internal.gradle.git.GitPush.getWriteToken
 import static org.shipkit.internal.gradle.git.GitPush.gitPushArgs
 import static org.shipkit.internal.gradle.git.GitPush.setPushUrl
 
 class GitPushTest extends Specification {
 
-    def conf = new ReleaseConfiguration()
+    ShipkitConfiguration conf
+    ShipkitConfiguration.GitHub gitHubConf
 
-    def "uses token explicitly configured"() {
-        conf.gitHub.writeAuthToken = "secret"
-        expect:
-        getWriteToken(conf, "secret from env") == "secret"
-    }
-
-    def "uses token from env"() {
-        expect:
-        getWriteToken(conf, "secret from env") == "secret from env"
-    }
-
-    def "no token"() {
-        expect:
-        getWriteToken(conf, null) == null
+    void setup(){
+        conf = Mock(ShipkitConfiguration)
+        gitHubConf = Mock(ShipkitConfiguration.GitHub)
+        conf.getGitHub() >> gitHubConf
     }
 
     def "push url with write token"() {
         GitPushTask task = Mock(GitPushTask)
-        conf.gitHub.repository = "repo"
+        gitHubConf.getWriteAuthUser() >> "dummy"
+        gitHubConf.getWriteAuthToken() >> "secret"
+        gitHubConf.getRepository() >> "repo"
 
         when:
-        setPushUrl(task, conf, "secret")
+        setPushUrl(task, conf)
 
         then:
         1 * task.setUrl("https://dummy:secret@github.com/repo.git")
         1 * task.setSecretValue("secret")
-        0 * _
     }
 
     def "push url without write token"() {
         GitPushTask task = Mock(GitPushTask)
-        conf.gitHub.repository = "repo"
+        gitHubConf.getRepository() >> "repo"
+        gitHubConf.getWriteAuthToken() >> null
 
         when:
-        setPushUrl(task, conf, null)
+        setPushUrl(task, conf)
 
         then:
         1 * task.setUrl("https://github.com/repo.git")
-        0 * _
+        0 * task.setSecretValue(_)
     }
 
     def "git push args"() {

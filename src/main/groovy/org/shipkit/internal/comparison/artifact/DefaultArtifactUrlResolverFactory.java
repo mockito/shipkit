@@ -1,7 +1,7 @@
 package org.shipkit.internal.comparison.artifact;
 
 import org.gradle.api.Project;
-import org.shipkit.internal.gradle.ShipkitBintrayPlugin;
+import org.shipkit.internal.gradle.bintray.ShipkitBintrayPlugin;
 
 public class DefaultArtifactUrlResolverFactory {
 

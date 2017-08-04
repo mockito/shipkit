@@ -2,6 +2,7 @@ package org.shipkit.internal.gradle
 
 import com.jfrog.bintray.gradle.BintrayUploadTask
 import org.gradle.api.GradleException
+import org.shipkit.internal.gradle.bintray.ShipkitBintrayPlugin
 import org.shipkit.internal.gradle.configuration.LazyConfiguration
 import testutil.PluginSpecification
 
