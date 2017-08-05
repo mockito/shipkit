@@ -2,10 +2,10 @@ package org.shipkit.internal.gradle.contributors
 
 import testutil.PluginSpecification
 
-class GithubContributorsPluginTest extends PluginSpecification {
+class GitHubContributorsPluginTest extends PluginSpecification {
 
     def "applies"() {
         expect:
-        project.plugins.apply("org.shipkit.github-contributors")
+        project.plugins.apply("org.shipkit.git-hub-contributors")
     }
 }

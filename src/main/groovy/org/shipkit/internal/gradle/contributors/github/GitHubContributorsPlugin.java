@@ -24,7 +24,7 @@ import static org.shipkit.internal.gradle.util.BuildConventions.contributorsFile
  *     <li>fetchContributors - {@link FetchGitHubContributorsTask}</li>
  * </ul>
  */
-public class GithubContributorsPlugin implements Plugin<Project> {
+public class GitHubContributorsPlugin implements Plugin<Project> {
 
     public final static String FETCH_CONTRIBUTORS = "fetchContributors";
 

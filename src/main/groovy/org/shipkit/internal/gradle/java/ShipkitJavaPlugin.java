@@ -3,7 +3,7 @@ package org.shipkit.internal.gradle.java;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.shipkit.internal.gradle.GithubPlugin;
+import org.shipkit.internal.gradle.GitHubPlugin;
 import org.shipkit.internal.gradle.bintray.BintrayReleasePlugin;
 import org.shipkit.internal.gradle.release.TravisPlugin;
 
@@ -29,7 +29,7 @@ import org.shipkit.internal.gradle.release.TravisPlugin;
 public class ShipkitJavaPlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
-        project.getPlugins().apply(GithubPlugin.class);
+        project.getPlugins().apply(GitHubPlugin.class);
         project.getPlugins().apply(BintrayReleasePlugin.class);
         project.getPlugins().apply(TravisPlugin.class);
 
