@@ -10,7 +10,7 @@ import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.version.Version;
-import org.shipkit.internal.version.VersionInfo;
+import org.shipkit.version.VersionInfo;
 
 import java.io.File;
 

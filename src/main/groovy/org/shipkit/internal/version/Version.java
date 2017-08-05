@@ -1,5 +1,7 @@
 package org.shipkit.internal.version;
 
+import org.shipkit.version.VersionInfo;
+
 import java.io.File;
 import java.util.LinkedList;
 

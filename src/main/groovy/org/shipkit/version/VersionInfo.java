@@ -1,7 +1,7 @@
-package org.shipkit.internal.version;
+package org.shipkit.version;
 
 /**
- * The file that contains version number
+ * Version information, by default backed by 'version.properties' file.
  */
 public interface VersionInfo {
 
