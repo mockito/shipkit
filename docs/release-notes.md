@@ -1,3 +1,6 @@
+**0.9.23 (2017-08-05)** - [2 commits](https://github.com/mockito/shipkit/compare/v0.9.22...v0.9.23) by [epeee](https://github.com/epeee) (1), [Wojtek Wilk](http://github.com/wwilk) (1) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.23-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.23)
+ - rename Github* -> GitHub* [(#326)](https://github.com/mockito/shipkit/pull/326)
+
 **0.9.22 (2017-08-05)** - [15 commits](https://github.com/mockito/shipkit/compare/v0.9.21...v0.9.22) by [Erhard Pointl](http://github.com/epeee) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.22-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.22)
  - Refactor release notes generation GitHub [(#310)](https://github.com/mockito/shipkit/pull/310)
 
