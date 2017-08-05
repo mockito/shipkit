@@ -1,3 +1,6 @@
+**0.9.22 (2017-08-05)** - [15 commits](https://github.com/mockito/shipkit/compare/v0.9.21...v0.9.22) by [Erhard Pointl](http://github.com/epeee) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.22-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.22)
+ - Refactor release notes generation GitHub [(#310)](https://github.com/mockito/shipkit/pull/310)
+
 **0.9.21 (2017-08-04)** - no code changes (no commits) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.21-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.21)
 
 **0.9.20 (2017-08-04)** - no code changes (no commits) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.20-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.20)
