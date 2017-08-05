@@ -20,9 +20,9 @@ import java.util.Set;
  * Gets all contributors from the repository
  * https://developer.github.com/v3/repos/#list-contributors
  */
-class GithubContributorsFetcher {
+class GitHubContributorsFetcher {
 
-    private static final Logger LOG = Logging.getLogger(GithubContributorsFetcher.class);
+    private static final Logger LOG = Logging.getLogger(GitHubContributorsFetcher.class);
 
     ProjectContributorsSet fetchContributorsForProject(String apiUrl, String repository, String readOnlyAuthToken) {
         LOG.lifecycle("  Querying GitHub API for all contributors for project");

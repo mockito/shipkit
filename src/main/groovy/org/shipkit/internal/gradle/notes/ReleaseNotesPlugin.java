@@ -8,7 +8,7 @@ import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.gradle.notes.FetchReleaseNotesTask;
 import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
-import org.shipkit.internal.gradle.contributors.github.GithubContributorsPlugin;
+import org.shipkit.internal.gradle.contributors.github.GitHubContributorsPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.gradle.version.VersioningPlugin;
@@ -45,7 +45,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     public void apply(final Project project) {
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
         project.getPlugins().apply(VersioningPlugin.class);
-        project.getPlugins().apply(GithubContributorsPlugin.class);
+        project.getPlugins().apply(GitHubContributorsPlugin.class);
 
         releaseNotesTasks(project, conf);
     }
@@ -63,7 +63,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
             }
         });
 
-        final Task contributorsFetcher = project.getTasks().getByName(GithubContributorsPlugin.FETCH_CONTRIBUTORS);
+        final Task contributorsFetcher = project.getTasks().getByName(GitHubContributorsPlugin.FETCH_CONTRIBUTORS);
 
         TaskMaker.task(project, UPDATE_NOTES_TASK, UpdateReleaseNotesTask.class, new Action<UpdateReleaseNotesTask>() {
             public void execute(final UpdateReleaseNotesTask t) {
