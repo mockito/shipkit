@@ -1,8 +1,11 @@
-package org.shipkit.internal.notes.contributors
+package org.shipkit.internal.notes.contributors.github
 
+import org.shipkit.internal.notes.contributors.DefaultContributor
+import org.shipkit.internal.notes.contributors.DefaultProjectContributor
+import org.shipkit.internal.notes.contributors.DefaultProjectContributorsSet
 import spock.lang.Specification
 
-import static org.shipkit.internal.notes.contributors.GitHubContributorsProvider.mergeContributors
+import static org.shipkit.internal.notes.contributors.github.GitHubContributorsProvider.mergeContributors
 
 class GitHubContributorsProviderTest extends Specification {
 

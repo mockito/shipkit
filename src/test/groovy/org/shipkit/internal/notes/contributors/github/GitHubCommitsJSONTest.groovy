@@ -1,4 +1,4 @@
-package org.shipkit.internal.notes.contributors
+package org.shipkit.internal.notes.contributors.github
 
 import org.json.simple.JsonObject
 import spock.lang.Specification

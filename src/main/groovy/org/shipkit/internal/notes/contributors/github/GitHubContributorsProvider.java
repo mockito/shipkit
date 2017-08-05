@@ -1,5 +1,8 @@
-package org.shipkit.internal.notes.contributors;
+package org.shipkit.internal.notes.contributors.github;
 
+import org.shipkit.internal.notes.contributors.ContributorsProvider;
+import org.shipkit.internal.notes.contributors.DefaultProjectContributor;
+import org.shipkit.internal.notes.contributors.ProjectContributorsSet;
 import org.shipkit.internal.notes.model.Contributor;
 
 import java.util.Collection;
@@ -18,7 +21,7 @@ public class GitHubContributorsProvider implements ContributorsProvider {
 
     @Override
     public ProjectContributorsSet getAllContributorsForProject() {
-        ProjectContributorsSet contributors = new ContributorsFetcher().fetchContributorsForProject(apiUrl, repository, readOnlyAuthToken);
+        ProjectContributorsSet contributors = new GithubContributorsFetcher().fetchContributorsForProject(apiUrl, repository, readOnlyAuthToken);
         Collection<Contributor> recent = new RecentContributorsFetcher().fetchContributorsSinceYesterday(apiUrl, repository, readOnlyAuthToken);
         return mergeContributors(contributors, recent);
     }

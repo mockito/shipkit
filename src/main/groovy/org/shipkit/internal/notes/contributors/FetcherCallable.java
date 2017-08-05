@@ -10,6 +10,7 @@ import java.util.concurrent.Callable;
 /**
  * Basic function which applies values from a {@link List} of {@link V} to a given {@link Function}.
  */
+// TODO rename (maybe to ConsumingCallable) and move to util
 class FetcherCallable<V, R> implements Callable<Set<R>> {
 
     private final List<V> list;
