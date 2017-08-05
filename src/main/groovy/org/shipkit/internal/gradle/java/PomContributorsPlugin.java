@@ -35,7 +35,7 @@ public class PomContributorsPlugin implements Plugin<Project> {
                 subproject.getPlugins().withType(JavaPublishPlugin.class, new Action<Plugin>() {
                     @Override
                     public void execute(Plugin plugin) {
-                        final Task fetcher = project.getTasks().getByName(GithubContributorsPlugin.FETCH_ALL_CONTRIBUTORS_TASK);
+                        final Task fetcher = project.getTasks().getByName(GithubContributorsPlugin.FETCH_CONTRIBUTORS);
                         //Because maven-publish plugin uses new configuration model, we cannot get the task directly
                         //So we use 'matching' technique
                         subproject.getTasks().matching(withName(POM_TASK)).all(new Action<Task>() {

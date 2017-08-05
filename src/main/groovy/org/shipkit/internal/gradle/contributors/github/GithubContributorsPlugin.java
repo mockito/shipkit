@@ -4,7 +4,7 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
-import org.shipkit.gradle.notes.GithubContributorsTask;
+import org.shipkit.gradle.notes.FetchGitHubContributorsTask;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
@@ -21,19 +21,19 @@ import static org.shipkit.internal.gradle.util.BuildConventions.contributorsFile
  *
  * Adds tasks:
  * <ul>
- *     <li>fetchAllContributors - {@link GithubContributorsTask}</li>
+ *     <li>fetchContributors - {@link FetchGitHubContributorsTask}</li>
  * </ul>
  */
 public class GithubContributorsPlugin implements Plugin<Project> {
 
-    public final static String FETCH_ALL_CONTRIBUTORS_TASK = "fetchContributors";
+    public final static String FETCH_CONTRIBUTORS = "fetchContributors";
 
     public void apply(final Project project) {
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
-        final GithubContributorsTask task = TaskMaker.task(project, FETCH_ALL_CONTRIBUTORS_TASK, GithubContributorsTask.class, new Action<GithubContributorsTask>() {
+        final FetchGitHubContributorsTask task = TaskMaker.task(project, FETCH_CONTRIBUTORS, FetchGitHubContributorsTask.class, new Action<FetchGitHubContributorsTask>() {
             @Override
-            public void execute(final GithubContributorsTask task) {
+            public void execute(final FetchGitHubContributorsTask task) {
                 task.setDescription("Fetch info about all project contributors and store it in file");
                 task.setOutputFile(contributorsFile(project));
                 task.setEnabled(conf.getTeam().getContributors().isEmpty());
@@ -43,7 +43,7 @@ public class GithubContributorsPlugin implements Plugin<Project> {
         configureGithub(conf, task);
     }
 
-    private void configureGithub(ShipkitConfiguration conf, GithubContributorsTask task) {
+    private void configureGithub(ShipkitConfiguration conf, FetchGitHubContributorsTask task) {
         task.setDescription("Fetch info about all project contributors from GitHub and store it in file");
         task.setApiUrl(conf.getGitHub().getApiUrl());
         task.setReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());

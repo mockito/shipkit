@@ -20,7 +20,7 @@ import java.io.File;
  * https://developer.github.com/v3/repos/commits/
  * This way, we can also fetch the most recent contributors, necessary for correct release notes information.
  */
-public class GithubContributorsTask extends DefaultTask {
+public class FetchGitHubContributorsTask extends DefaultTask {
 
     @Input private String apiUrl;
     @Input private String repository;

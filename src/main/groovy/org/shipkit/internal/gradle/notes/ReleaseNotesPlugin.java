@@ -63,7 +63,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
             }
         });
 
-        final Task contributorsFetcher = project.getTasks().getByName(GithubContributorsPlugin.FETCH_ALL_CONTRIBUTORS_TASK);
+        final Task contributorsFetcher = project.getTasks().getByName(GithubContributorsPlugin.FETCH_CONTRIBUTORS);
 
         TaskMaker.task(project, UPDATE_NOTES_TASK, UpdateReleaseNotesTask.class, new Action<UpdateReleaseNotesTask>() {
             public void execute(final UpdateReleaseNotesTask t) {
