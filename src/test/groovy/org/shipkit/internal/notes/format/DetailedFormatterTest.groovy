@@ -10,12 +10,14 @@ import spock.lang.Specification
 
 class DetailedFormatterTest extends Specification {
 
-    def f = new DetailedFormatter("Release notes:\n\n", ["noteworthy": "Noteworthy", "bug": "Bugfixes"],
+    def f = new DetailedFormatter("Info about shipkit\n\n", "Release notes:\n\n", ["noteworthy": "Noteworthy", "bug": "Bugfixes"],
             "http://commits/{0}...{1}", "Bintray", [:], false)
 
     def "no releases"() {
         expect:
-        f.formatReleaseNotes([]) == """Release notes:
+        f.formatReleaseNotes([]) == """Info about shipkit
+
+Release notes:
 
 No release information."""
     }
@@ -25,7 +27,9 @@ No release information."""
         def d2 = new DefaultReleaseNotesData("1.9.0", new Date(1483100000000), Stub(ContributionSet), [], "v1.8.0", "v1.9.0")
 
         expect:
-        f.formatReleaseNotes([d1, d2]) == """Release notes:
+        f.formatReleaseNotes([d1, d2]) == """Info about shipkit
+
+Release notes:
 
 **2.0.0 (2017-01-04)** - no code changes (no commits) - published to [![Bintray](https://img.shields.io/badge/Bintray-2.0.0-green.svg)](Bintray/2.0.0)
 
@@ -44,7 +48,9 @@ No release information."""
         def d = new DefaultReleaseNotesData("2.0.0", new Date(1483500000000), c, [], "v1.9.0", "v2.0.0")
 
         expect:
-        f.formatReleaseNotes([d]) == """Release notes:
+        f.formatReleaseNotes([d]) == """Info about shipkit
+
+Release notes:
 
 **2.0.0 (2017-01-04)** - [1 commit](http://commits/v1.9.0...v2.0.0) by Szczepan Faber - published to [![Bintray](https://img.shields.io/badge/Bintray-2.0.0-green.svg)](Bintray/2.0.0)
  - No pull requests referenced in commit messages."""

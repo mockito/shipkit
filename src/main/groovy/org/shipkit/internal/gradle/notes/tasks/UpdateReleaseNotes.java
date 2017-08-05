@@ -12,6 +12,8 @@ import org.shipkit.internal.notes.contributors.DefaultContributor;
 import org.shipkit.internal.notes.contributors.DefaultProjectContributorsSet;
 import org.shipkit.internal.notes.contributors.ProjectContributorsSet;
 import org.shipkit.internal.notes.format.ReleaseNotesFormatters;
+import org.shipkit.internal.notes.header.HeaderProvider;
+import org.shipkit.internal.notes.header.HeaderRemover;
 import org.shipkit.internal.notes.model.Contributor;
 import org.shipkit.internal.notes.model.ProjectContributor;
 import org.shipkit.internal.notes.model.ReleaseNotesData;
@@ -25,6 +27,11 @@ import java.util.Map;
 public class UpdateReleaseNotes {
 
     private static final Logger LOG = Logging.getLogger(UpdateReleaseNotesTask.class);
+    private final HeaderProvider headerProvider;
+
+    public UpdateReleaseNotes(HeaderProvider headerProvider) {
+        this.headerProvider = headerProvider;
+    }
 
     public void updateReleaseNotes(UpdateReleaseNotesTask task) {
         String newContent = generateNewContent(task);
@@ -65,6 +72,8 @@ public class UpdateReleaseNotes {
     public String generateNewContent(UpdateReleaseNotesTask task) {
         LOG.lifecycle("  Building new release notes based on {}", task.getReleaseNotesFile());
 
+        String headerMessage = headerProvider.getHeader(task.getHeader());
+
         Collection<ReleaseNotesData> data = new ReleaseNotesSerializer().deserialize(IOUtil.readFully(task.getReleaseNotesData()));
 
         String vcsCommitTemplate = getVcsCommitTemplate(task);
@@ -79,7 +88,7 @@ public class UpdateReleaseNotes {
         }
 
         Map<String, Contributor> contributorsMap = contributorsMap(task.getContributors(), contributorsFromGitHub, task.getDevelopers());
-        String notes = ReleaseNotesFormatters.detailedFormatter(
+        String notes = ReleaseNotesFormatters.detailedFormatter(headerMessage,
             "", task.getGitHubLabelMapping(), vcsCommitTemplate, task.getPublicationRepository(), contributorsMap, task.isEmphasizeVersion())
             .formatReleaseNotes(data);
 

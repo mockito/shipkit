@@ -2,14 +2,17 @@ package org.shipkit.internal.gradle.notes.tasks
 
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
+import org.shipkit.internal.notes.header.HeaderProvider
 import spock.lang.Specification
 
 class UpdateReleaseNotesTaskTest extends Specification {
 
-    @Rule TemporaryFolder tmp = new TemporaryFolder()
-    UpdateReleaseNotes update = new UpdateReleaseNotes()
+    @Rule
+    TemporaryFolder tmp = new TemporaryFolder()
 
-    def "should update release notes if not in preview mode" (){
+    UpdateReleaseNotes update = new UpdateReleaseNotes(new HeaderProvider())
+
+    def "should update release notes if not in preview mode"() {
         def f = tmp.newFile("release-notes.md")
 
         when:
@@ -19,7 +22,7 @@ class UpdateReleaseNotesTaskTest extends Specification {
         f.text == "content"
     }
 
-    def "should not modify releaseNotesFile if in preview mode" (){
+    def "should not modify releaseNotesFile if in preview mode"() {
         def f = tmp.newFile("release-notes.md")
 
         when:
