@@ -1,3 +1,6 @@
+**0.9.24 (2017-08-05)** - [9 commits](https://github.com/mockito/shipkit/compare/v0.9.23...v0.9.24) by Adrian Nicos (8), [Szczepan Faber](http://github.com/szczepiq) (1) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.24-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.24)
+ - Information about Shipkit in release notes file [(#274)](https://github.com/mockito/shipkit/pull/274)
+
 **0.9.23 (2017-08-05)** - [2 commits](https://github.com/mockito/shipkit/compare/v0.9.22...v0.9.23) by [epeee](https://github.com/epeee) (1), [Wojtek Wilk](http://github.com/wwilk) (1) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.23-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.23)
  - rename Github* -> GitHub* [(#326)](https://github.com/mockito/shipkit/pull/326)
 
