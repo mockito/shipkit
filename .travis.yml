@@ -22,4 +22,4 @@ install:
  - true
 
 script:
-  - ./gradlew build -PcheckJava6Compatibility -s -i && ./gradlew ciPerformRelease
+  - ./gradlew build -PcheckJava6Compatibility -s -i && ./gradlew ciPerformRelease -d
