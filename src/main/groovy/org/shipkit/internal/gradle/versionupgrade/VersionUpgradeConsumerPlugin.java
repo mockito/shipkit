@@ -41,7 +41,7 @@ import org.shipkit.internal.util.RethrowingResultHandler;
  * </ul>
  *
  * Plugin should be used in client projects that want to have automated version upgrades of some other dependency, that use the producer version of this plugin.
- * Project with the producer plugin applied would then clone a fork of client project and run './gradlew performVersionUpgrade -PdependencyNewVersion=${VERSION}' on it.
+ * Project with the producer plugin applied would then clone a fork of client project and run './gradlew performVersionUpgrade -Pdependency=${group:name:version}' on it.
  *
  * Example of plugin usage:
  *
