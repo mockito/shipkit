@@ -1,3 +1,6 @@
+**0.9.26 (2017-08-06)** - [3 commits](https://github.com/mockito/shipkit/compare/v0.9.25...v0.9.26) by [Szczepan Faber](http://github.com/szczepiq) (2), [Erhard Pointl](http://github.com/epeee) (1) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.26-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.26)
+ - More clean up before 1.0 [(#327)](https://github.com/mockito/shipkit/pull/327)
+
 **0.9.25 (2017-08-06)** - [2 commits](https://github.com/mockito/shipkit/compare/v0.9.24...v0.9.25) by [Wojtek Wilk](http://github.com/wwilk) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.25-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.25)
  - Logging level on Travis changed temporarily to debug [(#328)](https://github.com/mockito/shipkit/pull/328)
 
