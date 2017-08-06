@@ -12,8 +12,9 @@ class CreatePullRequestTest extends Specification {
         def createPullRequestTask = tasksContainer.create("createPullRequest", CreatePullRequestTask)
         def versionUpgrade = new VersionUpgradeConsumerExtension(
             baseBranch: "master", dependencyName: "shipkit", newVersion: "0.1.5")
-        createPullRequestTask.setHeadBranch("shipkit-version-upgraded-0.1.5")
-        createPullRequestTask.setRepositoryName("mockito/shipkit-example")
+        createPullRequestTask.setVersionBranch("shipkit-version-upgraded-0.1.5")
+        createPullRequestTask.setUpstreamRepositoryName("mockito/shipkit-example")
+        createPullRequestTask.setForkRepositoryName("wwilk/shipkit-example")
         createPullRequestTask.setVersionUpgrade(versionUpgrade)
         def gitHubApi = Mock(GitHubApi)
 
@@ -26,7 +27,7 @@ class CreatePullRequestTest extends Specification {
                 '  "body": "This pull request was automatically created by Shipkit\'s' +
                             ' \'version-upgrade-customer\' Gradle plugin (http://shipkit.org).' +
                             ' Please merge it so that you are using fresh version of \'shipkit\' dependency.",' +
-                '  "head": "shipkit-version-upgraded-0.1.5",' +
+                '  "head": "wwilk:shipkit-version-upgraded-0.1.5",' +
                 '  "base": "master"}')
     }
 

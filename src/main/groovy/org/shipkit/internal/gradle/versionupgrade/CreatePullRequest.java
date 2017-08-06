@@ -19,18 +19,20 @@ class CreatePullRequest {
             LOG.lifecycle("  Skipping pull request creation due to dryRun = true");
             return;
         }
+        String headBranch = getHeadBranch(task.getForkRepositoryName(), task.getVersionBranch());
+
         LOG.lifecycle("  [INCUBATING] creating pull requests in incubating.");
         LOG.lifecycle("  Creating a pull request of title '{}' in repository '{}' between base = '{}' and head = '{}'.",
-            getTitle(task), task.getRepositoryName(), task.getVersionUpgrade().getBaseBranch(), task.getHeadBranch());
+            getTitle(task), task.getUpstreamRepositoryName(), task.getVersionUpgrade().getBaseBranch(), headBranch);
 
         String body = "{" +
             "  \"title\": \"" + getTitle(task) + "\"," +
             "  \"body\": \"" + getMessage(task) + "\"," +
-            "  \"head\": \"" + task.getHeadBranch() + "\"," +
+            "  \"head\": \"" + headBranch + "\"," +
             "  \"base\": \"" + task.getVersionUpgrade().getBaseBranch() + "\"" +
             "}";
 
-        gitHubApi.post("/repos/" + task.getRepositoryName() + "/pulls", body);
+        gitHubApi.post("/repos/" + task.getUpstreamRepositoryName() + "/pulls", body);
     }
 
     private String getMessage(CreatePullRequestTask task){
@@ -43,5 +45,13 @@ class CreatePullRequest {
     private String getTitle(CreatePullRequestTask task){
         VersionUpgradeConsumerExtension versionUpgrade = task.getVersionUpgrade();
         return String.format("Version of %s upgraded to %s", versionUpgrade.getDependencyName(), versionUpgrade.getNewVersion());
+    }
+
+    private String getHeadBranch(String forkRepositoryName, String headBranch) {
+        return getUserOfForkRepo(forkRepositoryName) + ":" + headBranch;
+    }
+
+    private String getUserOfForkRepo(String forkRepositoryName){
+        return forkRepositoryName.split("/")[0];
     }
 }

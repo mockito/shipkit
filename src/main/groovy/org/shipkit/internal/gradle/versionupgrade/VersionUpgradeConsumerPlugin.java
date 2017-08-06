@@ -191,14 +191,15 @@ public class VersionUpgradeConsumerPlugin implements Plugin<Project> {
                 task.mustRunAfter(PUSH_VERSION_UPGRADE);
                 task.setGitHubApiUrl(conf.getGitHub().getApiUrl());
                 task.setDryRun(conf.isDryRun());
-                task.setAuthToken(conf.getGitHub().getWriteAuthToken());
-                task.setHeadBranch(getVersionBranchName(versionUpgrade));
+                task.setAuthToken(conf.getLenient().getGitHub().getWriteAuthToken());
+                task.setVersionBranch(getVersionBranchName(versionUpgrade));
                 task.setVersionUpgrade(versionUpgrade);
+                task.setUpstreamRepositoryName(conf.getGitHub().getRepository());
 
                 gitOriginPlugin.provideOriginTo(task, new RethrowingResultHandler<GitRemoteOriginPlugin.GitOriginAuth>() {
                     @Override
                     public void onSuccess(GitRemoteOriginPlugin.GitOriginAuth result) {
-                        task.setRepositoryName(result.getOriginRepositoryName());
+                        task.setForkRepositoryName(result.getOriginRepositoryName());
                     }
                 });
             }
