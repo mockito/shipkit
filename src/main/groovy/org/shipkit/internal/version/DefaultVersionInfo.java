@@ -2,6 +2,7 @@ package org.shipkit.internal.version;
 
 import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.notes.util.IOUtil;
+import org.shipkit.version.VersionInfo;
 
 import java.io.File;
 import java.io.FileReader;

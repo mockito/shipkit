@@ -10,7 +10,7 @@ import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.version.Version;
-import org.shipkit.internal.version.VersionInfo;
+import org.shipkit.version.VersionInfo;
 
 import java.io.File;
 
@@ -32,12 +32,15 @@ import static java.util.Collections.singletonList;
  *     of type {@link VersionInfo} that contains version information</li>
  * </ul>
  *
+ * Added behavior:
+ *
+ * <ul>
+ *     <li>plugin loads 'version.properties' file to identify the version to build</li>
+ *     <li>if 'version.properties' does not exist, the plugin uses project version as declared in build.gradle file</li>
+ *     <li>'bumpVersionFile' task participates in 'gitCommit' task if {@link GitPlugin} is also applied</li>
+ * </ul>
+ *
  * Also, the plugin configures all projects' version property to the value specified in "version.properties"
- *
- * BEWARE! If version.properties doesn't exists, this plugin will create it automatically and set
- * version value to project.version
- *
- * Plugin adds bumped version changes if {@link GitPlugin} applied
  */
 public class VersioningPlugin implements Plugin<Project> {
 

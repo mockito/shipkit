@@ -3,14 +3,11 @@ package org.shipkit.internal.gradle.configuration;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
 import org.gradle.api.plugins.ObjectConfigurationAction;
-import org.shipkit.internal.gradle.git.GitRemoteOriginPlugin;
-import org.shipkit.internal.gradle.init.InitPlugin;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
+import org.shipkit.internal.gradle.init.InitPlugin;
 import org.shipkit.internal.gradle.version.VersioningPlugin;
-import org.shipkit.internal.version.VersionInfo;
+import org.shipkit.version.VersionInfo;
 
 import java.io.File;
 
