@@ -23,7 +23,7 @@ public class FetchReleaseNotesTask extends DefaultTask {
     @Input private String gitHubApiUrl;
     @Input private String gitHubReadOnlyAuthToken;
     @Input private String gitHubRepository;
-    @Input private String tagPrefix = "v";
+    @Input private String tagPrefix;
     @Input private boolean onlyPullRequests;
     @Input private File gitWorkDir = getProject().getRootDir();
     @Input private Collection<String> gitHubLabels = Collections.emptyList();

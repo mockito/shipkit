@@ -59,6 +59,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
                 t.setGitHubReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
                 t.setGitHubRepository(conf.getGitHub().getRepository());
                 t.setPreviousVersion(conf.getPreviousReleaseVersion());
+                t.setTagPrefix(conf.getGit().getTagPrefix());
                 t.setIgnoreCommitsContaining(conf.getReleaseNotes().getIgnoreCommitsContaining());
             }
         });
