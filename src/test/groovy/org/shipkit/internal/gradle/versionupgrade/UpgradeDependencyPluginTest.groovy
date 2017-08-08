@@ -1,6 +1,6 @@
 package org.shipkit.internal.gradle.versionupgrade
 
-import org.gradle.api.tasks.Exec
+import org.shipkit.gradle.exec.ShipkitExecTask
 import org.shipkit.gradle.git.GitPushTask
 import org.shipkit.internal.gradle.git.GitCheckOutTask
 import org.shipkit.internal.gradle.git.GitPullTask
@@ -111,10 +111,10 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
         versionUpgrade.buildFile = dependencyFile
         project.evaluate()
 
-        Exec task = project.tasks.commitVersionUpgrade
+        ShipkitExecTask task = project.tasks.commitVersionUpgrade
 
         then:
-        task.commandLine ==
+        task.execCommands[0].commandLine ==
             ["git", "commit", "-m", "shipkit version upgraded to 1.2.30", dependencyFile.absolutePath]
     }
 
