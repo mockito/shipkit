@@ -8,15 +8,21 @@ import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import java.io.IOException;
 
 /**
- * Creates a pull request in {@link CreatePullRequestTask#repositoryName} between
- * {@link VersionUpgradeConsumerExtension#baseBranch} and {@link CreatePullRequestTask#headBranch}
+ * Creates a pull request in {@link CreatePullRequestTask#upstreamRepositoryName} between
+ * {@link VersionUpgradeConsumerExtension#baseBranch} and {@link CreatePullRequestTask#versionBranch} from
+ * {@link CreatePullRequestTask#forkRepositoryName}
+ *
+ * It is assumed that task is performed on fork repository, so {@link CreatePullRequestTask#forkRepositoryName}
+ * is based on origin repo, see {@link org.shipkit.internal.gradle.git.tasks.GitOriginRepoProvider}
+ * and {@link CreatePullRequestTask#upstreamRepositoryName} is based on {@link ShipkitConfiguration.GitHub#getRepository()}
  */
 public class CreatePullRequestTask extends DefaultTask{
 
-    @Input private String repositoryName;
+    @Input private String upstreamRepositoryName;
     @Input private String gitHubApiUrl;
     @Input private String authToken;
-    @Input private String headBranch;
+    @Input private String versionBranch;
+    @Input private String forkRepositoryName;
 
     private boolean dryRun;
     private VersionUpgradeConsumerExtension versionUpgrade;
@@ -29,15 +35,30 @@ public class CreatePullRequestTask extends DefaultTask{
     /**
      * See {@link ShipkitConfiguration.GitHub#getRepository()}
      */
-    public String getRepositoryName() {
-        return repositoryName;
+    public String getUpstreamRepositoryName() {
+        return upstreamRepositoryName;
     }
 
     /**
      * See {@link ShipkitConfiguration.GitHub#getRepository()}
      */
-    public void setRepositoryName(String repositoryName) {
-        this.repositoryName = repositoryName;
+    public void setUpstreamRepositoryName(String upstreamRepositoryName) {
+        this.upstreamRepositoryName = upstreamRepositoryName;
+    }
+
+    /**
+     * It is assumed that this task is performed on fork of the upstream repo, so this value is taken from
+     * git remote origin. See {@link org.shipkit.internal.gradle.git.tasks.GitOriginRepoProvider}
+     */
+    public String getForkRepositoryName() {
+        return forkRepositoryName;
+    }
+
+    /**
+     * See {@link #getForkRepositoryName()}
+     */
+    public void setForkRepositoryName(String forkRepositoryName) {
+        this.forkRepositoryName = forkRepositoryName;
     }
 
     /**
@@ -71,15 +92,15 @@ public class CreatePullRequestTask extends DefaultTask{
     /**
      * Head branch of pull request
      */
-    public String getHeadBranch() {
-        return headBranch;
+    public String getVersionBranch() {
+        return versionBranch;
     }
 
     /**
-     * See {@link #getHeadBranch()}
+     * See {@link #getVersionBranch()}
      */
-    public void setHeadBranch(String headBranch) {
-        this.headBranch = headBranch;
+    public void setVersionBranch(String versionBranch) {
+        this.versionBranch = versionBranch;
     }
 
     public VersionUpgradeConsumerExtension getVersionUpgrade() {

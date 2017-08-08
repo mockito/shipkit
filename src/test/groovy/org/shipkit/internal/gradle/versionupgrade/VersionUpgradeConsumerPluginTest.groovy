@@ -135,7 +135,7 @@ class VersionUpgradeConsumerPluginTest extends PluginSpecification {
         given:
         project.extensions.dependency = "org.shipkit:shipkit:1.2.30"
         conf.gitHub.apiUrl = "http://api.com"
-        conf.gitHub.repository = "http://repository.com"
+        conf.gitHub.repository = "mockito/mockito"
         conf.gitHub.writeAuthToken = "writeToken"
 
         when:
@@ -146,6 +146,7 @@ class VersionUpgradeConsumerPluginTest extends PluginSpecification {
         task.gitHubApiUrl == "http://api.com"
         task.authToken == "writeToken"
         task.versionUpgrade == versionUpgrade
-        task.headBranch == "upgrade-shipkit-to-1.2.30"
+        task.versionBranch == "upgrade-shipkit-to-1.2.30"
+        task.upstreamRepositoryName == "mockito/mockito"
     }
 }
