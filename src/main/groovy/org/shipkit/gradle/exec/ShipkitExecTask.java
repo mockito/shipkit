@@ -17,6 +17,13 @@ public class ShipkitExecTask extends DefaultTask {
     private Collection<ExecCommand> execCommands = new LinkedList<ExecCommand>();
 
     /**
+     * Executes all commands
+     */
+    @TaskAction public void execCommands() {
+        new ShipkitExec().execCommands(this.getExecCommands(), this.getProject());
+    }
+
+    /**
      * Sequence of command line executions.
      * Will be executed sequentially in given order.
      */
@@ -32,9 +39,9 @@ public class ShipkitExecTask extends DefaultTask {
     }
 
     /**
-     * Executes all commands
+     * Appends single exec command to the task
      */
-    @TaskAction public void execCommands() {
-        new ShipkitExec().execCommands(this.getExecCommands(), this.getProject());
+    public void execCommand(ExecCommand execCommand) {
+       execCommands.add(execCommand);
     }
 }
