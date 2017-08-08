@@ -24,8 +24,8 @@ class VersionUpgradeProducerPluginIntegTest extends GradleSpecification {
 
         expect:
         def result = pass("produceVersionUpgrade", "-m", "-s")
-        result.tasks.join("\n") == """:cloneConsumerRepo_wwilk_mockito=SKIPPED
-:produceVersionUpgrade_wwilk_mockito=SKIPPED
+        result.tasks.join("\n") == """:cloneConsumerRepoWwilkMockito=SKIPPED
+:produceVersionUpgradeWwilkMockito=SKIPPED
 :produceVersionUpgrade=SKIPPED"""
     }
 }

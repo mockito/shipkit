@@ -27,10 +27,10 @@ class VersionUpgradeProducerPluginTest extends PluginSpecification {
 
         then:
         project.tasks.produceVersionUpgrade
-        project.tasks['produceVersionUpgrade_wwilk_shipkit-example']
-        project.tasks['produceVersionUpgrade_wwilk_mockito']
-        project.tasks['cloneConsumerRepo_wwilk_shipkit-example']
-        project.tasks['cloneConsumerRepo_wwilk_mockito']
+        project.tasks['produceVersionUpgradeWwilkShipkitExample']
+        project.tasks['produceVersionUpgradeWwilkMockito']
+        project.tasks['cloneConsumerRepoWwilkShipkitExample']
+        project.tasks['cloneConsumerRepoWwilkMockito']
     }
 
     def "should correctly configure clone consumer repo task"() {
@@ -41,8 +41,8 @@ class VersionUpgradeProducerPluginTest extends PluginSpecification {
         project.evaluate()
 
         then:
-        CloneGitRepositoryTask task = project.tasks['cloneConsumerRepo_wwilk_mockito']
-        task.targetDir == project.file(project.buildDir.absolutePath + '/_wwilk_mockito')
+        CloneGitRepositoryTask task = project.tasks['cloneConsumerRepoWwilkMockito']
+        task.targetDir == project.file(project.buildDir.absolutePath + '/wwilkMockito')
         task.repositoryUrl == 'http://git.com/wwilk/mockito'
     }
 
@@ -55,8 +55,8 @@ class VersionUpgradeProducerPluginTest extends PluginSpecification {
         project.evaluate()
 
         then:
-        Exec task = project.tasks['produceVersionUpgrade_wwilk_mockito']
-        task.workingDir == project.file(project.buildDir.absolutePath + '/_wwilk_mockito')
+        Exec task = project.tasks['produceVersionUpgradeWwilkMockito']
+        task.workingDir == project.file(project.buildDir.absolutePath + '/wwilkMockito')
         task.commandLine == ["./gradlew", "performVersionUpgrade", "-Pdependency=depGroup:depName:0.1.2"]
     }
 
