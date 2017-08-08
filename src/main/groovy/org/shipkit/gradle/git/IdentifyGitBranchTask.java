@@ -2,10 +2,8 @@ package org.shipkit.gradle.git;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.internal.exec.Exec;
+import org.shipkit.internal.gradle.git.tasks.IdentifyGitBranch;
 
 import java.io.File;
 import java.util.List;
@@ -17,19 +15,14 @@ import static java.util.Arrays.asList;
  */
 public class IdentifyGitBranchTask extends DefaultTask {
 
-    private final Logger LOG = Logging.getLogger(IdentifyGitBranchTask.class);
-
     private List<String> commandLine = asList("git", "rev-parse", "--abbrev-ref", "HEAD");
     private File workDir = getProject().getRootDir();
     private String branch;
 
+    private final IdentifyGitBranch identifyBranch = new IdentifyGitBranch();
+
     @TaskAction public void identifyBranch() {
-        if (branch == null) {
-            this.branch = Exec.getProcessRunner(workDir)
-                    .run(commandLine)
-                    .trim();
-        }
-        LOG.lifecycle("  Current branch: " + branch);
+        identifyBranch.identifyBranch(this, branch);
     }
 
     /**
@@ -38,10 +31,7 @@ public class IdentifyGitBranchTask extends DefaultTask {
      * The branch is identified either by running the task or when {@link #setBranch(String)} is explicitly set on the task.
      */
     public String getBranch() {
-        if (branch == null) {
-            throw new BranchNotAvailableException("Don't know the branch yet because " + getPath() + " task was not executed yet!");
-        }
-        return branch;
+        return identifyBranch.getBranch(branch);
     }
 
     /**
