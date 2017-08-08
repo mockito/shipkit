@@ -6,8 +6,6 @@ import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.gradle.notes.tasks.FetchContributors;
-import org.shipkit.internal.notes.contributors.ContributorsProvider;
-import org.shipkit.internal.notes.contributors.github.Contributors;
 
 import java.io.File;
 
@@ -29,8 +27,7 @@ public class FetchGitHubContributorsTask extends DefaultTask {
 
     @TaskAction
     public void fetchContributors() {
-        ContributorsProvider contributorsProvider = Contributors.getGitHubContributorsProvider(getApiUrl(), getRepository(), getReadOnlyAuthToken());
-        new FetchContributors().fetchContributors(contributorsProvider, this);
+        new FetchContributors().fetchContributors(this);
     }
 
     /**
