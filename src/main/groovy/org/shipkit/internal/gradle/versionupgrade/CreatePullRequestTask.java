@@ -9,7 +9,7 @@ import java.io.IOException;
 
 /**
  * Creates a pull request in {@link CreatePullRequestTask#upstreamRepositoryName} between
- * {@link VersionUpgradeConsumerExtension#baseBranch} and {@link CreatePullRequestTask#versionBranch} from
+ * {@link UpgradeDependencyExtension#baseBranch} and {@link CreatePullRequestTask#versionBranch} from
  * {@link CreatePullRequestTask#forkRepositoryName}
  *
  * It is assumed that task is performed on fork repository, so {@link CreatePullRequestTask#forkRepositoryName}
@@ -25,7 +25,7 @@ public class CreatePullRequestTask extends DefaultTask{
     @Input private String forkRepositoryName;
 
     private boolean dryRun;
-    private VersionUpgradeConsumerExtension versionUpgrade;
+    private UpgradeDependencyExtension versionUpgrade;
 
     @TaskAction
     public void createPullRequest() throws IOException {
@@ -103,11 +103,11 @@ public class CreatePullRequestTask extends DefaultTask{
         this.versionBranch = versionBranch;
     }
 
-    public VersionUpgradeConsumerExtension getVersionUpgrade() {
+    public UpgradeDependencyExtension getVersionUpgrade() {
         return versionUpgrade;
     }
 
-    public void setVersionUpgrade(VersionUpgradeConsumerExtension versionUpgrade) {
+    public void setVersionUpgrade(UpgradeDependencyExtension versionUpgrade) {
         this.versionUpgrade = versionUpgrade;
     }
 

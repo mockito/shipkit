@@ -11,7 +11,7 @@ class DependencyNewVersionParserTest extends Specification {
         parser = new DependencyNewVersionParser("SHIP-kit_group1:SHIP-kit_parser1:0.1.2")
 
         expect:
-        def versionUpgrade = new VersionUpgradeConsumerExtension()
+        def versionUpgrade = new UpgradeDependencyExtension()
         parser.fillVersionUpgradeExtension(versionUpgrade)
         versionUpgrade.dependencyGroup == "SHIP-kit_group1"
         versionUpgrade.dependencyName == "SHIP-kit_parser1"
@@ -23,7 +23,7 @@ class DependencyNewVersionParserTest extends Specification {
         parser = new DependencyNewVersionParser("1.2.3")
 
         when:
-        parser.fillVersionUpgradeExtension(new VersionUpgradeConsumerExtension())
+        parser.fillVersionUpgradeExtension(new UpgradeDependencyExtension())
 
         then:
         def ex = thrown(IllegalArgumentException)
@@ -36,7 +36,7 @@ class DependencyNewVersionParserTest extends Specification {
         parser = new DependencyNewVersionParser(null)
 
         when:
-        def versionUpgrade = new VersionUpgradeConsumerExtension()
+        def versionUpgrade = new UpgradeDependencyExtension()
         parser.fillVersionUpgradeExtension(versionUpgrade)
 
         then:

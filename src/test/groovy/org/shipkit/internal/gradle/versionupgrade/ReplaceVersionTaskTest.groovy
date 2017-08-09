@@ -16,7 +16,7 @@ class ReplaceVersionTaskTest extends Specification {
 
         configFile << "dependencies{ compile org.shipkit:shipkit:0.1.2 }"
 
-        def versionUpgrade = new VersionUpgradeConsumerExtension(
+        def versionUpgrade = new UpgradeDependencyExtension(
             dependencyGroup: "org.shipkit",
             dependencyName: "shipkit",
             newVersion: "0.2.3",

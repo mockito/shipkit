@@ -3,9 +3,9 @@ package org.shipkit.internal.gradle.versionupgrade;
 import java.io.File;
 
 /**
- * Configuration of {@link VersionUpgradeConsumerPlugin}
+ * Configuration of {@link UpgradeDependencyPlugin}
  */
-public class VersionUpgradeConsumerExtension {
+public class UpgradeDependencyExtension {
     private String baseBranch;
     private File buildFile;
     private String newVersion;

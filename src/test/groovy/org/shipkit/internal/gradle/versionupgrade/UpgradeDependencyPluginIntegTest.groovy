@@ -2,7 +2,7 @@ package org.shipkit.internal.gradle.versionupgrade
 
 import testutil.GradleSpecification
 
-class VersionUpgradeConsumerPluginIntegTest extends GradleSpecification {
+class UpgradeDependencyPluginIntegTest extends GradleSpecification {
 
     def "all tasks in dry run"() {
         projectDir.newFolder("gradle")
@@ -14,7 +14,7 @@ class VersionUpgradeConsumerPluginIntegTest extends GradleSpecification {
         """
 
         buildFile << """
-            apply plugin: "org.shipkit.version-upgrade-consumer"
+            apply plugin: "org.shipkit.upgrade-dependency"
         """
 
         projectDir.newFile("version.properties") << "version=1.0.0"

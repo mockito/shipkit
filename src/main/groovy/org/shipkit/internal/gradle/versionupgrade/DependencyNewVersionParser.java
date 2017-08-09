@@ -31,7 +31,7 @@ public class DependencyNewVersionParser {
         return dependencyNewVersion.split(":");
     }
 
-    public void fillVersionUpgradeExtension(VersionUpgradeConsumerExtension versionUpgrade){
+    public void fillVersionUpgradeExtension(UpgradeDependencyExtension versionUpgrade){
         if(dependencyNewVersion != null) {
             if(!isValid()){
                 throw new IllegalArgumentException(
