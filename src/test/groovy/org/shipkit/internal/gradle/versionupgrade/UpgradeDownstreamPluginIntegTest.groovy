@@ -2,7 +2,7 @@ package org.shipkit.internal.gradle.versionupgrade
 
 import testutil.GradleSpecification
 
-class VersionUpgradeProducerPluginIntegTest extends GradleSpecification {
+class UpgradeDownstreamPluginIntegTest extends GradleSpecification {
 
     def "all tasks in dry run"() {
         projectDir.newFolder("gradle")
@@ -13,19 +13,19 @@ class VersionUpgradeProducerPluginIntegTest extends GradleSpecification {
         """
 
         buildFile << """
-            apply plugin: "org.shipkit.version-upgrade-producer"
+            apply plugin: "org.shipkit.upgrade-downstream"
             
-            versionUpgradeProducer{
-                consumersRepositoriesNames = ['wwilk/mockito']
+            upgradeDownstream{
+                repositories = ['wwilk/mockito']
             }
         """
 
         projectDir.newFile("version.properties") << "version=1.0.0"
 
         expect:
-        def result = pass("produceVersionUpgrade", "-m", "-s")
-        result.tasks.join("\n") == """:cloneConsumerRepoWwilkMockito=SKIPPED
-:produceVersionUpgradeWwilkMockito=SKIPPED
-:produceVersionUpgrade=SKIPPED"""
+        def result = pass("upgradeDownstream", "-m", "-s")
+        result.tasks.join("\n") == """:cloneWwilkMockito=SKIPPED
+:upgradeWwilkMockito=SKIPPED
+:upgradeDownstream=SKIPPED"""
     }
 }

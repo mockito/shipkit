@@ -28,9 +28,9 @@ import static org.shipkit.internal.util.ArgumentValidation.notNull;
  * and adds following tasks:
  *
  * <ul>
- *     <li>cloneConsumerRepo{consumerRepository} - clones consumer repository into temporary directory</li>
- *     <li>produceVersionUpgrade{consumerRepository} - runs task performVersionUpgrade on consumerRepository</li>
- *     <li>produceVersionUpgrade - task aggregating all of the produceVersionUpgrade{consumerRepository} tasks</li>
+ *     <li>clone{consumerRepository} - clones consumer repository into temporary directory</li>
+ *     <li>upgrade{consumerRepository} - runs task performVersionUpgrade on consumerRepository</li>
+ *     <li>upgradeDownstream - task aggregating all of the upgrade{consumerRepository} tasks</li>
  * </ul>
  *
  * Plugin performs a version upgrade of the project that it's applied in, for all consumer repositories defined.
@@ -38,10 +38,10 @@ import static org.shipkit.internal.util.ArgumentValidation.notNull;
  *
  * Configure your 'shipkit.gradle' file like here:
  *
- *      apply plugin: 'org.shipkit.version-upgrade-producer'
+ *      apply plugin: 'org.shipkit.upgrade-downstream'
  *
- *      versionUpgradeProducer{
- *          consumersRepositoriesNames = ['wwilk/shipkit', 'wwilk/mockito']
+ *      upgradeDownstream{
+ *          repositories = ['wwilk/shipkit', 'wwilk/mockito']
  *      }
  *
  * and then call:
@@ -49,29 +49,29 @@ import static org.shipkit.internal.util.ArgumentValidation.notNull;
  * ./gradlew produceVersionUpgrade
  *
  */
-public class VersionUpgradeProducerPlugin implements Plugin<Project> {
+public class UpgradeDownstreamPlugin implements Plugin<Project> {
 
-    private VersionUpgradeProducerExtension versionUpgrade;
+    private UpgradeDownstreamExtension upgradeDownstreamExtension;
 
     @Override
     public void apply(final Project project) {
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
-        versionUpgrade = project.getExtensions().create("versionUpgradeProducer", VersionUpgradeProducerExtension.class);
+        upgradeDownstreamExtension = project.getExtensions().create("upgradeDownstream", UpgradeDownstreamExtension.class);
 
-        final Task performAllUpdates = TaskMaker.task(project, "produceVersionUpgrade", new Action<Task>() {
+        final Task performAllUpdates = TaskMaker.task(project, "upgradeDownstream", new Action<Task>() {
             @Override
             public void execute(final Task task) {
-                task.setDescription("Performs dependency upgrade in all consumer repositories.");
+                task.setDescription("Performs dependency upgrade in all downstream repositories.");
             }
         });
 
         DeferredConfiguration.deferredConfiguration(project, new Runnable() {
             @Override
             public void run() {
-                notNull(versionUpgrade.getConsumersRepositoriesNames(),
-                    "'versionUpgradeProducer.consumersRepositoriesName'");
-                for(String consumerRepositoryName : versionUpgrade.getConsumersRepositoriesNames()){
+                notNull(upgradeDownstreamExtension.getRepositories(),
+                    "'upgradeDownstream.repositories'");
+                for(String consumerRepositoryName : upgradeDownstreamExtension.getRepositories()){
                     Task cloneTask = createConsumerCloneTask(project, conf, consumerRepositoryName);
                     Task performUpdate = createProduceUpgradeTask(project, consumerRepositoryName);
                     performUpdate.dependsOn(cloneTask);
@@ -83,7 +83,7 @@ public class VersionUpgradeProducerPlugin implements Plugin<Project> {
 
     private Task createConsumerCloneTask(final Project project, final ShipkitConfiguration conf, final String consumerRepository){
         return TaskMaker.task(project,
-            "cloneConsumerRepo" + capitalize(toCamelCase(consumerRepository)),
+            "clone" + capitalize(toCamelCase(consumerRepository)),
             CloneGitRepositoryTask.class,
             new Action<CloneGitRepositoryTask>() {
                 @Override
@@ -97,7 +97,7 @@ public class VersionUpgradeProducerPlugin implements Plugin<Project> {
     }
 
     private Task createProduceUpgradeTask(final Project project, final String consumerRepository){
-        return TaskMaker.execTask(project, "produceVersionUpgrade" + capitalize(toCamelCase(consumerRepository)), new Action<Exec>() {
+        return TaskMaker.execTask(project, "upgrade" + capitalize(toCamelCase(consumerRepository)), new Action<Exec>() {
             @Override
             public void execute(final Exec task) {
                 task.setDescription("Performs dependency upgrade in " + consumerRepository);
@@ -108,7 +108,7 @@ public class VersionUpgradeProducerPlugin implements Plugin<Project> {
     }
 
     private File getConsumerRepoTempDir(Project project, String consumerRepository) {
-        return new File(project.getBuildDir().getAbsolutePath() + "/" + toCamelCase(consumerRepository));
+        return new File(project.getBuildDir().getAbsolutePath() + "/downstream-upgrade/" + toCamelCase(consumerRepository));
     }
 
     private String getDependencyProperty(Project project){
@@ -127,7 +127,7 @@ public class VersionUpgradeProducerPlugin implements Plugin<Project> {
     }
 
     @ExposedForTesting
-    protected VersionUpgradeProducerExtension getVersionUpgrade(){
-        return versionUpgrade;
+    protected UpgradeDownstreamExtension getUpgradeDownstreamExtension(){
+        return upgradeDownstreamExtension;
     }
 }

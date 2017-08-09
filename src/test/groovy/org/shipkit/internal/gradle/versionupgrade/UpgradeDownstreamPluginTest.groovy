@@ -6,57 +6,57 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.shipkit.internal.gradle.git.CloneGitRepositoryTask
 import testutil.PluginSpecification
 
-class VersionUpgradeProducerPluginTest extends PluginSpecification {
+class UpgradeDownstreamPluginTest extends PluginSpecification {
 
     def "should fail when no consumer repositories defined"() {
         when:
-        project.plugins.apply(VersionUpgradeProducerPlugin).versionUpgrade
+        project.plugins.apply(UpgradeDownstreamPlugin).upgradeDownstreamExtension
         project.evaluate()
 
         then:
         def ex = thrown(ProjectConfigurationException)
         ex.cause instanceof IllegalArgumentException
-        ex.cause.message == "'versionUpgradeProducer.consumersRepositoriesName' cannot be null."
+        ex.cause.message == "'upgradeDownstream.repositories' cannot be null."
     }
 
     def "should correctly configure tasks for consumer repositories"() {
         when:
-        def versionUpgrade = project.plugins.apply(VersionUpgradeProducerPlugin).versionUpgrade
-        versionUpgrade.consumersRepositoriesNames = ['wwilk/shipkit-example', 'wwilk/mockito']
+        def upgradeDownstream = project.plugins.apply(UpgradeDownstreamPlugin).upgradeDownstreamExtension
+        upgradeDownstream.repositories = ['wwilk/shipkit-example', 'wwilk/mockito']
         project.evaluate()
 
         then:
-        project.tasks.produceVersionUpgrade
-        project.tasks['produceVersionUpgradeWwilkShipkitExample']
-        project.tasks['produceVersionUpgradeWwilkMockito']
-        project.tasks['cloneConsumerRepoWwilkShipkitExample']
-        project.tasks['cloneConsumerRepoWwilkMockito']
+        project.tasks.upgradeDownstream
+        project.tasks['upgradeWwilkShipkitExample']
+        project.tasks['upgradeWwilkMockito']
+        project.tasks['cloneWwilkShipkitExample']
+        project.tasks['cloneWwilkMockito']
     }
 
     def "should correctly configure clone consumer repo task"() {
         when:
-        def versionUpgrade = project.plugins.apply(VersionUpgradeProducerPlugin).versionUpgrade
-        versionUpgrade.consumersRepositoriesNames = ['wwilk/mockito']
+        def upgradeDownstream = project.plugins.apply(UpgradeDownstreamPlugin).upgradeDownstreamExtension
+        upgradeDownstream.repositories = ['wwilk/mockito']
         conf.gitHub.url = 'http://git.com'
         project.evaluate()
 
         then:
-        CloneGitRepositoryTask task = project.tasks['cloneConsumerRepoWwilkMockito']
-        task.targetDir == project.file(project.buildDir.absolutePath + '/wwilkMockito')
+        CloneGitRepositoryTask task = project.tasks['cloneWwilkMockito']
+        task.targetDir == project.file(project.buildDir.absolutePath + '/downstream-upgrade/wwilkMockito')
         task.repositoryUrl == 'http://git.com/wwilk/mockito'
     }
 
     def "should correctly configure produce version upgrade task"() {
         when:
-        def versionUpgrade = project.plugins.apply(VersionUpgradeProducerPlugin).versionUpgrade
-        versionUpgrade.consumersRepositoriesNames = ['wwilk/mockito']
+        def upgradeDownstream = project.plugins.apply(UpgradeDownstreamPlugin).upgradeDownstreamExtension
+        upgradeDownstream.repositories = ['wwilk/mockito']
         project.group = "depGroup"
 
         project.evaluate()
 
         then:
-        Exec task = project.tasks['produceVersionUpgradeWwilkMockito']
-        task.workingDir == project.file(project.buildDir.absolutePath + '/wwilkMockito')
+        Exec task = project.tasks['upgradeWwilkMockito']
+        task.workingDir == project.file(project.buildDir.absolutePath + '/downstream-upgrade/wwilkMockito')
         task.commandLine == ["./gradlew", "performVersionUpgrade", "-Pdependency=depGroup:depName:0.1.2"]
     }
 
