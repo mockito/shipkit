@@ -4,6 +4,13 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 
+/**
+ * Performs git pull operation.
+ * It does not expose the command line parameters when build is executed with '-i' (--info) level.
+ * It masks secret value configured via {@link #setSecretValue(String)} from logging, task output and exception messages.
+ * Replaces secret value with "[SECRET]".
+ * It really helps debugging if we can see the output and logging without exposing secret values like GitHub write auth token.
+ */
 public class GitPullTask extends DefaultTask{
 
     @Input private String url;
