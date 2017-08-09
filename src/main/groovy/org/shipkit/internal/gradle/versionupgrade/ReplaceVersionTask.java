@@ -19,6 +19,7 @@ public class ReplaceVersionTask extends DefaultTask{
     public static final String VERSION_REGEX = "[0-9.]+";
 
     private UpgradeDependencyExtension versionUpgrade;
+    private Boolean buildFileUpdated;
 
     @TaskAction
     public void replaceVersion(){
@@ -30,7 +31,12 @@ public class ReplaceVersionTask extends DefaultTask{
 
         String content = IOUtil.readFully(versionUpgrade.getBuildFile());
         String updatedContent = content.replaceAll(versionPattern, replacement);
-        IOUtil.writeFile(versionUpgrade.getBuildFile().getAbsoluteFile(), updatedContent);
+
+        buildFileUpdated = !content.equals(updatedContent);
+
+        if(buildFileUpdated) {
+            IOUtil.writeFile(versionUpgrade.getBuildFile().getAbsoluteFile(), updatedContent);
+        }
     }
 
     public UpgradeDependencyExtension getVersionUpgrade() {
@@ -39,5 +45,16 @@ public class ReplaceVersionTask extends DefaultTask{
 
     public void setVersionUpgrade(UpgradeDependencyExtension versionUpgrade) {
         this.versionUpgrade = versionUpgrade;
+    }
+
+    /**
+     * Was buildFile updated during the version replacement?
+     * It wasn't when newVersion == previousVersion
+     */
+    public boolean isBuildFileUpdated(){
+        if(buildFileUpdated == null){
+            throw new IllegalStateException("Property 'buildFileUpdated' should not be accessed before 'replaceVersion' task is executed.");
+        }
+        return buildFileUpdated;
     }
 }

@@ -6,6 +6,7 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
+import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.Exec;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.gradle.git.GitPushTask;
@@ -140,7 +141,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
             }
         });
 
-        TaskMaker.task(project, REPLACE_VERSION, ReplaceVersionTask.class, new Action<ReplaceVersionTask>() {
+        final ReplaceVersionTask replaceVersionTask = TaskMaker.task(project, REPLACE_VERSION, ReplaceVersionTask.class, new Action<ReplaceVersionTask>() {
             @Override
             public void execute(final ReplaceVersionTask task) {
                 task.setDescription("Replaces dependency version in config file.");
@@ -162,6 +163,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                         exec.commandLine("git", "commit", "-m", message, upgradeDependencyExtension.getBuildFile());
                     }
                 });
+                exec.onlyIf(wasBuildFileUpdatedSpec(replaceVersionTask));
             }
         });
 
@@ -181,6 +183,8 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                         task.setUrl(result.getOriginRepositoryUrl());
                     }
                 });
+
+                task.onlyIf(wasBuildFileUpdatedSpec(replaceVersionTask));
             }
         });
 
@@ -202,6 +206,8 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                         task.setForkRepositoryName(result.getOriginRepositoryName());
                     }
                 });
+
+                task.onlyIf(wasBuildFileUpdatedSpec(replaceVersionTask));
             }
         });
 
@@ -218,6 +224,15 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.dependsOn(CREATE_PULL_REQUEST);
             }
         });
+    }
+
+    private Spec<Task> wasBuildFileUpdatedSpec(final ReplaceVersionTask replaceVersionTask) {
+        return new Spec<Task>() {
+            @Override
+            public boolean isSatisfiedBy(Task element) {
+                return replaceVersionTask.isBuildFileUpdated();
+            }
+        };
     }
 
     private String getVersionBranchName(UpgradeDependencyExtension versionUpgrade){
