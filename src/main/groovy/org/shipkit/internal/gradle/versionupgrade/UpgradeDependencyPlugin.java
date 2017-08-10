@@ -52,7 +52,7 @@ import org.shipkit.internal.util.RethrowingResultHandler;
  *
  *      upgradeDependency{
  *          baseBranch = 'release/2.x'
- *          buildFile = file('gradle.properties')
+ *          buildFile = file('build.gradle')
  *      }
  *
  * and then call it:
