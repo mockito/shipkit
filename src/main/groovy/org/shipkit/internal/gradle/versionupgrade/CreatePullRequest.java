@@ -43,7 +43,7 @@ class CreatePullRequest {
     }
 
     private String getTitle(CreatePullRequestTask task){
-        VersionUpgradeConsumerExtension versionUpgrade = task.getVersionUpgrade();
+        UpgradeDependencyExtension versionUpgrade = task.getVersionUpgrade();
         return String.format("Version of %s upgraded to %s", versionUpgrade.getDependencyName(), versionUpgrade.getNewVersion());
     }
 

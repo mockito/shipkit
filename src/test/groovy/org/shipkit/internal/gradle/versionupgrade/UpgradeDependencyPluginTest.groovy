@@ -6,15 +6,15 @@ import org.shipkit.internal.gradle.git.GitCheckOutTask
 import org.shipkit.internal.gradle.git.GitPullTask
 import testutil.PluginSpecification
 
-class VersionUpgradeConsumerPluginTest extends PluginSpecification {
+class UpgradeDependencyPluginTest extends PluginSpecification {
 
     def setup() {
         conf.gitHub.writeAuthToken = "secret"
     }
 
-    def "should initialize VersionUpgradeConsumerPlugin correctly and with default values"() {
+    def "should initialize plugin correctly and with default values"() {
         when:
-        def versionUpgrade = project.plugins.apply(VersionUpgradeConsumerPlugin).versionUpgrade
+        def versionUpgrade = project.plugins.apply(UpgradeDependencyPlugin).upgradeDependencyExtension
 
         then:
         versionUpgrade.buildFile == project.file("build.gradle")
@@ -34,7 +34,7 @@ class VersionUpgradeConsumerPluginTest extends PluginSpecification {
         project.extensions.dependency = "org.shipkit:shipkit:0.1.2"
 
         when:
-        def versionUpgrade = project.plugins.apply(VersionUpgradeConsumerPlugin).versionUpgrade
+        def versionUpgrade = project.plugins.apply(UpgradeDependencyPlugin).upgradeDependencyExtension
 
         then:
         versionUpgrade.dependencyGroup == "org.shipkit"
@@ -44,7 +44,7 @@ class VersionUpgradeConsumerPluginTest extends PluginSpecification {
 
     def "should configure checkoutBaseBranch"() {
         when:
-        def versionUpgrade = project.plugins.apply(VersionUpgradeConsumerPlugin).versionUpgrade
+        def versionUpgrade = project.plugins.apply(UpgradeDependencyPlugin).upgradeDependencyExtension
         versionUpgrade.baseBranch = "release/2.x"
 
         project.evaluate()
@@ -64,7 +64,7 @@ class VersionUpgradeConsumerPluginTest extends PluginSpecification {
         conf.gitHub.writeAuthUser = "writeUser"
 
         when:
-        def versionUpgrade = project.plugins.apply(VersionUpgradeConsumerPlugin).versionUpgrade
+        def versionUpgrade = project.plugins.apply(UpgradeDependencyPlugin).upgradeDependencyExtension
         versionUpgrade.baseBranch = "release/2.x"
 
         project.evaluate()
@@ -80,7 +80,7 @@ class VersionUpgradeConsumerPluginTest extends PluginSpecification {
     def "should configure checkoutVersionBranch"() {
         when:
         project.extensions.dependency = "org.shipkit:shipkit:0.1.2"
-        project.plugins.apply(VersionUpgradeConsumerPlugin)
+        project.plugins.apply(UpgradeDependencyPlugin)
 
         GitCheckOutTask task = project.tasks.checkoutVersionBranch
 
@@ -94,7 +94,7 @@ class VersionUpgradeConsumerPluginTest extends PluginSpecification {
         project.extensions.dependency = "org.shipkit:shipkit:0.1.2"
 
         when:
-        VersionUpgradeConsumerExtension versionUpgrade = project.plugins.apply(VersionUpgradeConsumerPlugin).versionUpgrade
+        UpgradeDependencyExtension versionUpgrade = project.plugins.apply(UpgradeDependencyPlugin).upgradeDependencyExtension
         ReplaceVersionTask task = project.tasks.replaceVersion
 
         then:
@@ -107,7 +107,7 @@ class VersionUpgradeConsumerPluginTest extends PluginSpecification {
         project.extensions.dependency = "org.shipkit:shipkit:1.2.30"
 
         when:
-        def versionUpgrade = project.plugins.apply(VersionUpgradeConsumerPlugin).versionUpgrade
+        def versionUpgrade = project.plugins.apply(UpgradeDependencyPlugin).upgradeDependencyExtension
         versionUpgrade.buildFile = dependencyFile
         project.evaluate()
 
@@ -123,7 +123,7 @@ class VersionUpgradeConsumerPluginTest extends PluginSpecification {
         project.extensions.dependency = "org.shipkit:shipkit:1.2.30"
 
         when:
-        project.plugins.apply(VersionUpgradeConsumerPlugin)
+        project.plugins.apply(UpgradeDependencyPlugin)
 
         GitPushTask task = project.tasks.pushVersionUpgrade
 
@@ -139,7 +139,7 @@ class VersionUpgradeConsumerPluginTest extends PluginSpecification {
         conf.gitHub.writeAuthToken = "writeToken"
 
         when:
-        def versionUpgrade = project.plugins.apply(VersionUpgradeConsumerPlugin).versionUpgrade
+        def versionUpgrade = project.plugins.apply(UpgradeDependencyPlugin).upgradeDependencyExtension
         CreatePullRequestTask task = project.tasks.createPullRequest
 
         then:

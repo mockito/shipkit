@@ -16,7 +16,7 @@ class ReplaceVersionTaskTest extends Specification {
 
         configFile << "dependencies{ compile org.shipkit:shipkit:0.1.2 }"
 
-        def versionUpgrade = new VersionUpgradeConsumerExtension(
+        def versionUpgrade = new UpgradeDependencyExtension(
             dependencyGroup: "org.shipkit",
             dependencyName: "shipkit",
             newVersion: "0.2.3",
@@ -32,6 +32,44 @@ class ReplaceVersionTaskTest extends Specification {
 
         then:
         configFile.text == "dependencies{ compile org.shipkit:shipkit:0.2.3 }"
+        replaceVersionTask.buildFileUpdated
     }
 
+    def "sets buildFlagUpdated to false correctly"() {
+        given:
+        def configFile = tmp.newFile("build.gradle")
+
+        configFile << "dependencies{ compile org.shipkit:shipkit:0.1.2 }"
+
+        def versionUpgrade = new UpgradeDependencyExtension(
+            dependencyGroup: "org.shipkit",
+            dependencyName: "shipkit",
+            newVersion: "0.1.2",
+            buildFile: configFile
+        )
+        def tasksContainer = new ProjectBuilder().build().tasks
+        def replaceVersionTask = tasksContainer.create("replaceVersion", ReplaceVersionTask)
+
+        replaceVersionTask.versionUpgrade = versionUpgrade
+
+        when:
+        replaceVersionTask.replaceVersion()
+
+        then:
+        configFile.text == "dependencies{ compile org.shipkit:shipkit:0.1.2 }"
+        !replaceVersionTask.buildFileUpdated
+    }
+
+    def "throws IllegalStateException when buildFileUpdated accessed before task is executed"() {
+        given:
+        def tasksContainer = new ProjectBuilder().build().tasks
+        def replaceVersionTask = tasksContainer.create("replaceVersion", ReplaceVersionTask)
+
+        when:
+        replaceVersionTask.buildFileUpdated
+
+        then:
+        def ex = thrown(IllegalStateException)
+        ex.message == "Property 'buildFileUpdated' should not be accessed before 'replaceVersion' task is executed."
+    }
 }

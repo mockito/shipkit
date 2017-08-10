@@ -7,10 +7,10 @@ import org.gradle.api.tasks.TaskAction;
 import org.shipkit.internal.notes.util.IOUtil;
 
 /**
- * Replaces version of given dependency with {@link VersionUpgradeConsumerExtension#newVersion}
- * in the given {@link VersionUpgradeConsumerExtension#buildFile}
+ * Replaces version of given dependency with {@link UpgradeDependencyExtension#newVersion}
+ * in the given {@link UpgradeDependencyExtension#buildFile}
  * To replace the dependency this task uses following regex pattern:
- * "{@link VersionUpgradeConsumerExtension#dependencyGroup}:{@link VersionUpgradeConsumerExtension#dependencyName}:{@value VERSION_REGEX}
+ * "{@link UpgradeDependencyExtension#dependencyGroup}:{@link UpgradeDependencyExtension#dependencyName}:{@value VERSION_REGEX}
  */
 public class ReplaceVersionTask extends DefaultTask{
 
@@ -18,7 +18,8 @@ public class ReplaceVersionTask extends DefaultTask{
 
     public static final String VERSION_REGEX = "[0-9.]+";
 
-    private VersionUpgradeConsumerExtension versionUpgrade;
+    private UpgradeDependencyExtension versionUpgrade;
+    private Boolean buildFileUpdated;
 
     @TaskAction
     public void replaceVersion(){
@@ -30,14 +31,30 @@ public class ReplaceVersionTask extends DefaultTask{
 
         String content = IOUtil.readFully(versionUpgrade.getBuildFile());
         String updatedContent = content.replaceAll(versionPattern, replacement);
-        IOUtil.writeFile(versionUpgrade.getBuildFile().getAbsoluteFile(), updatedContent);
+
+        buildFileUpdated = !content.equals(updatedContent);
+
+        if(buildFileUpdated) {
+            IOUtil.writeFile(versionUpgrade.getBuildFile().getAbsoluteFile(), updatedContent);
+        }
     }
 
-    public VersionUpgradeConsumerExtension getVersionUpgrade() {
+    public UpgradeDependencyExtension getVersionUpgrade() {
         return versionUpgrade;
     }
 
-    public void setVersionUpgrade(VersionUpgradeConsumerExtension versionUpgrade) {
+    public void setVersionUpgrade(UpgradeDependencyExtension versionUpgrade) {
         this.versionUpgrade = versionUpgrade;
+    }
+
+    /**
+     * Was buildFile updated during the version replacement?
+     * It wasn't when newVersion == previousVersion
+     */
+    public boolean isBuildFileUpdated(){
+        if(buildFileUpdated == null){
+            throw new IllegalStateException("Property 'buildFileUpdated' should not be accessed before 'replaceVersion' task is executed.");
+        }
+        return buildFileUpdated;
     }
 }
