@@ -6,7 +6,6 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.gradle.api.tasks.Exec;
 import org.gradle.process.ExecResult;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.gradle.exec.ShipkitExecTask;
@@ -81,17 +80,19 @@ public class GitSetupPlugin implements Plugin<Project> {
             }
         });
 
-        TaskMaker.execTask(project, SET_USER_TASK, new Action<Exec>() {
-            public void execute(final Exec t) {
+        TaskMaker.task(project, SET_USER_TASK, ShipkitExecTask.class, new Action<ShipkitExecTask>() {
+            public void execute(final ShipkitExecTask t) {
                 t.setDescription("Overwrites local git 'user.name' with a generic name. Intended for CI.");
-                t.commandLine("git", "config", "--local", "user.name", conf.getGit().getUser());
+                t.execCommand(ExecCommandFactory.execCommand("Setting git user name",
+                    "git", "config", "--local", "user.name", conf.getGit().getUser()));
             }
         });
 
-        TaskMaker.execTask(project, SET_EMAIL_TASK, new Action<Exec>() {
-            public void execute(final Exec t) {
+        TaskMaker.task(project, SET_EMAIL_TASK, ShipkitExecTask.class, new Action<ShipkitExecTask>() {
+            public void execute(final ShipkitExecTask t) {
                 t.setDescription("Overwrites local git 'user.email' with a generic email. Intended for CI.");
-                t.commandLine("git", "config", "--local", "user.email", conf.getGit().getEmail());
+                t.execCommand(ExecCommandFactory.execCommand("Setting git user email",
+                    "git", "config", "--local", "user.email", conf.getGit().getEmail()));
             }
         });
 
