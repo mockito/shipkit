@@ -7,10 +7,14 @@ import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Exec;
+import org.gradle.process.ExecResult;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
+import org.shipkit.gradle.exec.ShipkitExecTask;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
-import org.shipkit.internal.gradle.util.StringUtil;
+import org.shipkit.internal.gradle.exec.ExecCommandFactory;
 import org.shipkit.internal.gradle.util.TaskMaker;
+
+import static java.util.Arrays.asList;
 
 /**
  * Plugin that adds Git tasks commonly used for setting up
@@ -54,22 +58,20 @@ public class GitSetupPlugin implements Plugin<Project> {
     public void apply(Project project) {
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
-        TaskMaker.execTask(project, UNSHALLOW_TASK, new Action<Exec>() {
-            public void execute(final Exec t) {
+        TaskMaker.task(project, UNSHALLOW_TASK, ShipkitExecTask.class, new Action<ShipkitExecTask>() {
+            public void execute(ShipkitExecTask t) {
                 //Travis default clone is shallow which will prevent correct release notes generation for repos with lots of commits
-                t.commandLine("git", "fetch", "--unshallow");
-                t.setDescription("Ensures good chunk of recent commits is available for release notes automation. Runs: " + t.getCommandLine());
-
-                t.setIgnoreExitValue(true);
-                t.doLast(new Action<Task>() {
-                    public void execute(Task task) {
-                        if (t.getExecResult().getExitValue() != 0) {
-                            LOG.lifecycle("  Following git command failed and will be ignored:" +
-                                    "\n    " + StringUtil.join(t.getCommandLine(), " ") +
+                t.setDescription("Ensures good chunk of recent commits is available for release notes automation.");
+                t.execCommand(ExecCommandFactory.execCommand("Getting more commits",
+                    asList("git", "fetch", "--unshallow"), new Action<ExecResult>() {
+                        @Override
+                        public void execute(ExecResult result) {
+                            if (result.getExitValue() != 0) {
+                                LOG.lifecycle("  'git fetch --unshallow' failed and will be ignored." +
                                     "\n  Most likely the repository already contains all history.");
+                            }
                         }
-                    }
-                });
+                    }));
             }
         });
 
