@@ -10,7 +10,8 @@ import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import java.text.MessageFormat;
 
 /**
- * Configures extension GitAuth that contains GitHub authentication info.
+ * This plugin is used for internal purposes, it does not add any user-visible, public behavior.
+ * It identifies GitHub repository url and keeps it in the field on this plugin.
  * Applies plugins:
  * <ul>
  *     <li>{@link ShipkitConfigurationPlugin}</li>
@@ -30,6 +31,7 @@ public class GitAuthPlugin implements Plugin<Project> {
 
         String configUrl = getGitHubUrl(ghUser, conf.getGitHub().getRepository(), writeToken);
         String secretValue = null;
+        //TODO we can push the lifecycle messages to the task execution (doFirst) and replace this plugin with simple convenience function
         if (writeToken != null) {
             LOG.lifecycle("  'git push/pull' use GitHub write token.");
             secretValue = writeToken;

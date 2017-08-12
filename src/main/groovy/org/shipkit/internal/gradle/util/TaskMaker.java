@@ -22,6 +22,7 @@ public class TaskMaker {
      * Creates exec task with preconfigured defaults
      */
     public static Exec execTask(Project project, String name, Action<Exec> configure) {
+        //TODO replace with ShipkitExec and remove this method
         final Exec exec = project.getTasks().create(name, Exec.class);
         exec.doFirst(new Action<Task>() {
             public void execute(Task task) {

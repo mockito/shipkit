@@ -4,8 +4,8 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.tasks.Exec;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
+import org.shipkit.gradle.exec.ShipkitExecTask;
 import org.shipkit.gradle.git.GitCommitTask;
 import org.shipkit.gradle.git.GitPushTask;
 import org.shipkit.gradle.git.IdentifyGitBranchTask;
@@ -16,6 +16,7 @@ import org.shipkit.internal.gradle.util.TaskMaker;
 import java.io.File;
 import java.util.List;
 
+import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
 import static org.shipkit.internal.gradle.util.GitUtil.getTag;
 
 /**
@@ -58,12 +59,13 @@ public class GitPlugin implements Plugin<Project> {
             }
         });
 
-        TaskMaker.execTask(project, GIT_TAG_TASK, new Action<Exec>() {
-            public void execute(final Exec t) {
+        TaskMaker.task(project, GIT_TAG_TASK, ShipkitExecTask.class, new Action<ShipkitExecTask>() {
+            public void execute(final ShipkitExecTask t) {
                 t.mustRunAfter(GIT_COMMIT_TASK);
                 final String tag = GitUtil.getTag(conf, project);
                 t.setDescription("Creates new version tag '" + tag + "'");
-                t.commandLine("git", "tag", "-a", tag, "-m", GitUtil.getCommitMessage("Created new tag " + tag, conf.getGit().getCommitMessagePostfix()));
+                t.execCommand(execCommand("Creating tag",
+                    "git", "tag", "-a", tag, "-m", GitUtil.getCommitMessage("Created new tag " + tag, conf.getGit().getCommitMessagePostfix())));
             }
         });
 
@@ -103,25 +105,25 @@ public class GitPlugin implements Plugin<Project> {
             }
         });
 
-        TaskMaker.execTask(project, GIT_STASH_TASK, new Action<Exec>() {
-            public void execute(final Exec t) {
+        TaskMaker.task(project, GIT_STASH_TASK, ShipkitExecTask.class, new Action<ShipkitExecTask>() {
+            public void execute(final ShipkitExecTask t) {
                 t.setDescription("Stashes current changes");
-                t.commandLine("git", "stash");
+                t.execCommand(execCommand("Stashing changes", "git", "stash"));
                 t.mustRunAfter(SOFT_RESET_COMMIT_TASK);
             }
         });
 
-        TaskMaker.execTask(project, SOFT_RESET_COMMIT_TASK, new Action<Exec>() {
-            public void execute(final Exec t) {
+        TaskMaker.task(project, SOFT_RESET_COMMIT_TASK, ShipkitExecTask.class, new Action<ShipkitExecTask>() {
+            public void execute(final ShipkitExecTask t) {
                 t.setDescription("Removes last commit, using 'reset --soft HEAD~'");
-                t.commandLine("git", "reset", "--soft", "HEAD~");
+                t.execCommand(execCommand("Removing last commit","git", "reset", "--soft", "HEAD~"));
             }
         });
 
-        TaskMaker.execTask(project, TAG_CLEANUP_TASK, new Action<Exec>() {
-            public void execute(final Exec t) {
+        TaskMaker.task(project, TAG_CLEANUP_TASK, ShipkitExecTask.class, new Action<ShipkitExecTask>() {
+            public void execute(final ShipkitExecTask t) {
                 t.setDescription("Deletes version tag '" + getTag(conf, project) + "'");
-                t.commandLine("git", "tag", "-d", getTag(conf, project));
+                t.execCommand(execCommand("Deleting version tag", "git", "tag", "-d", getTag(conf, project)));
                 t.mustRunAfter(performPush);
             }
         });

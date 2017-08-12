@@ -7,6 +7,8 @@ import org.shipkit.gradle.exec.ExecCommand;
 
 import java.util.Collection;
 
+import static java.util.Arrays.asList;
+
 public class ExecCommandFactory {
 
     private final static Action NO_OP_ACTION = new Action() {
@@ -33,6 +35,13 @@ public class ExecCommandFactory {
      */
     public static ExecCommand execCommand(String description, Collection<String> commandLine) {
         return new ExecCommand(defaultPrefix(commandLine), description, commandLine, NO_OP_ACTION, ENSURE_SUCCEEDED_ACTION);
+    }
+
+    /**
+     * See {@link #execCommand(String, Collection)}
+     */
+    public static ExecCommand execCommand(String description, String ... commandLine) {
+        return execCommand(description, asList(commandLine));
     }
 
     private static String defaultPrefix(Collection<String> commandLine) {

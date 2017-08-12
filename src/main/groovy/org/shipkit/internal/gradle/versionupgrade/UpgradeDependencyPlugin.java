@@ -7,17 +7,19 @@ import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.specs.Spec;
-import org.gradle.api.tasks.Exec;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
+import org.shipkit.gradle.exec.ShipkitExecTask;
 import org.shipkit.gradle.git.GitPushTask;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
-import org.shipkit.internal.gradle.git.GitAuthPlugin;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
+import org.shipkit.internal.gradle.git.GitAuthPlugin;
 import org.shipkit.internal.gradle.git.GitCheckOutTask;
 import org.shipkit.internal.gradle.git.GitPullTask;
 import org.shipkit.internal.gradle.git.GitRemoteOriginPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.util.RethrowingResultHandler;
+
+import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
 
 /**
  * BEWARE! This plugin is in incubating state, so its API may change in the future!
@@ -144,23 +146,24 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
         final ReplaceVersionTask replaceVersionTask = TaskMaker.task(project, REPLACE_VERSION, ReplaceVersionTask.class, new Action<ReplaceVersionTask>() {
             @Override
             public void execute(final ReplaceVersionTask task) {
-                task.setDescription("Replaces dependency version in config file.");
+                task.setDescription("Replaces dependency version in build file.");
                 task.mustRunAfter(CHECKOUT_VERSION_BRANCH);
                 task.setVersionUpgrade(upgradeDependencyExtension);
             }
         });
 
-        TaskMaker.execTask(project, COMMIT_VERSION_UPGRADE, new Action<Exec>() {
+        TaskMaker.task(project, COMMIT_VERSION_UPGRADE, ShipkitExecTask.class, new Action<ShipkitExecTask>() {
             @Override
-            public void execute(final Exec exec) {
-                exec.setDescription("Commits updated config file.");
+            public void execute(final ShipkitExecTask exec) {
+                exec.setDescription("Commits updated build file.");
                 exec.mustRunAfter(REPLACE_VERSION);
 
                 DeferredConfiguration.deferredConfiguration(project, new Runnable() {
                     @Override
                     public void run() {
                         String message = String.format("%s version upgraded to %s", upgradeDependencyExtension.getDependencyName(), upgradeDependencyExtension.getNewVersion());
-                        exec.commandLine("git", "commit", "-m", message, upgradeDependencyExtension.getBuildFile());
+                        exec.execCommand(execCommand("Committing build file",
+                            "git", "commit", "-m", message, upgradeDependencyExtension.getBuildFile().getAbsolutePath()));
                     }
                 });
                 exec.onlyIf(wasBuildFileUpdatedSpec(replaceVersionTask));
