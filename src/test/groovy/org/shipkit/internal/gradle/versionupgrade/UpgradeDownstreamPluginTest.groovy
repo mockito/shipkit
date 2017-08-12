@@ -1,8 +1,8 @@
 package org.shipkit.internal.gradle.versionupgrade
 
 import org.gradle.api.ProjectConfigurationException
-import org.gradle.api.tasks.Exec
 import org.gradle.testfixtures.ProjectBuilder
+import org.shipkit.gradle.exec.ShipkitExecTask
 import org.shipkit.internal.gradle.git.CloneGitRepositoryTask
 import testutil.PluginSpecification
 
@@ -55,9 +55,8 @@ class UpgradeDownstreamPluginTest extends PluginSpecification {
         project.evaluate()
 
         then:
-        Exec task = project.tasks['upgradeWwilkMockito']
-        task.workingDir == project.file(project.buildDir.absolutePath + '/downstream-upgrade/wwilkMockito')
-        task.commandLine == ["./gradlew", "performVersionUpgrade", "-Pdependency=depGroup:depName:0.1.2"]
+        ShipkitExecTask task = project.tasks['upgradeWwilkMockito']
+        task.execCommands[0].commandLine == ["./gradlew", "performVersionUpgrade", "-Pdependency=depGroup:depName:0.1.2"]
     }
 
     @Override
