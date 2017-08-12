@@ -3,11 +3,6 @@ package org.shipkit.internal.gradle.util;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
-import org.gradle.api.tasks.Exec;
-
-import static org.shipkit.internal.gradle.util.StringUtil.join;
 
 /**
  * Handy class that should be used to create tasks.
@@ -15,22 +10,6 @@ import static org.shipkit.internal.gradle.util.StringUtil.join;
  * It also adds consistent logging for some kinds of tasks (like exec tasks).
  */
 public class TaskMaker {
-
-    private static final Logger LOG = Logging.getLogger(TaskMaker.class);
-
-    /**
-     * Creates exec task with preconfigured defaults
-     */
-    public static Exec execTask(Project project, String name, Action<Exec> configure) {
-        //TODO replace with ShipkitExec and remove this method
-        final Exec exec = project.getTasks().create(name, Exec.class);
-        exec.doFirst(new Action<Task>() {
-            public void execute(Task task) {
-                LOG.lifecycle("  Running:\n    {}", join(exec.getCommandLine(), " "));
-            }
-        });
-        return configure(configure, exec);
-    }
 
     /**
      * Creates task with preconfigured defaults
