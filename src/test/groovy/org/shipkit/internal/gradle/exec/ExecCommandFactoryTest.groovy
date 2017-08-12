@@ -12,7 +12,7 @@ class ExecCommandFactoryTest extends Specification {
         result.exitValue >> 0
 
         expect:
-        ExecCommandFactory.ensureSucceeded(result)
+        ExecCommandFactory.ensureSucceeded(result, "[git] ")
     }
 
     def "throws exception if command fails"() {
@@ -20,10 +20,11 @@ class ExecCommandFactoryTest extends Specification {
         result.exitValue >> -100
 
         when:
-        ExecCommandFactory.ensureSucceeded(result)
+        ExecCommandFactory.ensureSucceeded(result, "[git] ")
 
         then:
         def e = thrown(GradleException)
-        e.message.contains("-100")
+        e.message == """External command failed with exit code -100
+Please inspect the command output prefixed with '[git]' the build log."""
     }
 }
