@@ -9,6 +9,7 @@ import org.gradle.process.ExecResult;
 import org.gradle.process.ExecSpec;
 import org.shipkit.gradle.exec.ExecCommand;
 
+import java.io.File;
 import java.util.Collection;
 
 import static java.util.Arrays.asList;
@@ -21,6 +22,15 @@ public class ExecCommandFactory {
         return new Action<ExecSpec>() {
             public void execute(ExecSpec spec) {
                 spec.setIgnoreExitValue(true);
+            }
+        };
+    }
+
+    public static Action<ExecSpec> ignoreResult(final File workingDir) {
+        return new Action<ExecSpec>() {
+            public void execute(ExecSpec spec) {
+                spec.setIgnoreExitValue(true);
+                spec.setWorkingDir(workingDir);
             }
         };
     }
@@ -66,6 +76,15 @@ public class ExecCommandFactory {
      */
     public static ExecCommand execCommand(String description, String ... commandLine) {
         return execCommand(description, asList(commandLine));
+    }
+
+    /**
+     * See {@link #execCommand(String, Collection)}
+     */
+    public static ExecCommand execCommand(String description, File workingDir, String ... commandLine) {
+        Collection<String> cmd = asList(commandLine);
+        String prefix = defaultPrefix(cmd);
+        return new ExecCommand(prefix, description, cmd, ignoreResult(workingDir), ensureSucceeded(prefix));
     }
 
     private static String defaultPrefix(Collection<String> commandLine) {
