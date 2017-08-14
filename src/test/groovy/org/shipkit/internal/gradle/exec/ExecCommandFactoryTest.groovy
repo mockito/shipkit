@@ -2,6 +2,7 @@ package org.shipkit.internal.gradle.exec
 
 import org.gradle.api.GradleException
 import org.gradle.process.ExecResult
+import org.gradle.process.ExecSpec
 import spock.lang.Specification
 
 class ExecCommandFactoryTest extends Specification {
@@ -12,7 +13,7 @@ class ExecCommandFactoryTest extends Specification {
         result.exitValue >> 0
 
         expect:
-        ExecCommandFactory.ensureSucceeded(result)
+        ExecCommandFactory.ensureSucceeded(result, "[git] ")
     }
 
     def "throws exception if command fails"() {
@@ -20,10 +21,35 @@ class ExecCommandFactoryTest extends Specification {
         result.exitValue >> -100
 
         when:
-        ExecCommandFactory.ensureSucceeded(result)
+        ExecCommandFactory.ensureSucceeded(result, "[git] ")
 
         then:
         def e = thrown(GradleException)
-        e.message.contains("-100")
+        e.message == """External command failed with exit code -100
+Please inspect the command output prefixed with '[git]' the build log."""
+    }
+
+    def "exec command with custom working dir"() {
+        def execSpec = Mock(ExecSpec)
+        def dir = new File("foo")
+        def command = ExecCommandFactory.execCommand("Doing stuff", dir, "git", "status")
+
+        when:
+        command.setupAction.execute(execSpec)
+
+        then:
+        1 * execSpec.setWorkingDir(dir)
+        1 * execSpec.setIgnoreExitValue(true)
+    }
+
+    def "commands ignore result by default"() {
+        def execSpec = Mock(ExecSpec)
+        def command = ExecCommandFactory.execCommand("Doing stuff", "git", "status")
+
+        when:
+        command.setupAction.execute(execSpec)
+
+        then:
+        1 * execSpec.setIgnoreExitValue(true)
     }
 }

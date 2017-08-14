@@ -5,9 +5,8 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.gradle.api.tasks.StopExecutionException;
-import org.gradle.process.ExecResult;
 import org.shipkit.gradle.exec.ShipkitExecTask;
+import org.shipkit.internal.gradle.exec.ExecCommandFactory;
 import org.shipkit.internal.gradle.git.GitSetupPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.gradle.util.TaskSuccessfulMessage;
@@ -54,7 +53,7 @@ public class CiReleasePlugin implements Plugin<Project> {
             public void execute(ShipkitExecTask task) {
                 task.setDescription("Checks if release is needed. If so it will prepare for ci release and perform release.");
                 task.getExecCommands().add(execCommand(
-                        "Checking if release is needed", asList("./gradlew", ReleaseNeededPlugin.ASSERT_RELEASE_NEEDED_TASK), stopExecution()));
+                        "Checking if release is needed", asList("./gradlew", ReleaseNeededPlugin.ASSERT_RELEASE_NEEDED_TASK), ExecCommandFactory.stopExecution()));
                 task.getExecCommands().add(execCommand(
                         "Preparing working copy for the release", asList("./gradlew", GitSetupPlugin.CI_RELEASE_PREPARE_TASK)));
                 task.getExecCommands().add(execCommand(
@@ -63,17 +62,5 @@ public class CiReleasePlugin implements Plugin<Project> {
                 TaskSuccessfulMessage.logOnSuccess(task, "  Release " + project.getVersion() + " was shipped! Thank you for using Shipkit!");
             }
         });
-    }
-
-    private Action<ExecResult> stopExecution() {
-        return new Action<ExecResult>() {
-            public void execute(ExecResult exec) {
-                if (exec.getExitValue() != 0) {
-                    LOG.info("External process returned exit code: {}. Stopping the execution of the task.");
-                    //Cleanly stop executing the task, without making the task failed.
-                    throw new StopExecutionException();
-                }
-            }
-        };
     }
 }

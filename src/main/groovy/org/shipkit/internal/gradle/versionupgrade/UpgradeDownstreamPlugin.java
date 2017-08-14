@@ -1,10 +1,14 @@
 package org.shipkit.internal.gradle.versionupgrade;
 
-import org.gradle.api.*;
-import org.gradle.api.tasks.Exec;
+import org.gradle.api.Action;
+import org.gradle.api.Plugin;
+import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
+import org.shipkit.gradle.exec.ShipkitExecTask;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
+import org.shipkit.internal.gradle.exec.ExecCommandFactory;
 import org.shipkit.internal.gradle.git.CloneGitRepositoryTask;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.util.ExposedForTesting;
@@ -97,12 +101,13 @@ public class UpgradeDownstreamPlugin implements Plugin<Project> {
     }
 
     private Task createProduceUpgradeTask(final Project project, final String consumerRepository){
-        return TaskMaker.execTask(project, "upgrade" + capitalize(toCamelCase(consumerRepository)), new Action<Exec>() {
+        return TaskMaker.task(project, "upgrade" + capitalize(toCamelCase(consumerRepository)), ShipkitExecTask.class, new Action<ShipkitExecTask>() {
             @Override
-            public void execute(final Exec task) {
+            public void execute(final ShipkitExecTask task) {
                 task.setDescription("Performs dependency upgrade in " + consumerRepository);
-                task.setWorkingDir(getConsumerRepoTempDir(project, consumerRepository));
-                task.commandLine("./gradlew", "performVersionUpgrade", getDependencyProperty(project));
+                task.execCommand(ExecCommandFactory.execCommand("Upgrading dependency",
+                    getConsumerRepoTempDir(project, consumerRepository),
+                    "./gradlew", "performVersionUpgrade", getDependencyProperty(project)));
             }
         });
     }
