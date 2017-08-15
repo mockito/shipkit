@@ -24,8 +24,10 @@ import org.shipkit.internal.gradle.util.TaskMaker;
  * Adds following tasks:
  *
  * <ul>
- *     <li>assertReleaseNeeded - {@link ReleaseNeededTask}</li>
- *     <li>releaseNeeded - {@link ReleaseNeededTask}</li>
+ *     <li>assertReleaseNeeded - {@link ReleaseNeededTask}
+ *      - checks if release is needed and fails the build if not needed. Used in release process.</li>
+ *     <li>releaseNeeded - {@link ReleaseNeededTask}
+ *     - prints information if the release is needed. Useful for testing.</li>
  * </ul>
  */
 public class ReleaseNeededPlugin implements Plugin<Project> {
