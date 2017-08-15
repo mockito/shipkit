@@ -2,6 +2,7 @@ package org.shipkit.internal.gradle.git;
 
 import org.shipkit.gradle.git.GitPushTask;
 import org.shipkit.internal.exec.DefaultProcessRunner;
+import org.shipkit.internal.gradle.git.tasks.TokenAvailabilityMessage;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -27,6 +28,8 @@ public class GitPush {
     }
 
     public void gitPush(GitPushTask task) {
+        TokenAvailabilityMessage.logMessage("git push", task.getSecretValue());
+
         new DefaultProcessRunner(task.getProject().getProjectDir())
                 .setSecretValue(task.getSecretValue())
                 .run(GitPush.gitPushArgs(task.getUrl(), task.getTargets(), task.isDryRun()));
