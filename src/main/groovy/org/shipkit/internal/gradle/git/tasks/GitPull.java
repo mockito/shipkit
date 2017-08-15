@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle.git;
+package org.shipkit.internal.gradle.git.tasks;
 
 import org.shipkit.internal.exec.DefaultProcessRunner;
 
@@ -11,6 +11,7 @@ import java.util.List;
 public class GitPull {
 
     public void gitPull(GitPullTask task){
+
         new DefaultProcessRunner(task.getProject().getProjectDir())
             .setSecretValue(task.getSecretValue())
             .run(gitPullArgs(task.getUrl(), task.getRev(), task.isDryRun()));

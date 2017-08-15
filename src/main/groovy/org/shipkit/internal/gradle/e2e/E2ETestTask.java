@@ -3,7 +3,7 @@ package org.shipkit.internal.gradle.e2e;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.shipkit.internal.gradle.git.CloneGitRepositoryTask;
+import org.shipkit.internal.gradle.git.tasks.CloneGitRepositoryTask;
 
 import java.io.File;
 import java.util.ArrayList;

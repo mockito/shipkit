@@ -3,11 +3,11 @@ package org.shipkit.internal.gradle.git.tasks;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 
-public class TokenAvailabilityMessage {
+class TokenAvailabilityMessage {
 
     private final static Logger LOG = Logging.getLogger(TokenAvailabilityMessage.class);
 
-    public static void logMessage(String context, String authToken) {
+    static void logMessage(String context, String authToken) {
         String message = createMessage(context, authToken);
         LOG.lifecycle(message);
     }

@@ -9,7 +9,7 @@ import org.shipkit.gradle.exec.ShipkitExecTask;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.exec.ExecCommandFactory;
-import org.shipkit.internal.gradle.git.CloneGitRepositoryTask;
+import org.shipkit.internal.gradle.git.tasks.CloneGitRepositoryTask;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.util.ExposedForTesting;
 import org.shipkit.version.VersionInfo;

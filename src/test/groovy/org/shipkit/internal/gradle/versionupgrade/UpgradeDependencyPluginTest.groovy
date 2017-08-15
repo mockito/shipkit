@@ -2,8 +2,8 @@ package org.shipkit.internal.gradle.versionupgrade
 
 import org.shipkit.gradle.exec.ShipkitExecTask
 import org.shipkit.gradle.git.GitPushTask
-import org.shipkit.internal.gradle.git.GitCheckOutTask
-import org.shipkit.internal.gradle.git.GitPullTask
+import org.shipkit.internal.gradle.git.tasks.GitCheckOutTask
+import org.shipkit.internal.gradle.git.tasks.GitPullTask
 import testutil.PluginSpecification
 
 class UpgradeDependencyPluginTest extends PluginSpecification {

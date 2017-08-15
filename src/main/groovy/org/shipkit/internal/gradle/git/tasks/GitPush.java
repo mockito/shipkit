@@ -1,8 +1,7 @@
-package org.shipkit.internal.gradle.git;
+package org.shipkit.internal.gradle.git.tasks;
 
 import org.shipkit.gradle.git.GitPushTask;
 import org.shipkit.internal.exec.DefaultProcessRunner;
-import org.shipkit.internal.gradle.git.tasks.TokenAvailabilityMessage;
 
 import java.util.LinkedList;
 import java.util.List;

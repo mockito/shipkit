@@ -13,9 +13,9 @@ import org.shipkit.gradle.git.GitPushTask;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitAuthPlugin;
-import org.shipkit.internal.gradle.git.GitCheckOutTask;
-import org.shipkit.internal.gradle.git.GitPullTask;
 import org.shipkit.internal.gradle.git.GitRemoteOriginPlugin;
+import org.shipkit.internal.gradle.git.tasks.GitCheckOutTask;
+import org.shipkit.internal.gradle.git.tasks.GitPullTask;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.util.RethrowingResultHandler;
 
