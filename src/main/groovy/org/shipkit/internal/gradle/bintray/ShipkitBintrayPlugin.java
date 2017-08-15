@@ -18,13 +18,13 @@ import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.de
 /**
  * Applies and configures "com.jfrog.bintray" plugin based on sensible defaults
  * and user-defined values in "shipkit" extension ({@link ShipkitConfiguration}).
- *
+ * <p>
  * Applies plugins:
  * <ul>
- *     <li>{@link ShipkitConfigurationPlugin} to the root project</li>
- *     <li>"com.jfrog.bintray" to this project</li>
+ * <li>{@link ShipkitConfigurationPlugin} to the root project</li>
+ * <li>"com.jfrog.bintray" to this project</li>
  * </ul>
- *
+ * <p>
  * Configures "com.jfrog.bintray" plugin with sensible defaults
  * and with values specified in Shipkit file.
  */
@@ -58,7 +58,6 @@ public class ShipkitBintrayPlugin implements Plugin<Project> {
                 LOG.lifecycle(welcomeMessage);
             }
         });
-
 
         final BintrayExtension.PackageConfig pkg = bintray.getPkg();
         pkg.setPublicDownloadNumbers(true);
@@ -96,7 +95,7 @@ public class ShipkitBintrayPlugin implements Plugin<Project> {
         LazyConfiguration.lazyConfiguration(bintrayUpload, new Runnable() {
             public void run() {
                 String key = notNull(bintray.getKey(), "BINTRAY_API_KEY",
-                        "Missing 'bintray.key' value.\n" +
+                    "Missing 'bintray.key' value.\n" +
                         "  Please configure Bintray extension or export 'BINTRAY_API_KEY' env variable.");
                 bintray.setKey(key);
                 // api key is set by Bintray plugin, based on 'bintray.key' value, before lazy configuration.
@@ -105,17 +104,17 @@ public class ShipkitBintrayPlugin implements Plugin<Project> {
 
                 //workaround for https://github.com/bintray/gradle-bintray-plugin/issues/170
                 notNull(bintray.getUser(), "Missing 'bintray.user' value.\n" +
-                        "  Please configure Bintray extension.");
+                    "  Please configure Bintray extension.");
             }
         });
     }
 
     static String uploadWelcomeMessage(BintrayUploadTask t) {
         return t.getPath() + " - publishing to Bintray\n" +
-                            "  - dry run: " + t.getDryRun()
-                            + ", version: " + t.getVersionName()
-                            + ", Maven Central sync: " + t.getSyncToMavenCentral() + "\n" +
-                            "  - user/org: " + t.getUser() + "/" + t.getUserOrg()
-                            + ", repository/package: " + t.getRepoName() + "/" + t.getPackageName();
+            "  - dry run: " + t.getDryRun()
+            + ", version: " + t.getVersionName()
+            + ", Maven Central sync: " + t.getSyncToMavenCentral() + "\n" +
+            "  - user/org: " + t.getUser() + "/" + t.getUserOrg()
+            + ", repository/package: " + t.getRepoName() + "/" + t.getPackageName();
     }
 }
