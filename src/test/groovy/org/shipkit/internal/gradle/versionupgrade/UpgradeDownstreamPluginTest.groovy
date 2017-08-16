@@ -3,7 +3,7 @@ package org.shipkit.internal.gradle.versionupgrade
 import org.gradle.api.ProjectConfigurationException
 import org.gradle.testfixtures.ProjectBuilder
 import org.shipkit.gradle.exec.ShipkitExecTask
-import org.shipkit.internal.gradle.git.CloneGitRepositoryTask
+import org.shipkit.internal.gradle.git.tasks.CloneGitRepositoryTask
 import testutil.PluginSpecification
 
 class UpgradeDownstreamPluginTest extends PluginSpecification {

@@ -1,9 +1,8 @@
-package org.shipkit.internal.gradle
+package org.shipkit.internal.gradle.git.tasks
 
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import org.shipkit.internal.gradle.git.CloneGitRepositoryTask
 import spock.lang.Specification
 import spock.lang.Subject
 

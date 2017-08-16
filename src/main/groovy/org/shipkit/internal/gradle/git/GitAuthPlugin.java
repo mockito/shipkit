@@ -30,15 +30,7 @@ public class GitAuthPlugin implements Plugin<Project> {
         String writeToken = conf.getLenient().getGitHub().getWriteAuthToken();
 
         String configUrl = getGitHubUrl(ghUser, conf.getGitHub().getRepository(), writeToken);
-        String secretValue = null;
-        //TODO we can push the lifecycle messages to the task execution (doFirst) and replace this plugin with simple convenience function
-        if (writeToken != null) {
-            LOG.lifecycle("  'git push/pull' use GitHub write token.");
-            secretValue = writeToken;
-        } else {
-            LOG.lifecycle("  'git push/pull' do not use GitHub write token because it was not specified.");
-        }
-        gitAuth = new GitAuth(configUrl, secretValue);
+        gitAuth = new GitAuth(configUrl, writeToken);
     }
 
     static String getGitHubUrl(String ghUser, String ghRepo, String writeToken) {

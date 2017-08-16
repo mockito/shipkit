@@ -1,8 +1,8 @@
-package org.shipkit.internal.gradle.git
+package org.shipkit.internal.gradle.git.tasks
 
 import spock.lang.Specification
 
-import static org.shipkit.internal.gradle.git.GitPush.gitPushArgs
+import static org.shipkit.internal.gradle.git.tasks.GitPush.gitPushArgs
 
 class GitPushTest extends Specification {
 

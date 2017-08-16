@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle.git;
+package org.shipkit.internal.gradle.git.tasks;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.Logger;
@@ -8,8 +8,8 @@ import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.internal.exec.Exec;
-import org.shipkit.internal.util.ExposedForTesting;
 import org.shipkit.internal.exec.ProcessRunner;
+import org.shipkit.internal.util.ExposedForTesting;
 
 import java.io.File;
 import java.util.ArrayList;

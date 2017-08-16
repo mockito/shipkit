@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle.git
+package org.shipkit.internal.gradle.git.tasks
 
 import org.gradle.testfixtures.ProjectBuilder
 import org.shipkit.internal.exec.ProcessRunner

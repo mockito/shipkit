@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle.git;
+package org.shipkit.internal.gradle.git.tasks;
 
 import org.shipkit.gradle.git.GitPushTask;
 import org.shipkit.internal.exec.DefaultProcessRunner;
@@ -27,6 +27,8 @@ public class GitPush {
     }
 
     public void gitPush(GitPushTask task) {
+        TokenAvailabilityMessage.logMessage("git push", task.getSecretValue());
+
         new DefaultProcessRunner(task.getProject().getProjectDir())
                 .setSecretValue(task.getSecretValue())
                 .run(GitPush.gitPushArgs(task.getUrl(), task.getTargets(), task.isDryRun()));

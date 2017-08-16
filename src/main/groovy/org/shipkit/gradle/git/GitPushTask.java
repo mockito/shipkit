@@ -3,7 +3,7 @@ package org.shipkit.gradle.git;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.internal.gradle.git.GitPush;
+import org.shipkit.internal.gradle.git.tasks.GitPush;
 
 import java.util.LinkedList;
 import java.util.List;
