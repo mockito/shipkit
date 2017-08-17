@@ -3,6 +3,7 @@ package org.shipkit.internal.gradle.versionupgrade;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.shipkit.internal.util.GitHubApi;
+import org.shipkit.internal.util.IncubatingWarning;
 
 import java.io.IOException;
 
@@ -21,7 +22,7 @@ class CreatePullRequest {
         }
         String headBranch = getHeadBranch(task.getForkRepositoryName(), task.getVersionBranch());
 
-        LOG.lifecycle("  [INCUBATING] creating pull requests in incubating.");
+        IncubatingWarning.warn("creating pull requests");
         LOG.lifecycle("  Creating a pull request of title '{}' in repository '{}' between base = '{}' and head = '{}'.",
             getTitle(task), task.getUpstreamRepositoryName(), task.getVersionUpgrade().getBaseBranch(), headBranch);
 

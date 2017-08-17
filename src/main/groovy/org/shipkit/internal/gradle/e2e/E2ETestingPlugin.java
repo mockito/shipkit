@@ -4,6 +4,7 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.shipkit.internal.gradle.util.TaskMaker;
+import org.shipkit.internal.util.IncubatingWarning;
 
 /**
  * This plugin tests your library end-to-end (e2e) using client projects.
@@ -20,6 +21,7 @@ public class E2ETestingPlugin implements Plugin<Project> {
     public static final String E2E_TEST_TASK = "e2eTest";
 
     public void apply(final Project project) {
+        IncubatingWarning.warn("e2e-testing plugin");
         TaskMaker.task(project, E2E_TEST_TASK, E2ETestTask.class, new Action<E2ETestTask>() {
             @Override
             public void execute(E2ETestTask task) {
