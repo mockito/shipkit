@@ -1,7 +1,10 @@
 package org.shipkit.internal.gradle.plugin;
 
 import org.gradle.api.DefaultTask;
-import org.gradle.api.tasks.*;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.SourceSet;
+import org.gradle.api.tasks.TaskAction;
+import org.shipkit.internal.util.IncubatingWarning;
 
 import java.io.File;
 import java.util.Set;
@@ -21,6 +24,8 @@ public class PluginValidatorTask extends DefaultTask {
 
     @TaskAction
     public void validate() {
+        //TODO move the implementation out of the public type
+        IncubatingWarning.warn("PluginValidatorTask");
         Set<File> gradlePlugins = PluginUtil.discoverGradlePlugins(sourceSet);
         Set<File> gradleProperties = PluginUtil.discoverGradlePluginPropertyFiles(sourceSet);
         new PluginValidator().validate(gradlePlugins, gradleProperties);

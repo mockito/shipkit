@@ -17,6 +17,7 @@ import org.shipkit.internal.gradle.git.GitRemoteOriginPlugin;
 import org.shipkit.internal.gradle.git.tasks.GitCheckOutTask;
 import org.shipkit.internal.gradle.git.tasks.GitPullTask;
 import org.shipkit.internal.gradle.util.TaskMaker;
+import org.shipkit.internal.util.IncubatingWarning;
 import org.shipkit.internal.util.RethrowingResultHandler;
 
 import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
@@ -81,7 +82,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
 
     @Override
     public void apply(final Project project) {
-        LOG.lifecycle("  [INCUBATING] UpgradeDependencyPlugin is incubating and its API may change");
+        IncubatingWarning.warn("upgrade-dependency plugin");
         final GitRemoteOriginPlugin gitOriginPlugin = project.getPlugins().apply(GitRemoteOriginPlugin.class);
         final GitAuthPlugin.GitAuth gitAuth = project.getPlugins().apply(GitAuthPlugin.class).getGitAuth();
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
