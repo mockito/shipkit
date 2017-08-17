@@ -8,5 +8,5 @@ shipkit {
 
 afterEvaluate {
     //TODO let's create a property for this setting in 'shipkit' extension
-    tasks.updateReleaseNotes.setPublicationRepository("https://plugins.gradle.org/plugin/org.shipkit.java");
+    tasks.updateReleaseNotes.publicationRepository = "https://plugins.gradle.org/plugin/org.shipkit.java"
 }
