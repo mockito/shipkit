@@ -24,6 +24,7 @@ public class PluginValidatorTask extends DefaultTask {
 
     @TaskAction
     public void validate() {
+        //TODO move the implementation out of the public type
         IncubatingWarning.warn("PluginValidatorTask");
         Set<File> gradlePlugins = PluginUtil.discoverGradlePlugins(sourceSet);
         Set<File> gradleProperties = PluginUtil.discoverGradlePluginPropertyFiles(sourceSet);
