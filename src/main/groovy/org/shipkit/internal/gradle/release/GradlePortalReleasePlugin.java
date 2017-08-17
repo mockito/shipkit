@@ -7,12 +7,10 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.specs.Spec;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
-import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
 import org.shipkit.internal.gradle.configuration.BasicValidator;
 import org.shipkit.internal.gradle.configuration.LazyConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
-import org.shipkit.internal.gradle.notes.ReleaseNotesPlugin;
 import org.shipkit.internal.util.EnvVariables;
 
 import javax.inject.Inject;
@@ -76,7 +74,7 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
         Task gitPush = project.getTasks().getByName(GitPlugin.GIT_PUSH_TASK);
 
         performRelease.dependsOn(publishPlugins); //perform release will actually publish the plugins
-        publishPlugins.mustRunAfter(gitPush);     //git push is easier to revers than perform release
+        publishPlugins.mustRunAfter(gitPush);     //git push is easier to revert than perform release
 
         //so that we first build plugins to be published, then do git push, we're using 'buildArchives' for that
         publishPlugins.dependsOn("buildArchives");
@@ -91,9 +89,6 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
                 return !conf.isDryRun();
             }
         });
-
-        UpdateReleaseNotesTask updateNotes = (UpdateReleaseNotesTask) project.getTasks().getByName(ReleaseNotesPlugin.UPDATE_NOTES_TASK);
-        updateNotes.setPublicationRepository("https://plugins.gradle.org/plugin/org.shipkit.java");
     }
 
     private static void authenticate(String projectProperty, Project project, String envVarName, EnvVariables envVariables) {

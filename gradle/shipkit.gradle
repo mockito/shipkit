@@ -5,3 +5,8 @@ shipkit {
     team.developers = ['szczepiq:Szczepan Faber', 'mstachniuk:Marcin Stachniuk',
                        'wwilk:Wojtek Wilk', 'epeee:Erhard Pointl', 'NagRock:Maciej Kuster']
 }
+
+afterEvaluate {
+    //TODO let's create a property for this setting in 'shipkit' extension
+    tasks.updateReleaseNotes.setPublicationRepository("https://plugins.gradle.org/plugin/org.shipkit.java");
+}
