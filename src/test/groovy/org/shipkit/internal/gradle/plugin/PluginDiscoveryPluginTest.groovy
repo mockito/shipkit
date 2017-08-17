@@ -22,6 +22,7 @@ class PluginDiscoveryPluginTest extends PluginSpecification {
         when:
         project.plugins.apply("com.gradle.plugin-publish")
         project.plugins.apply(PluginDiscoveryPlugin)
+        project.tasks[PluginDiscoveryPlugin.DISCOVER_PLUGINS].execute()
         then:
         project.pluginBundle.plugins
         project.pluginBundle.plugins.size() == 2
@@ -33,7 +34,7 @@ class PluginDiscoveryPluginTest extends PluginSpecification {
 
     def "generate plugin name"() {
         expect:
-        PluginDiscoveryPlugin.generatePluginName(input) == expected
+        PluginDiscoveryTask.generatePluginName(input) == expected
 
         where:
         input                                       | expected
@@ -47,6 +48,6 @@ class PluginDiscoveryPluginTest extends PluginSpecification {
         project.file(META_INF_GRADLE_PLUGINS).mkdirs()
         File file = project.file("$META_INF_GRADLE_PLUGINS/org.shipkit.plugin-name-sample.properties") << "implementation-class=org.shipkit.PluginNameSample"
         then:
-        PluginDiscoveryPlugin.getImplementationClass(file) == 'org.shipkit.PluginNameSample'
+        PluginDiscoveryTask.getImplementationClass(file) == 'org.shipkit.PluginNameSample'
     }
 }
