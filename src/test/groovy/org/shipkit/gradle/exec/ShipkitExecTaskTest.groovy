@@ -35,7 +35,7 @@ class ShipkitExecTaskTest extends Specification {
 
         then:
         def ex = thrown(TaskExecutionException.class)
-        ex.cause.message.startsWith "External command failed with exit code"
+        ex.cause.message.startsWith "External process failed with exit code"
         ex.cause.message.endsWith "\nPlease inspect the command output prefixed with '[ls]' the build log."
     }
 

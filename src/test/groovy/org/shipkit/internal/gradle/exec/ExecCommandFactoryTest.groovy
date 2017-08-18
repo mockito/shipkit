@@ -25,7 +25,7 @@ class ExecCommandFactoryTest extends Specification {
 
         then:
         def e = thrown(GradleException)
-        e.message == """External command failed with exit code -100
+        e.message == """External process failed with exit code -100
 Please inspect the command output prefixed with '[git]' the build log."""
     }
 
