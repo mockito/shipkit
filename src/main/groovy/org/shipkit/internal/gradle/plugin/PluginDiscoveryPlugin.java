@@ -5,8 +5,6 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
 import static org.shipkit.internal.gradle.release.GradlePortalReleasePlugin.PUBLISH_PLUGINS_TASK;
@@ -25,8 +23,6 @@ import static org.shipkit.internal.gradle.release.GradlePortalReleasePlugin.PUBL
  * </ul>
  */
 public class PluginDiscoveryPlugin implements Plugin<Project> {
-
-    private static Logger LOG = Logging.getLogger(PluginDiscoveryPlugin.class);
 
     static final String DISCOVER_PLUGINS = "discoverPlugins";
 
