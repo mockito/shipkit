@@ -4,7 +4,7 @@ import testutil.PluginSpecification
 
 class PluginDiscoveryPluginTest extends PluginSpecification {
 
-    private static final String META_INF_GRADLE_PLUGINS = 'src/main/resources/META-INF/gradle-plugins'
+    static final String META_INF_GRADLE_PLUGINS = 'src/main/resources/META-INF/gradle-plugins'
 
     def "apply"() {
         expect:
@@ -22,6 +22,7 @@ class PluginDiscoveryPluginTest extends PluginSpecification {
         when:
         project.plugins.apply("com.gradle.plugin-publish")
         project.plugins.apply(PluginDiscoveryPlugin)
+        project.tasks[PluginDiscoveryPlugin.DISCOVER_PLUGINS].execute()
         then:
         project.pluginBundle.plugins
         project.pluginBundle.plugins.size() == 2
@@ -29,24 +30,5 @@ class PluginDiscoveryPluginTest extends PluginSpecification {
         project.pluginBundle.plugins["plugin1"].id == 'plugin1'
         project.pluginBundle.plugins["pluginNameSample"]
         project.pluginBundle.plugins["pluginNameSample"].id == 'org.shipkit.plugin-name-sample'
-    }
-
-    def "generate plugin name"() {
-        expect:
-        PluginDiscoveryPlugin.generatePluginName(input) == expected
-
-        where:
-        input                                       | expected
-        'plugin.properties'                         | 'plugin'
-        'com.shipkit.base-java-library.properties'  | 'baseJavaLibrary'
-        'com.shipkit.versioning.properties'         | 'versioning'
-    }
-
-    def "implementation class"() {
-        when:
-        project.file(META_INF_GRADLE_PLUGINS).mkdirs()
-        File file = project.file("$META_INF_GRADLE_PLUGINS/org.shipkit.plugin-name-sample.properties") << "implementation-class=org.shipkit.PluginNameSample"
-        then:
-        PluginDiscoveryPlugin.getImplementationClass(file) == 'org.shipkit.PluginNameSample'
     }
 }

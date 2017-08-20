@@ -44,7 +44,7 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
     final static String PUBLISH_SECRET_PROPERTY = "gradle.publish.secret";
 
     private final EnvVariables envVariables;
-    final static String PUBLISH_PLUGINS_TASK = "publishPlugins";
+    public final static String PUBLISH_PLUGINS_TASK = "publishPlugins";
 
     GradlePortalReleasePlugin(EnvVariables envVariables) {
         this.envVariables = envVariables;

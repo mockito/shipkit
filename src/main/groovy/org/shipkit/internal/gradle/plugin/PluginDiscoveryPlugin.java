@@ -1,21 +1,13 @@
 package org.shipkit.internal.gradle.plugin;
 
 import com.gradle.publish.PluginBundleExtension;
-import com.gradle.publish.PluginConfig;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
+import org.gradle.api.Task;
+import org.shipkit.internal.gradle.util.TaskMaker;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-import java.util.Set;
-
-import static org.shipkit.internal.gradle.plugin.PluginUtil.DOT_PROPERTIES;
+import static org.shipkit.internal.gradle.release.GradlePortalReleasePlugin.PUBLISH_PLUGINS_TASK;
 
 /**
  * This plugin discovers gradle plugins and adds them to the {@link PluginBundleExtension}.
@@ -23,62 +15,35 @@ import static org.shipkit.internal.gradle.plugin.PluginUtil.DOT_PROPERTIES;
  * Maintaining plugins manually is error-prone. E.g. someone might easily forget about adding a new plugin. This plugin
  * will automatically pick up available gradle plugins (discovered via properties files in META-INF/gradle-plugins) and
  * will configure the pluginBundle extension (provided via 'com.gradle.plugin-publish' plugin) accordingly.
+ *
+ * Adds tasks:
+ * <ul>
+ *     <li>'discoverPlugins' - of type {@link PluginDiscoveryTask}.
+ *          Discovers gradle plugins and configures the pluginBundle extension accordingly.</li>
+ * </ul>
  */
 public class PluginDiscoveryPlugin implements Plugin<Project> {
 
-    private static Logger LOG = Logging.getLogger(PluginDiscoveryPlugin.class);
+    static final String DISCOVER_PLUGINS = "discoverPlugins";
 
     @Override
     public void apply(final Project project) {
         project.getPlugins().withId("com.gradle.plugin-publish", new Action<Plugin>() {
-            @Override
-            public void execute(Plugin plugin) {
-                PluginBundleExtension extension = project.getExtensions().findByType(PluginBundleExtension.class);
 
-                Set<File> pluginPropertyFiles = PluginUtil.discoverGradlePluginPropertyFiles(project);
-                LOG.lifecycle("  Adding {} discovered Gradle plugins to 'pluginBundle'", pluginPropertyFiles.size());
-                for (File pluginPropertyFile : pluginPropertyFiles) {
-                    PluginConfig config = new PluginConfig(generatePluginName(pluginPropertyFile.getName()));
-                    config.setId(pluginPropertyFile.getName().substring(0, pluginPropertyFile.getName().lastIndexOf(DOT_PROPERTIES)));
-                    config.setDisplayName(getImplementationClass(pluginPropertyFile));
-                    LOG.info("Discovered plugin " + config);
-                    extension.getPlugins().add(config);
-                }
+            @Override
+            public void execute(final Plugin plugin) {
+                final Task task = TaskMaker.task(project, DISCOVER_PLUGINS, PluginDiscoveryTask.class, new Action<PluginDiscoveryTask>() {
+                    @Override
+                    public void execute(final PluginDiscoveryTask task) {
+                        task.setDescription("discover gradle plugins");
+                    }
+                });
+
+                final Task publishPlugins = project.getTasks().getByName(PUBLISH_PLUGINS_TASK);
+                publishPlugins.dependsOn(task);
             }
+
         });
     }
 
-    static String generatePluginName(String fileName) {
-        String pluginName = fileName.substring(0, fileName.lastIndexOf(DOT_PROPERTIES));
-        pluginName = pluginName.substring(pluginName.lastIndexOf(".") + 1);
-        String[] split = pluginName.split("-");
-        StringBuilder sb = new StringBuilder();
-        for (String string : split) {
-            if(sb.length() == 0) {
-                sb.append(string.substring(0, 1).toLowerCase()).append(string.substring(1));
-            } else {
-                sb.append(string.substring(0, 1).toUpperCase()).append(string.substring(1));
-            }
-        }
-        return sb.toString();
-    }
-
-    static String getImplementationClass(File file) {
-        Properties properties = new Properties();
-        InputStream is = null;
-        try {
-            is = new FileInputStream(file);
-            properties.load(is);
-            return properties.getProperty("implementation-class");
-        } catch (Exception e) {
-            throw new RuntimeException("error while reading " + file, e);
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                }
-            }
-        }
-    }
 }
