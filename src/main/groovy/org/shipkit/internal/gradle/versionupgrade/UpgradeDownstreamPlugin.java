@@ -50,7 +50,7 @@ import static org.shipkit.internal.util.ArgumentValidation.notNull;
  *
  * and then call:
  *
- * ./gradlew produceVersionUpgrade
+ * ./gradlew upgradeDownstream
  *
  */
 public class UpgradeDownstreamPlugin implements Plugin<Project> {
