@@ -4,8 +4,6 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
 import org.gradle.api.specs.Spec;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.gradle.exec.ShipkitExecTask;
@@ -64,8 +62,6 @@ import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
  *
  */
 public class UpgradeDependencyPlugin implements Plugin<Project> {
-
-    private static final Logger LOG = Logging.getLogger(UpgradeDependencyPlugin.class);
 
     public static final String CHECKOUT_BASE_BRANCH = "checkoutBaseBranch";
     public static final String PULL_UPSTREAM = "pullUpstream";

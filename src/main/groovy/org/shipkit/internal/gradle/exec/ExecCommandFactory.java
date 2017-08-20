@@ -57,7 +57,7 @@ public class ExecCommandFactory {
 
     static void ensureSucceeded(ExecResult result, String prefix) {
         if (result.getExitValue() != 0) {
-            throw new GradleException("External command failed with exit code " + result.getExitValue() + "\n" +
+            throw new GradleException("External process failed with exit code " + result.getExitValue() + "\n" +
                     "Please inspect the command output prefixed with '" + prefix.trim() + "' the build log.");
         }
     }
