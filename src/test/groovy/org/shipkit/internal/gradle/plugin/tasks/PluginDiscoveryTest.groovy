@@ -1,7 +1,7 @@
-package org.shipkit.internal.gradle.plugin
+package org.shipkit.internal.gradle.plugin.tasks
 
 import testutil.PluginSpecification
-import static PluginDiscoveryPluginTest.META_INF_GRADLE_PLUGINS
+import static org.shipkit.internal.gradle.plugin.PluginDiscoveryPluginTest.META_INF_GRADLE_PLUGINS
 
 class PluginDiscoveryTest extends PluginSpecification {
 

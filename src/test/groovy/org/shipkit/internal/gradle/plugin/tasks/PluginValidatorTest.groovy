@@ -1,7 +1,6 @@
-package org.shipkit.internal.gradle.plugin
+package org.shipkit.internal.gradle.plugin.tasks
 
 import testutil.PluginSpecification
-
 
 class PluginValidatorTest extends PluginSpecification {
 
