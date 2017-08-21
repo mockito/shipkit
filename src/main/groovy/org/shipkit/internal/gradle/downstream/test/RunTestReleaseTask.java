@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle.e2e;
+package org.shipkit.internal.gradle.downstream.test;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.Logger;
