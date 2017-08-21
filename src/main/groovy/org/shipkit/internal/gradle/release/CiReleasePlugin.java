@@ -31,7 +31,7 @@ import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
  */
 public class CiReleasePlugin implements Plugin<Project> {
 
-    private final static Logger LOG = Logging.getLogger(CiReleasePlugin.class);
+    public static final String CI_PERFORM_RELEASE_TASK = "ciPerformRelease";
 
     @Override
     public void apply(final Project project) {
@@ -48,7 +48,7 @@ public class CiReleasePlugin implements Plugin<Project> {
           Also, when release is not needed, we don't have clean Gradle API to stop the build, without failing it.
           Hence, we are pragmatic. We are forking Gradle from Gradle which seems hacky but we have no other viable choice.
         */
-        TaskMaker.task(project, "ciPerformRelease", ShipkitExecTask.class, new Action<ShipkitExecTask>() {
+        TaskMaker.task(project, CI_PERFORM_RELEASE_TASK, ShipkitExecTask.class, new Action<ShipkitExecTask>() {
             @Override
             public void execute(ShipkitExecTask task) {
                 task.setDescription("Checks if release is needed. If so it will prepare for ci release and perform release.");

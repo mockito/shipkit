@@ -9,10 +9,13 @@ class UpgradeDownstreamPluginIntegTest extends GradleSpecification {
         projectDir.newFile("gradle/shipkit.gradle") << """
             shipkit {
                 gitHub.url = "http://github.com"
+                gitHub.readOnlyAuthToken = "token"
+                gitHub.repository = "repo"
             }
         """
 
         buildFile << """
+            apply plugin: "org.shipkit.java"
             apply plugin: "org.shipkit.upgrade-downstream"
             
             upgradeDownstream{

@@ -1,12 +1,19 @@
 package org.shipkit.internal.gradle.versionupgrade
 
 import org.gradle.api.ProjectConfigurationException
+import org.gradle.api.internal.plugins.PluginApplicationException
 import org.gradle.testfixtures.ProjectBuilder
 import org.shipkit.gradle.exec.ShipkitExecTask
 import org.shipkit.internal.gradle.git.tasks.CloneGitRepositoryTask
+import org.shipkit.internal.gradle.java.ShipkitJavaPlugin
+import org.shipkit.internal.gradle.release.CiReleasePlugin
 import testutil.PluginSpecification
 
 class UpgradeDownstreamPluginTest extends PluginSpecification {
+
+    void setup(){
+        project.plugins.apply(ShipkitJavaPlugin)
+    }
 
     def "should fail when no consumer repositories defined"() {
         when:
@@ -57,6 +64,27 @@ class UpgradeDownstreamPluginTest extends PluginSpecification {
         then:
         ShipkitExecTask task = project.tasks['upgradeWwilkMockito']
         task.execCommands[0].commandLine == ["./gradlew", "performVersionUpgrade", "-Pdependency=depGroup:depName:0.1.2"]
+    }
+
+    def "should add upgradeDownstream to ciPerformRelease"() {
+        when:
+        project.plugins.apply(CiReleasePlugin)
+        project.plugins.apply(UpgradeDownstreamPlugin)
+
+        then:
+        ShipkitExecTask performReleaseTask = project.tasks['ciPerformRelease']
+        performReleaseTask.execCommands.size() == 4
+        performReleaseTask.execCommands[3].commandLine == ["./gradlew", "upgradeDownstream"]
+    }
+
+    def "should throw exception if ciPerformRelease does not exist"() {
+        when:
+        new ProjectBuilder().build().plugins.apply(UpgradeDownstreamPlugin)
+
+        then:
+        def ex = thrown(PluginApplicationException)
+        ex.cause.class == IllegalStateException
+        ex.cause.message == "Please apply org.shipkit.ci-release or org.shipkit.java plugin before applying upgrade-downstream."
     }
 
     @Override
