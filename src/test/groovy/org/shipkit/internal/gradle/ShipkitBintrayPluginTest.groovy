@@ -14,6 +14,7 @@ class ShipkitBintrayPluginTest extends PluginSpecification {
 
     def "deferred configuration"() {
         project.version = "1.0"
+        project.group = "org.shipkit"
         project.description = "some proj"
         project.plugins.apply("org.shipkit.bintray")
 
@@ -31,10 +32,12 @@ class ShipkitBintrayPluginTest extends PluginSpecification {
         project.bintray.pkg.issueTrackerUrl == "https://github.com/repo/issues"
         project.bintray.pkg.websiteUrl == "https://github.com/repo"
         project.bintray.pkg.desc == "some proj"
+        project.bintray.pkg.name == "org.shipkit"
     }
 
     def "deferred configuration honors user settings"() {
         project.version = "1.0"
+        project.group = "org.shipkit"
         project.description = "some proj"
         project.plugins.apply("org.shipkit.bintray")
 
@@ -49,6 +52,7 @@ class ShipkitBintrayPluginTest extends PluginSpecification {
         project.bintray.pkg.issueTrackerUrl = "issueTracker"
         project.bintray.pkg.websiteUrl = "website"
         project.bintray.pkg.desc = "my desc"
+        project.bintray.pkg.name = "my name"
 
         when:
         project.evaluate()
@@ -61,6 +65,7 @@ class ShipkitBintrayPluginTest extends PluginSpecification {
         project.bintray.pkg.issueTrackerUrl == "issueTracker"
         project.bintray.pkg.websiteUrl == "website"
         project.bintray.pkg.desc == "my desc"
+        project.bintray.pkg.name == "my name"
         project.bintray.pkg.version.vcsTag == "v4.0"
     }
 
