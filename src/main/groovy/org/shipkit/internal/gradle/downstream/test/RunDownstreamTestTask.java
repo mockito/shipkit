@@ -15,9 +15,9 @@ import java.util.List;
 /**
  * This task run external process and additionally store output of external process to file.
  */
-public class RunTestReleaseTask extends DefaultTask {
+public class RunDownstreamTestTask extends DefaultTask {
 
-    private static final Logger LOG = Logging.getLogger(RunTestReleaseTask.class);
+    private static final Logger LOG = Logging.getLogger(RunDownstreamTestTask.class);
 
     private List<String> command;
     private File buildOutput;

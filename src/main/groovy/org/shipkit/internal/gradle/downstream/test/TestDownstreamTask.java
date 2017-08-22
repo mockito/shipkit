@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.shipkit.internal.gradle.util.StringUtil.capitalize;
+import static org.apache.commons.lang.StringUtils.capitalize;
+import static org.shipkit.internal.util.RepositoryNameUtil.*;
 
 /**
  * Aggregates all downstream-test-related tasks. It can be configured to run e2e tests on provided repositories.
@@ -21,12 +22,12 @@ import static org.shipkit.internal.gradle.util.StringUtil.capitalize;
  * <ul>
  *     <li>cloneProjectFromGitHub$projectName - {@link CloneGitRepositoryTask}</li>
  *     <li>cloneProjectToWorkDir$projectName - {@link CloneGitRepositoryTask}</li>
- *     <li>test$projectName - {@link RunTestReleaseTask}</li>
+ *     <li>test$projectName - {@link RunDownstreamTestTask}</li>
  * </ul>
  */
-public class DownstreamTestTask extends DefaultTask {
+public class TestDownstreamTask extends DefaultTask {
 
-    private static final Logger LOG = Logging.getLogger(DownstreamTestTask.class);
+    private static final Logger LOG = Logging.getLogger(TestDownstreamTask.class);
 
     private List<String> repositories = new ArrayList<String>();
 
@@ -40,31 +41,32 @@ public class DownstreamTestTask extends DefaultTask {
     }
 
     private void createTasks(String gitHubRepoUrl) {
-        String repoName = extractRepoName(gitHubRepoUrl);
-        CloneGitRepositoryTask clone = createCloneProjectFromGitHub(gitHubRepoUrl, repoName);
-        CloneGitRepositoryTask workDirCloneTask = createCloneProjectToWorkDirTask(repoName, clone);
-        createRunTestReleaseTask(repoName, workDirCloneTask);
+        String repoName = extractRepoNameFromGitHubUrl(gitHubRepoUrl);
+        String camelCaseRepoName = repositoryNameToCamelCase(repoName);
+        CloneGitRepositoryTask clone = createCloneProjectFromGitHub(gitHubRepoUrl, camelCaseRepoName);
+        CloneGitRepositoryTask workDirCloneTask = createCloneProjectToWorkDirTask(camelCaseRepoName, clone);
+        createRunTestReleaseTask(camelCaseRepoName, workDirCloneTask);
     }
 
-    private CloneGitRepositoryTask createCloneProjectFromGitHub(String gitHubRepoUrl, String repoName) {
+    private CloneGitRepositoryTask createCloneProjectFromGitHub(String gitHubRepoUrl, String camelCaseRepoName) {
         CloneGitRepositoryTask clone = getProject().getTasks().create(
-                "cloneProjectFromGitHub" + capitalize(repoName),
+                "cloneProjectFromGitHub" + capitalize(camelCaseRepoName),
                 CloneGitRepositoryTask.class);
         clone.setRepositoryUrl(gitHubRepoUrl);
-        clone.setTargetDir(new File(getProject().getBuildDir(), repoName + "-pristine"));
+        clone.setTargetDir(new File(getProject().getBuildDir(), camelCaseRepoName + "Pristine"));
         clone.setDepth(50);
         // For now for easier testing
         clone.dependsOn("clean");
         return clone;
     }
 
-    private CloneGitRepositoryTask createCloneProjectToWorkDirTask(String repoName, CloneGitRepositoryTask clone) {
+    private CloneGitRepositoryTask createCloneProjectToWorkDirTask(String camelCaseRepoName, CloneGitRepositoryTask clone) {
         // Clone from *-pristine to *-work. Copy task will not work because of ignoring git specific files:
         // https://discuss.gradle.org/t/copy-git-specific-files/11970
         // Furthermore we can verify push to pristine origin
-        File workDir = new File(getProject().getBuildDir(), repoName + "-work");
+        File workDir = new File(getProject().getBuildDir(), camelCaseRepoName + "Work");
         CloneGitRepositoryTask copy = getProject().getTasks().create(
-                "cloneProjectToWorkDir" + capitalize(repoName),
+                "cloneProjectToWorkDir" + capitalize(camelCaseRepoName),
                 CloneGitRepositoryTask.class);
         copy.dependsOn(clone);
         copy.setRepositoryUrl(clone.getTargetDir().getAbsolutePath());
@@ -72,13 +74,13 @@ public class DownstreamTestTask extends DefaultTask {
         return copy;
     }
 
-    private void createRunTestReleaseTask(String repoName, CloneGitRepositoryTask copy) {
-        RunTestReleaseTask run = getProject().getTasks().create(
-                "test" + capitalize(repoName),
-                RunTestReleaseTask.class);
+    private void createRunTestReleaseTask(String camelCaseRepoName, CloneGitRepositoryTask copy) {
+        RunDownstreamTestTask run = getProject().getTasks().create(
+                "test" + capitalize(camelCaseRepoName),
+                RunDownstreamTestTask.class);
         run.dependsOn(copy);
         run.setWorkDir(copy.getTargetDir());
-        run.setRepoName(repoName);
+        run.setRepoName(camelCaseRepoName);
 
         dependsOn(run);
 
@@ -91,15 +93,6 @@ public class DownstreamTestTask extends DefaultTask {
 
         // Build log in separate file instead of including it in the console of the parent build
         // Otherwise the output will be really messy
-        run.setBuildOutputFile(new File(getProject().getBuildDir(), repoName + "-build.log"));
-    }
-
-    private String extractRepoName(String gitHubRepo) {
-        String text = gitHubRepo.trim();
-        if(text.lastIndexOf('/') == text.length() - 1) {
-            // cut last slash
-            text = text.substring(0, text.length() - 1);
-        }
-        return text.substring(text.lastIndexOf('/') + 1, text.length());
+        run.setBuildOutputFile(new File(getProject().getBuildDir(), camelCaseRepoName + "-build.log"));
     }
 }
