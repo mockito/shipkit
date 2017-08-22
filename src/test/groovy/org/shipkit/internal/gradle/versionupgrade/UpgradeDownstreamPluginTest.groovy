@@ -4,9 +4,14 @@ import org.gradle.api.ProjectConfigurationException
 import org.gradle.testfixtures.ProjectBuilder
 import org.shipkit.gradle.exec.ShipkitExecTask
 import org.shipkit.internal.gradle.git.tasks.CloneGitRepositoryTask
+import org.shipkit.internal.gradle.java.ShipkitJavaPlugin
 import testutil.PluginSpecification
 
 class UpgradeDownstreamPluginTest extends PluginSpecification {
+
+    void setup(){
+        project.plugins.apply(ShipkitJavaPlugin)
+    }
 
     def "should fail when no consumer repositories defined"() {
         when:
