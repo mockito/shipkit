@@ -55,7 +55,7 @@ import static org.shipkit.internal.util.ArgumentValidation.notNull;
  */
 public class UpgradeDownstreamPlugin implements Plugin<Project> {
 
-    private static final String UPGRADE_DOWNSTREAM_TASK = "upgradeDownstream";
+    static final String UPGRADE_DOWNSTREAM_TASK = "upgradeDownstream";
     private UpgradeDownstreamExtension upgradeDownstreamExtension;
 
     @Override
@@ -70,15 +70,6 @@ public class UpgradeDownstreamPlugin implements Plugin<Project> {
                 task.setDescription("Performs dependency upgrade in all downstream repositories.");
             }
         });
-
-        ShipkitExecTask ciPerformReleaseTask = (ShipkitExecTask) project.getTasks().findByName(CiReleasePlugin.CI_PERFORM_RELEASE_TASK);
-
-        if(ciPerformReleaseTask != null){
-            ciPerformReleaseTask.getExecCommands().add(execCommand(
-                "Upgrading downstream projects", asList("./gradlew", UPGRADE_DOWNSTREAM_TASK)));
-        } else {
-            throw new IllegalStateException("Please apply org.shipkit.ci-release or org.shipkit.java plugin before applying upgrade-downstream.");
-        }
 
         DeferredConfiguration.deferredConfiguration(project, new Runnable() {
             @Override

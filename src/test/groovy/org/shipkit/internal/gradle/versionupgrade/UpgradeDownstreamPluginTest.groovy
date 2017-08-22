@@ -66,27 +66,6 @@ class UpgradeDownstreamPluginTest extends PluginSpecification {
         task.execCommands[0].commandLine == ["./gradlew", "performVersionUpgrade", "-Pdependency=depGroup:depName:0.1.2"]
     }
 
-    def "should add upgradeDownstream to ciPerformRelease"() {
-        when:
-        project.plugins.apply(CiReleasePlugin)
-        project.plugins.apply(UpgradeDownstreamPlugin)
-
-        then:
-        ShipkitExecTask performReleaseTask = project.tasks['ciPerformRelease']
-        performReleaseTask.execCommands.size() == 4
-        performReleaseTask.execCommands[3].commandLine == ["./gradlew", "upgradeDownstream"]
-    }
-
-    def "should throw exception if ciPerformRelease does not exist"() {
-        when:
-        new ProjectBuilder().build().plugins.apply(UpgradeDownstreamPlugin)
-
-        then:
-        def ex = thrown(PluginApplicationException)
-        ex.cause.class == IllegalStateException
-        ex.cause.message == "Please apply org.shipkit.ci-release or org.shipkit.java plugin before applying upgrade-downstream."
-    }
-
     @Override
     void initProject() {
         project = new ProjectBuilder().withName("depName").withProjectDir(tmp.root).build()
