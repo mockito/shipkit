@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle.plugin;
+package org.shipkit.internal.gradle.plugin.tasks;
 
 import org.gradle.api.Project;
 import org.gradle.api.file.FileTree;

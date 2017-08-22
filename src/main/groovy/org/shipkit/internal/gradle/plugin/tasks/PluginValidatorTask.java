@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle.plugin;
+package org.shipkit.internal.gradle.plugin.tasks;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Input;

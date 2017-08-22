@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle.plugin;
+package org.shipkit.internal.gradle.plugin.tasks;
 
 import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static org.shipkit.internal.gradle.plugin.PluginUtil.DOT_PROPERTIES;
+import static org.shipkit.internal.gradle.plugin.tasks.PluginUtil.DOT_PROPERTIES;
 
 
 public class PluginValidator {

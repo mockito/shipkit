@@ -5,6 +5,7 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.shipkit.gradle.plugin.PluginDiscoveryTask;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
 import static org.shipkit.internal.gradle.release.GradlePortalReleasePlugin.PUBLISH_PLUGINS_TASK;

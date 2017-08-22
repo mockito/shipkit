@@ -4,6 +4,7 @@ package org.shipkit.internal.gradle.plugin;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.shipkit.internal.gradle.plugin.tasks.PluginValidatorTask;
 import org.shipkit.internal.gradle.util.JavaPluginUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
 

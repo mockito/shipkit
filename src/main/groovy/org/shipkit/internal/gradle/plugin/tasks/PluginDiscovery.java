@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle.plugin;
+package org.shipkit.internal.gradle.plugin.tasks;
 
 import com.gradle.publish.PluginBundleExtension;
 import com.gradle.publish.PluginConfig;
@@ -13,7 +13,7 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.Set;
 
-import static org.shipkit.internal.gradle.plugin.PluginUtil.DOT_PROPERTIES;
+import static org.shipkit.internal.gradle.plugin.tasks.PluginUtil.DOT_PROPERTIES;
 
 public class PluginDiscovery {
 
