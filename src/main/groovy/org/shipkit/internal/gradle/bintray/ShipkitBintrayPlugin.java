@@ -74,6 +74,10 @@ public class ShipkitBintrayPlugin implements Plugin<Project> {
                     pkg.setDesc(project.getDescription());
                 }
 
+                if (pkg.getName() == null) {
+                    pkg.setName(project.getGroup().toString());
+                }
+
                 if (pkg.getVersion().getVcsTag() == null) {
                     pkg.getVersion().setVcsTag(conf.getGit().getTagPrefix() + project.getVersion());
                 }
