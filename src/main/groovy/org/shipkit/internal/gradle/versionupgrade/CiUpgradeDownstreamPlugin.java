@@ -18,7 +18,7 @@ import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
  *
  * It adds "upgradeDownstream" task to the execution commands of "ciPerformRelease" task.
  */
-public class CiUpgradeDownstreamPlugin implements Plugin<Project>{
+public class CiUpgradeDownstreamPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {

@@ -1,12 +1,10 @@
 package org.shipkit.internal.gradle.versionupgrade
 
 import org.gradle.api.ProjectConfigurationException
-import org.gradle.api.internal.plugins.PluginApplicationException
 import org.gradle.testfixtures.ProjectBuilder
 import org.shipkit.gradle.exec.ShipkitExecTask
 import org.shipkit.internal.gradle.git.tasks.CloneGitRepositoryTask
 import org.shipkit.internal.gradle.java.ShipkitJavaPlugin
-import org.shipkit.internal.gradle.release.CiReleasePlugin
 import testutil.PluginSpecification
 
 class UpgradeDownstreamPluginTest extends PluginSpecification {
