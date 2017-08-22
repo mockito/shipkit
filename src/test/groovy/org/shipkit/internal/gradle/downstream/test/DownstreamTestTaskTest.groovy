@@ -1,15 +1,15 @@
-package org.shipkit.internal.gradle.e2e
+package org.shipkit.internal.gradle.downstream.test
 
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
-class E2ETestTaskTest extends Specification {
+class DownstreamTestTaskTest extends Specification {
 
     def project = new ProjectBuilder().build()
 
     def "should extract project name correctly"() {
         when:
-        E2ETestTask task = project.tasks.create("e2eTest", E2ETestTask)
+        DownstreamTestTask task = project.tasks.create("downstreamTest", DownstreamTestTask)
         task.addRepository("https://github.com/mockito/mockito")
 
         then:
@@ -20,7 +20,7 @@ class E2ETestTaskTest extends Specification {
 
     def "should extract project name correctly when slash is the last char in url"() {
         when:
-        E2ETestTask task = project.tasks.create("e2eTest", E2ETestTask)
+        DownstreamTestTask task = project.tasks.create("downstreamTest", DownstreamTestTask)
         task.addRepository("https://github.com/mockito/shipkit-example/")
 
         then:

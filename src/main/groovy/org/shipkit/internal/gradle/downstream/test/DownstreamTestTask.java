@@ -1,4 +1,4 @@
-package org.shipkit.internal.gradle.e2e;
+package org.shipkit.internal.gradle.downstream.test;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.Logger;
@@ -13,7 +13,7 @@ import static java.util.Arrays.asList;
 import static org.shipkit.internal.gradle.util.StringUtil.capitalize;
 
 /**
- * Aggregates all e2e-related tasks. It can be configured to run e2e tests on provided repositories.
+ * Aggregates all downstream-test-related tasks. It can be configured to run e2e tests on provided repositories.
  * Automatically added tasks clone client projects to '$buildDir/project-name-pristine' first, next clone project from 'pristine' to
  * '$buildDir/project-name-work' and execute 'testRelease' task using the newest shipkit version
  *
@@ -24,17 +24,17 @@ import static org.shipkit.internal.gradle.util.StringUtil.capitalize;
  *     <li>test$projectName - {@link RunTestReleaseTask}</li>
  * </ul>
  */
-public class E2ETestTask extends DefaultTask {
+public class DownstreamTestTask extends DefaultTask {
 
-    private static final Logger LOG = Logging.getLogger(E2ETestTask.class);
+    private static final Logger LOG = Logging.getLogger(DownstreamTestTask.class);
 
     private List<String> repositories = new ArrayList<String>();
 
     /**
-     * URL of repository which will be downloaded and e2e test will be run on it
+     * URL of repository which will be downloaded and downstream test will be run on it
      */
     public void addRepository(String repositoryUrl) {
-        LOG.debug("E2E test created for repository {}", repositoryUrl);
+        LOG.debug("Downstream test created for repository {}", repositoryUrl);
         repositories.add(repositoryUrl);
         createTasks(repositoryUrl);
     }
