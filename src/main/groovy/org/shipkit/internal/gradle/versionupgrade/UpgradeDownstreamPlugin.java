@@ -7,19 +7,16 @@ import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.exec.ExecCommandFactory;
 import org.shipkit.internal.gradle.git.tasks.CloneGitRepositoryTask;
-import org.shipkit.internal.gradle.release.CiReleasePlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.util.ExposedForTesting;
 import org.shipkit.version.VersionInfo;
 
 import java.io.File;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import static java.util.Arrays.asList;
 import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
-import static org.shipkit.internal.gradle.util.StringUtil.capitalize;
 import static org.shipkit.internal.util.ArgumentValidation.notNull;
+import static org.shipkit.internal.util.RepositoryNameUtil.repositoryNameToCamelCase;
+import static org.shipkit.internal.util.RepositoryNameUtil.repositoryNameToCapizalizedCamelCase;
 
 /**
  * BEWARE! This plugin is in incubating state, so its API may change in the future!
@@ -88,7 +85,7 @@ public class UpgradeDownstreamPlugin implements Plugin<Project> {
 
     private Task createConsumerCloneTask(final Project project, final ShipkitConfiguration conf, final String consumerRepository){
         return TaskMaker.task(project,
-            "clone" + capitalize(toCamelCase(consumerRepository)),
+            "clone" + repositoryNameToCapizalizedCamelCase(consumerRepository),
             CloneGitRepositoryTask.class,
             new Action<CloneGitRepositoryTask>() {
                 @Override
@@ -102,7 +99,7 @@ public class UpgradeDownstreamPlugin implements Plugin<Project> {
     }
 
     private Task createProduceUpgradeTask(final Project project, final String consumerRepository){
-        return TaskMaker.task(project, "upgrade" + capitalize(toCamelCase(consumerRepository)), ShipkitExecTask.class, new Action<ShipkitExecTask>() {
+        return TaskMaker.task(project, "upgrade" + repositoryNameToCapizalizedCamelCase(consumerRepository), ShipkitExecTask.class, new Action<ShipkitExecTask>() {
             @Override
             public void execute(final ShipkitExecTask task) {
                 task.setDescription("Performs dependency upgrade in " + consumerRepository);
@@ -114,22 +111,12 @@ public class UpgradeDownstreamPlugin implements Plugin<Project> {
     }
 
     private File getConsumerRepoTempDir(Project project, String consumerRepository) {
-        return new File(project.getBuildDir().getAbsolutePath() + "/downstream-upgrade/" + toCamelCase(consumerRepository));
+        return new File(project.getBuildDir().getAbsolutePath() + "/downstream-upgrade/" + repositoryNameToCamelCase(consumerRepository));
     }
 
     private String getDependencyProperty(Project project){
         VersionInfo info = project.getExtensions().getByType(VersionInfo.class);
         return String.format("-Pdependency=%s:%s:%s", project.getGroup().toString(), project.getName(), info.getPreviousVersion());
-    }
-
-    private String toCamelCase(String repository){
-        Matcher matcher = Pattern.compile("[/_-]([a-z])").matcher(repository);
-        StringBuffer result = new StringBuffer();
-        while (matcher.find()) {
-            matcher.appendReplacement(result, matcher.group(1).toUpperCase());
-        }
-        matcher.appendTail(result);
-        return result.toString();
     }
 
     @ExposedForTesting

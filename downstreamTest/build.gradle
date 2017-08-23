@@ -1,8 +1,0 @@
-apply plugin: 'base' // for clean task, TODO ms: push it to the plugin, make 'check' depend on downstream test
-
-
-// TODO: WW when new version of DownstreamTestingPlugin is released, uncomment these lines
-//apply plugin: 'org.shipkit.downstream-test'
-
-//downstreamTest.addRepository("https://github.com/mockito/shipkit-example")
-//downstreamTest.addRepository("https://github.com/mockito/mockito")
