@@ -1,13 +1,9 @@
-package org.shipkit.internal.gradle.downstream.test;
+package org.shipkit.internal.exec;
 
 import org.gradle.api.DefaultTask;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.internal.exec.Exec;
-import org.shipkit.internal.exec.ProcessRunner;
 
 import java.io.File;
 import java.util.List;
@@ -15,18 +11,14 @@ import java.util.List;
 /**
  * This task run external process and additionally store output of external process to file.
  */
-public class RunDownstreamTestTask extends DefaultTask {
-
-    private static final Logger LOG = Logging.getLogger(RunDownstreamTestTask.class);
+public class SilentExecTask extends DefaultTask {
 
     private List<String> command;
     private File buildOutput;
     private File workDir;
-    private String repoName;
 
     @TaskAction
     public void runTest() {
-        LOG.lifecycle("  Run test of {}. The output will be saved in {}", repoName, buildOutput.getAbsoluteFile());
         ProcessRunner processRunner = Exec.getProcessRunner(workDir, buildOutput);
         processRunner.run(command);
     }
@@ -59,21 +51,6 @@ public class RunDownstreamTestTask extends DefaultTask {
     @Input
     public void setCommand(List<String> command) {
         this.command = command;
-    }
-
-    /**
-     * Repository (or project) name, for example: mockito
-     */
-    public String getRepoName() {
-        return repoName;
-    }
-
-    /**
-     * See {@link #getRepoName()}
-     */
-    @Input
-    public void setRepoName(String repoName) {
-        this.repoName = repoName;
     }
 
     /**

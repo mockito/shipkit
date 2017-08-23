@@ -1,8 +1,11 @@
 package org.shipkit.internal.gradle.downstream.test;
 
+import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
+import org.shipkit.internal.exec.SilentExecTask;
 import org.shipkit.internal.gradle.git.tasks.CloneGitRepositoryTask;
 
 import java.io.File;
@@ -10,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.apache.commons.lang.StringUtils.capitalize;
+import static org.shipkit.internal.gradle.util.StringUtil.capitalize;
 import static org.shipkit.internal.util.RepositoryNameUtil.*;
 
 /**
@@ -22,7 +25,7 @@ import static org.shipkit.internal.util.RepositoryNameUtil.*;
  * <ul>
  *     <li>cloneProjectFromGitHub$projectName - {@link CloneGitRepositoryTask}</li>
  *     <li>cloneProjectToWorkDir$projectName - {@link CloneGitRepositoryTask}</li>
- *     <li>test$projectName - {@link RunDownstreamTestTask}</li>
+ *     <li>test$projectName - {@link SilentExecTask}</li>
  * </ul>
  */
 public class TestDownstreamTask extends DefaultTask {
@@ -74,13 +77,13 @@ public class TestDownstreamTask extends DefaultTask {
         return copy;
     }
 
-    private void createRunTestReleaseTask(String camelCaseRepoName, CloneGitRepositoryTask copy) {
-        RunDownstreamTestTask run = getProject().getTasks().create(
+    private void createRunTestReleaseTask(final String camelCaseRepoName, CloneGitRepositoryTask copy) {
+        final File buildOutputFile = new File(getProject().getBuildDir(), camelCaseRepoName + "-build.log");
+        SilentExecTask run = getProject().getTasks().create(
                 "test" + capitalize(camelCaseRepoName),
-                RunDownstreamTestTask.class);
+                SilentExecTask.class);
         run.dependsOn(copy);
         run.setWorkDir(copy.getTargetDir());
-        run.setRepoName(camelCaseRepoName);
 
         dependsOn(run);
 
@@ -93,6 +96,12 @@ public class TestDownstreamTask extends DefaultTask {
 
         // Build log in separate file instead of including it in the console of the parent build
         // Otherwise the output will be really messy
-        run.setBuildOutputFile(new File(getProject().getBuildDir(), camelCaseRepoName + "-build.log"));
+        run.setBuildOutputFile(buildOutputFile);
+        run.doFirst(new Action<Task>() {
+            @Override
+            public void execute(Task task) {
+                LOG.lifecycle("  Run test of {}. The output will be saved in {}", camelCaseRepoName, buildOutputFile.getAbsoluteFile());
+            }
+        });
     }
 }
