@@ -30,7 +30,7 @@ public class PluginValidator {
     }
 
     private void ensureNamingConvention(Set<File> gradlePropertiesFiles) {
-        StringBuilder sb = new StringBuilder();
+        Map<String, String> errors = new HashMap<String, String>();
         for (File gradlePropertiesFile: gradlePropertiesFiles) {
             String pluginId = gradlePropertiesFile.getName().substring(0, gradlePropertiesFile.getName().lastIndexOf(DOT_PROPERTIES));
             List<String> candidates = getClassCandidates(pluginId);
@@ -52,13 +52,13 @@ public class PluginValidator {
             }
 
             if (!foundClass) {
-                throw new RuntimeException("plugin-id: " + pluginId + " -> implementation class " + implementationClass + "  does not match one of the acceptable names " + candidates);
-            }
-
-            if (!ensureImplementationClassExists(implementationClass)) {
-                throw new RuntimeException("Implementation class " + implementationClass + " does not exist!");
+                errors.put(pluginId, "Implementation class " + implementationClass + " does not match one of the acceptable names " + candidates);
+            } else if (!ensureImplementationClassExists(implementationClass)) {
+                errors.put(pluginId, "Implementation class " + implementationClass + " does not exist!");
             }
         }
+
+        throwExceptionIfNeeded(errors);
     }
 
     private List<String> getClassCandidates(String pluginId) {
@@ -102,17 +102,16 @@ public class PluginValidator {
     }
 
 
-    private void throwExceptionIfNeeded(Map<String, File> missingPropertiesFiles) {
-        if (missingPropertiesFiles.size() > 0) {
+    private void throwExceptionIfNeeded(Map<String, String> errors) {
+        if (errors.size() > 0) {
             StringBuilder sb = new StringBuilder();
-            sb.append("no properties file found for plugin(s):");
-            for (String pluginName : missingPropertiesFiles.keySet()) {
+            sb.append("plugin validation failed for plugin(s):");
+            for (String pluginId : errors.keySet()) {
                 sb.append("\n\t");
                 sb.append("'");
-                sb.append(pluginName);
-                sb.append("' (");
-                sb.append(missingPropertiesFiles.get(pluginName));
-                sb.append(")");
+                sb.append(pluginId);
+                sb.append("': ");
+                sb.append(errors.get(pluginId));
             }
             throw new GradleException(sb.toString());
         }
