@@ -64,13 +64,13 @@ public class PluginValidator {
     private List<String> getClassCandidates(String pluginId) {
         List<String> candidates = new ArrayList<String>();
 
-        String[] candidate1 = pluginId.split("\\.|-");
+        String[] pluginIdParts = pluginId.split("\\.|-");
         String previousCandidate = "Plugin";
         if (pluginId.toLowerCase().endsWith(previousCandidate.toLowerCase())) {
             previousCandidate = "";
         }
-        for (int i = candidate1.length - 1; i >= 0; i--) {
-            String candidate = StringUtil.capitalize(candidate1[i]) + previousCandidate;
+        for (int i = pluginIdParts.length - 1; i >= 0; i--) {
+            String candidate = StringUtil.capitalize(pluginIdParts[i]) + previousCandidate;
             candidates.add(candidate);
             previousCandidate = candidate;
         }

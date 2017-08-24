@@ -15,7 +15,7 @@ public class PropertiesUtil {
             reader = new FileReader(properties);
             p.load(reader);
         } catch (Exception e) {
-            throw new RuntimeException("Problems reading properties file: " + properties);
+            throw new RuntimeException("Problems reading properties file: " + properties, e);
         } finally {
             IOUtil.close(reader);
         }
