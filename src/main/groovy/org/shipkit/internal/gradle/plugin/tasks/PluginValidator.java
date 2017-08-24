@@ -1,8 +1,11 @@
 package org.shipkit.internal.gradle.plugin.tasks;
 
 import org.gradle.api.GradleException;
+import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
+import org.gradle.api.tasks.SourceSet;
+import org.shipkit.internal.gradle.util.JavaPluginUtil;
 import org.shipkit.internal.gradle.util.StringUtil;
 
 import java.io.File;
@@ -15,15 +18,14 @@ import static org.shipkit.internal.gradle.plugin.tasks.PluginUtil.DOT_PROPERTIES
 public class PluginValidator {
 
     private static final Logger LOG = Logging.getLogger(PluginValidator.class);
-
-    private final Set<File> sourceDirs;
     private static final String[] PLUGIN_EXTENSIONS = new String[]{".groovy", ".java"};
 
-    public PluginValidator(Set<File> sourceDirs) {
-        this.sourceDirs = sourceDirs;
-    }
+    private Set<File> sourceDirs;
 
-    public void validate(Set<File> gradleProperties) {
+    public void validate(Project project) {
+        SourceSet sourceSet = JavaPluginUtil.getMainSourceSet(project);
+        Set<File> gradleProperties = PluginUtil.discoverGradlePluginPropertyFiles(sourceSet);
+        sourceDirs = sourceSet.getAllJava().getSrcDirs();
         ensureNamingConvention(gradleProperties);
     }
 

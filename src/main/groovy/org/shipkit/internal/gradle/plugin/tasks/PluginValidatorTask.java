@@ -19,23 +19,8 @@ import java.util.Set;
  */
 public class PluginValidatorTask extends DefaultTask {
 
-    @Input
-    private SourceSet sourceSet;
-
     @TaskAction
     public void validate() {
-        //TODO move the implementation out of the public type
-        IncubatingWarning.warn("PluginValidatorTask");
-        Set<File> sourceDirs = sourceSet.getAllJava().getSrcDirs();
-        Set<File> gradleProperties = PluginUtil.discoverGradlePluginPropertyFiles(sourceSet);
-        new PluginValidator(sourceDirs).validate(gradleProperties);
-    }
-
-    public void setSourceSet(SourceSet sourceSet) {
-        this.sourceSet = sourceSet;
-    }
-
-    public SourceSet getSourceSet() {
-        return sourceSet;
+        new PluginValidator().validate(getProject());
     }
 }
