@@ -1,13 +1,8 @@
-package org.shipkit.internal.gradle.plugin.tasks;
+package org.shipkit.gradle.plugin;
 
 import org.gradle.api.DefaultTask;
-import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.internal.util.IncubatingWarning;
-
-import java.io.File;
-import java.util.Set;
+import org.shipkit.internal.gradle.plugin.tasks.PluginValidator;
 
 /**
  * This task validates plugin properties files.
