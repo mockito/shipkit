@@ -13,8 +13,11 @@ import java.util.Set;
  * This task validates plugin properties files.
  * The following constraints are validated:
  * <ul>
- *     <li>plugins have a corresponding .properties file</li>
- *     <li>the name of the properties file is consistent with the class name (e.g BintrayReleasePlugin.java" -> "org.shipkit.bintray-release")</li>
+ *     <li>the naming convention of a plugin:</li>
+ *     acceptable names are calculated based on the plugin id and the implementation class has to match one of them, e.g:
+ *     <br>
+ *     "org.shipkit.bintray" -> "OrgShipkitBintrayPlugin", "ShipkitBintrayPlugin", "BintrayPlugin"
+ *     <li>the implementation class specified in a plugin properties file exists</li>
  * </ul>
  */
 public class PluginValidatorTask extends DefaultTask {
