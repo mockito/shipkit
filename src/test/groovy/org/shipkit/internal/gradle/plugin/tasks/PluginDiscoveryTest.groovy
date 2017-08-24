@@ -1,8 +1,8 @@
 package org.shipkit.internal.gradle.plugin.tasks
 
-import testutil.PluginSpecification
+import spock.lang.Specification
 
-class PluginDiscoveryTest extends PluginSpecification {
+class PluginDiscoveryTest extends Specification {
 
     def "generate plugin name"() {
         expect:

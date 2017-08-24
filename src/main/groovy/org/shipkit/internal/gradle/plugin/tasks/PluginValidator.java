@@ -61,20 +61,29 @@ public class PluginValidator {
         throwExceptionIfNeeded(errors);
     }
 
-    private List<String> getClassCandidates(String pluginId) {
+    static List<String> getClassCandidates(String pluginId) {
         List<String> candidates = new ArrayList<String>();
 
-        String[] pluginIdParts = pluginId.split("\\.|-");
+        String[] pluginIdParts = pluginId.split("\\.");
         String previousCandidate = "Plugin";
         if (pluginId.toLowerCase().endsWith(previousCandidate.toLowerCase())) {
             previousCandidate = "";
         }
         for (int i = pluginIdParts.length - 1; i >= 0; i--) {
-            String candidate = StringUtil.capitalize(pluginIdParts[i]) + previousCandidate;
+            String candidate = StringUtil.capitalize(processPart(pluginIdParts[i])) + previousCandidate;
             candidates.add(candidate);
             previousCandidate = candidate;
         }
         return candidates;
+    }
+
+    private static String processPart(String pluginIdPart) {
+        StringBuilder sb = new StringBuilder();
+        String[] parts = pluginIdPart.split("-");
+        for (String part: parts) {
+            sb.append(StringUtil.capitalize(part));
+        }
+        return sb.toString();
     }
 
     private boolean ensureImplementationClassExists(String implementationClass) {
