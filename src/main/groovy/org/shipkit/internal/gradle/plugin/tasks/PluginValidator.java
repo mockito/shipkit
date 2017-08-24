@@ -3,12 +3,12 @@ package org.shipkit.internal.gradle.plugin.tasks;
 import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
+import org.shipkit.internal.gradle.util.StringUtil;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
+import static org.shipkit.internal.gradle.plugin.tasks.PluginUtil.getImplementationClass;
 import static org.shipkit.internal.gradle.plugin.tasks.PluginUtil.DOT_PROPERTIES;
 
 
@@ -16,37 +16,89 @@ public class PluginValidator {
 
     private static final Logger LOG = Logging.getLogger(PluginValidator.class);
 
-    public void validate(Set<File> gradlePlugins, Set<File> gradleProperties) {
-        ensurePluginsHavePropertiesFile(gradlePlugins, gradleProperties);
+    private final Set<File> sourceDirs;
+    private static final String[] PLUGIN_EXTENSIONS = new String[]{".groovy", ".java"};
+
+    public PluginValidator(Set<File> sourceDirs) {
+        this.sourceDirs = sourceDirs;
     }
 
-    private void ensurePluginsHavePropertiesFile(Set<File> gradlePlugins, Set<File> gradleProperties) {
-        Map<String, File> missingPropertiesFiles = new HashMap<String, File>();
-        for (File plugin : gradlePlugins) {
-            String pluginFilename = plugin.getName();
-            String pluginName = extractPluginName(pluginFilename);
-            if (pluginName != null) {
-                String convertedPropertiesFleName = convertToPropertiesFileName(pluginName);
-                boolean matchingPropertiesFound = false;
-                for (File properties : gradleProperties) {
-                    int lastIndexOfProperties = properties.getName().lastIndexOf(DOT_PROPERTIES);
-                    if (lastIndexOfProperties != -1) {
-                        String pluginExtractedFromProperties = properties.getName().substring(0, lastIndexOfProperties);
-                        if (pluginExtractedFromProperties.toLowerCase().endsWith(convertedPropertiesFleName.toLowerCase())) {
-                            matchingPropertiesFound = true;
-                            LOG.info("plugin " + plugin + " has properties file " + gradleProperties);
-                            break;
-                        }
-                    }
+    public void validate(Set<File> gradleProperties) {
+        ensureNamingConvention(gradleProperties);
+    }
+
+    private void ensureNamingConvention(Set<File> gradlePropertiesFiles) {
+        StringBuilder sb = new StringBuilder();
+        for (File gradlePropertiesFile: gradlePropertiesFiles) {
+            String pluginId = gradlePropertiesFile.getName().substring(0, gradlePropertiesFile.getName().lastIndexOf(DOT_PROPERTIES));
+            List<String> candidates = getClassCandidates(pluginId);
+
+            String implementationClass = getImplementationClass(gradlePropertiesFile);
+            boolean containsDots = implementationClass.contains(".");
+
+            boolean foundClass = false;
+            for (String candidate: candidates) {
+                if (containsDots) {
+                    candidate = "." + candidate;
                 }
-                if (!matchingPropertiesFound) {
-                    missingPropertiesFiles.put(pluginName, plugin);
+                if (implementationClass.toLowerCase().endsWith(candidate.toLowerCase())) {
+                    // we found the matching one
+                    LOG.info("plugin-id: " + pluginId + " matching implementation class found " + implementationClass);
+                    foundClass = true;
+                    break;
+                }
+            }
+
+            if (!foundClass) {
+                throw new RuntimeException("plugin-id: " + pluginId + " -> implementation class " + implementationClass + "  does not match one of the acceptable names " + candidates);
+            }
+
+            if (!ensureImplementationClassExists(implementationClass)) {
+                throw new RuntimeException("Implementation class " + implementationClass + " does not exist!");
+            }
+        }
+    }
+
+    private List<String> getClassCandidates(String pluginId) {
+        List<String> candidates = new ArrayList<String>();
+
+        String[] candidate1 = pluginId.split("\\.|-");
+        String previousCandidate = "Plugin";
+        if (pluginId.toLowerCase().endsWith(previousCandidate.toLowerCase())) {
+            previousCandidate = "";
+        }
+        for (int i = candidate1.length - 1; i >= 0; i--) {
+            String candidate = StringUtil.capitalize(candidate1[i]) + previousCandidate;
+            candidates.add(candidate);
+            previousCandidate = candidate;
+        }
+        return candidates;
+    }
+
+    private boolean ensureImplementationClassExists(String implementationClass) {
+        String pathToClass = implementationClass.replaceAll("\\.", File.separator);
+
+        for (File sourceDir : sourceDirs) {
+            File[] files = getFileCandidates(sourceDir.getAbsolutePath() + File.separator + pathToClass);
+            for (File file: files) {
+                if (file.exists()) {
+                    LOG.info("implementation class " + implementationClass + " exists!");
+                    return true;
                 }
             }
         }
 
-        throwExceptionIfNeeded(missingPropertiesFiles);
+        return false;
     }
+
+    private File[] getFileCandidates(String pathToClass) {
+        File[] includes = new File[PLUGIN_EXTENSIONS.length];
+        for(int i = 0; i < PLUGIN_EXTENSIONS.length; i++) {
+            includes[i] = new File(pathToClass + PLUGIN_EXTENSIONS[i]);
+        }
+        return includes;
+    }
+
 
     private void throwExceptionIfNeeded(Map<String, File> missingPropertiesFiles) {
         if (missingPropertiesFiles.size() > 0) {
@@ -64,32 +116,4 @@ public class PluginValidator {
         }
     }
 
-    /**
-     * Converts a given plugin name to the corresponding properties file name.
-     *
-     * e.g. 'PluginDiscovery' will return 'plugin-discovery'
-     *
-     * @param pluginName the plugin name to convert to a corresponding properties file name.
-     * @return the corresponding properties file name
-     */
-    private String convertToPropertiesFileName(String pluginName) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < pluginName.length(); i++) {
-            char c = pluginName.charAt(i);
-            if (Character.isUpperCase(c)) {
-                if (sb.length() != 0) {
-                    sb.append("-");
-                }
-            }
-            sb.append(c);
-        }
-        return sb.toString().toLowerCase();
-    }
-
-    private String extractPluginName(String pluginFilename) {
-        if (pluginFilename.endsWith("Plugin.java") || pluginFilename.endsWith("Plugin.groovy")) {
-            return pluginFilename.substring(0, pluginFilename.lastIndexOf("Plugin."));
-        }
-        return null;
-    }
 }

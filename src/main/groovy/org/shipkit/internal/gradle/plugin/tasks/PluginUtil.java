@@ -5,8 +5,10 @@ import org.gradle.api.file.FileTree;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.util.PatternSet;
 import org.shipkit.internal.gradle.util.JavaPluginUtil;
+import org.shipkit.internal.util.PropertiesUtil;
 
 import java.io.File;
+import java.util.Properties;
 import java.util.Set;
 
 class PluginUtil {
@@ -26,5 +28,10 @@ class PluginUtil {
 
     private static Set<File> getFilteredFileset(FileTree fileTree, String... includes) {
         return fileTree.matching(new PatternSet().include(includes)).getFiles();
+    }
+
+    static String getImplementationClass(File file) {
+        Properties properties = PropertiesUtil.readProperties(file);
+        return properties.getProperty("implementation-class");
     }
 }

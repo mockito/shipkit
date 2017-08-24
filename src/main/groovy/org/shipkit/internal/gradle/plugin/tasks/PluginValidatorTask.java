@@ -26,9 +26,9 @@ public class PluginValidatorTask extends DefaultTask {
     public void validate() {
         //TODO move the implementation out of the public type
         IncubatingWarning.warn("PluginValidatorTask");
-        Set<File> gradlePlugins = PluginUtil.discoverGradlePlugins(sourceSet);
+        Set<File> sourceDirs = sourceSet.getAllJava().getSrcDirs();
         Set<File> gradleProperties = PluginUtil.discoverGradlePluginPropertyFiles(sourceSet);
-        new PluginValidator().validate(gradlePlugins, gradleProperties);
+        new PluginValidator(sourceDirs).validate(gradleProperties);
     }
 
     public void setSourceSet(SourceSet sourceSet) {
