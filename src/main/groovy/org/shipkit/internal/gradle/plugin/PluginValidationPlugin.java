@@ -4,6 +4,7 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.shipkit.gradle.plugin.PluginValidatorTask;
+import org.shipkit.internal.gradle.util.JavaPluginUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
 /**
@@ -28,6 +29,7 @@ public class PluginValidationPlugin implements Plugin<Project> {
                     @Override
                     public void execute(PluginValidatorTask task) {
                         task.setDescription("Validates Gradle Plugins and their properties files");
+                        task.setSourceSet(JavaPluginUtil.getMainSourceSet(project));
                     }
                 });
             }

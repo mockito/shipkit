@@ -22,10 +22,7 @@ public class PluginValidator {
 
     private Set<File> sourceDirs;
 
-    public void validate(Project project) {
-        //TODO instead of interrogating project object, let's make the PluginValidatorTask a property that has a source set
-        //This way the task is more robust, easier to configure by end users
-        SourceSet sourceSet = JavaPluginUtil.getMainSourceSet(project);
+    public void validate(SourceSet sourceSet) {
         Set<File> gradleProperties = PluginUtil.discoverGradlePluginPropertyFiles(sourceSet);
         sourceDirs = sourceSet.getAllJava().getSrcDirs();
         ensureNamingConvention(gradleProperties);

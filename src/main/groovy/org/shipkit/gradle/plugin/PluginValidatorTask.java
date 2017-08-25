@@ -1,6 +1,8 @@
 package org.shipkit.gradle.plugin;
 
 import org.gradle.api.DefaultTask;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.internal.gradle.plugin.tasks.PluginValidator;
 
@@ -17,8 +19,25 @@ import org.shipkit.internal.gradle.plugin.tasks.PluginValidator;
  */
 public class PluginValidatorTask extends DefaultTask {
 
+    @Input
+    private SourceSet sourceSet;
+
     @TaskAction
     public void validate() {
-        new PluginValidator().validate(getProject());
+        new PluginValidator().validate(sourceSet);
+    }
+
+    /**
+     * The {@link SourceSet} used for plugin validation.
+     */
+    public SourceSet getSourceSet() {
+        return sourceSet;
+    }
+
+    /**
+     * See {@link #getSourceSet()}
+     */
+    public void setSourceSet(SourceSet sourceSet) {
+        this.sourceSet = sourceSet;
     }
 }
