@@ -22,10 +22,6 @@ class PluginUtil {
         return getFilteredFileset(sourceSet.getResources(), "META-INF/gradle-plugins/*" + DOT_PROPERTIES);
     }
 
-    static Set<File> discoverGradlePlugins(SourceSet sourceSet) {
-        return getFilteredFileset(sourceSet.getAllJava(), "**/*Plugin.java", "**/*Plugin.groovy");
-    }
-
     private static Set<File> getFilteredFileset(FileTree fileTree, String... includes) {
         return fileTree.matching(new PatternSet().include(includes)).getFiles();
     }
