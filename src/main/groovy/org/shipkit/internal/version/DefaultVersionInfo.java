@@ -2,10 +2,10 @@ package org.shipkit.internal.version;
 
 import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.notes.util.IOUtil;
+import org.shipkit.internal.util.PropertiesUtil;
 import org.shipkit.version.VersionInfo;
 
 import java.io.File;
-import java.io.FileReader;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Properties;
@@ -25,7 +25,7 @@ class DefaultVersionInfo implements VersionInfo {
     }
 
     static DefaultVersionInfo fromFile(File versionFile) {
-        Properties properties = readProperties(versionFile);
+        Properties properties = PropertiesUtil.readProperties(versionFile);
         String version = properties.getProperty("version");
         if (version == null) {
             throw new IllegalArgumentException("Missing 'version=' properties in file: " + versionFile);
@@ -45,20 +45,6 @@ class DefaultVersionInfo implements VersionInfo {
             }
         }
         return result;
-    }
-
-    private static Properties readProperties(File versionFile) {
-        Properties p = new Properties();
-        FileReader reader = null;
-        try {
-            reader = new FileReader(versionFile);
-            p.load(reader);
-        } catch (Exception e) {
-            throw new RuntimeException("Problems reading version file: " + versionFile);
-        } finally {
-            IOUtil.close(reader);
-        }
-        return p;
     }
 
     public String getVersion() {
