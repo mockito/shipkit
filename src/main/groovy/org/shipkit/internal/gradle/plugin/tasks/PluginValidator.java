@@ -1,18 +1,16 @@
 package org.shipkit.internal.gradle.plugin.tasks;
 
 import org.gradle.api.GradleException;
-import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.SourceSet;
-import org.shipkit.internal.gradle.util.JavaPluginUtil;
 import org.shipkit.internal.gradle.util.StringUtil;
 
 import java.io.File;
 import java.util.*;
 
-import static org.shipkit.internal.gradle.plugin.tasks.PluginUtil.getImplementationClass;
 import static org.shipkit.internal.gradle.plugin.tasks.PluginUtil.DOT_PROPERTIES;
+import static org.shipkit.internal.gradle.plugin.tasks.PluginUtil.getImplementationClass;
 
 
 public class PluginValidator {
