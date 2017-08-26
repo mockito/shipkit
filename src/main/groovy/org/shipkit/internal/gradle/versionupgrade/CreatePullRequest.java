@@ -38,7 +38,7 @@ class CreatePullRequest {
 
     private String getMessage(CreatePullRequestTask task){
         return String.format("This pull request was automatically created by Shipkit's" +
-         " 'version-upgrade-customer' Gradle plugin (http://shipkit.org)." +
+         " 'org.shipkit.upgrade-downstream' Gradle plugin (http://shipkit.org)." +
         " Please merge it so that you are using fresh version of '%s' dependency.",
             task.getVersionUpgrade().getDependencyName());
     }
