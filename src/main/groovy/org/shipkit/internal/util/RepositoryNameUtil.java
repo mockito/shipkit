@@ -13,7 +13,7 @@ public class RepositoryNameUtil {
      * "mockito/shipkit-example" -> "MockitoShipkitExample"
      * @param repositoryName GitHub repo name in format "org/repo", eg. "mockito/shipkit"
      */
-    public static String repositoryNameToCapizalizedCamelCase(String repositoryName){
+    public static String repositoryNameToCapitalizedCamelCase(String repositoryName){
         return StringUtil.capitalize(repositoryNameToCamelCase(repositoryName));
     }
 

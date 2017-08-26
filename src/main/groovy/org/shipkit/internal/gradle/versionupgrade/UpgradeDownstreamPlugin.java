@@ -1,6 +1,9 @@
 package org.shipkit.internal.gradle.versionupgrade;
 
-import org.gradle.api.*;
+import org.gradle.api.Action;
+import org.gradle.api.Plugin;
+import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.gradle.exec.ShipkitExecTask;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
@@ -13,10 +16,9 @@ import org.shipkit.version.VersionInfo;
 
 import java.io.File;
 
-import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
 import static org.shipkit.internal.util.ArgumentValidation.notNull;
 import static org.shipkit.internal.util.RepositoryNameUtil.repositoryNameToCamelCase;
-import static org.shipkit.internal.util.RepositoryNameUtil.repositoryNameToCapizalizedCamelCase;
+import static org.shipkit.internal.util.RepositoryNameUtil.repositoryNameToCapitalizedCamelCase;
 
 /**
  * BEWARE! This plugin is in incubating state, so its API may change in the future!
@@ -85,7 +87,7 @@ public class UpgradeDownstreamPlugin implements Plugin<Project> {
 
     private Task createConsumerCloneTask(final Project project, final ShipkitConfiguration conf, final String consumerRepository){
         return TaskMaker.task(project,
-            "clone" + repositoryNameToCapizalizedCamelCase(consumerRepository),
+            "clone" + repositoryNameToCapitalizedCamelCase(consumerRepository),
             CloneGitRepositoryTask.class,
             new Action<CloneGitRepositoryTask>() {
                 @Override
@@ -99,7 +101,7 @@ public class UpgradeDownstreamPlugin implements Plugin<Project> {
     }
 
     private Task createProduceUpgradeTask(final Project project, final String consumerRepository){
-        return TaskMaker.task(project, "upgrade" + repositoryNameToCapizalizedCamelCase(consumerRepository), ShipkitExecTask.class, new Action<ShipkitExecTask>() {
+        return TaskMaker.task(project, "upgrade" + repositoryNameToCapitalizedCamelCase(consumerRepository), ShipkitExecTask.class, new Action<ShipkitExecTask>() {
             @Override
             public void execute(final ShipkitExecTask task) {
                 task.setDescription("Performs dependency upgrade in " + consumerRepository);
