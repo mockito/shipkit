@@ -13,7 +13,7 @@ import static org.shipkit.internal.gradle.plugin.tasks.PluginUtil.DOT_PROPERTIES
 
 public class PluginDiscovery {
 
-    private static Logger LOG = Logging.getLogger(PluginDiscovery.class);
+    private static final Logger LOG = Logging.getLogger(PluginDiscovery.class);
 
     public void discover(Project project) {
         PluginBundleExtension extension = project.getExtensions().findByType(PluginBundleExtension.class);

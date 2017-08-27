@@ -14,12 +14,11 @@ public class InitShipkitFile {
 
     public void initShipkitFile(InitShipkitFileTask task) {
         File shipkitFile = task.getShipkitFile();
-        File projectDir = task.getProject().getProjectDir();
         String originRepoName = task.getOriginRepoName();
-        initShipkitFile(shipkitFile, projectDir, originRepoName);
+        initShipkitFile(shipkitFile, originRepoName);
     }
 
-    static void initShipkitFile(File shipkitFile, File projectDir, String originRepoName) {
+    static void initShipkitFile(File shipkitFile, String originRepoName) {
         if (shipkitFile.exists()) {
             LOG.lifecycle("  Shipkit file already exists, nothing to do: {}", shipkitFile.getPath());
         } else {

@@ -3,7 +3,7 @@ package org.shipkit.internal.util
 import spock.lang.Specification
 
 import static org.shipkit.internal.util.RepositoryNameUtil.repositoryNameToCamelCase
-import static org.shipkit.internal.util.RepositoryNameUtil.repositoryNameToCapizalizedCamelCase
+import static org.shipkit.internal.util.RepositoryNameUtil.repositoryNameToCapitalizedCamelCase
 import static org.shipkit.internal.util.RepositoryNameUtil.extractRepoNameFromGitHubUrl
 
 
@@ -12,7 +12,7 @@ class RepositoryNameUtilTest extends Specification {
     def "should convert to camelCase"(String repoName, String camelCase, String capitalizedCamelCase) {
         expect:
         camelCase == repositoryNameToCamelCase(repoName)
-        capitalizedCamelCase == repositoryNameToCapizalizedCamelCase(repoName)
+        capitalizedCamelCase == repositoryNameToCapitalizedCamelCase(repoName)
 
         where:
         repoName                  | camelCase               | capitalizedCamelCase

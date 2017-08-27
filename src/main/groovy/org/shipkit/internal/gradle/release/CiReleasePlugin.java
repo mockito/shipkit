@@ -3,8 +3,6 @@ package org.shipkit.internal.gradle.release;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.exec.ShipkitExecTask;
 import org.shipkit.internal.gradle.exec.ExecCommandFactory;
 import org.shipkit.internal.gradle.git.GitSetupPlugin;
