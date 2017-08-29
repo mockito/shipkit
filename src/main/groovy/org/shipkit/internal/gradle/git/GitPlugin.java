@@ -77,7 +77,7 @@ public class GitPlugin implements Plugin<Project> {
                 t.dependsOn(GitBranchPlugin.IDENTIFY_GIT_BRANCH);
                 t.getTargets().add(GitUtil.getTag(conf, project));
                 t.setDryRun(conf.isDryRun());
-                t.setUrl(gitAuth.getConfigRepositoryUrl());
+                t.setUrl(gitAuth.getRepositoryUrl());
                 t.setSecretValue(gitAuth.getSecretValue());
 
                 project.getPlugins().apply(GitBranchPlugin.class)

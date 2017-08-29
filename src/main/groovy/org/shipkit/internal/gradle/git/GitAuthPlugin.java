@@ -29,8 +29,8 @@ public class GitAuthPlugin implements Plugin<Project> {
         String ghUser = conf.getGitHub().getWriteAuthUser();
         String writeToken = conf.getLenient().getGitHub().getWriteAuthToken();
 
-        String configUrl = getGitHubUrl(ghUser, conf.getGitHub().getRepository(), writeToken);
-        gitAuth = new GitAuth(configUrl, writeToken);
+        String url = getGitHubUrl(ghUser, conf.getGitHub().getRepository(), writeToken);
+        gitAuth = new GitAuth(url, writeToken);
     }
 
     static String getGitHubUrl(String ghUser, String ghRepo, String writeToken) {
@@ -46,16 +46,16 @@ public class GitAuthPlugin implements Plugin<Project> {
     }
 
     public static class GitAuth{
-        private final String configRepositoryUrl;
+        private final String repositoryUrl;
         private final String secretValue;
 
-        public GitAuth(String configRepositoryUrl, String secretValue) {
-            this.configRepositoryUrl = configRepositoryUrl;
+        GitAuth(String repositoryUrl, String secretValue) {
+            this.repositoryUrl = repositoryUrl;
             this.secretValue = secretValue;
         }
 
         /**
-         * Secret value to replace in {@link #configRepositoryUrl}.
+         * Secret value to replace in {@link #repositoryUrl}.
          * It may be null if {@link ShipkitConfiguration.GitHub#getWriteAuthToken()} is not specified.
          */
         public String getSecretValue() {
@@ -69,8 +69,8 @@ public class GitAuthPlugin implements Plugin<Project> {
          * - https://github.com/{repo}.git
          * - https://{ghUser}:{ghWriteToken}@github.com/{repo}.git
          */
-        public String getConfigRepositoryUrl() {
-            return configRepositoryUrl;
+        public String getRepositoryUrl() {
+            return repositoryUrl;
         }
     }
 }

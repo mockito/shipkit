@@ -14,7 +14,7 @@ class GitAuthPluginTest extends PluginSpecification {
 
         then:
         gitAuth.secretValue == "token"
-        gitAuth.configRepositoryUrl == "https://user:token@github.com/shipkit/example.git"
+        gitAuth.repositoryUrl == "https://user:token@github.com/shipkit/example.git"
     }
 
     def "should return GH url with auth" (){

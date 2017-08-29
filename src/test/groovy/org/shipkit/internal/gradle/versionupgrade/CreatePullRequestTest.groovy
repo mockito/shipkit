@@ -25,7 +25,7 @@ class CreatePullRequestTest extends Specification {
         1 * gitHubApi.post("/repos/mockito/shipkit-example/pulls",
             '{  "title": "Version of shipkit upgraded to 0.1.5",' +
                 '  "body": "This pull request was automatically created by Shipkit\'s' +
-                            ' \'version-upgrade-customer\' Gradle plugin (http://shipkit.org).' +
+                            ' \'org.shipkit.upgrade-downstream\' Gradle plugin (http://shipkit.org).' +
                             ' Please merge it so that you are using fresh version of \'shipkit\' dependency.",' +
                 '  "head": "wwilk:shipkit-version-upgraded-0.1.5",' +
                 '  "base": "master"}')
