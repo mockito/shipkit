@@ -10,5 +10,5 @@ afterEvaluate {
     //TODO let's create a property for this setting in 'shipkit' extension
     tasks.updateReleaseNotes.publicationRepository = "https://plugins.gradle.org/plugin/org.shipkit.java"
 
-    tasks.findByName(JavaBasePlugin.CHECK_TASK_NAME).dependsOn(validatePlugins)
+    tasks.check.dependsOn validatePlugins
 }
