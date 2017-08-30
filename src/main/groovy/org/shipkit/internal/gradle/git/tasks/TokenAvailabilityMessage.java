@@ -14,7 +14,7 @@ class TokenAvailabilityMessage {
 
     static String createMessage(String context, String authToken) {
         String message;
-        if (authToken == null) {
+        if (authToken != null) {
             message = "  '" + context + "' uses GitHub write token";
         } else {
             message = "  '" + context + "' does not use GitHub write token because it was not specified";
