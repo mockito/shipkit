@@ -14,15 +14,15 @@ import org.shipkit.internal.util.ResultHandler;
  * Plugin that adds task for getting current git origin.
  * Since this information is acquired by calling an external process, it is not available
  * in configuration phase. Therefore you should use #provideOriginTo method for accessing it.
- *
+ * <p>
  * Adds following tasks:
  * <ul>
- *     <li>
- *         'identifyGitOrigin' - Identifies current git origin repo.
-*      </li>
+ * <li>
+ * 'identifyGitOrigin' - Identifies current git origin repo.
+ * </li>
  * </ul>
  */
-public class GitRemoteOriginPlugin implements Plugin<Project> {
+public class GitOriginPlugin implements Plugin<Project> {
 
     private static final String IDENTIFY_GIT_ORIGIN_TASK = "identifyGitOrigin";
 
@@ -35,7 +35,7 @@ public class GitRemoteOriginPlugin implements Plugin<Project> {
         });
     }
 
-    public static class GitOriginAuth{
+    public static class GitOriginAuth {
         private final String originRepositoryUrl;
         private final String originRepositoryName;
 
@@ -68,7 +68,7 @@ public class GitRemoteOriginPlugin implements Plugin<Project> {
      * and an action that is executed when the git origin is available.
      * This information is not available in configuration phase.
      *
-     * @param needsOrigin some task that needs git origin information. Necessary 'dependsOn' will be added.
+     * @param needsOrigin   some task that needs git origin information. Necessary 'dependsOn' will be added.
      * @param resultHandler executed when git origin info is ready. Hooked up as 'doLast' action.
      */
     public void provideOriginTo(final Task needsOrigin, final ResultHandler<GitOriginAuth> resultHandler) {
@@ -82,15 +82,14 @@ public class GitRemoteOriginPlugin implements Plugin<Project> {
         });
     }
 
-    static void chooseHandlerForOriginResult(IdentifyGitOriginRepoTask originTask, ResultHandler<GitOriginAuth> resultHandler){
-        if(originTask.getExecutionException() != null){
+    static void chooseHandlerForOriginResult(IdentifyGitOriginRepoTask originTask, ResultHandler<GitOriginAuth> resultHandler) {
+        if (originTask.getExecutionException() != null) {
             resultHandler.onFailure(originTask.getExecutionException());
         } else {
             ShipkitConfiguration conf = originTask.getProject().getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
             String originUrl = GitAuthPlugin.getGitHubUrl(
-                conf.getGitHub().getWriteAuthUser(),
                 originTask.getOriginRepo(),
-                conf.getGitHub().getWriteAuthToken()
+                conf
             );
 
             resultHandler.onSuccess(new GitOriginAuth(originUrl, originTask.getOriginRepo()));

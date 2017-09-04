@@ -2,10 +2,9 @@ package org.shipkit.internal.gradle.git;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
+import org.shipkit.internal.util.ExposedForTesting;
 
 import java.text.MessageFormat;
 
@@ -14,26 +13,28 @@ import java.text.MessageFormat;
  * It identifies GitHub repository url and keeps it in the field on this plugin.
  * Applies plugins:
  * <ul>
- *     <li>{@link ShipkitConfigurationPlugin}</li>
+ * <li>{@link ShipkitConfigurationPlugin}</li>
  * </ul>
  */
 public class GitAuthPlugin implements Plugin<Project> {
-
-    private static final Logger LOG = Logging.getLogger(GitAuthPlugin.class);
 
     private GitAuth gitAuth;
 
     @Override
     public void apply(Project project) {
         ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
-        String ghUser = conf.getGitHub().getWriteAuthUser();
         String writeToken = conf.getLenient().getGitHub().getWriteAuthToken();
 
-        String url = getGitHubUrl(ghUser, conf.getGitHub().getRepository(), writeToken);
+        String url = getGitHubUrl(conf.getGitHub().getRepository(), conf);
         gitAuth = new GitAuth(url, writeToken);
     }
 
-    static String getGitHubUrl(String ghUser, String ghRepo, String writeToken) {
+    static String getGitHubUrl(String ghRepo, ShipkitConfiguration conf) {
+        return _getGitHubUrl(conf.getGitHub().getWriteAuthUser(), ghRepo, conf.getLenient().getGitHub().getWriteAuthToken());
+    }
+
+    @ExposedForTesting
+    static String _getGitHubUrl(String ghUser, String ghRepo, String writeToken) {
         if(writeToken != null) {
             return MessageFormat.format("https://{0}:{1}@github.com/{2}.git", ghUser, writeToken, ghRepo);
         } else{
@@ -41,11 +42,11 @@ public class GitAuthPlugin implements Plugin<Project> {
         }
     }
 
-    public GitAuth getGitAuth(){
+    public GitAuth getGitAuth() {
         return gitAuth;
     }
 
-    public static class GitAuth{
+    public static class GitAuth {
         private final String repositoryUrl;
         private final String secretValue;
 
