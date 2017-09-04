@@ -88,9 +88,8 @@ public class GitOriginPlugin implements Plugin<Project> {
         } else {
             ShipkitConfiguration conf = originTask.getProject().getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
             String originUrl = GitAuthPlugin.getGitHubUrl(
-                conf.getGitHub().getWriteAuthUser(),
                 originTask.getOriginRepo(),
-                conf.getLenient().getGitHub().getWriteAuthToken()
+                conf
             );
 
             resultHandler.onSuccess(new GitOriginAuth(originUrl, originTask.getOriginRepo()));

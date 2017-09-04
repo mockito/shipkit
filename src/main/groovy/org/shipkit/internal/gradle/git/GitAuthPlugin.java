@@ -26,14 +26,16 @@ public class GitAuthPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
         ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
-        String ghUser = conf.getGitHub().getWriteAuthUser();
         String writeToken = conf.getLenient().getGitHub().getWriteAuthToken();
 
-        String url = getGitHubUrl(ghUser, conf.getGitHub().getRepository(), writeToken);
+        String url = getGitHubUrl(conf.getGitHub().getRepository(), conf);
         gitAuth = new GitAuth(url, writeToken);
     }
 
-    static String getGitHubUrl(String ghUser, String ghRepo, String writeToken) {
+    static String getGitHubUrl(String ghRepo, ShipkitConfiguration conf) {
+        String ghUser = conf.getGitHub().getWriteAuthUser();
+        String writeToken = conf.getLenient().getGitHub().getWriteAuthToken();
+
         if(writeToken != null) {
             return MessageFormat.format("https://{0}:{1}@github.com/{2}.git", ghUser, writeToken, ghRepo);
         } else{
