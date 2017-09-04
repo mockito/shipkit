@@ -90,7 +90,7 @@ public class GitOriginPlugin implements Plugin<Project> {
             String originUrl = GitAuthPlugin.getGitHubUrl(
                 conf.getGitHub().getWriteAuthUser(),
                 originTask.getOriginRepo(),
-                conf.getGitHub().getWriteAuthToken()
+                conf.getLenient().getGitHub().getWriteAuthToken()
             );
 
             resultHandler.onSuccess(new GitOriginAuth(originUrl, originTask.getOriginRepo()));
