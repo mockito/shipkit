@@ -2,10 +2,9 @@ package org.shipkit.internal.gradle.git;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
+import org.shipkit.internal.util.ExposedForTesting;
 
 import java.text.MessageFormat;
 
@@ -31,12 +30,14 @@ public class GitAuthPlugin implements Plugin<Project> {
     }
 
     static String getGitHubUrl(String ghRepo, ShipkitConfiguration conf) {
-        String ghUser = conf.getGitHub().getWriteAuthUser();
-        String writeToken = conf.getLenient().getGitHub().getWriteAuthToken();
+        return _getGitHubUrl(conf.getGitHub().getWriteAuthUser(), ghRepo, conf.getLenient().getGitHub().getWriteAuthToken());
+    }
 
-        if (writeToken != null) {
+    @ExposedForTesting
+    static String _getGitHubUrl(String ghUser, String ghRepo, String writeToken) {
+        if(writeToken != null) {
             return MessageFormat.format("https://{0}:{1}@github.com/{2}.git", ghUser, writeToken, ghRepo);
-        } else {
+        } else{
             return MessageFormat.format("https://github.com/{0}.git", ghRepo);
         }
     }

@@ -28,6 +28,6 @@ class GitAuthPluginTest extends PluginSpecification {
 
     def "should return GH url without auth by default"() {
         expect:
-        GitAuthPlugin.getGitHubUrl("org/repo", conf) == "https://github.com/org/repo.git"
+        GitAuthPlugin._getGitHubUrl(null, "org/repo", null) == "https://github.com/org/repo.git"
     }
 }
