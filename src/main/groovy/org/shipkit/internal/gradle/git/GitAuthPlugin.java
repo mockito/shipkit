@@ -14,7 +14,7 @@ import java.text.MessageFormat;
  * It identifies GitHub repository url and keeps it in the field on this plugin.
  * Applies plugins:
  * <ul>
- *     <li>{@link ShipkitConfigurationPlugin}</li>
+ * <li>{@link ShipkitConfigurationPlugin}</li>
  * </ul>
  */
 public class GitAuthPlugin implements Plugin<Project> {
@@ -34,18 +34,18 @@ public class GitAuthPlugin implements Plugin<Project> {
         String ghUser = conf.getGitHub().getWriteAuthUser();
         String writeToken = conf.getLenient().getGitHub().getWriteAuthToken();
 
-        if(writeToken != null) {
+        if (writeToken != null) {
             return MessageFormat.format("https://{0}:{1}@github.com/{2}.git", ghUser, writeToken, ghRepo);
-        } else{
+        } else {
             return MessageFormat.format("https://github.com/{0}.git", ghRepo);
         }
     }
 
-    public GitAuth getGitAuth(){
+    public GitAuth getGitAuth() {
         return gitAuth;
     }
 
-    public static class GitAuth{
+    public static class GitAuth {
         private final String repositoryUrl;
         private final String secretValue;
 
