@@ -5,13 +5,13 @@ import org.gradle.api.tasks.TaskAction;
 import org.shipkit.internal.exec.DefaultProcessRunner;
 import org.shipkit.internal.util.ExposedForTesting;
 import org.shipkit.internal.util.ResultHandler;
-import org.shipkit.internal.gradle.git.GitRemoteOriginPlugin;
+import org.shipkit.internal.gradle.git.GitOriginPlugin;
 
 import javax.inject.Inject;
 
 /**
  * Task that computes git origin repository.
- * Shouldn't be used directly, but through {@link GitRemoteOriginPlugin#chooseHandlerForOriginResult(IdentifyGitOriginRepoTask, ResultHandler)}
+ * Shouldn't be used directly, but through {@link GitOriginPlugin#chooseHandlerForOriginResult(IdentifyGitOriginRepoTask, ResultHandler)}
  */
 public class IdentifyGitOriginRepoTask extends DefaultTask{
 
@@ -38,7 +38,7 @@ public class IdentifyGitOriginRepoTask extends DefaultTask{
 
     /**
      * Git remote origin repo in a format "user/repo", eg. "mockito/shipkit".
-     * Shouldn't be used directly, see {@link GitRemoteOriginPlugin#chooseHandlerForOriginResult(IdentifyGitOriginRepoTask, ResultHandler)}
+     * Shouldn't be used directly, see {@link GitOriginPlugin#chooseHandlerForOriginResult(IdentifyGitOriginRepoTask, ResultHandler)}
      */
     public String getOriginRepo() {
         return originRepo;

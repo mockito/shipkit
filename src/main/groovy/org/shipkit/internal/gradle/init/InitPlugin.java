@@ -12,7 +12,7 @@ import org.shipkit.gradle.init.InitVersioningTask;
 import org.shipkit.gradle.version.BumpVersionFileTask;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
-import org.shipkit.internal.gradle.git.GitRemoteOriginPlugin;
+import org.shipkit.internal.gradle.git.GitOriginPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.gradle.version.VersioningPlugin;
 import org.shipkit.internal.util.ResultHandler;
@@ -53,7 +53,7 @@ public class InitPlugin implements Plugin<Project> {
     public void apply(final Project project) {
         project.getPlugins().apply(VersioningPlugin.class);
         project.getPlugins().apply(ShipkitConfigurationPlugin.class);
-        final GitRemoteOriginPlugin gitRemoteOriginPlugin = project.getPlugins().apply(GitRemoteOriginPlugin.class);
+        final GitOriginPlugin gitOriginPlugin = project.getPlugins().apply(GitOriginPlugin.class);
 
         TaskMaker.task(project, INIT_TRAVIS_TASK, InitTravisTask.class, new Action<InitTravisTask>() {
             public void execute(InitTravisTask t) {
@@ -78,9 +78,9 @@ public class InitPlugin implements Plugin<Project> {
                 t.setDescription("Creates Shipkit configuration file unless it already exists");
                 t.setShipkitFile(shipkitFile);
 
-                gitRemoteOriginPlugin.provideOriginTo(t, new ResultHandler<GitRemoteOriginPlugin.GitOriginAuth>() {
+                gitOriginPlugin.provideOriginTo(t, new ResultHandler<GitOriginPlugin.GitOriginAuth>() {
                     @Override
-                    public void onSuccess(GitRemoteOriginPlugin.GitOriginAuth result) {
+                    public void onSuccess(GitOriginPlugin.GitOriginAuth result) {
                         t.setOriginRepoName(result.getOriginRepositoryName());
                     }
 

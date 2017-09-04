@@ -4,11 +4,11 @@ import org.shipkit.internal.gradle.git.tasks.IdentifyGitOriginRepoTask
 import org.shipkit.internal.util.ResultHandler
 import testutil.PluginSpecification
 
-class GitRemoteOriginPluginTest extends PluginSpecification {
+class GitOriginPluginTest extends PluginSpecification {
 
     def "applies"() {
         when:
-        project.plugins.apply(GitRemoteOriginPlugin)
+        project.plugins.apply(GitOriginPlugin)
 
         then:
         project.tasks.identifyGitOrigin
@@ -16,7 +16,7 @@ class GitRemoteOriginPluginTest extends PluginSpecification {
 
     def "should call failure handler if there is an execution exception"() {
         given:
-        project.plugins.apply(GitRemoteOriginPlugin)
+        project.plugins.apply(GitOriginPlugin)
         IdentifyGitOriginRepoTask task = project.tasks.identifyGitOrigin
 
         def exception = new RuntimeException("test")
@@ -25,7 +25,7 @@ class GitRemoteOriginPluginTest extends PluginSpecification {
         def resultHandler = Mock(ResultHandler)
 
         when:
-        GitRemoteOriginPlugin.chooseHandlerForOriginResult(task, resultHandler)
+        GitOriginPlugin.chooseHandlerForOriginResult(task, resultHandler)
 
         then:
         1 * resultHandler.onFailure(exception)
@@ -33,7 +33,7 @@ class GitRemoteOriginPluginTest extends PluginSpecification {
 
     def "should call success handler if there is no execution exception"() {
         given:
-        project.plugins.apply(GitRemoteOriginPlugin)
+        project.plugins.apply(GitOriginPlugin)
         IdentifyGitOriginRepoTask task = project.tasks.identifyGitOrigin
 
         def resultHandler = Mock(ResultHandler)
@@ -43,10 +43,10 @@ class GitRemoteOriginPluginTest extends PluginSpecification {
         task.originRepo = "mockito/shipkit"
 
         when:
-        GitRemoteOriginPlugin.chooseHandlerForOriginResult(task, resultHandler)
+        GitOriginPlugin.chooseHandlerForOriginResult(task, resultHandler)
 
         then:
-        1 * resultHandler.onSuccess({GitRemoteOriginPlugin.GitOriginAuth auth ->
+        1 * resultHandler.onSuccess({ GitOriginPlugin.GitOriginAuth auth ->
             auth.originRepositoryUrl == "https://writeUser:writeToken@github.com/mockito/shipkit.git" &&
             auth.originRepositoryName == "mockito/shipkit"})
     }

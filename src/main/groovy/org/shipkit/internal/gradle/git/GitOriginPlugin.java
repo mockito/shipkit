@@ -22,7 +22,7 @@ import org.shipkit.internal.util.ResultHandler;
 *      </li>
  * </ul>
  */
-public class GitRemoteOriginPlugin implements Plugin<Project> {
+public class GitOriginPlugin implements Plugin<Project> {
 
     private static final String IDENTIFY_GIT_ORIGIN_TASK = "identifyGitOrigin";
 
