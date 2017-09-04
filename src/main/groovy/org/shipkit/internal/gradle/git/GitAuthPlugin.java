@@ -19,8 +19,6 @@ import java.text.MessageFormat;
  */
 public class GitAuthPlugin implements Plugin<Project> {
 
-    private static final Logger LOG = Logging.getLogger(GitAuthPlugin.class);
-
     private GitAuth gitAuth;
 
     @Override
