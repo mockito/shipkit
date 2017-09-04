@@ -16,7 +16,7 @@ public class ShipkitExec {
 
     private final static Logger LOG = Logging.getLogger(ShipkitExec.class);
 
-    public void execCommands(Collection<ExecCommand> execCommands, Project project) {
+    public void execCommands(Collection<ExecCommand> execCommands, final Project project) {
         for (final ExecCommand execCommand : execCommands) {
             ExecResult result = project.exec(new Action<ExecSpec>() {
                 @Override
@@ -25,6 +25,7 @@ public class ShipkitExec {
                     spec.commandLine(execCommand.getCommandLine());
                     spec.setStandardOutput(new ExternalProcessStream(execCommand.getLoggingPrefix(), System.out));
                     spec.setErrorOutput(new ExternalProcessStream(execCommand.getLoggingPrefix(), System.err));
+                    spec.setWorkingDir(project.getRootDir());
 
                     execCommand.getSetupAction().execute(spec);
 
