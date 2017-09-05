@@ -129,6 +129,13 @@ public class UpdateReleaseNotesTask extends DefaultTask {
     }
 
     /**
+     * @return a link to the generated release notes file hosted on Github.
+     */
+    public String getReleaseNotesUrl(String branch) {
+        return  getGitHubUrl() + "/" + getGitHubRepository() + "/blob/" + branch + "/" + getProject().relativePath(getReleaseNotesFile());
+    }
+
+    /**
      * See {@link #getGitHubRepository()}
      */
     public void setGitHubRepository(String gitHubRepository) {
