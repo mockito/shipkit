@@ -15,6 +15,7 @@ class ShipkitGradlePluginIntegTest extends GradleSpecification {
 
         buildFile << """
             apply plugin: "org.shipkit.gradle-plugin"
+            apply plugin: "com.gradle.plugin-publish"
             ext.'gradle.publish.key' = 'key'
             ext.'gradle.publish.secret' = 'secret'
         """

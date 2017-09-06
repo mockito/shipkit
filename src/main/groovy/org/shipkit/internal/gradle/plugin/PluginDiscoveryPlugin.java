@@ -8,7 +8,7 @@ import org.gradle.api.Task;
 import org.shipkit.gradle.plugin.PluginDiscoveryTask;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
-import static org.shipkit.internal.gradle.release.GradlePortalReleasePlugin.PUBLISH_PLUGINS_TASK;
+import static org.shipkit.internal.gradle.plugin.GradlePortalPublishPlugin.PUBLISH_PLUGINS_TASK;
 
 /**
  * This plugin discovers gradle plugins and adds them to the {@link PluginBundleExtension}.

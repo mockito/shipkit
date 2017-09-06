@@ -20,6 +20,7 @@ apply from: 'gradle/java6-compatibility.gradle'
 apply from: 'gradle/precommit.gradle'
 
 apply plugin: 'org.shipkit.gradle-plugin'
+apply plugin: 'com.gradle.plugin-publish'
 apply from: 'gradle/upgrade-downstream.gradle'
 
 sourceCompatibility = 1.6

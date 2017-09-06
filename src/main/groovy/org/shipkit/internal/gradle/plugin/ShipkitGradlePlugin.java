@@ -16,7 +16,7 @@ import org.shipkit.internal.gradle.release.TravisPlugin;
  *     <li>{@link PluginDiscoveryPlugin}</li>
  *     <li>{@link PluginValidationPlugin}</li>
  *     <li>{@link CiReleasePlugin}</li>
- *     <li>{@link GradlePortalReleasePlugin}</li>
+ *     <li>{@link GradlePortalPublishPlugin}</li>
  * </ul>
  */
 public class ShipkitGradlePlugin implements Plugin<Project> {
