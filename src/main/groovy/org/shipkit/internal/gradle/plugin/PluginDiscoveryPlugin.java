@@ -17,6 +17,11 @@ import static org.shipkit.internal.gradle.plugin.GradlePortalPublishPlugin.PUBLI
  * will automatically pick up available gradle plugins (discovered via properties files in META-INF/gradle-plugins) and
  * will configure the pluginBundle extension (provided via 'com.gradle.plugin-publish' plugin) accordingly.
  *
+ * Applies plugins:
+ * <ul>
+ *     <li>com.gradle.plugin-publish</li>
+ * </ul>
+ *
  * Adds tasks:
  * <ul>
  *     <li>'discoverPlugins' - of type {@link PluginDiscoveryTask}.
@@ -29,22 +34,16 @@ public class PluginDiscoveryPlugin implements Plugin<Project> {
 
     @Override
     public void apply(final Project project) {
-        project.getPlugins().withId("com.gradle.plugin-publish", new Action<Plugin>() {
-
+        project.getPlugins().apply("com.gradle.plugin-publish");
+        final Task task = TaskMaker.task(project, DISCOVER_PLUGINS, PluginDiscoveryTask.class, new Action<PluginDiscoveryTask>() {
             @Override
-            public void execute(final Plugin plugin) {
-                final Task task = TaskMaker.task(project, DISCOVER_PLUGINS, PluginDiscoveryTask.class, new Action<PluginDiscoveryTask>() {
-                    @Override
-                    public void execute(final PluginDiscoveryTask task) {
-                        task.setDescription("discover gradle plugins");
-                    }
-                });
-
-                final Task publishPlugins = project.getTasks().getByName(PUBLISH_PLUGINS_TASK);
-                publishPlugins.dependsOn(task);
+            public void execute(final PluginDiscoveryTask task) {
+                task.setDescription("discover gradle plugins");
             }
-
         });
+
+        final Task publishPlugins = project.getTasks().getByName(PUBLISH_PLUGINS_TASK);
+        publishPlugins.dependsOn(task);
     }
 
 }
