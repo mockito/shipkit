@@ -6,6 +6,8 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.plugin.GradlePortalPublishPlugin;
+import org.shipkit.internal.gradle.plugin.PluginDiscoveryPlugin;
+import org.shipkit.internal.gradle.plugin.PluginValidationPlugin;
 
 /**
  * Automated releases to Gradle Plugin portal.
@@ -15,7 +17,13 @@ import org.shipkit.internal.gradle.plugin.GradlePortalPublishPlugin;
  * Applies:
  * <ul>
  *     <li>{@link ReleasePlugin}</li>
- *     <li>{@link GradlePortalPublishPlugin} to every subproject with "com.gradle.plugin-publish" plugin</li>
+ * </ul>
+ *
+ * Applies to every subproject with "com.gradle.plugin-publish" plugin:
+ * <ul>
+ *     <li>{@link GradlePortalPublishPlugin}</li>
+ *     <li>{@link PluginDiscoveryPlugin}</li>
+ *     <li>{@link PluginValidationPlugin}</li>
  * </ul>
  *
  * Behavior:
@@ -37,7 +45,10 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
                 subproject.getPlugins().withId("com.gradle.plugin-publish", new Action<Plugin>() {
                     @Override
                     public void execute(Plugin plugin) {
+                        subproject.getPlugins().apply(PluginDiscoveryPlugin.class);
+                        subproject.getPlugins().apply(PluginValidationPlugin.class);
                         subproject.getPlugins().apply(GradlePortalPublishPlugin.class);
+
                         Task publishPlugins = project.getTasks().getByName(GradlePortalPublishPlugin.PUBLISH_PLUGINS_TASK);
 
                         performRelease.dependsOn(publishPlugins); //perform release will actually publish the plugins
