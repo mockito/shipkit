@@ -4,11 +4,8 @@ apply plugin: 'idea'
 apply plugin: 'groovy'
 apply plugin: 'checkstyle'
 apply plugin: 'codenarc'
-apply from: "$rootDir/gradle/java6-compatibility.gradle"
-apply from: "$rootDir/gradle/precommit.gradle"
 
 apply plugin: 'com.gradle.plugin-publish'
-apply from: "$rootDir/gradle/upgrade-downstream.gradle"
 
 checkstyle {
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
@@ -69,3 +66,5 @@ task fastInstall { Task t ->
     }
     t.doLast { println "  Shipkit $version installed to local maven repo" }
 }
+
+tasks.check.dependsOn validatePlugins

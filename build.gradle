@@ -10,7 +10,12 @@ buildscript {
     }
 }
 
+apply from: "$rootDir/gradle/java6-compatibility.gradle"
+apply from: "$rootDir/gradle/precommit.gradle"
+
 apply plugin: 'org.shipkit.gradle-plugin'
+
+apply from: "$rootDir/gradle/upgrade-downstream.gradle"
 
 subprojects {
     repositories {
