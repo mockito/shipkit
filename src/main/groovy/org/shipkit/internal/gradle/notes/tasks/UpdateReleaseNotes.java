@@ -26,14 +26,9 @@ import java.util.Map;
 public class UpdateReleaseNotes {
 
     private static final Logger LOG = Logging.getLogger(UpdateReleaseNotesTask.class);
-    private final HeaderProvider headerProvider;
 
-    public UpdateReleaseNotes(HeaderProvider headerProvider) {
-        this.headerProvider = headerProvider;
-    }
-
-    public void updateReleaseNotes(UpdateReleaseNotesTask task) {
-        String newContent = generateNewContent(task);
+    public void updateReleaseNotes(UpdateReleaseNotesTask task, HeaderProvider headerProvider) {
+        String newContent = generateNewContent(task, headerProvider);
         updateReleaseNotes(task.isPreviewMode(), task.getReleaseNotesFile(), newContent);
     }
 
@@ -68,7 +63,7 @@ public class UpdateReleaseNotes {
         return out;
     }
 
-    public String generateNewContent(UpdateReleaseNotesTask task) {
+    public String generateNewContent(UpdateReleaseNotesTask task, HeaderProvider headerProvider) {
         LOG.lifecycle("  Building new release notes based on {}", task.getReleaseNotesFile());
 
         String headerMessage = headerProvider.getHeader(task.getHeader());
@@ -101,5 +96,9 @@ public class UpdateReleaseNotes {
         } else {
             return "";
         }
+    }
+
+    public String getReleaseNotesUrl(UpdateReleaseNotesTask task, String branch) {
+        return  task.getGitHubUrl() + "/" + task.getGitHubRepository() + "/blob/" + branch + "/" + task.getProject().relativePath(task.getReleaseNotesFile());
     }
 }
