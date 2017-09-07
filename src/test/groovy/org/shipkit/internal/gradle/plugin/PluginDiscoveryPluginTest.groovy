@@ -20,7 +20,6 @@ class PluginDiscoveryPluginTest extends PluginSpecification {
         project.file("src/main/resources/test.properties") << "properties file in src/main/resources"
         project.file("another.properties") << "just another properties file"
         when:
-        project.plugins.apply("com.gradle.plugin-publish")
         project.plugins.apply(PluginDiscoveryPlugin)
         project.tasks[PluginDiscoveryPlugin.DISCOVER_PLUGINS].execute()
         then:
