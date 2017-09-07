@@ -3,9 +3,9 @@ package org.shipkit.internal.gradle.git.tasks;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.internal.exec.DefaultProcessRunner;
+import org.shipkit.internal.gradle.git.GitOriginPlugin;
 import org.shipkit.internal.util.ExposedForTesting;
 import org.shipkit.internal.util.ResultHandler;
-import org.shipkit.internal.gradle.git.GitOriginPlugin;
 
 import javax.inject.Inject;
 
@@ -13,7 +13,7 @@ import javax.inject.Inject;
  * Task that computes git origin repository.
  * Shouldn't be used directly, but through {@link GitOriginPlugin#chooseHandlerForOriginResult(IdentifyGitOriginRepoTask, ResultHandler)}
  */
-public class IdentifyGitOriginRepoTask extends DefaultTask{
+public class IdentifyGitOriginRepoTask extends DefaultTask {
 
     private String originRepo;
     private RuntimeException executionException;
@@ -21,16 +21,16 @@ public class IdentifyGitOriginRepoTask extends DefaultTask{
     private GitOriginRepoProvider originRepoProvider;
 
     @Inject
-    public IdentifyGitOriginRepoTask(){
+    public IdentifyGitOriginRepoTask() {
         originRepoProvider = new GitOriginRepoProvider(new DefaultProcessRunner(getProject().getProjectDir()));
     }
 
     @TaskAction
-    public void identifyGitOriginRepo(){
-        if(originRepo == null){
+    public void identifyGitOriginRepo() {
+        if (originRepo == null) {
             try {
                 originRepo = originRepoProvider.getOriginGitRepo();
-            } catch(RuntimeException e){
+            } catch (RuntimeException e) {
                 executionException = e;
             }
         }
@@ -66,7 +66,7 @@ public class IdentifyGitOriginRepoTask extends DefaultTask{
     }
 
     @ExposedForTesting
-    void setOriginRepoProvider(GitOriginRepoProvider originRepoProvider){
+    void setOriginRepoProvider(GitOriginRepoProvider originRepoProvider) {
         this.originRepoProvider = originRepoProvider;
     }
 }
