@@ -1,6 +1,8 @@
 package org.shipkit.internal.gradle.git.tasks;
 
 import org.gradle.api.DefaultTask;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.internal.exec.DefaultProcessRunner;
 import org.shipkit.internal.gradle.git.GitOriginPlugin;
@@ -14,6 +16,8 @@ import javax.inject.Inject;
  * Shouldn't be used directly, but through {@link GitOriginPlugin#chooseHandlerForOriginResult(IdentifyGitOriginRepoTask, ResultHandler)}
  */
 public class IdentifyGitOriginRepoTask extends DefaultTask {
+
+    private final static Logger LOG = Logging.getLogger(IdentifyGitOriginRepoTask.class);
 
     private String originRepo;
     private RuntimeException executionException;
@@ -30,6 +34,7 @@ public class IdentifyGitOriginRepoTask extends DefaultTask {
         if (originRepo == null) {
             try {
                 originRepo = originRepoProvider.getOriginGitRepo();
+                LOG.lifecycle("  Identified origin repository: " + originRepo);
             } catch (RuntimeException e) {
                 executionException = e;
             }
