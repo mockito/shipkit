@@ -1,7 +1,7 @@
 apply plugin: 'base' // for clean task, TODO ms: push it to the plugin, make 'check' depend on downstream test
 
-
 apply plugin: 'org.shipkit.test-downstream'
 
 testDownstream.addRepository("https://github.com/mockito/shipkit-example")
+testDownstream.addRepository("https://github.com/mockito/shipkit-bootstrap")
 testDownstream.addRepository("https://github.com/mockito/mockito")
