@@ -6,7 +6,7 @@ import org.junit.rules.TemporaryFolder
 import org.shipkit.gradle.notes.UpdateReleaseNotesTask
 import spock.lang.Specification
 
-class UpdateReleaseNotesTaskTest extends Specification {
+class UpdateReleaseNotesTest extends Specification {
 
     @Rule
     TemporaryFolder tmp = new TemporaryFolder()
