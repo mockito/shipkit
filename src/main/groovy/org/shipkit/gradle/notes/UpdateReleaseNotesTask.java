@@ -46,7 +46,7 @@ public class UpdateReleaseNotesTask extends DefaultTask {
      */
     @TaskAction
     public void updateReleaseNotes() {
-        new UpdateReleaseNotes(new HeaderProvider()).updateReleaseNotes(this);
+        new UpdateReleaseNotes().updateReleaseNotes(this, new HeaderProvider());
     }
 
     /**
@@ -126,6 +126,13 @@ public class UpdateReleaseNotesTask extends DefaultTask {
      */
     public String getGitHubRepository() {
         return gitHubRepository;
+    }
+
+    /**
+     * @return a link to the generated release notes file hosted on Github.
+     */
+    public String getReleaseNotesUrl(String branch) {
+        return new UpdateReleaseNotes().getReleaseNotesUrl(this, branch);
     }
 
     /**
