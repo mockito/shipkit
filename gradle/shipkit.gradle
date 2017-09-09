@@ -12,3 +12,5 @@ afterEvaluate {
 
     tasks.check.dependsOn validatePlugins
 }
+
+apply plugin: 'org.shipkit.upgrade-dependency'

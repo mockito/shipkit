@@ -36,7 +36,7 @@ class ShipkitExecTaskTest extends Specification {
         then:
         def ex = thrown(TaskExecutionException.class)
         ex.cause.message.startsWith "External process failed with exit code"
-        ex.cause.message.endsWith "\nPlease inspect the command output prefixed with '[ls]' the build log."
+        ex.cause.message.endsWith "\nPlease inspect the command output prefixed with '[missing file]' the build log."
     }
 
     def "when first command is configured to stop execution, second command will not fail the entire task"() {

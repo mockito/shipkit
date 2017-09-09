@@ -10,7 +10,7 @@ import org.gradle.process.ExecSpec;
 import org.shipkit.gradle.exec.ExecCommand;
 
 import java.io.File;
-import java.util.Collection;
+import java.util.List;
 
 import static java.util.Arrays.asList;
 
@@ -66,30 +66,30 @@ public class ExecCommandFactory {
      * Exec command that will throw the exception when the command line fails.
      * This is the most typical kind of exec command.
      */
-    public static ExecCommand execCommand(String description, Collection<String> commandLine) {
+    public static ExecCommand execCommand(String description, List<String> commandLine) {
         String prefix = defaultPrefix(commandLine);
         return new ExecCommand(prefix, description, commandLine, ignoreResult(), ensureSucceeded(prefix));
     }
 
     /**
-     * See {@link #execCommand(String, Collection)}
+     * See {@link #execCommand(String, List)}
      */
     public static ExecCommand execCommand(String description, String ... commandLine) {
         return execCommand(description, asList(commandLine));
     }
 
     /**
-     * See {@link #execCommand(String, Collection)}
+     * See {@link #execCommand(String, List)}
      */
     public static ExecCommand execCommand(String description, File workingDir, String ... commandLine) {
-        Collection<String> cmd = asList(commandLine);
+        List<String> cmd = asList(commandLine);
         String prefix = defaultPrefix(cmd);
         return new ExecCommand(prefix, description, cmd, ignoreResult(workingDir), ensureSucceeded(prefix));
     }
 
-    private static String defaultPrefix(Collection<String> commandLine) {
-        //by default, we are using the first argument as prefix
-        return "[" + commandLine.iterator().next() + "] ";
+    static String defaultPrefix(List<String> commandLine) {
+        String prefix = commandLine.size() > 1 ? commandLine.get(1) : commandLine.get(0);
+        return "[" + prefix + "] ";
     }
 
     /**
@@ -97,7 +97,7 @@ public class ExecCommandFactory {
      * Useful if the user needs custom behavior when command line finishes executing.
      * For example, we can ignore the failure.
      */
-    public static ExecCommand execCommand(String description, Collection<String> commandLine, Action<ExecResult> resultAction) {
+    public static ExecCommand execCommand(String description, List<String> commandLine, Action<ExecResult> resultAction) {
         return new ExecCommand(defaultPrefix(commandLine), description, commandLine, ignoreResult(), resultAction);
     }
 }
