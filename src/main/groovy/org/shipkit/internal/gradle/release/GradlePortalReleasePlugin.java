@@ -49,7 +49,7 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
                         subproject.getPlugins().apply(PluginValidationPlugin.class);
                         subproject.getPlugins().apply(GradlePortalPublishPlugin.class);
 
-                        Task publishPlugins = project.getTasks().getByName(GradlePortalPublishPlugin.PUBLISH_PLUGINS_TASK);
+                        Task publishPlugins = subproject.getTasks().getByName(GradlePortalPublishPlugin.PUBLISH_PLUGINS_TASK);
 
                         performRelease.dependsOn(publishPlugins); //perform release will actually publish the plugins
                         publishPlugins.mustRunAfter(gitPush);     //git push is easier to revert than perform release
