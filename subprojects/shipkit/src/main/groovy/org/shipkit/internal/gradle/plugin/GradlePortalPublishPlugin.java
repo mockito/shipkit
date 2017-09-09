@@ -59,7 +59,9 @@ public class GradlePortalPublishPlugin implements Plugin<Project> {
     @Override
     public void apply(final Project project) {
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
+
         project.getPlugins().apply("com.gradle.plugin-publish");
+        //Above also applies 'java' plugin
 
         final Task publishPlugins = project.getTasks().getByName(PUBLISH_PLUGINS_TASK);
 
