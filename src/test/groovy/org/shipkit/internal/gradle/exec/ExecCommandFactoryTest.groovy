@@ -52,4 +52,10 @@ Please inspect the command output prefixed with '[git]' the build log."""
         then:
         1 * execSpec.setIgnoreExitValue(true)
     }
+
+    def "default prefix"() {
+        expect:
+        ExecCommandFactory.defaultPrefix(["git"]) == "[git] "
+        ExecCommandFactory.defaultPrefix(["git", "status"]) == "[status] "
+    }
 }

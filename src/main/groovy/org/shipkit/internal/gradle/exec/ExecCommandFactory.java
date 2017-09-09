@@ -87,8 +87,9 @@ public class ExecCommandFactory {
         return new ExecCommand(prefix, description, cmd, ignoreResult(workingDir), ensureSucceeded(prefix));
     }
 
-    private static String defaultPrefix(List<String> commandLine) {
-        return "[" + commandLine.get(0) + "] ";
+    static String defaultPrefix(List<String> commandLine) {
+        String prefix = commandLine.size() > 1 ? commandLine.get(1) : commandLine.get(0);
+        return "[" + prefix + "] ";
     }
 
     /**
