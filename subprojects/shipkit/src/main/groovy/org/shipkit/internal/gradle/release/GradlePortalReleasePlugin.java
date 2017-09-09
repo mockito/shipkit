@@ -54,9 +54,11 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
                         performRelease.dependsOn(publishPlugins); //perform release will actually publish the plugins
                         publishPlugins.mustRunAfter(gitPush);     //git push is easier to revert than perform release
 
-                        //so that we first build plugins to be published, then do git push, we're using 'buildArchives' for that
-                        publishPlugins.dependsOn("buildArchives");
-                        gitPush.mustRunAfter("buildArchives");
+                        //We first build plugins to be published, then do git push, we're using 'buildArchives' for that
+                        //We know that "buildArchives" task exists because 'com.gradle.plugin-publish' applies Java plugin
+                        Task archivesTask = subproject.getTasks().getByName("buildArchives");
+                        publishPlugins.dependsOn(archivesTask);
+                        gitPush.mustRunAfter(archivesTask);
                     }
                 });
             }
