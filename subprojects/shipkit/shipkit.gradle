@@ -67,5 +67,4 @@ task fastInstall { Task t ->
     t.doLast { println "  Shipkit $version installed to local maven repo" }
 }
 
-//TODO enable when build issue is resolved
-//tasks.check.dependsOn validatePlugins
+tasks.check.dependsOn validatePlugins
