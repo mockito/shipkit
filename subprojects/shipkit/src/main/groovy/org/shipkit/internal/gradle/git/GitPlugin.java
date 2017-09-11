@@ -20,8 +20,16 @@ import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
 import static org.shipkit.internal.gradle.util.GitUtil.getTag;
 
 /**
- * Adds Git-specific tasks needed for the release process:
+ * Adds Git-specific tasks needed for the release process.
  *
+ * Applies plugins:
+ * <ul>
+ *     <li>{@link ShipkitConfigurationPlugin}</li>
+ *     <li>{@link GitAuthPlugin}</li>
+ *     <li>{@link GitBranchPlugin}</li>
+ * </ul>
+ *
+ * Adds tasks:
  * <ul>
  *     <li>identifyGitBranch - {@link IdentifyGitBranchTask}</li>
  *     <li>gitCommit</li>
@@ -48,7 +56,6 @@ public class GitPlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
-        final GitAuthPlugin.GitAuth gitAuth = project.getPlugins().apply(GitAuthPlugin.class).getGitAuth();
 
         TaskMaker.task(project, GIT_COMMIT_TASK, GitCommitTask.class, new Action<GitCommitTask>() {
             public void execute(final GitCommitTask t) {
@@ -77,9 +84,16 @@ public class GitPlugin implements Plugin<Project> {
                 t.dependsOn(GitBranchPlugin.IDENTIFY_GIT_BRANCH);
                 t.getTargets().add(GitUtil.getTag(conf, project));
                 t.setDryRun(conf.isDryRun());
-                t.setUrl(gitAuth.getRepositoryUrl());
-                t.setSecretValue(gitAuth.getSecretValue());
 
+                //TODO SF add coverage for this
+                project.getPlugins().apply(GitAuthPlugin.class).provideAuthTo(t, new Action<GitAuthPlugin.GitAuth>() {
+                    public void execute(GitAuthPlugin.GitAuth gitAuth) {
+                        t.setUrl(gitAuth.getRepositoryUrl());
+                        t.setSecretValue(gitAuth.getSecretValue());
+                    }
+                });
+
+                //TODO SF and for that
                 project.getPlugins().apply(GitBranchPlugin.class)
                         .provideBranchTo(t, new Action<String>() {
                             @Override

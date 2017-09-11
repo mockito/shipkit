@@ -12,10 +12,9 @@ import org.shipkit.gradle.init.InitVersioningTask;
 import org.shipkit.gradle.version.BumpVersionFileTask;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
-import org.shipkit.internal.gradle.git.GitOriginPlugin;
+import org.shipkit.internal.gradle.git.GitAuthPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.gradle.version.VersioningPlugin;
-import org.shipkit.internal.util.ResultHandler;
 
 import java.io.File;
 
@@ -47,13 +46,11 @@ public class InitPlugin implements Plugin<Project> {
     public static final String INIT_SHIPKIT_TASK = "initShipkit";
     public static final String INIT_TRAVIS_TASK = "initTravis";
 
-    private static final String FALLBACK_GITHUB_REPO = "mockito/shipkit-example";
-
     @Override
     public void apply(final Project project) {
         project.getPlugins().apply(VersioningPlugin.class);
         project.getPlugins().apply(ShipkitConfigurationPlugin.class);
-        final GitOriginPlugin gitOriginPlugin = project.getPlugins().apply(GitOriginPlugin.class);
+        final GitAuthPlugin gitAuthPlugin = project.getPlugins().apply(GitAuthPlugin.class);
 
         TaskMaker.task(project, INIT_TRAVIS_TASK, InitTravisTask.class, new Action<InitTravisTask>() {
             public void execute(InitTravisTask t) {
@@ -78,19 +75,9 @@ public class InitPlugin implements Plugin<Project> {
                 t.setDescription("Creates Shipkit configuration file unless it already exists");
                 t.setShipkitFile(shipkitFile);
 
-                gitOriginPlugin.provideOriginTo(t, new ResultHandler<GitOriginPlugin.GitOriginAuth>() {
-                    @Override
-                    public void onSuccess(GitOriginPlugin.GitOriginAuth result) {
-                        t.setOriginRepoName(result.getOriginRepositoryName());
-                    }
-
-                    @Override
-                    public void onFailure(RuntimeException e) {
-                        LOG.lifecycle("  Problems getting url of git remote origin (run with --debug to find out more).\n" +
-                            "  Using fallback '" + FALLBACK_GITHUB_REPO + "' instead.\n" +
-                            "  Please update GitHub repository in '" + shipkitFile + "' file.\n");
-                        LOG.debug("  Problems getting url of git remote origin", e);
-                        t.setOriginRepoName(FALLBACK_GITHUB_REPO);
+                gitAuthPlugin.provideAuthTo(t, new Action<GitAuthPlugin.GitAuth>() {
+                    public void execute(GitAuthPlugin.GitAuth gitAuth) {
+                        t.setOriginRepoName(gitAuth.getRepositoryName());
                     }
                 });
             }

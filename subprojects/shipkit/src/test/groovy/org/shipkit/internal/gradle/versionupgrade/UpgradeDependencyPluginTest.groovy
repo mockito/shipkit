@@ -73,7 +73,6 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
         then:
         //task.url == "https://writeUser:writeToken@github.com/mockito/shipkit.git"
         task.rev == "release/2.x"
-        task.secretValue == "writeToken"
         task.dryRun
     }
 

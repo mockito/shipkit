@@ -5,6 +5,7 @@ import testutil.GradleSpecification
 class UpgradeDependencyPluginIntegTest extends GradleSpecification {
 
     def "all tasks in dry run"() {
+        debug = true
         projectDir.newFolder("gradle")
         projectDir.newFile("gradle/shipkit.gradle") << """
             shipkit {
