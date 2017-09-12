@@ -48,7 +48,7 @@ public class CloneGitRepositoryTask extends DefaultTask {
         List<String> result = new ArrayList<String>();
         result.add("git");
         result.add("clone");
-        if(depth != 0) {
+        if (depth != 0) {
             result.add("--depth");
             result.add(valueOf(depth));
         }

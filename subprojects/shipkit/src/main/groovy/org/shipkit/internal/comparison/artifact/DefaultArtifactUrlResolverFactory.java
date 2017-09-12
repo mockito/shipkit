@@ -5,8 +5,8 @@ import org.shipkit.internal.gradle.bintray.ShipkitBintrayPlugin;
 
 public class DefaultArtifactUrlResolverFactory {
 
-    public DefaultArtifactUrlResolver getDefaultResolver(Project project, String artifactBaseName, String previousVersion){
-        if(project.getPlugins().hasPlugin(ShipkitBintrayPlugin.class)){
+    public DefaultArtifactUrlResolver getDefaultResolver(Project project, String artifactBaseName, String previousVersion) {
+        if (project.getPlugins().hasPlugin(ShipkitBintrayPlugin.class)) {
             return new BintrayDefaultArtifactUrlResolver(project, artifactBaseName, previousVersion);
         }
         return null;

@@ -4,7 +4,7 @@ package org.shipkit.internal.comparison.artifact;
 import com.jfrog.bintray.gradle.BintrayExtension;
 import org.gradle.api.Project;
 
-class BintrayDefaultArtifactUrlResolver implements DefaultArtifactUrlResolver{
+class BintrayDefaultArtifactUrlResolver implements DefaultArtifactUrlResolver {
 
     private final String artifactBaseName;
     private final Project project;

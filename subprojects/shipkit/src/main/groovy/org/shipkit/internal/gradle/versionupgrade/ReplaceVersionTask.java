@@ -12,7 +12,7 @@ import org.shipkit.internal.notes.util.IOUtil;
  * To replace the dependency this task uses following regex pattern:
  * "{@link UpgradeDependencyExtension#dependencyGroup}:{@link UpgradeDependencyExtension#dependencyName}:{@value VERSION_REGEX}
  */
-public class ReplaceVersionTask extends DefaultTask{
+public class ReplaceVersionTask extends DefaultTask {
 
     public static final Logger LOG = Logging.getLogger(ReplaceVersionTask.class);
 
@@ -22,7 +22,7 @@ public class ReplaceVersionTask extends DefaultTask{
     private Boolean buildFileUpdated;
 
     @TaskAction
-    public void replaceVersion(){
+    public void replaceVersion() {
         String groupAndProject = versionUpgrade.getDependencyGroup() + ":" + versionUpgrade.getDependencyName() + ":";
         String versionPattern = groupAndProject + VERSION_REGEX;
         String replacement = groupAndProject + versionUpgrade.getNewVersion();
@@ -34,7 +34,7 @@ public class ReplaceVersionTask extends DefaultTask{
 
         buildFileUpdated = !content.equals(updatedContent);
 
-        if(buildFileUpdated) {
+        if (buildFileUpdated) {
             IOUtil.writeFile(versionUpgrade.getBuildFile().getAbsoluteFile(), updatedContent);
         }
     }
@@ -51,8 +51,8 @@ public class ReplaceVersionTask extends DefaultTask{
      * Was buildFile updated during the version replacement?
      * It wasn't when newVersion == previousVersion
      */
-    public boolean isBuildFileUpdated(){
-        if(buildFileUpdated == null){
+    public boolean isBuildFileUpdated() {
+        if (buildFileUpdated == null) {
             throw new IllegalStateException("Property 'buildFileUpdated' should not be accessed before 'replaceVersion' task is executed.");
         }
         return buildFileUpdated;

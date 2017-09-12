@@ -11,29 +11,29 @@ public class DependencyNewVersionParser {
         this.dependencyNewVersion = dependencyNewVersion;
     }
 
-    private boolean isValid(){
+    private boolean isValid() {
         return dependencyNewVersion.matches(DEPENDENCY_NEW_VERSION_PATTERN);
     }
 
-    private String getDependencyGroup(){
+    private String getDependencyGroup() {
         return splitDependency()[0];
     }
 
-    private String getDependencyName(){
+    private String getDependencyName() {
         return splitDependency()[1];
     }
 
-    private String getNewVersion(){
+    private String getNewVersion() {
         return splitDependency()[2];
     }
 
-    private String[] splitDependency(){
+    private String[] splitDependency() {
         return dependencyNewVersion.split(":");
     }
 
-    public void fillVersionUpgradeExtension(UpgradeDependencyExtension versionUpgrade){
-        if(dependencyNewVersion != null) {
-            if(!isValid()){
+    public void fillVersionUpgradeExtension(UpgradeDependencyExtension versionUpgrade) {
+        if (dependencyNewVersion != null) {
+            if (!isValid()) {
                 throw new IllegalArgumentException(
                     String.format("  Incorrect format of property 'dependency', it should match the pattern '%s', eg. 'org.shipkit:shipkit:1.2.3'.",
                         DEPENDENCY_NEW_VERSION_PATTERN));

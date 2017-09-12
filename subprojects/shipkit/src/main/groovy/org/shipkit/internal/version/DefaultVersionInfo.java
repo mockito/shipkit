@@ -85,7 +85,7 @@ class DefaultVersionInfo implements VersionInfo {
                 .replaceAll("(?m)^version=(.*?)\n", "version=" + newVersion + "\n")
                 .replaceAll("(?m)^previousVersion=(.*?)\n", "previousVersion=" + previousVersion + "\n");
 
-        if(!updated.contains("previousVersion")){
+        if (!updated.contains("previousVersion")) {
             updated += "previousVersion=" + previousVersion + "\n";
         }
 

@@ -21,7 +21,7 @@ class NotableFormatter implements MultiReleaseNotesFormatter {
     }
 
     public String formatReleaseNotes(Collection<ReleaseNotesData> data) {
-        StringBuilder sb = new StringBuilder(introductionText == null? "":introductionText);
+        StringBuilder sb = new StringBuilder(introductionText == null ? "" : introductionText);
         for (ReleaseNotesData d : data) {
             sb.append("### ").append(d.getVersion()).append(" - ").append(DateUtil.formatDate(d.getDate()))
                     .append("\n\n");

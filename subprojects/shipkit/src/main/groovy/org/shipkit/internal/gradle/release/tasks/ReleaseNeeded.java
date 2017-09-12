@@ -28,7 +28,7 @@ public class ReleaseNeeded {
         boolean skippedByCommitMessage = !commitMessageEmpty && task.getCommitMessage().contains(SKIP_RELEASE_KEYWORD);
         LOG.lifecycle("  Commit message to inspect for keyword '{}': {}",
                 SKIP_RELEASE_KEYWORD,
-                commitMessageEmpty? "<unknown commit message>" : "\n" + task.getCommitMessage());
+                commitMessageEmpty ? "<unknown commit message>" : "\n" + task.getCommitMessage());
 
         boolean releasableBranch = task.getBranch() != null && task.getBranch().matches(task.getReleasableBranchRegex());
         LOG.lifecycle("  Current branch '{}' matches '{}': {}", task.getBranch(), task.getReleasableBranchRegex(), releasableBranch);

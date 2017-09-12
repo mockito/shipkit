@@ -32,7 +32,7 @@ class GitHubContributorsFetcher {
             GitHubProjectContributors contributors =
                     GitHubProjectContributors.authenticatingWith(apiUrl, repository, readOnlyAuthToken).build();
 
-            while(contributors.hasNextPage()) {
+            while (contributors.hasNextPage()) {
                 List<JsonObject> page = contributors.nextPage();
                 result.addAllContributors(extractContributors(page, readOnlyAuthToken));
             }

@@ -13,7 +13,7 @@ public class ConcurrentDispatcher {
 
     private static final int N_THREADS = 4;
 
-    public <R,T> Set<R> dispatch(Function<T, R> function, List<T> page) {
+    public <R, T> Set<R> dispatch(Function<T, R> function, List<T> page) {
         Set<R> result = new HashSet<R>();
         ExecutorService executor = Executors.newFixedThreadPool(N_THREADS);
         List<T> synchronizedPageList = Collections.synchronizedList(page);

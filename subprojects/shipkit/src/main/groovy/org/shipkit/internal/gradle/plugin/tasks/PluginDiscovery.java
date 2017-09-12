@@ -35,7 +35,7 @@ public class PluginDiscovery {
         String[] split = pluginName.split("-");
         StringBuilder sb = new StringBuilder();
         for (String string : split) {
-            if(sb.length() == 0) {
+            if (sb.length() == 0) {
                 sb.append(string.substring(0, 1).toLowerCase()).append(string.substring(1));
             } else {
                 sb.append(string.substring(0, 1).toUpperCase()).append(string.substring(1));

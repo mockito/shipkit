@@ -18,7 +18,7 @@ import java.util.zip.ZipFile;
 import static java.lang.String.format;
 import static org.shipkit.internal.util.ArgumentValidation.notNull;
 
-public class ZipComparator{
+public class ZipComparator {
 
     private final DirectoryDiffGenerator directoryDiffGenerator;
 
@@ -28,7 +28,7 @@ public class ZipComparator{
     }
 
     @ExposedForTesting
-    ZipComparator(DirectoryDiffGenerator directoryDiffGenerator){
+    ZipComparator(DirectoryDiffGenerator directoryDiffGenerator) {
         this.directoryDiffGenerator = directoryDiffGenerator;
     }
 

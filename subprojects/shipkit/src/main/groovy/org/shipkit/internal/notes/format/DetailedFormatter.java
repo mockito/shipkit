@@ -59,12 +59,12 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         return sb.toString().trim();
     }
 
-    static String header(String version, Date date, boolean emphasizeVersion){
+    static String header(String version, Date date, boolean emphasizeVersion) {
         return emphasizeVersion ? buildHeader(version, date, "# ", "")
                 : buildHeader(version, date, "**", "**");
     }
 
-    private static String buildHeader(String version, Date date, String prefix, String postfix){
+    private static String buildHeader(String version, Date date, String prefix, String postfix) {
         return prefix + version + " (" + DateUtil.formatDate(date) + ")" + postfix + " - ";
     }
 
@@ -102,7 +102,7 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
 
         for (String label: sorted.keySet()) {
             for (Improvement i : sorted.get(label)) {
-                String labelPrefix = label.equals(NO_LABEL)? "":"[" + label + "] ";
+                String labelPrefix = label.equals(NO_LABEL) ? "" : "[" + label + "] ";
                 sb.append(" - ").append(labelPrefix).append(formatImprovement(i)).append("\n");
             }
         }
@@ -190,6 +190,6 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
     }
 
     private static String pluralize(int size, String singularNoun) {
-        return "" + size + " " + ((size == 1)? singularNoun : singularNoun + "s");
+        return "" + size + " " + ((size == 1) ? singularNoun : singularNoun + "s");
     }
 }

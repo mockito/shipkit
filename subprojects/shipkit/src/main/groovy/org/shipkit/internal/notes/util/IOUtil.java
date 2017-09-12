@@ -61,12 +61,12 @@ public class IOUtil {
         }
     }
 
-    public static void createParentDirectory(File file){
+    public static void createParentDirectory(File file) {
         createDirectory(file.getParentFile());
     }
 
     public static void createDirectory(File file) {
-        if(!file.exists()){
+        if (!file.exists()) {
             createDirectory(file.getParentFile());
             file.mkdir();
         }
@@ -78,7 +78,7 @@ public class IOUtil {
      * @param file destination file (not a directory!) where downloaded content will be stored
      *             (file or its parent directories don't need to exist)
      */
-    public static void downloadToFile(String url, File file){
+    public static void downloadToFile(String url, File file) {
         InputStream input = null;
         FileOutputStream output = null;
         try {
@@ -89,12 +89,12 @@ public class IOUtil {
             FileOutputStream fos = new FileOutputStream(file);
             byte[] buf = new byte[1024];
             int n;
-            while ((n=input.read(buf)) != -1) {
+            while ((n = input.read(buf)) != -1) {
                 fos.write(buf, 0, n);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally{
+        } finally {
             try {
                 if (input != null) {
                     input.close();
@@ -102,7 +102,7 @@ public class IOUtil {
                 if (output != null) {
                     output.close();
                 }
-            } catch(IOException e){
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }

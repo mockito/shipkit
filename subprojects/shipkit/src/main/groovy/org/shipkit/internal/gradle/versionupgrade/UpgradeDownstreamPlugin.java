@@ -75,7 +75,7 @@ public class UpgradeDownstreamPlugin implements Plugin<Project> {
             public void run() {
                 notNull(upgradeDownstreamExtension.getRepositories(),
                     "'upgradeDownstream.repositories'");
-                for(String consumerRepositoryName : upgradeDownstreamExtension.getRepositories()){
+                for (String consumerRepositoryName : upgradeDownstreamExtension.getRepositories()) {
                     Task cloneTask = createConsumerCloneTask(project, conf, consumerRepositoryName);
                     Task performUpdate = createProduceUpgradeTask(project, consumerRepositoryName);
                     performUpdate.dependsOn(cloneTask);
@@ -85,7 +85,7 @@ public class UpgradeDownstreamPlugin implements Plugin<Project> {
         });
     }
 
-    private Task createConsumerCloneTask(final Project project, final ShipkitConfiguration conf, final String consumerRepository){
+    private Task createConsumerCloneTask(final Project project, final ShipkitConfiguration conf, final String consumerRepository) {
         return TaskMaker.task(project,
             "clone" + repositoryNameToCapitalizedCamelCase(consumerRepository),
             CloneGitRepositoryTask.class,
@@ -100,7 +100,7 @@ public class UpgradeDownstreamPlugin implements Plugin<Project> {
         });
     }
 
-    private Task createProduceUpgradeTask(final Project project, final String consumerRepository){
+    private Task createProduceUpgradeTask(final Project project, final String consumerRepository) {
         return TaskMaker.task(project, "upgrade" + repositoryNameToCapitalizedCamelCase(consumerRepository), ShipkitExecTask.class, new Action<ShipkitExecTask>() {
             @Override
             public void execute(final ShipkitExecTask task) {
@@ -116,13 +116,13 @@ public class UpgradeDownstreamPlugin implements Plugin<Project> {
         return new File(project.getBuildDir().getAbsolutePath() + "/downstream-upgrade/" + repositoryNameToCamelCase(consumerRepository));
     }
 
-    private String getDependencyProperty(Project project){
+    private String getDependencyProperty(Project project) {
         VersionInfo info = project.getExtensions().getByType(VersionInfo.class);
         return String.format("-Pdependency=%s:%s:%s", project.getGroup().toString(), project.getName(), info.getPreviousVersion());
     }
 
     @ExposedForTesting
-    protected UpgradeDownstreamExtension getUpgradeDownstreamExtension(){
+    protected UpgradeDownstreamExtension getUpgradeDownstreamExtension() {
         return upgradeDownstreamExtension;
     }
 }

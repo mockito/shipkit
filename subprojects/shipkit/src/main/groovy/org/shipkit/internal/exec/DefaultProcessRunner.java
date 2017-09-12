@@ -97,7 +97,7 @@ public class DefaultProcessRunner implements ProcessRunner {
         try {
             StringBuilder sb = new StringBuilder();
             String line;
-            while((line = reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
                 sb.append(line).append("\n");
             }
             return sb.toString();
@@ -107,7 +107,7 @@ public class DefaultProcessRunner implements ProcessRunner {
     }
 
     private void storeOutputToFile(String content) {
-        if(outputLogFile != null) {
+        if (outputLogFile != null) {
             //TODO ms - can we make sure that the output does not have sensitive secret values
             //should we mask secret values in the output stored in file, too?
             //TODO SF - good question. Currently secret values are masked (see invocation of this method)
@@ -120,7 +120,7 @@ public class DefaultProcessRunner implements ProcessRunner {
     private String executionOfCommandFailed(String maskedCommandLine, ProcessResult result) {
         String message = "Execution of command failed (exit code " + result.getExitValue() + "):\n" +
                 "  " + maskedCommandLine + "\n";
-        if(outputLogFile == null) {
+        if (outputLogFile == null) {
             message = message + "  Captured command output:\n" + result.getOutput();
         } else {
             message = message + "  Captured command output stored in " + outputLogFile;

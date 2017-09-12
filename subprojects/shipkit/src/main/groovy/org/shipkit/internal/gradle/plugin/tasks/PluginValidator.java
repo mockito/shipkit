@@ -101,7 +101,7 @@ public class PluginValidator {
 
     private File[] getFileCandidates(String pathToClass) {
         File[] includes = new File[PLUGIN_EXTENSIONS.length];
-        for(int i = 0; i < PLUGIN_EXTENSIONS.length; i++) {
+        for (int i = 0; i < PLUGIN_EXTENSIONS.length; i++) {
             includes[i] = new File(pathToClass + PLUGIN_EXTENSIONS[i]);
         }
         return includes;

@@ -45,7 +45,7 @@ public class TravisPlugin implements Plugin<Project> {
 
         //configure branch based on Travis' env variable
         IdentifyGitBranchTask identifyBranch = (IdentifyGitBranchTask) project.getTasks().getByName(GitBranchPlugin.IDENTIFY_GIT_BRANCH);
-        if(!StringUtil.isEmpty(branch)) {
+        if (!StringUtil.isEmpty(branch)) {
             identifyBranch.setBranch(branch);
         }
 

@@ -36,7 +36,7 @@ class DefaultReleasedVersionsProvider implements ReleasedVersionsProvider {
             String v = theVersions.get(i);
             String tag = tagPrefix + v;
             //the value of 'next' element in collection is the 'previous version' because the input versions are sorted descending
-            String previous = (theVersions.size() > (i+1))? tagPrefix + theVersions.get(i+1) : null;
+            String previous = (theVersions.size() > (i + 1)) ? tagPrefix + theVersions.get(i + 1) : null;
             Date date = dateProvider.getDate(tag);
             result.add(new DefaultReleasedVersion(v, date, tag, previous));
         }
@@ -79,7 +79,7 @@ class DefaultReleasedVersionsProvider implements ReleasedVersionsProvider {
         }
 
         public String toString() {
-            return "" + version + "@" + (date != null? DateUtil.formatDate(date): "<no date>") + "(" + rev + ".." + previousRev + ")";
+            return "" + version + "@" + (date != null ? DateUtil.formatDate(date) : "<no date>") + "(" + rev + ".." + previousRev + ")";
         }
     }
 }

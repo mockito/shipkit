@@ -116,7 +116,7 @@ public class GitPlugin implements Plugin<Project> {
         TaskMaker.task(project, SOFT_RESET_COMMIT_TASK, ShipkitExecTask.class, new Action<ShipkitExecTask>() {
             public void execute(final ShipkitExecTask t) {
                 t.setDescription("Removes last commit, using 'reset --soft HEAD~'");
-                t.execCommand(execCommand("Removing last commit","git", "reset", "--soft", "HEAD~"));
+                t.execCommand(execCommand("Removing last commit", "git", "reset", "--soft", "HEAD~"));
             }
         });
 
@@ -130,7 +130,7 @@ public class GitPlugin implements Plugin<Project> {
     }
 
     public static void registerChangesForCommitIfApplied(final List<File> changedFiles,
-                                                         final String changeDescription, final Task changingTask){
+                                                         final String changeDescription, final Task changingTask) {
         final Project project = changingTask.getProject();
         project.getPlugins().withType(GitPlugin.class, new Action<GitPlugin>() {
             @Override

@@ -16,11 +16,11 @@ public class Diff {
         this.diffOutput = diffOutput;
     }
 
-    public static Diff ofEqualFiles(File previousFile, File currentFile){
+    public static Diff ofEqualFiles(File previousFile, File currentFile) {
         return new Diff(previousFile, currentFile, true, "");
     }
 
-    public static Diff ofDifferentFiles(File previousFile, File currentFile, String diffOutput){
+    public static Diff ofDifferentFiles(File previousFile, File currentFile, String diffOutput) {
         return new Diff(previousFile, currentFile, false, diffOutput);
     }
 

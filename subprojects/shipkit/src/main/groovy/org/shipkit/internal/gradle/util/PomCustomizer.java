@@ -71,7 +71,7 @@ public class PomCustomizer {
 
         String repoLink = conf.getGitHub().getUrl() + "/" + conf.getGitHub().getRepository();
         root.appendNode("url", repoLink);
-        if(projectDescription != null) {
+        if (projectDescription != null) {
             root.appendNode("description", projectDescription);
         }
 
