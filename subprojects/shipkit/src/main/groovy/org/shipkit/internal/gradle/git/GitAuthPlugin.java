@@ -1,58 +1,69 @@
 package org.shipkit.internal.gradle.git;
 
+import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
-import org.shipkit.internal.util.ExposedForTesting;
+import org.shipkit.internal.gradle.git.tasks.IdentifyGitOriginRepoTask;
+import org.shipkit.internal.gradle.util.TaskMaker;
 
-import java.text.MessageFormat;
+import static org.shipkit.internal.gradle.git.GitHubUrlBuilder.getGitHubUrl;
 
 /**
  * This plugin is used for internal purposes, it does not add any user-visible, public behavior.
- * It identifies GitHub repository url and keeps it in the field on this plugin.
+ * It identifies GitHub repository url and name and keeps it in the field on this plugin.
  * Applies plugins:
  * <ul>
  * <li>{@link ShipkitConfigurationPlugin}</li>
  * </ul>
+ *
+ * Adds tasks:
+ * <ul>
+ *     <li>{@link IdentifyGitOriginRepoTask}</li>
+ * </ul>
  */
 public class GitAuthPlugin implements Plugin<Project> {
 
-    private GitAuth gitAuth;
+    public static final String IDENTIFY_GIT_ORIGIN_TASK = "identifyGitOrigin";
+
+    private IdentifyGitOriginRepoTask identifyTask;
 
     @Override
     public void apply(Project project) {
-        ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
-        String writeToken = conf.getLenient().getGitHub().getWriteAuthToken();
-
-        String url = getGitHubUrl(conf.getGitHub().getRepository(), conf);
-        gitAuth = new GitAuth(url, writeToken);
+        identifyTask = TaskMaker.task(project, IDENTIFY_GIT_ORIGIN_TASK, IdentifyGitOriginRepoTask.class, new Action<IdentifyGitOriginRepoTask>() {
+            public void execute(IdentifyGitOriginRepoTask t) {
+                t.setDescription("Identifies current git origin repo.");
+            }
+        });
+        project.getPlugins().apply(ShipkitConfigurationPlugin.class);
     }
 
-    static String getGitHubUrl(String ghRepo, ShipkitConfiguration conf) {
-        return _getGitHubUrl(conf.getGitHub().getWriteAuthUser(), ghRepo, conf.getLenient().getGitHub().getWriteAuthToken());
+    public void provideAuthTo(Task t, final Action<GitAuth> action) {
+        t.dependsOn(identifyTask);
+        identifyTask.doLast(new Action<Task>() {
+            public void execute(Task task) {
+                ShipkitConfiguration conf = identifyTask.getProject().getPlugins().getPlugin(ShipkitConfigurationPlugin.class).getConfiguration();
+                String repoUrl = getGitHubUrl(identifyTask.getOriginRepo(), conf);
+                String writeToken = conf.getLenient().getGitHub().getWriteAuthToken();
+                action.execute(new GitAuth(repoUrl, writeToken, identifyTask.getOriginRepo()));
+            }
+        });
     }
 
-    @ExposedForTesting
-    static String _getGitHubUrl(String ghUser, String ghRepo, String writeToken) {
-        if (writeToken != null) {
-            return MessageFormat.format("https://{0}:{1}@github.com/{2}.git", ghUser, writeToken, ghRepo);
-        } else {
-            return MessageFormat.format("https://github.com/{0}.git", ghRepo);
-        }
-    }
-
-    public GitAuth getGitAuth() {
-        return gitAuth;
-    }
-
+    //TODO it's not longer only auth... let's find a better name
     public static class GitAuth {
+
         private final String repositoryUrl;
         private final String secretValue;
+        private final String repositoryName;
 
-        GitAuth(String repositoryUrl, String secretValue) {
+        GitAuth(String repositoryUrl, String secretValue, String repositoryName) {
+            //TODO let's call secretValue by name, e.g write token :)
             this.repositoryUrl = repositoryUrl;
             this.secretValue = secretValue;
+            this.repositoryName = repositoryName;
         }
 
         /**
@@ -72,6 +83,13 @@ public class GitAuthPlugin implements Plugin<Project> {
          */
         public String getRepositoryUrl() {
             return repositoryUrl;
+        }
+
+        /**
+         * GitHub repository name
+         */
+        public String getRepositoryName() {
+            return repositoryName;
         }
     }
 }

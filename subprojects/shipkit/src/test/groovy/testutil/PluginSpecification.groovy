@@ -31,6 +31,7 @@ class PluginSpecification extends Specification{
 
     void initProject() {
         project = new ProjectBuilder().withProjectDir(tmp.root).build()
+        project.version = "1.5.23"
     }
 
     void createShipkitFile(){

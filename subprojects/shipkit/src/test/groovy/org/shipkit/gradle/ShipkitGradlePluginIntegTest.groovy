@@ -39,6 +39,7 @@ class ShipkitGradlePluginIntegTest extends GradleSpecification {
 :buildArchives=SKIPPED
 :gitTag=SKIPPED
 :identifyGitBranch=SKIPPED
+:identifyGitOrigin=SKIPPED
 :gitPush=SKIPPED
 :performGitPush=SKIPPED
 :discoverPlugins=SKIPPED

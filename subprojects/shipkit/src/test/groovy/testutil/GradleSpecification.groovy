@@ -19,6 +19,7 @@ class GradleSpecification extends Specification {
 
     File buildFile
     File settingsFile
+    boolean debug
 
     private static final String CLASSES_DIR = findClassesDir();
     private static final String RESOURCES_DIR = findResourcesDir();
@@ -50,6 +51,7 @@ class GradleSpecification extends Specification {
             GradleRunner.create()
                 .withProjectDir(projectDir.root)
                 .withArguments(args)
+                .withDebug(debug)
                 .build()
         } catch (Exception e) {
             println " ---- build.gradle ---- \n" + buildFile.text + "\n ------------------------"

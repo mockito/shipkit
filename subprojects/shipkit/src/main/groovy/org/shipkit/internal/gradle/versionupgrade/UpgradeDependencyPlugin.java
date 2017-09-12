@@ -11,12 +11,10 @@ import org.shipkit.gradle.git.GitPushTask;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitAuthPlugin;
-import org.shipkit.internal.gradle.git.GitOriginPlugin;
 import org.shipkit.internal.gradle.git.tasks.GitCheckOutTask;
 import org.shipkit.internal.gradle.git.tasks.GitPullTask;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.util.IncubatingWarning;
-import org.shipkit.internal.util.RethrowingResultHandler;
 
 import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
 
@@ -79,8 +77,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
     @Override
     public void apply(final Project project) {
         IncubatingWarning.warn("upgrade-dependency plugin");
-        final GitOriginPlugin gitOriginPlugin = project.getPlugins().apply(GitOriginPlugin.class);
-        final GitAuthPlugin.GitAuth gitAuth = project.getPlugins().apply(GitAuthPlugin.class).getGitAuth();
+        final GitAuthPlugin gitAuthPlugin = project.getPlugins().apply(GitAuthPlugin.class);
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
         upgradeDependencyExtension = project.getExtensions().create("upgradeDependency", UpgradeDependencyExtension.class);
@@ -112,7 +109,6 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
             public void execute(final GitPullTask task) {
                 task.setDescription("Performs git pull from upstream repository.");
                 task.mustRunAfter(CHECKOUT_BASE_BRANCH);
-                task.setSecretValue(gitAuth.getSecretValue());
                 task.setDryRun(conf.isDryRun());
 
                 DeferredConfiguration.deferredConfiguration(project, new Runnable() {
@@ -122,10 +118,11 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                     }
                 });
 
-                gitOriginPlugin.provideOriginTo(task, new RethrowingResultHandler<GitOriginPlugin.GitOriginAuth>() {
+                gitAuthPlugin.provideAuthTo(task, new Action<GitAuthPlugin.GitAuth>() {
                     @Override
-                    public void onSuccess(GitOriginPlugin.GitOriginAuth result) {
-                        task.setUrl(result.getOriginRepositoryUrl());
+                    public void execute(GitAuthPlugin.GitAuth gitAuth) {
+                        task.setSecretValue(gitAuth.getSecretValue());
+                        task.setUrl(gitAuth.getRepositoryUrl());
                     }
                 });
             }
@@ -172,15 +169,15 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
             public void execute(final GitPushTask task) {
                 task.setDescription("Pushes updated config file to an update branch.");
                 task.mustRunAfter(COMMIT_VERSION_UPGRADE);
-                task.setSecretValue(gitAuth.getSecretValue());
 
                 task.setDryRun(conf.isDryRun());
                 task.getTargets().add(getVersionBranchName(upgradeDependencyExtension));
 
-                gitOriginPlugin.provideOriginTo(task, new RethrowingResultHandler<GitOriginPlugin.GitOriginAuth>() {
+                gitAuthPlugin.provideAuthTo(task, new Action<GitAuthPlugin.GitAuth>() {
                     @Override
-                    public void onSuccess(GitOriginPlugin.GitOriginAuth result) {
-                        task.setUrl(result.getOriginRepositoryUrl());
+                    public void execute(GitAuthPlugin.GitAuth gitAuth) {
+                        task.setSecretValue(gitAuth.getSecretValue());
+                        task.setUrl(gitAuth.getRepositoryUrl());
                     }
                 });
 
@@ -200,10 +197,10 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.setVersionUpgrade(upgradeDependencyExtension);
                 task.setUpstreamRepositoryName(conf.getGitHub().getRepository());
 
-                gitOriginPlugin.provideOriginTo(task, new RethrowingResultHandler<GitOriginPlugin.GitOriginAuth>() {
+                gitAuthPlugin.provideAuthTo(task, new Action<GitAuthPlugin.GitAuth>() {
                     @Override
-                    public void onSuccess(GitOriginPlugin.GitOriginAuth result) {
-                        task.setForkRepositoryName(result.getOriginRepositoryName());
+                    public void execute(GitAuthPlugin.GitAuth gitAuth) {
+                        task.setForkRepositoryName(gitAuth.getRepositoryName());
                     }
                 });
 

@@ -1,17 +1,27 @@
 package org.shipkit.internal.gradle.git.tasks
 
-import org.gradle.testfixtures.ProjectBuilder
-import spock.lang.Specification
+import testutil.PluginSpecification
 
-class IdentifyGitOriginRepoTaskTest extends Specification {
+class IdentifyGitOriginRepoTaskTest extends PluginSpecification {
 
     IdentifyGitOriginRepoTask task
-    GitOriginRepoProvider originProvider
+    GitOriginRepoProvider originProvider = Mock(GitOriginRepoProvider)
 
-    void setup(){
-        task = new ProjectBuilder().build().tasks.create("identifyGitOrigin", IdentifyGitOriginRepoTask)
-        originProvider = Mock(GitOriginRepoProvider)
+    void setup() {
+        task = project.tasks["identifyGitOrigin"]
         task.originRepoProvider = originProvider
+        conf.gitHub.repository = null
+    }
+
+    def "should use repository from shipkit configuration if provided"() {
+        conf.gitHub.repository = "repo"
+
+        when:
+        task.identifyGitOriginRepo()
+
+        then:
+        task.originRepo == "repo"
+        0 * originProvider._
     }
 
     def "should not call originProvider when originRepo already set manually"() {
@@ -23,32 +33,31 @@ class IdentifyGitOriginRepoTaskTest extends Specification {
 
         then:
         task.originRepo == "origin"
-        task.executionException == null
-        0 * originProvider.getOriginGitRepo()
+        0 * originProvider._
     }
 
-    def "should set executionException when originProvider fails"() {
+    def "should use fallback repo when originProvider fails"() {
         given:
-        def exception = new RuntimeException("test")
-        originProvider.getOriginGitRepo() >> { throw exception}
+        def e = new RuntimeException("test")
+        originProvider.getOriginGitRepo() >> { throw e }
 
         when:
         task.identifyGitOriginRepo()
 
         then:
-        task.originRepo == null
-        task.executionException == exception
+        task.originRepo == IdentifyGitOriginRepoTask.FALLBACK_GITHUB_REPO
     }
 
-    def "should set originRepo correctly"() {
+    def "should get repo from provider only once"() {
         given:
         originProvider.getOriginGitRepo() >> "originRepo"
 
         when:
         task.identifyGitOriginRepo()
+        task.identifyGitOriginRepo() //2nd call to verify single call to provider
 
         then:
+        1 * originProvider.getOriginGitRepo() >> "originRepo"
         task.originRepo == "originRepo"
-        task.executionException == null
     }
 }

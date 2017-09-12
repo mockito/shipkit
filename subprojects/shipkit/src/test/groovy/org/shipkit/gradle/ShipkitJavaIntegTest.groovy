@@ -78,6 +78,7 @@ class ShipkitJavaIntegTest extends GradleSpecification {
 :impl:sourcesJar=SKIPPED
 :impl:publishJavaLibraryPublicationToMavenLocal=SKIPPED
 :identifyGitBranch=SKIPPED
+:identifyGitOrigin=SKIPPED
 :gitPush=SKIPPED
 :performGitPush=SKIPPED
 :api:bintrayUpload=SKIPPED
