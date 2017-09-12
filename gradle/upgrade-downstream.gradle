@@ -1,6 +1,5 @@
 apply plugin: 'org.shipkit.ci-upgrade-downstream'
 
 upgradeDownstream {
-    //repositories = ['mockito/shipkit-example', 'mockito/shipkit-bootstrap', 'mockito/shipkit']
-    repositories = []
+    repositories = ['mockito/shipkit-example', 'mockito/shipkit-bootstrap', 'mockito/shipkit']
 }

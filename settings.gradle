@@ -1,3 +1,5 @@
+rootProject.name = 'shipkit'
+
 include "shipkit"
 include "testDownstream"
 

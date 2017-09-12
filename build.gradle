@@ -17,11 +17,14 @@ apply plugin: 'org.shipkit.gradle-plugin'
 
 apply from: "$rootDir/gradle/upgrade-downstream.gradle"
 
+allprojects {
+    group = 'org.shipkit'
+}
+
 subprojects {
     repositories {
         jcenter()
         maven { url "https://plugins.gradle.org/m2/" }
     }
-    group = 'org.shipkit'
 }
 
