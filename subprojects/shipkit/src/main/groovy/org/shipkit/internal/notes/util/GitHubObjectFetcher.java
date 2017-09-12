@@ -44,7 +44,7 @@ public class GitHubObjectFetcher {
 
     private String resetLimitInLocalTimeOrEmpty(URLConnection urlConnection) {
         String rateLimitReset = urlConnection.getHeaderField("X-RateLimit-Reset");
-        if(rateLimitReset == null) {
+        if (rateLimitReset == null) {
             return "";
         }
         Date resetInEpochSeconds = DateUtil.parseDateInEpochSeconds(rateLimitReset);

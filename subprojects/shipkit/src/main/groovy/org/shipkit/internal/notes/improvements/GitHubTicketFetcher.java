@@ -71,7 +71,7 @@ class GitHubTicketFetcher {
 
     private static List<Improvement> extractImprovements(Collection<Long> tickets, List<JsonObject> issues,
                                                          boolean onlyPullRequests) {
-        if(tickets.isEmpty()) {
+        if (tickets.isEmpty()) {
             return Collections.emptyList();
         }
 

@@ -13,7 +13,7 @@ import java.io.File;
  * If the file exists, this task does nothing.
  * Generated file is intended to be checked in.
  */
-public class InitVersioningTask extends DefaultTask{
+public class InitVersioningTask extends DefaultTask {
 
     @OutputFile private File versionFile;
 

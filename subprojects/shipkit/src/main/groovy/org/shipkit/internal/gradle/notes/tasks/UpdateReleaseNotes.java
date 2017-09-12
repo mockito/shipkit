@@ -36,7 +36,7 @@ public class UpdateReleaseNotes {
         if (previewMode) {
             LOG.lifecycle("  Preview of release notes update:\n" +
                 "  ----------------\n" + newContent + "----------------");
-        } else{
+        } else {
             FileUtil.appendToTop(newContent, releaseNotesFile);
             LOG.lifecycle("  Successfully updated release notes!");
         }

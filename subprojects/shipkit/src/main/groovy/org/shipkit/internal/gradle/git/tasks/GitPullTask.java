@@ -11,7 +11,7 @@ import org.gradle.api.tasks.TaskAction;
  * Replaces secret value with "[SECRET]".
  * It really helps debugging if we can see the output and logging without exposing secret values like GitHub write auth token.
  */
-public class GitPullTask extends DefaultTask{
+public class GitPullTask extends DefaultTask {
 
     @Input private String url;
     @Input private String rev;
@@ -19,7 +19,7 @@ public class GitPullTask extends DefaultTask{
     private String secretValue;
 
     @TaskAction
-    public void gitPull(){
+    public void gitPull() {
         new GitPull().gitPull(this);
     }
 

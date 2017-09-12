@@ -114,11 +114,11 @@ public class ComparePublicationsPlugin implements Plugin<Project> {
     }
 
     private String getDefaultIfNull(String url, String variableName, String extension, DefaultArtifactUrlResolver defaultArtifactUrlResolver) {
-        if(url == null){
+        if (url == null) {
             /*
              * it's null when {@link DefaultArtifactUrlResolverFactory} can't find any implementation suitable for the current implementation
              */
-            if(defaultArtifactUrlResolver == null){
+            if (defaultArtifactUrlResolver == null) {
                 return null;
             }
             String defaultUrl = defaultArtifactUrlResolver.getDefaultUrl(extension);

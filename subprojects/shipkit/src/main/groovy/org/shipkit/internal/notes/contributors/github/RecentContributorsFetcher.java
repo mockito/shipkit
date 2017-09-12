@@ -45,7 +45,7 @@ class RecentContributorsFetcher {
                     .with(apiUrl, repository, readOnlyAuthToken, dateSince, dateUntil)
                     .build();
 
-            while(commits.hasNextPage()) {
+            while (commits.hasNextPage()) {
                 List<JsonObject> page = commits.nextPage();
                 contributors.addAll(extractContributors(page));
             }
@@ -60,7 +60,7 @@ class RecentContributorsFetcher {
         Set<Contributor> result = new HashSet<Contributor>();
         for (JsonObject commit : commits) {
             Contributor contributor = GitHubCommitsJSON.toContributor(commit);
-            if(contributor != null) {
+            if (contributor != null) {
                 result.add(contributor);
             }
         }
@@ -110,7 +110,7 @@ class RecentContributorsFetcher {
                 String nextPageUrl = apiUrl + "/repos/" + repository + "/commits"
                         + "?access_token=" + readOnlyAuthToken
                         + "&since=" + forGitHub(dateSince)
-                        + ((dateUntil != null)? "&until=" + forGitHub(dateUntil) : "")
+                        + ((dateUntil != null) ? "&until=" + forGitHub(dateUntil) : "")
                         + "&page=1&per_page=100";
                 return new GitHubCommits(nextPageUrl);
             }

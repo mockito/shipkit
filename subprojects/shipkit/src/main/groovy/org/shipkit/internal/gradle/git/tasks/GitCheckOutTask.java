@@ -55,26 +55,26 @@ public class GitCheckOutTask extends DefaultTask {
         getProcessRunner().run(getCommandLine());
     }
 
-    private List<String> getCommandLine(){
+    private List<String> getCommandLine() {
         List<String> commandLine = new ArrayList<String>();
         commandLine.add("git");
         commandLine.add("checkout");
-        if(newBranch){
+        if (newBranch) {
             commandLine.add("-b");
         }
         commandLine.add(rev);
         return commandLine;
     }
 
-    private ProcessRunner getProcessRunner(){
-        if(processRunner == null){
+    private ProcessRunner getProcessRunner() {
+        if (processRunner == null) {
             return new DefaultProcessRunner(getProject().getProjectDir());
         }
         return processRunner;
     }
 
     @ExposedForTesting
-    protected void setProcessRunner(ProcessRunner processRunner){
+    protected void setProcessRunner(ProcessRunner processRunner) {
         this.processRunner = processRunner;
     }
 }

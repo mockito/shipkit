@@ -16,7 +16,7 @@ import java.io.IOException;
  * is based on origin repo, see {@link org.shipkit.internal.gradle.git.tasks.GitOriginRepoProvider}
  * and {@link CreatePullRequestTask#upstreamRepositoryName} is based on {@link ShipkitConfiguration.GitHub#getRepository()}
  */
-public class CreatePullRequestTask extends DefaultTask{
+public class CreatePullRequestTask extends DefaultTask {
 
     @Input private String upstreamRepositoryName;
     @Input private String gitHubApiUrl;

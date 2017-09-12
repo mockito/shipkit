@@ -14,7 +14,7 @@ class TicketParser {
         Set<String> tickets = new LinkedHashSet<String>();
         Pattern ticket = Pattern.compile("#\\d+");
         Matcher m = ticket.matcher(message);
-        while(m.find()) {
+        while (m.find()) {
             String ticketId = m.group().substring(1); //remove leading '#'
             tickets.add(ticketId);
         }

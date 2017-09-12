@@ -15,10 +15,10 @@ public class DirectoryDiffGenerator {
     }
 
     private void appendFiles(StringBuilder sb, List<String> changedFiles, String fileType, String symbol) {
-        if(changedFiles != null && !changedFiles.isEmpty()){
+        if (changedFiles != null && !changedFiles.isEmpty()) {
             String header = String.format("    %s:\n", fileType);
             sb.append(header);
-            for(String changed : changedFiles){
+            for (String changed : changedFiles) {
                 sb.append(String.format("    %s %s\n", symbol, changed));
             }
             sb.append("\n");

@@ -235,11 +235,11 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
         };
     }
 
-    private String getVersionBranchName(UpgradeDependencyExtension versionUpgrade){
+    private String getVersionBranchName(UpgradeDependencyExtension versionUpgrade) {
         return "upgrade-" + versionUpgrade.getDependencyName() + "-to-" + versionUpgrade.getNewVersion();
     }
 
-    public UpgradeDependencyExtension getUpgradeDependencyExtension(){
+    public UpgradeDependencyExtension getUpgradeDependencyExtension() {
         return upgradeDependencyExtension;
     }
 

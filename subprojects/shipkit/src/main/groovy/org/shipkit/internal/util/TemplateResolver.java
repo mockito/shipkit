@@ -13,26 +13,26 @@ public class TemplateResolver {
 
     private final Map<String, String> properties;
 
-    public TemplateResolver(String text){
+    public TemplateResolver(String text) {
         this.text = text;
         this.properties = new HashMap<String, String>();
     }
 
-    public TemplateResolver withProperty(String key, String value){
+    public TemplateResolver withProperty(String key, String value) {
         ArgumentValidation.notNull(key, "key", value, "value");
         properties.put(key, value);
         return this;
     }
 
-    public String resolve(){
+    public String resolve() {
         String result = text;
-        for(Map.Entry<String, String> property : properties.entrySet()){
+        for (Map.Entry<String, String> property : properties.entrySet()) {
             result = result.replace(expressionFromKey(property.getKey()), property.getValue());
         }
         return result;
     }
 
-    private String expressionFromKey(String key){
+    private String expressionFromKey(String key) {
          return "@" + key + "@";
     }
 }

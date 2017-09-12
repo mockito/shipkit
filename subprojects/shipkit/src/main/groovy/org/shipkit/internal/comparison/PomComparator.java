@@ -10,7 +10,7 @@ import java.io.File;
 
 import static org.shipkit.internal.util.ArgumentValidation.notNull;
 
-public class PomComparator{
+public class PomComparator {
 
     private static final Logger LOG = Logging.getLogger(PomComparator.class);
 
@@ -23,7 +23,7 @@ public class PomComparator{
                 new PomFilter(projectGroup, previousVersion, currentVersion);
     }
 
-    PomComparator(PomFilter pomFilter){
+    PomComparator(PomFilter pomFilter) {
         this.pomFilter = pomFilter;
     }
 
@@ -46,7 +46,7 @@ public class PomComparator{
             filteredPreviousContent, filteredCurrentContent
         );
 
-        if(!areEqual){
+        if (!areEqual) {
             String diffOutput = new FileDiffGenerator().generateDiff(previousFile.getAbsolutePath(), currentFile.getAbsolutePath(),
                                     filteredPreviousContent, filteredCurrentContent);
 

@@ -32,7 +32,7 @@ public class ShipkitConfigurationStore {
 
     public String getStringUrl(String key) {
         String url = getString(key);
-        if(url.endsWith("/")) {
+        if (url.endsWith("/")) {
             return url.replaceAll("/*$", "");
         }
         return url;

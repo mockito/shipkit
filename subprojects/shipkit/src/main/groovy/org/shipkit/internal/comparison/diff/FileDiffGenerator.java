@@ -22,7 +22,7 @@ public class FileDiffGenerator {
 
         List<String> unifiedDiff = DiffUtils.generateUnifiedDiff(previousFilePath, currentFilePath, previousLines, patch, 0);
 
-        if(unifiedDiff.size() <= 2){
+        if (unifiedDiff.size() <= 2) {
             return ""; // no differences found
         }
 
@@ -35,7 +35,7 @@ public class FileDiffGenerator {
         return Arrays.asList(previousContent.split(getLineSeparator()));
     }
 
-    private String getLineSeparator(){
+    private String getLineSeparator() {
         return System.getProperty("line.separator");
     }
 }

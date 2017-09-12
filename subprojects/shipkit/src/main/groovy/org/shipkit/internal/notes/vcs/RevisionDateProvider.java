@@ -26,7 +26,7 @@ class RevisionDateProvider {
 
     public Date getDate(String rev) {
         String gitOutput = runner.run("git", "log", "--pretty=%ad", "--date=iso", rev, "-n", "1");
-        if(!REVISION_DATE_PATTERN.matcher(gitOutput).matches()){
+        if (!REVISION_DATE_PATTERN.matcher(gitOutput).matches()) {
            throw new IllegalArgumentException(formatErrorMessage(rev, gitOutput));
         }
 

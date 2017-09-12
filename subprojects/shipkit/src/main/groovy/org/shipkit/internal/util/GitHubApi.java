@@ -16,7 +16,7 @@ public class GitHubApi {
     private final String gitHubApiUrl;
     private final String authToken;
 
-    public GitHubApi(String gitHubApiUrl, String authToken){
+    public GitHubApi(String gitHubApiUrl, String authToken) {
         this.gitHubApiUrl = gitHubApiUrl;
         this.authToken = authToken;
     }
@@ -35,7 +35,7 @@ public class GitHubApi {
             wr.writeBytes(body);
             wr.flush();
         } finally {
-            if(wr != null){
+            if (wr != null) {
                 wr.close();
             }
         }
@@ -50,7 +50,7 @@ public class GitHubApi {
         }
     }
 
-    private String maskUrl(URL url){
+    private String maskUrl(URL url) {
         return url.toExternalForm().replace(authToken, "[SECRET]");
     }
 }

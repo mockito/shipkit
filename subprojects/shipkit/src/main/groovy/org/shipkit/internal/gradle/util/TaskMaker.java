@@ -30,7 +30,7 @@ public class TaskMaker {
     private static <T extends Task> T configure(Action<T> configure, T task) {
         task.setGroup("Shipkit");
         configure.execute(task);
-        if(task.getDescription() == null) {
+        if (task.getDescription() == null) {
             //TODO unit testable
             throw new IllegalArgumentException("Please provide description for the task!");
         }

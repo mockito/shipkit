@@ -34,7 +34,7 @@ public class GitHubListFetcher {
     }
 
     public List<JsonObject> nextPage() throws IOException, DeserializationException {
-        if(RELATIVE_LINK_NOT_FOUND.equals(nextPageUrl)) {
+        if (RELATIVE_LINK_NOT_FOUND.equals(nextPageUrl)) {
             throw new IllegalStateException("GitHub API no more issues to fetch");
         }
         URL url = new URL(nextPageUrl);
@@ -56,7 +56,7 @@ public class GitHubListFetcher {
 
     private String resetLimitInLocalTimeOrEmpty(URLConnection urlConnection) {
         String rateLimitReset = urlConnection.getHeaderField("X-RateLimit-Reset");
-        if(rateLimitReset == null) {
+        if (rateLimitReset == null) {
             return "";
         }
         Date resetInEpochSeconds = DateUtil.parseDateInEpochSeconds(rateLimitReset);
@@ -66,7 +66,7 @@ public class GitHubListFetcher {
     private String queryParamValue(URL url, String page) {
         String query = url.getQuery();
         for (String param : query.split("&")) {
-            if(param.startsWith(page)) {
+            if (param.startsWith(page)) {
                 return param.substring(param.indexOf('=') + 1, param.length());
             }
         }

@@ -16,7 +16,7 @@ class CreatePullRequest {
     }
 
     public void createPullRequest(CreatePullRequestTask task, GitHubApi gitHubApi) throws IOException {
-        if(task.isDryRun()){
+        if (task.isDryRun()) {
             LOG.lifecycle("  Skipping pull request creation due to dryRun = true");
             return;
         }
@@ -36,14 +36,14 @@ class CreatePullRequest {
         gitHubApi.post("/repos/" + task.getUpstreamRepositoryName() + "/pulls", body);
     }
 
-    private String getMessage(CreatePullRequestTask task){
+    private String getMessage(CreatePullRequestTask task) {
         return String.format("This pull request was automatically created by Shipkit's" +
          " 'org.shipkit.upgrade-downstream' Gradle plugin (http://shipkit.org)." +
         " Please merge it so that you are using fresh version of '%s' dependency.",
             task.getVersionUpgrade().getDependencyName());
     }
 
-    private String getTitle(CreatePullRequestTask task){
+    private String getTitle(CreatePullRequestTask task) {
         UpgradeDependencyExtension versionUpgrade = task.getVersionUpgrade();
         return String.format("Version of %s upgraded to %s", versionUpgrade.getDependencyName(), versionUpgrade.getNewVersion());
     }
@@ -52,7 +52,7 @@ class CreatePullRequest {
         return getUserOfForkRepo(forkRepositoryName) + ":" + headBranch;
     }
 
-    private String getUserOfForkRepo(String forkRepositoryName){
+    private String getUserOfForkRepo(String forkRepositoryName) {
         return forkRepositoryName.split("/")[0];
     }
 }
