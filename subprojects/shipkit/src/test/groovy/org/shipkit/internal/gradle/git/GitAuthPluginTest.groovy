@@ -27,17 +27,4 @@ class GitAuthPluginTest extends PluginSpecification {
         auth.repositoryUrl == "https://user:token@github.com/shipkit/example.git"
         auth.repositoryName == "shipkit/example"
     }
-
-    def "should return GH url with auth"() {
-        conf.gitHub.writeAuthToken = "token"
-        conf.gitHub.writeAuthUser = "user"
-
-        expect:
-        GitAuthPlugin.getGitHubUrl("org/repo", conf) == "https://user:token@github.com/org/repo.git"
-    }
-
-    def "should return GH url without auth by default"() {
-        expect:
-        GitAuthPlugin._getGitHubUrl(null, "org/repo", null) == "https://github.com/org/repo.git"
-    }
 }
