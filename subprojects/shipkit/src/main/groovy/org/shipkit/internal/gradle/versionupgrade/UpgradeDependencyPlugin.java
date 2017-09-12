@@ -121,7 +121,6 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 gitAuthPlugin.provideAuthTo(task, new Action<GitAuthPlugin.GitAuth>() {
                     @Override
                     public void execute(GitAuthPlugin.GitAuth gitAuth) {
-                        //TODO SF unit test coverage
                         task.setSecretValue(gitAuth.getSecretValue());
                         task.setUrl(gitAuth.getRepositoryUrl());
                     }
@@ -177,7 +176,6 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 gitAuthPlugin.provideAuthTo(task, new Action<GitAuthPlugin.GitAuth>() {
                     @Override
                     public void execute(GitAuthPlugin.GitAuth gitAuth) {
-                        //TODO SF unit test coverage
                         task.setSecretValue(gitAuth.getSecretValue());
                         task.setUrl(gitAuth.getRepositoryUrl());
                     }
@@ -202,7 +200,6 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 gitAuthPlugin.provideAuthTo(task, new Action<GitAuthPlugin.GitAuth>() {
                     @Override
                     public void execute(GitAuthPlugin.GitAuth gitAuth) {
-                        //TODO SF unit test coverage
                         task.setForkRepositoryName(gitAuth.getRepositoryName());
                     }
                 });

@@ -2,9 +2,14 @@ package org.shipkit.internal.gradle.versionupgrade
 
 import org.shipkit.gradle.exec.ShipkitExecTask
 import org.shipkit.gradle.git.GitPushTask
+import org.shipkit.internal.gradle.git.GitAuthPlugin
 import org.shipkit.internal.gradle.git.tasks.GitCheckOutTask
 import org.shipkit.internal.gradle.git.tasks.GitPullTask
 import testutil.PluginSpecification
+
+import static org.shipkit.internal.gradle.versionupgrade.UpgradeDependencyPlugin.CREATE_PULL_REQUEST
+import static org.shipkit.internal.gradle.versionupgrade.UpgradeDependencyPlugin.PULL_UPSTREAM
+import static org.shipkit.internal.gradle.versionupgrade.UpgradeDependencyPlugin.PUSH_VERSION_UPGRADE
 
 class UpgradeDependencyPluginTest extends PluginSpecification {
 
@@ -74,6 +79,27 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
         //task.url == "https://writeUser:writeToken@github.com/mockito/shipkit.git"
         task.rev == "release/2.x"
         task.dryRun
+    }
+
+    def "configures tasks based on git auth"() {
+        conf.gitHub.repository = 'my-repo'
+        conf.gitHub.writeAuthToken = 'foo'
+
+        when:
+        project.plugins.apply(UpgradeDependencyPlugin)
+        project.tasks[GitAuthPlugin.IDENTIFY_GIT_ORIGIN_TASK].execute()
+
+        then:
+        GitPullTask pull = project.tasks[PULL_UPSTREAM]
+        pull.secretValue == 'foo'
+        pull.url == 'https://dummy:foo@github.com/my-repo.git'
+
+        GitPushTask push = project.tasks[PUSH_VERSION_UPGRADE]
+        push.secretValue == 'foo'
+        push.url == 'https://dummy:foo@github.com/my-repo.git'
+
+        CreatePullRequestTask pr = project.tasks[CREATE_PULL_REQUEST]
+        pr.forkRepositoryName == 'my-repo'
     }
 
     def "should configure checkoutVersionBranch"() {

@@ -27,7 +27,7 @@ import java.text.MessageFormat;
  */
 public class GitAuthPlugin implements Plugin<Project> {
 
-    static final String IDENTIFY_GIT_ORIGIN_TASK = "identifyGitOrigin";
+    public static final String IDENTIFY_GIT_ORIGIN_TASK = "identifyGitOrigin";
 
     private IdentifyGitOriginRepoTask identifyTask;
 
@@ -53,7 +53,7 @@ public class GitAuthPlugin implements Plugin<Project> {
         });
     }
 
-    //TODO move getGitHubUrl & _getGitHubUrl to separate class, along with unit tests
+    //TODO SF move getGitHubUrl & _getGitHubUrl to separate class, along with unit tests
     static String getGitHubUrl(String ghRepo, ShipkitConfiguration conf) {
         return _getGitHubUrl(conf.getGitHub().getWriteAuthUser(), ghRepo, conf.getLenient().getGitHub().getWriteAuthToken());
     }

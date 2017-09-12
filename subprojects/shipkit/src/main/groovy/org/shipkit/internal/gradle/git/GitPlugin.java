@@ -85,7 +85,6 @@ public class GitPlugin implements Plugin<Project> {
                 t.getTargets().add(GitUtil.getTag(conf, project));
                 t.setDryRun(conf.isDryRun());
 
-                //TODO SF add coverage for this
                 project.getPlugins().apply(GitAuthPlugin.class).provideAuthTo(t, new Action<GitAuthPlugin.GitAuth>() {
                     public void execute(GitAuthPlugin.GitAuth gitAuth) {
                         t.setUrl(gitAuth.getRepositoryUrl());
@@ -93,7 +92,6 @@ public class GitPlugin implements Plugin<Project> {
                     }
                 });
 
-                //TODO SF and for that
                 project.getPlugins().apply(GitBranchPlugin.class)
                         .provideBranchTo(t, new Action<String>() {
                             @Override
