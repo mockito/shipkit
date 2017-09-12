@@ -33,6 +33,7 @@ public class IdentifyGitOriginRepoTask extends DefaultTask {
     @TaskAction
     public void identifyGitOriginRepo() {
         if (originRepo != null) {
+            LOG.lifecycle("  Using Git origin repository configured on the task: {}", originRepo);
             return;
         }
 
@@ -40,13 +41,14 @@ public class IdentifyGitOriginRepoTask extends DefaultTask {
         if (plugin != null) {
             originRepo = plugin.getConfiguration().getLenient().getGitHub().getRepository();
             if (originRepo != null) {
+                LOG.lifecycle("  Using Git origin repository from Shipkit configuration: {}", originRepo);
                 return;
             }
         }
 
         try {
             originRepo = originRepoProvider.getOriginGitRepo();
-            LOG.lifecycle("  Identified origin repository: " + originRepo);
+            LOG.lifecycle("  Identified Git origin repository: " + originRepo);
         } catch (Exception e) {
             LOG.lifecycle("  Problems getting url of git remote origin (run with --debug to see stack trace).\n" +
                 "  Using fallback '" + FALLBACK_GITHUB_REPO + "' instead.\n" +

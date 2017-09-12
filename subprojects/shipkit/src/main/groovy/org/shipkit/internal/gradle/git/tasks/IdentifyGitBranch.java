@@ -15,7 +15,7 @@ public class IdentifyGitBranch {
                 .run(task.getCommandLine())
                 .trim());
         }
-        LOG.lifecycle("  Current branch: " + task.getBranch());
+        LOG.lifecycle("  Identified current branch: " + task.getBranch());
     }
 
     public String getBranch(String branch) {
