@@ -23,9 +23,9 @@ class GitHubUrlBuilder {
      */
     @ExposedForTesting
     static String _getGitHubUrl(String ghUser, String ghRepo, String writeToken) {
-        if(writeToken != null) {
+        if (writeToken != null) {
             return MessageFormat.format("https://{0}:{1}@github.com/{2}.git", ghUser, writeToken, ghRepo);
-        } else{
+        } else {
             return MessageFormat.format("https://github.com/{0}.git", ghRepo);
         }
     }
