@@ -61,8 +61,8 @@ public class ReleasePlugin implements Plugin<Project> {
                 t.setDescription("Tests the release procedure and cleans up. Safe to be invoked multiple times.");
                 //releaseCleanUp is already set up to run all his "subtasks" after performRelease is performed
                 //releaseNeeded is used here only to execute the code paths in the release needed task (extra testing)
-                t.getExecCommands().add(execCommand("Performing release in dry run, with cleanup"
-                        , asList("./gradlew", RELEASE_NEEDED, PERFORM_RELEASE_TASK, RELEASE_CLEAN_UP_TASK, "-PdryRun")));
+                t.getExecCommands().add(execCommand("Performing release in dry run, with cleanup",
+                    asList("./gradlew", RELEASE_NEEDED, PERFORM_RELEASE_TASK, RELEASE_CLEAN_UP_TASK, "-PdryRun")));
                 TaskSuccessfulMessage.logOnSuccess(t, "  The release test was successful. Ship it!");
             }
         });
