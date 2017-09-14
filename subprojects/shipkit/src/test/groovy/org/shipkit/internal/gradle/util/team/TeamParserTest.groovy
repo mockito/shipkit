@@ -1,7 +1,6 @@
 package org.shipkit.internal.gradle.util.team
 
 import spock.lang.Specification
-import spock.lang.Unroll
 
 import static org.shipkit.internal.gradle.util.team.TeamParser.parsePerson
 import static org.shipkit.internal.gradle.util.team.TeamParser.validateTeamMembers
@@ -25,7 +24,6 @@ class TeamParserTest extends Specification {
         thrown(TeamParser.InvalidInput)
     }
 
-    @Unroll
     def "invalid input '#input'"() {
         when:
         parsePerson(input)

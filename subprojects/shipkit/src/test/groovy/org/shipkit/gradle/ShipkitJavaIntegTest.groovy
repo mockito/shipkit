@@ -1,10 +1,8 @@
 package org.shipkit.gradle
 
 import org.gradle.testkit.runner.BuildResult
-import spock.lang.Unroll
 import testutil.GradleSpecification
 
-@Unroll
 class ShipkitJavaIntegTest extends GradleSpecification {
 
     def "all tasks in dry run (gradle #gradleVersionToTest)"() {

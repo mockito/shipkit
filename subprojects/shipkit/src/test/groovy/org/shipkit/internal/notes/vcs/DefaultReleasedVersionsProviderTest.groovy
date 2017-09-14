@@ -3,7 +3,6 @@ package org.shipkit.internal.notes.vcs
 import org.shipkit.internal.exec.ProcessRunner
 import org.shipkit.internal.util.DateUtil
 import spock.lang.Specification
-import spock.lang.Unroll
 
 class DefaultReleasedVersionsProviderTest extends Specification {
 
@@ -11,7 +10,6 @@ class DefaultReleasedVersionsProviderTest extends Specification {
     def provider = new DefaultReleasedVersionsProvider(dateProvider)
     def someDate = new Date(1491100000000)
 
-    @Unroll
     def "illegal arguments"() {
         when:
         notEnoughVersions.call()
