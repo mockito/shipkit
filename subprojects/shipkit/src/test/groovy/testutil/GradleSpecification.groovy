@@ -2,6 +2,7 @@ package testutil
 
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
+import org.gradle.util.GradleVersion
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import org.shipkit.internal.gradle.java.ShipkitJavaPlugin
@@ -20,6 +21,7 @@ abstract class GradleSpecification extends Specification {
     File buildFile
     File settingsFile
     boolean debug
+    String gradleVersion = GradleVersion.current().version
 
     private static final String CLASSES_DIR = findClassesDir();
     private static final String RESOURCES_DIR = findResourcesDir();
@@ -46,12 +48,9 @@ abstract class GradleSpecification extends Specification {
     /**
      * Runs Gradle with given arguments, prints the build.gradle file to the standard output if the test fails
      */
-    BuildResult pass(String... args) {
+    protected BuildResult pass(String... args) {
         try {
-            return GradleRunner.create()
-                .withProjectDir(projectDir.root)
-                .withArguments(args)
-                .withDebug(debug)
+            createPreConfiguredGradleRunnerForArgs(args)
                 .build()
         } catch (Exception e) {
             println " ---- build.gradle ---- \n" + buildFile.text + "\n ------------------------"
@@ -59,16 +58,21 @@ abstract class GradleSpecification extends Specification {
         }
     }
 
+    private GradleRunner createPreConfiguredGradleRunnerForArgs(String... args) {
+        return GradleRunner.create()
+            .withProjectDir(projectDir.root)
+            .withArguments(args)
+            .withGradleVersion(gradleVersion)
+            .withDebug(debug)
+    }
+
     /**
      * Runs Gradle with given arguments, expects it to FAIL,
      * prints the build.gradle file to the standard output if the test fails
      */
-    BuildResult fail(String... args) {
+    protected BuildResult fail(String... args) {
         try {
-            return GradleRunner.create()
-                .withProjectDir(projectDir.root)
-                .withArguments(args)
-                .withDebug(debug)
+            createPreConfiguredGradleRunnerForArgs(args)
                 .buildAndFail()
         } catch (Exception e) {
             println " ---- build.gradle ---- \n" + buildFile.text + "\n ------------------------"
@@ -99,5 +103,9 @@ abstract class GradleSpecification extends Specification {
         def classesDir = gradlePluginsDir - bearing
         assert new File(classesDir).isDirectory()
         return classesDir
+    }
+
+    protected List<String> resolveGradleVersionsToTest() {
+        return [GradleVersion.current().version, "4.1", "3.0", "2.14.1"].unique()
     }
 }

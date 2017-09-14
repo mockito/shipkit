@@ -1,11 +1,13 @@
 package org.shipkit.gradle
 
 import org.gradle.testkit.runner.BuildResult
+import spock.lang.Unroll
 import testutil.GradleSpecification
 
+@Unroll
 class ShipkitJavaIntegTest extends GradleSpecification {
 
-    def "all tasks in dry run"() {
+    def "all tasks in dry run (gradle #gradleVersionToTest)"() {
 
         /**
          * TODO this test is just a starting point we will make it better and create more integration tests
@@ -18,7 +20,10 @@ class ShipkitJavaIntegTest extends GradleSpecification {
          *  5. Move integration tests to a separate module
          *  6. Dependencies are hardcoded between GradleSpecification and build.gradle of release-tools project
          */
+        given:
+        gradleVersion = gradleVersionToTest
 
+        and:
         projectDir.newFolder("gradle")
         projectDir.newFile("gradle/shipkit.gradle") << """
             shipkit {
@@ -85,5 +90,8 @@ class ShipkitJavaIntegTest extends GradleSpecification {
 :api:bintrayUpload
 :impl:bintrayUpload
 :performRelease"""
+
+        where:
+            gradleVersionToTest << resolveGradleVersionsToTest()
     }
 }

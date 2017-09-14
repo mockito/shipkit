@@ -6,6 +6,10 @@ import testutil.GradleSpecification
 class ShipkitGradlePluginIntegTest extends GradleSpecification {
 
     def "all tasks in dry run"() {
+        given:
+        gradleVersion = gradleVersionToTest
+
+        and:
         projectDir.newFolder("gradle")
         projectDir.newFile("gradle/shipkit.gradle") << """
             shipkit {
@@ -46,5 +50,8 @@ class ShipkitGradlePluginIntegTest extends GradleSpecification {
 :discoverPlugins
 :publishPlugins
 :performRelease"""
+
+        where:
+            gradleVersionToTest << resolveGradleVersionsToTest()
     }
 }

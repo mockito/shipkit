@@ -6,6 +6,10 @@ import testutil.GradleSpecification
 class CiUpgradeDownstreamPluginIntegTest extends GradleSpecification {
 
     def "all tasks in dry run"() {
+        given:
+        gradleVersion = gradleVersionToTest
+
+        and:
         projectDir.newFolder("gradle")
         projectDir.newFile("gradle/shipkit.gradle") << """
             shipkit {
@@ -30,5 +34,8 @@ class CiUpgradeDownstreamPluginIntegTest extends GradleSpecification {
         skippedTaskPathsGradleBugWorkaround(result.output).join("\n") == """:cloneWwilkMockito
 :upgradeWwilkMockito
 :upgradeDownstream"""
+
+        where:
+            gradleVersionToTest << resolveGradleVersionsToTest()
     }
 }

@@ -6,6 +6,10 @@ import testutil.GradleSpecification
 class UpgradeDependencyPluginIntegTest extends GradleSpecification {
 
     def "all tasks in dry run"() {
+        given:
+        gradleVersion = gradleVersionToTest
+
+        and:
         projectDir.newFolder("gradle")
         projectDir.newFile("gradle/shipkit.gradle") << """
             shipkit {
@@ -31,5 +35,8 @@ class UpgradeDependencyPluginIntegTest extends GradleSpecification {
 :pushVersionUpgrade
 :createPullRequest
 :performVersionUpgrade"""
+
+        where:
+            gradleVersionToTest << resolveGradleVersionsToTest()
     }
 }
