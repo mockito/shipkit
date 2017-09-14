@@ -6,13 +6,11 @@ import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 import org.gradle.util.GradleVersion
 
-import java.lang.invoke.MethodHandles
-
 @CompileStatic
 @Slf4j
 trait GradleVersionsDeterminer {
 
-    private final static Logger log = Logging.getLogger(MethodHandles.lookup().lookupClass());
+    private final static Logger log = Logging.getLogger(GradleVersionsDeterminer);
 
     private static final String REGRESSION_TESTS_ENV_NAME = "SHIPKIT_REGRESSION_TESTS"
     private static final String CURRENT_GRADLE_VERSION_ONLY_VALUE = "currentOnly"
