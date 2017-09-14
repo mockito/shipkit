@@ -23,3 +23,10 @@ install:
 
 script:
   - ./gradlew build testDownstream -PcheckJava6Compatibility --daemon -s -i && ./gradlew ciPerformRelease
+
+after_failure:
+  - ./after-failure.sh
+
+#TODO Added here only for tests purposes because failure is harder to reproduce. If it's still here - remove it!!
+after_success:
+  - ./after-failure.sh
