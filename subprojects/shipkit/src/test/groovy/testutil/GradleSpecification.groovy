@@ -13,7 +13,7 @@ import spock.lang.Specification
  *  - automated addition of the classpath without any extra Gradle tasks in project's build.gradle file
  *  - convenience methods for running / failing tasks and printing the build.gradle file contents
  */
-abstract class GradleSpecification extends Specification {
+abstract class GradleSpecification extends Specification implements GradleVersionsDeterminer {
 
     @Rule
     final TemporaryFolder projectDir = new TemporaryFolder()
@@ -103,9 +103,5 @@ abstract class GradleSpecification extends Specification {
         def classesDir = gradlePluginsDir - bearing
         assert new File(classesDir).isDirectory()
         return classesDir
-    }
-
-    protected List<String> resolveGradleVersionsToTest() {
-        return [GradleVersion.current().version, "4.1", "3.0", "2.14.1"].unique()
     }
 }

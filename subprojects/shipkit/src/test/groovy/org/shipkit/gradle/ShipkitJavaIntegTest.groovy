@@ -92,6 +92,6 @@ class ShipkitJavaIntegTest extends GradleSpecification {
 :performRelease"""
 
         where:
-            gradleVersionToTest << resolveGradleVersionsToTest()
+            gradleVersionToTest << determineGradleVersionsToTest()
     }
 }

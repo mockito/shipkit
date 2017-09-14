@@ -37,6 +37,6 @@ class UpgradeDependencyPluginIntegTest extends GradleSpecification {
 :performVersionUpgrade"""
 
         where:
-            gradleVersionToTest << resolveGradleVersionsToTest()
+            gradleVersionToTest << determineGradleVersionsToTest()
     }
 }

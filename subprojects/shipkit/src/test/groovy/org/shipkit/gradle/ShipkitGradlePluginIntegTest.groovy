@@ -52,6 +52,6 @@ class ShipkitGradlePluginIntegTest extends GradleSpecification {
 :performRelease"""
 
         where:
-            gradleVersionToTest << resolveGradleVersionsToTest()
+            gradleVersionToTest << determineGradleVersionsToTest()
     }
 }
