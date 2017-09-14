@@ -1,5 +1,6 @@
 package org.shipkit.gradle
 
+import org.gradle.testkit.runner.BuildResult
 import testutil.GradleSpecification
 
 class ShipkitJavaIntegTest extends GradleSpecification {
@@ -51,38 +52,38 @@ class ShipkitJavaIntegTest extends GradleSpecification {
         projectDir.newFile('impl/build.gradle') << "apply plugin: 'java'"
 
         expect:
-        def result = pass("performRelease", "-m", "-s")
+        BuildResult result = pass("performRelease", "-m", "-s")
         //git push and bintray upload tasks should run as late as possible
-        result.tasks.join("\n") == """:bumpVersionFile=SKIPPED
-:fetchContributors=SKIPPED
-:fetchReleaseNotes=SKIPPED
-:updateReleaseNotes=SKIPPED
-:gitCommit=SKIPPED
-:gitTag=SKIPPED
-:api:generatePomFileForJavaLibraryPublication=SKIPPED
-:api:compileJava=SKIPPED
-:api:processResources=SKIPPED
-:api:classes=SKIPPED
-:api:jar=SKIPPED
-:api:javadoc=SKIPPED
-:api:javadocJar=SKIPPED
-:api:sourcesJar=SKIPPED
-:api:publishJavaLibraryPublicationToMavenLocal=SKIPPED
-:impl:generatePomFileForJavaLibraryPublication=SKIPPED
-:impl:compileJava=SKIPPED
-:impl:processResources=SKIPPED
-:impl:classes=SKIPPED
-:impl:jar=SKIPPED
-:impl:javadoc=SKIPPED
-:impl:javadocJar=SKIPPED
-:impl:sourcesJar=SKIPPED
-:impl:publishJavaLibraryPublicationToMavenLocal=SKIPPED
-:identifyGitBranch=SKIPPED
-:identifyGitOrigin=SKIPPED
-:gitPush=SKIPPED
-:performGitPush=SKIPPED
-:api:bintrayUpload=SKIPPED
-:impl:bintrayUpload=SKIPPED
-:performRelease=SKIPPED"""
+        skippedTaskPathsGradleBugWorkaround(result.output).join("\n") == """:bumpVersionFile
+:fetchContributors
+:fetchReleaseNotes
+:updateReleaseNotes
+:gitCommit
+:gitTag
+:api:generatePomFileForJavaLibraryPublication
+:api:compileJava
+:api:processResources
+:api:classes
+:api:jar
+:api:javadoc
+:api:javadocJar
+:api:sourcesJar
+:api:publishJavaLibraryPublicationToMavenLocal
+:impl:generatePomFileForJavaLibraryPublication
+:impl:compileJava
+:impl:processResources
+:impl:classes
+:impl:jar
+:impl:javadoc
+:impl:javadocJar
+:impl:sourcesJar
+:impl:publishJavaLibraryPublicationToMavenLocal
+:identifyGitBranch
+:identifyGitOrigin
+:gitPush
+:performGitPush
+:api:bintrayUpload
+:impl:bintrayUpload
+:performRelease"""
     }
 }

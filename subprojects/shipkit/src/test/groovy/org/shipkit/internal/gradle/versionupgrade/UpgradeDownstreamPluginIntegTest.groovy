@@ -1,5 +1,6 @@
 package org.shipkit.internal.gradle.versionupgrade
 
+import org.gradle.testkit.runner.BuildResult
 import testutil.GradleSpecification
 
 class UpgradeDownstreamPluginIntegTest extends GradleSpecification {
@@ -23,9 +24,9 @@ class UpgradeDownstreamPluginIntegTest extends GradleSpecification {
         projectDir.newFile("version.properties") << "version=1.0.0"
 
         expect:
-        def result = pass("upgradeDownstream", "-m", "-s")
-        result.tasks.join("\n") == """:cloneWwilkMockito=SKIPPED
-:upgradeWwilkMockito=SKIPPED
-:upgradeDownstream=SKIPPED"""
+        BuildResult result = pass("upgradeDownstream", "-m", "-s")
+        skippedTaskPathsGradleBugWorkaround(result.output).join("\n") == """:cloneWwilkMockito
+:upgradeWwilkMockito
+:upgradeDownstream"""
     }
 }

@@ -12,7 +12,7 @@ import spock.lang.Specification
  *  - automated addition of the classpath without any extra Gradle tasks in project's build.gradle file
  *  - convenience methods for running / failing tasks and printing the build.gradle file contents
  */
-class GradleSpecification extends Specification {
+abstract class GradleSpecification extends Specification {
 
     @Rule
     final TemporaryFolder projectDir = new TemporaryFolder()
@@ -48,7 +48,7 @@ class GradleSpecification extends Specification {
      */
     BuildResult pass(String... args) {
         try {
-            GradleRunner.create()
+            return GradleRunner.create()
                 .withProjectDir(projectDir.root)
                 .withArguments(args)
                 .withDebug(debug)
@@ -65,14 +65,20 @@ class GradleSpecification extends Specification {
      */
     BuildResult fail(String... args) {
         try {
-            GradleRunner.create()
+            return GradleRunner.create()
                 .withProjectDir(projectDir.root)
                 .withArguments(args)
+                .withDebug(debug)
                 .buildAndFail()
         } catch (Exception e) {
             println " ---- build.gradle ---- \n" + buildFile.text + "\n ------------------------"
             throw e
         }
+    }
+
+    protected List<String> skippedTaskPathsGradleBugWorkaround(String output) {
+        //Due to https://github.com/gradle/gradle/issues/2732 no tasks are returned in dry-run mode. When fixed ".taskPaths(SKIPPED)" should be used directly
+        return output.readLines().findAll { it.endsWith(" SKIPPED") }.collect { it.substring(0, it.lastIndexOf(" "))}
     }
 
     private static String findClassesDir() {

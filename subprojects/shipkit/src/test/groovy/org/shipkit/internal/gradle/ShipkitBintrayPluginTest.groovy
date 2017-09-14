@@ -1,6 +1,5 @@
 package org.shipkit.internal.gradle
 
-import com.jfrog.bintray.gradle.BintrayUploadTask
 import org.gradle.api.GradleException
 import org.shipkit.internal.gradle.bintray.ShipkitBintrayPlugin
 import org.shipkit.internal.gradle.configuration.LazyConfiguration
@@ -86,7 +85,9 @@ class ShipkitBintrayPluginTest extends PluginSpecification {
     }
 
     def "prints informative message before upload"() {
-        BintrayUploadTask u = project.tasks[ShipkitBintrayPlugin.BINTRAY_UPLOAD_TASK]
+        //BintrayUploadTask cannot be referenced directly due to runtime error related to changes between Gradle 2 and 3:
+        //java.lang.RuntimeException: java.lang.NoClassDefFoundError: Unable to load class com.jfrog.bintray.gradle.BintrayUploadTask due to missing dependency org/gradle/api/internal/DynamicObject
+        def u = project.tasks[ShipkitBintrayPlugin.BINTRAY_UPLOAD_TASK]
         u.versionName = "1.0.0"
         u.user = "shipkit-bot"
         u.userOrg = "shipkit.org"
