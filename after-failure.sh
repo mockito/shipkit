@@ -26,7 +26,7 @@ function uploadLog {
 EOF
 
   # 3. Use curl to send a POST request
-  OUTPUT=$(curl -X POST -d "${DESC}" "https://api.github.com/gists")
+  OUTPUT=$(curl -H "Authorization: token $GH_WRITE_TOKEN" -X POST -d "${DESC}" "https://api.github.com/gists")
 
   # 4. Extract Gist URL from http response
   URL=$(echo "$OUTPUT" | grep "html_url\": \"https://gist.github.com" | awk '{ printf($2) }')
