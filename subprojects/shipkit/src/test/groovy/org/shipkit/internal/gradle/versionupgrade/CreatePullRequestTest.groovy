@@ -28,7 +28,8 @@ class CreatePullRequestTest extends Specification {
                             ' \'org.shipkit.upgrade-downstream\' Gradle plugin (http://shipkit.org).' +
                             ' Please merge it so that you are using fresh version of \'shipkit\' dependency.",' +
                 '  "head": "wwilk:shipkit-version-upgraded-0.1.5",' +
-                '  "base": "master"}')
+                '  "base": "master",' +
+                '  "maintainer_can_modify": true}')
     }
 
     def "should not call github API in dryRun mode"() {

@@ -30,7 +30,8 @@ class CreatePullRequest {
             "  \"title\": \"" + getTitle(task) + "\"," +
             "  \"body\": \"" + getMessage(task) + "\"," +
             "  \"head\": \"" + headBranch + "\"," +
-            "  \"base\": \"" + task.getVersionUpgrade().getBaseBranch() + "\"" +
+            "  \"base\": \"" + task.getVersionUpgrade().getBaseBranch() + "\"," +
+            "  \"maintainer_can_modify\": true" +
             "}";
 
         gitHubApi.post("/repos/" + task.getUpstreamRepositoryName() + "/pulls", body);
