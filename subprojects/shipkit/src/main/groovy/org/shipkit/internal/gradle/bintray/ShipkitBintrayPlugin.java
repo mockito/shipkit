@@ -85,9 +85,10 @@ public class ShipkitBintrayPlugin implements Plugin<Project> {
             }
         });
 
-        project.getPlugins().apply(GitAuthPlugin.class).provideAuthTo(bintrayUpload, new Action<GitAuthPlugin.GitAuth>() {
+        project.getRootProject().getPlugins().apply(GitAuthPlugin.class).provideAuthTo(bintrayUpload, new Action<GitAuthPlugin.GitAuth>() {
             @Override
             public void execute(GitAuthPlugin.GitAuth gitAuth) {
+                //TODO SF add unit test coverage
                 LOG.lifecycle("  Configuring website, issue tracker and vcs urls for Bintray package");
                 if (pkg.getWebsiteUrl() == null) {
                     pkg.setWebsiteUrl(conf.getGitHub().getUrl() + "/" + gitAuth.getRepositoryName());

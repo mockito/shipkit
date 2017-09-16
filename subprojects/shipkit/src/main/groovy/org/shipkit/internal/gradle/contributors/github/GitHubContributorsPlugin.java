@@ -45,7 +45,7 @@ public class GitHubContributorsPlugin implements Plugin<Project> {
         task.setApiUrl(conf.getGitHub().getApiUrl());
         task.setReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
 
-        project.getPlugins().apply(GitAuthPlugin.class).provideAuthTo(task, new Action<GitAuthPlugin.GitAuth>() {
+        project.getRootProject().getPlugins().apply(GitAuthPlugin.class).provideAuthTo(task, new Action<GitAuthPlugin.GitAuth>() {
             @Override
             public void execute(GitAuthPlugin.GitAuth gitAuth) {
                 task.setRepository(gitAuth.getRepositoryName());

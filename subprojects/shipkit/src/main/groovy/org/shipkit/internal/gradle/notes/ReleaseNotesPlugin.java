@@ -47,7 +47,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
         project.getPlugins().apply(VersioningPlugin.class);
         project.getPlugins().apply(GitHubContributorsPlugin.class);
-        GitAuthPlugin authPlugin = project.getPlugins().apply(GitAuthPlugin.class);
+        GitAuthPlugin authPlugin = project.getRootProject().getPlugins().apply(GitAuthPlugin.class);
 
         releaseNotesTasks(project, conf, authPlugin);
     }

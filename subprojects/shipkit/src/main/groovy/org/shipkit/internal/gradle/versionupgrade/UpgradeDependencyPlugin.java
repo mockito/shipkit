@@ -77,7 +77,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
     @Override
     public void apply(final Project project) {
         IncubatingWarning.warn("upgrade-dependency plugin");
-        final GitAuthPlugin gitAuthPlugin = project.getPlugins().apply(GitAuthPlugin.class);
+        final GitAuthPlugin gitAuthPlugin = project.getRootProject().getPlugins().apply(GitAuthPlugin.class);
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
         upgradeDependencyExtension = project.getExtensions().create("upgradeDependency", UpgradeDependencyExtension.class);
