@@ -24,7 +24,7 @@ trait GradleVersionsDeterminer {
             case null:
                 return [currentGradleVersion()]
             case QUICK_GRADLE_VERSIONS_VALUE:
-                return [currentGradleVersion(), "4.1", "3.0", "2.14.1"].unique()
+                return [currentGradleVersion(), "4.1", "3.5.1", "2.14.1"].unique()
             default:
                 log.warn("Unsupported $REGRESSION_TESTS_ENV_NAME value '$regressionTestsLevel' (expected '$CURRENT_GRADLE_VERSION_ONLY_VALUE' or " +
                     "'$QUICK_GRADLE_VERSIONS_VALUE'). Assuming '$CURRENT_GRADLE_VERSION_ONLY_VALUE'.")
