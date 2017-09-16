@@ -2,7 +2,6 @@
 
 **0.9.71 (2017-09-16)** - [13 commits](https://github.com/mockito/shipkit/compare/v0.9.70...v0.9.71) by [Marcin Zajączkowski](https://github.com/szpak) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.71-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.71)
  - [#412] Basic regression tests with different Gradle versions [(#414)](https://github.com/mockito/shipkit/pull/414)
- - Basic regression tests with different Gradle versions [(#412)](https://github.com/mockito/shipkit/issues/412)
 
 **0.9.70 (2017-09-12)** - [7 commits](https://github.com/mockito/shipkit/compare/v0.9.69...v0.9.70) by [Szczepan Faber](http://github.com/szczepiq) - published to [![Bintray](https://img.shields.io/badge/Bintray-0.9.70-green.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/0.9.70)
  - Autodiscover GitHub repo name [(#405)](https://github.com/mockito/shipkit/pull/405)
