@@ -11,6 +11,7 @@ import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.gradle.configuration.LazyConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
+import org.shipkit.internal.gradle.git.GitAuthPlugin;
 
 import static org.shipkit.internal.gradle.configuration.BasicValidator.notNull;
 import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
@@ -81,17 +82,23 @@ public class ShipkitBintrayPlugin implements Plugin<Project> {
                 if (pkg.getVersion().getVcsTag() == null) {
                     pkg.getVersion().setVcsTag(conf.getGit().getTagPrefix() + project.getVersion());
                 }
+            }
+        });
 
+        project.getPlugins().apply(GitAuthPlugin.class).provideAuthTo(bintrayUpload, new Action<GitAuthPlugin.GitAuth>() {
+            @Override
+            public void execute(GitAuthPlugin.GitAuth gitAuth) {
+                LOG.lifecycle("  Configuring website, issue tracker and vcs urls for Bintray package");
                 if (pkg.getWebsiteUrl() == null) {
-                    pkg.setWebsiteUrl(conf.getGitHub().getUrl() + "/" + conf.getGitHub().getRepository());
+                    pkg.setWebsiteUrl(conf.getGitHub().getUrl() + "/" + gitAuth.getRepositoryName());
                 }
 
                 if (pkg.getIssueTrackerUrl() == null) {
-                    pkg.setIssueTrackerUrl(conf.getGitHub().getUrl() + "/" + conf.getGitHub().getRepository() + "/issues");
+                    pkg.setIssueTrackerUrl(conf.getGitHub().getUrl() + "/" + gitAuth.getRepositoryName() + "/issues");
                 }
 
                 if (pkg.getVcsUrl() == null) {
-                    pkg.setVcsUrl(conf.getGitHub().getUrl() + "/" + conf.getGitHub().getRepository() + ".git");
+                    pkg.setVcsUrl(conf.getGitHub().getUrl() + "/" + gitAuth.getRepositoryName() + ".git");
                 }
             }
         });

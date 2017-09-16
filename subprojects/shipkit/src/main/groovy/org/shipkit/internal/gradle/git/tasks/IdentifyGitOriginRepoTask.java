@@ -21,7 +21,7 @@ public class IdentifyGitOriginRepoTask extends DefaultTask {
     private final static Logger LOG = Logging.getLogger(IdentifyGitOriginRepoTask.class);
     final static String FALLBACK_GITHUB_REPO = "mockito/shipkit-example";
 
-    private String originRepo;
+    String repository;
 
     private GitOriginRepoProvider originRepoProvider;
 
@@ -32,29 +32,27 @@ public class IdentifyGitOriginRepoTask extends DefaultTask {
 
     @TaskAction
     public void identifyGitOriginRepo() {
-        if (originRepo != null) {
-            LOG.lifecycle("  Using Git origin repository configured on the task: {}", originRepo);
-            return;
-        }
-
         ShipkitConfigurationPlugin plugin = getProject().getPlugins().findPlugin(ShipkitConfigurationPlugin.class);
         if (plugin != null) {
-            originRepo = plugin.getConfiguration().getLenient().getGitHub().getRepository();
-            if (originRepo != null) {
-                LOG.lifecycle("  Using Git origin repository from Shipkit configuration: {}", originRepo);
+            repository = plugin.getConfiguration().getLenient().getGitHub().getRepository();
+            if (repository != null) {
+                LOG.info("  Using Git origin repository from Shipkit configuration: {}", repository);
                 return;
             }
         }
 
         try {
-            originRepo = originRepoProvider.getOriginGitRepo();
-            LOG.lifecycle("  Identified Git origin repository: " + originRepo);
+            repository = originRepoProvider.getOriginGitRepo();
+            if (plugin != null) {
+                plugin.getConfiguration().getGitHub().setRepository(getRepository());
+            }
+            LOG.lifecycle("  Identified Git origin repository: " + repository);
         } catch (Exception e) {
             LOG.lifecycle("  Problems getting url of git remote origin (run with --debug to see stack trace).\n" +
                 "  Using fallback '" + FALLBACK_GITHUB_REPO + "' instead.\n" +
                 "  GitHub repository can be configured in in shipkit file.\n");
             LOG.debug("  Problems getting url of git remote origin", e);
-            originRepo = FALLBACK_GITHUB_REPO;
+            repository = FALLBACK_GITHUB_REPO;
         }
     }
 
@@ -64,15 +62,8 @@ public class IdentifyGitOriginRepoTask extends DefaultTask {
      * using {@link org.shipkit.gradle.configuration.ShipkitConfiguration.GitHub#setRepository(String)}
      * Internal classes and other tasks should get the repo via {@link org.shipkit.internal.gradle.git.GitAuthPlugin#provideAuthTo(Task, Action)}
      */
-    public String getOriginRepo() {
-        return originRepo;
-    }
-
-    /**
-     * See {@link #getOriginRepo()}
-     */
-    public void setOriginRepo(String originRepo) {
-        this.originRepo = originRepo;
+    public String getRepository() {
+        return repository;
     }
 
     @ExposedForTesting

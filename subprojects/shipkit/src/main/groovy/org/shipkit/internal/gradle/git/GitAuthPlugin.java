@@ -32,22 +32,24 @@ public class GitAuthPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
+        project.getPlugins().apply(ShipkitConfigurationPlugin.class);
+
         identifyTask = TaskMaker.task(project, IDENTIFY_GIT_ORIGIN_TASK, IdentifyGitOriginRepoTask.class, new Action<IdentifyGitOriginRepoTask>() {
             public void execute(IdentifyGitOriginRepoTask t) {
                 t.setDescription("Identifies current git origin repo.");
             }
         });
-        project.getPlugins().apply(ShipkitConfigurationPlugin.class);
     }
 
+    //TODO SF rename this method and surrounding types. This method provides more than just auth.
     public void provideAuthTo(Task t, final Action<GitAuth> action) {
         t.dependsOn(identifyTask);
         identifyTask.doLast(new Action<Task>() {
             public void execute(Task task) {
                 ShipkitConfiguration conf = identifyTask.getProject().getPlugins().getPlugin(ShipkitConfigurationPlugin.class).getConfiguration();
-                String repoUrl = getGitHubUrl(identifyTask.getOriginRepo(), conf);
+                String repoUrl = getGitHubUrl(identifyTask.getRepository(), conf);
                 String writeToken = conf.getLenient().getGitHub().getWriteAuthToken();
-                action.execute(new GitAuth(repoUrl, writeToken, identifyTask.getOriginRepo()));
+                action.execute(new GitAuth(repoUrl, writeToken, identifyTask.getRepository()));
             }
         });
     }

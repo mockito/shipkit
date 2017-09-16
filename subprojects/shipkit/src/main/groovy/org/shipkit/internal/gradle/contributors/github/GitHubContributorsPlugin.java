@@ -6,6 +6,7 @@ import org.gradle.api.Project;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.gradle.notes.FetchGitHubContributorsTask;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
+import org.shipkit.internal.gradle.git.GitAuthPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
 import static org.shipkit.internal.gradle.util.BuildConventions.contributorsFile;
@@ -40,13 +41,15 @@ public class GitHubContributorsPlugin implements Plugin<Project> {
 
             }
         });
-        configureGithub(conf, task);
-    }
-
-    private void configureGithub(ShipkitConfiguration conf, FetchGitHubContributorsTask task) {
         task.setDescription("Fetch info about all project contributors from GitHub and store it in file");
         task.setApiUrl(conf.getGitHub().getApiUrl());
         task.setReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
-        task.setRepository(conf.getGitHub().getRepository());
+
+        project.getPlugins().apply(GitAuthPlugin.class).provideAuthTo(task, new Action<GitAuthPlugin.GitAuth>() {
+            @Override
+            public void execute(GitAuthPlugin.GitAuth gitAuth) {
+                task.setRepository(gitAuth.getRepositoryName());
+            }
+        });
     }
 }
