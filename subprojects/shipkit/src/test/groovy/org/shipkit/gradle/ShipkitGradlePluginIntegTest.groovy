@@ -1,10 +1,15 @@
 package org.shipkit.gradle
 
+import org.gradle.testkit.runner.BuildResult
 import testutil.GradleSpecification
 
 class ShipkitGradlePluginIntegTest extends GradleSpecification {
 
     def "all tasks in dry run"() {
+        given:
+        gradleVersion = gradleVersionToTest
+
+        and:
         projectDir.newFolder("gradle")
         projectDir.newFile("gradle/shipkit.gradle") << """
             shipkit {
@@ -23,27 +28,30 @@ class ShipkitGradlePluginIntegTest extends GradleSpecification {
         projectDir.newFile("version.properties") << "version=1.0.0"
 
         expect:
-        def result = pass("performRelease", "-m", "-s")
-        result.tasks.join("\n") == """:bumpVersionFile=SKIPPED
-:fetchContributors=SKIPPED
-:fetchReleaseNotes=SKIPPED
-:updateReleaseNotes=SKIPPED
-:gitCommit=SKIPPED
-:compileJava=SKIPPED
-:processResources=SKIPPED
-:classes=SKIPPED
-:jar=SKIPPED
-:publishPluginJar=SKIPPED
-:javadoc=SKIPPED
-:publishPluginJavaDocsJar=SKIPPED
-:buildArchives=SKIPPED
-:gitTag=SKIPPED
-:identifyGitBranch=SKIPPED
-:identifyGitOrigin=SKIPPED
-:gitPush=SKIPPED
-:performGitPush=SKIPPED
-:discoverPlugins=SKIPPED
-:publishPlugins=SKIPPED
-:performRelease=SKIPPED"""
+        BuildResult result = pass("performRelease", "-m", "-s")
+        skippedTaskPathsGradleBugWorkaround(result.output).join("\n") == """:bumpVersionFile
+:fetchContributors
+:fetchReleaseNotes
+:updateReleaseNotes
+:gitCommit
+:compileJava
+:processResources
+:classes
+:jar
+:publishPluginJar
+:javadoc
+:publishPluginJavaDocsJar
+:buildArchives
+:gitTag
+:identifyGitBranch
+:identifyGitOrigin
+:gitPush
+:performGitPush
+:discoverPlugins
+:publishPlugins
+:performRelease"""
+
+        where:
+            gradleVersionToTest << determineGradleVersionsToTest()
     }
 }

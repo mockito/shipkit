@@ -1,10 +1,15 @@
 package org.shipkit.internal.gradle.versionupgrade
 
+import org.gradle.testkit.runner.BuildResult
 import testutil.GradleSpecification
 
 class CiUpgradeDownstreamPluginIntegTest extends GradleSpecification {
 
     def "all tasks in dry run"() {
+        given:
+        gradleVersion = gradleVersionToTest
+
+        and:
         projectDir.newFolder("gradle")
         projectDir.newFile("gradle/shipkit.gradle") << """
             shipkit {
@@ -25,9 +30,12 @@ class CiUpgradeDownstreamPluginIntegTest extends GradleSpecification {
         projectDir.newFile("version.properties") << "version=1.0.0"
 
         expect:
-        def result = pass("upgradeDownstream", "-m", "-s")
-        result.tasks.join("\n") == """:cloneWwilkMockito=SKIPPED
-:upgradeWwilkMockito=SKIPPED
-:upgradeDownstream=SKIPPED"""
+        BuildResult result = pass("upgradeDownstream", "-m", "-s")
+        skippedTaskPathsGradleBugWorkaround(result.output).join("\n") == """:cloneWwilkMockito
+:upgradeWwilkMockito
+:upgradeDownstream"""
+
+        where:
+            gradleVersionToTest << determineGradleVersionsToTest()
     }
 }

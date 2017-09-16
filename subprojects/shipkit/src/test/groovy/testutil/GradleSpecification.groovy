@@ -2,6 +2,7 @@ package testutil
 
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
+import org.gradle.util.GradleVersion
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import org.shipkit.internal.gradle.java.ShipkitJavaPlugin
@@ -12,7 +13,7 @@ import spock.lang.Specification
  *  - automated addition of the classpath without any extra Gradle tasks in project's build.gradle file
  *  - convenience methods for running / failing tasks and printing the build.gradle file contents
  */
-class GradleSpecification extends Specification {
+abstract class GradleSpecification extends Specification implements GradleVersionsDeterminer {
 
     @Rule
     final TemporaryFolder projectDir = new TemporaryFolder()
@@ -20,6 +21,7 @@ class GradleSpecification extends Specification {
     File buildFile
     File settingsFile
     boolean debug
+    String gradleVersion = GradleVersion.current().version
 
     private static final String CLASSES_DIR = findClassesDir();
     private static final String RESOURCES_DIR = findResourcesDir();
@@ -46,12 +48,9 @@ class GradleSpecification extends Specification {
     /**
      * Runs Gradle with given arguments, prints the build.gradle file to the standard output if the test fails
      */
-    BuildResult pass(String... args) {
+    protected BuildResult pass(String... args) {
         try {
-            GradleRunner.create()
-                .withProjectDir(projectDir.root)
-                .withArguments(args)
-                .withDebug(debug)
+            createPreConfiguredGradleRunnerForArgs(args)
                 .build()
         } catch (Exception e) {
             println " ---- build.gradle ---- \n" + buildFile.text + "\n ------------------------"
@@ -59,20 +58,31 @@ class GradleSpecification extends Specification {
         }
     }
 
+    private GradleRunner createPreConfiguredGradleRunnerForArgs(String... args) {
+        return GradleRunner.create()
+            .withProjectDir(projectDir.root)
+            .withArguments(args)
+            .withGradleVersion(gradleVersion)
+            .withDebug(debug)
+    }
+
     /**
      * Runs Gradle with given arguments, expects it to FAIL,
      * prints the build.gradle file to the standard output if the test fails
      */
-    BuildResult fail(String... args) {
+    protected BuildResult fail(String... args) {
         try {
-            GradleRunner.create()
-                .withProjectDir(projectDir.root)
-                .withArguments(args)
+            createPreConfiguredGradleRunnerForArgs(args)
                 .buildAndFail()
         } catch (Exception e) {
             println " ---- build.gradle ---- \n" + buildFile.text + "\n ------------------------"
             throw e
         }
+    }
+
+    protected List<String> skippedTaskPathsGradleBugWorkaround(String output) {
+        //Due to https://github.com/gradle/gradle/issues/2732 no tasks are returned in dry-run mode. When fixed ".taskPaths(SKIPPED)" should be used directly
+        return output.readLines().findAll { it.endsWith(" SKIPPED") }.collect { it.substring(0, it.lastIndexOf(" "))}
     }
 
     private static String findClassesDir() {

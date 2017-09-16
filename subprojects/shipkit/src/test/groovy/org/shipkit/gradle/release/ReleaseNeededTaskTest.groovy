@@ -5,14 +5,12 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.shipkit.internal.gradle.release.tasks.ReleaseNeeded
 import org.shipkit.internal.util.EnvVariables
 import spock.lang.Specification
-import spock.lang.Unroll
 
 class ReleaseNeededTaskTest extends Specification {
 
     def project = new ProjectBuilder().build()
     ReleaseNeededTask task = project.tasks.create("releaseNeeded", ReleaseNeededTask)
 
-    @Unroll
     def "release is needed" (commitMessage, branch, pullRequest, skipEnvVar, comparisonResults, releaseNeeded){
         given:
         task.setCommitMessage(commitMessage)

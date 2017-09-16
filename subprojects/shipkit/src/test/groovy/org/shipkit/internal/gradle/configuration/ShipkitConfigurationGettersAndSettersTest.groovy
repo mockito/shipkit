@@ -3,7 +3,6 @@ package org.shipkit.internal.gradle.configuration
 import org.shipkit.gradle.configuration.ShipkitConfiguration
 import spock.lang.Shared
 import spock.lang.Specification
-import spock.lang.Unroll
 import testutil.ReflectionUtil
 
 import java.lang.reflect.Method
@@ -22,7 +21,6 @@ class ShipkitConfigurationGettersAndSettersTest extends Specification {
         conf.releaseNotes.ignoreCommitsContaining == ["[ci skip]"]
     }
 
-    @Unroll
     def "value assigned to #setter.name should be returned by #getter.name"(row, Method setter, Method getter, Object obj) {
         def valueForSetter = getValueForSetter(setter)
         setter.invoke(obj, valueForSetter)

@@ -1,11 +1,15 @@
 package org.shipkit.internal.gradle.versionupgrade
 
+import org.gradle.testkit.runner.BuildResult
 import testutil.GradleSpecification
 
 class UpgradeDependencyPluginIntegTest extends GradleSpecification {
 
     def "all tasks in dry run"() {
-        debug = true
+        given:
+        gradleVersion = gradleVersionToTest
+
+        and:
         projectDir.newFolder("gradle")
         projectDir.newFile("gradle/shipkit.gradle") << """
             shipkit {
@@ -21,15 +25,18 @@ class UpgradeDependencyPluginIntegTest extends GradleSpecification {
         projectDir.newFile("version.properties") << "version=1.0.0"
 
         expect:
-        def result = pass("performVersionUpgrade", "-Pdependency=org.shipkit:shipkit:0.2.3", "-m", "-s")
-        result.tasks.join("\n") == """:checkoutBaseBranch=SKIPPED
-:identifyGitOrigin=SKIPPED
-:pullUpstream=SKIPPED
-:checkoutVersionBranch=SKIPPED
-:replaceVersion=SKIPPED
-:commitVersionUpgrade=SKIPPED
-:pushVersionUpgrade=SKIPPED
-:createPullRequest=SKIPPED
-:performVersionUpgrade=SKIPPED"""
+        BuildResult result = pass("performVersionUpgrade", "-Pdependency=org.shipkit:shipkit:0.2.3", "-m", "-s")
+        skippedTaskPathsGradleBugWorkaround(result.output).join("\n") == """:checkoutBaseBranch
+:identifyGitOrigin
+:pullUpstream
+:checkoutVersionBranch
+:replaceVersion
+:commitVersionUpgrade
+:pushVersionUpgrade
+:createPullRequest
+:performVersionUpgrade"""
+
+        where:
+            gradleVersionToTest << determineGradleVersionsToTest()
     }
 }

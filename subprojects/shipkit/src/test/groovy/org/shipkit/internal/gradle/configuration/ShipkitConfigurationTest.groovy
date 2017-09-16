@@ -4,7 +4,6 @@ import org.gradle.api.GradleException
 import org.shipkit.gradle.configuration.ShipkitConfiguration
 import org.shipkit.internal.gradle.util.team.TeamParser
 import spock.lang.Specification
-import spock.lang.Unroll
 
 class ShipkitConfigurationTest extends Specification {
 
@@ -39,7 +38,6 @@ class ShipkitConfigurationTest extends Specification {
         then: thrown(TeamParser.InvalidInput.class)
     }
 
-    @Unroll
     def "configures GitHub URL without ending slash when #url used"() {
         when:
         conf.gitHub.url = url
