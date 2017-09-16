@@ -25,7 +25,6 @@ import static org.shipkit.internal.gradle.util.GitUtil.getTag;
  * Applies plugins:
  * <ul>
  *     <li>{@link ShipkitConfigurationPlugin}</li>
- *     <li>{@link GitAuthPlugin}</li>
  *     <li>{@link GitBranchPlugin}</li>
  * </ul>
  *
@@ -85,12 +84,9 @@ public class GitPlugin implements Plugin<Project> {
                 t.getTargets().add(GitUtil.getTag(conf, project));
                 t.setDryRun(conf.isDryRun());
 
-                project.getPlugins().apply(GitAuthPlugin.class).provideAuthTo(t, new Action<GitAuthPlugin.GitAuth>() {
-                    public void execute(GitAuthPlugin.GitAuth gitAuth) {
-                        t.setUrl(gitAuth.getRepositoryUrl());
-                        t.setSecretValue(gitAuth.getSecretValue());
-                    }
-                });
+                GitUrlInfo info = new GitUrlInfo(conf);
+                t.setUrl(info.getGitUrl());
+                t.setSecretValue(info.getWriteToken());
 
                 project.getPlugins().apply(GitBranchPlugin.class)
                         .provideBranchTo(t, new Action<String>() {

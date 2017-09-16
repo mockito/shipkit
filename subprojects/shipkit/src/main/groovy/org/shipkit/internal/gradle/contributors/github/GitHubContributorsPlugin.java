@@ -40,10 +40,6 @@ public class GitHubContributorsPlugin implements Plugin<Project> {
 
             }
         });
-        configureGithub(conf, task);
-    }
-
-    private void configureGithub(ShipkitConfiguration conf, FetchGitHubContributorsTask task) {
         task.setDescription("Fetch info about all project contributors from GitHub and store it in file");
         task.setApiUrl(conf.getGitHub().getApiUrl());
         task.setReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());

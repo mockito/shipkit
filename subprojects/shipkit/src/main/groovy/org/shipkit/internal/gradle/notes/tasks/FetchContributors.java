@@ -14,7 +14,7 @@ public class FetchContributors {
     private static final Logger LOG = Logging.getLogger(FetchContributors.class);
 
     public void fetchContributors(FetchGitHubContributorsTask task) {
-        LOG.lifecycle("  Fetching all contributors for project");
+        LOG.lifecycle("  Fetching all GitHub contributors of {}", task.getRepository());
         ContributorsProvider contributorsProvider = Contributors.getGitHubContributorsProvider(
             task.getApiUrl(), task.getRepository(), task.getReadOnlyAuthToken());
 

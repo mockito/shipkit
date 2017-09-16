@@ -81,20 +81,20 @@ public class ShipkitBintrayPlugin implements Plugin<Project> {
                 if (pkg.getVersion().getVcsTag() == null) {
                     pkg.getVersion().setVcsTag(conf.getGit().getTagPrefix() + project.getVersion());
                 }
-
-                if (pkg.getWebsiteUrl() == null) {
-                    pkg.setWebsiteUrl(conf.getGitHub().getUrl() + "/" + conf.getGitHub().getRepository());
-                }
-
-                if (pkg.getIssueTrackerUrl() == null) {
-                    pkg.setIssueTrackerUrl(conf.getGitHub().getUrl() + "/" + conf.getGitHub().getRepository() + "/issues");
-                }
-
-                if (pkg.getVcsUrl() == null) {
-                    pkg.setVcsUrl(conf.getGitHub().getUrl() + "/" + conf.getGitHub().getRepository() + ".git");
-                }
             }
         });
+
+        if (pkg.getWebsiteUrl() == null) {
+            pkg.setWebsiteUrl(conf.getGitHub().getUrl() + "/" + conf.getGitHub().getRepository());
+        }
+
+        if (pkg.getIssueTrackerUrl() == null) {
+            pkg.setIssueTrackerUrl(conf.getGitHub().getUrl() + "/" + conf.getGitHub().getRepository() + "/issues");
+        }
+
+        if (pkg.getVcsUrl() == null) {
+            pkg.setVcsUrl(conf.getGitHub().getUrl() + "/" + conf.getGitHub().getRepository() + ".git");
+        }
 
         LazyConfiguration.lazyConfiguration(bintrayUpload, new Runnable() {
             public void run() {
