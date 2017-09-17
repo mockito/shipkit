@@ -26,6 +26,10 @@ Every team should be empowered to develop with rapid velocity, frictionless rele
 Shipkit enables Mockito to automatically publish new versions to
 [2M Mockito users](https://github.com/mockito/mockito/wiki/Mockito-Popularity-and-User-Base)!
 
+### Getting started
+
+See [here](https://github.com/mockito/shipkit/wiki/Getting-started-with-Shipkit).
+
 ### We need help!
 
 If the vision of the project connects with you help us!!!
