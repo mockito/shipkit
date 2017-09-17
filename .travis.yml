@@ -29,6 +29,7 @@ before_cache:
   - rm -fr $HOME/.gradle/caches/*/scripts-remapped/
   - rm -fr $HOME/.gradle/caches/*/fileHashes/
   - rm -fr $HOME/.gradle/caches/transforms-1/transforms-1.lock
+  - rm -fr $HOME/.gradle/caches/jars-*/*/shipkit-*.jar
 cache:
   directories:
     - $HOME/.gradle/caches/
