@@ -28,7 +28,7 @@ Shipkit enables Mockito to automatically publish new versions to
 
 ### Getting started
 
-See [here](https://github.com/mockito/shipkit/wiki/Getting-started-with-Shipkit).
+See the project [wiki](https://github.com/mockito/shipkit/wiki/Getting-started-with-Shipkit) for more information.
 
 ### We need help!
 
