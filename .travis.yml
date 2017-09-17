@@ -19,7 +19,7 @@ install:
  - true
 
 script:
-  - ./gradlew build testDownstream -PcheckJava6Compatibility --daemon -s -i && ./gradlew ciPerformRelease
+  - ./gradlew build testDownstream -PcheckJava6Compatibility --daemon -s -i && ./gradlew ciPerformRelease -s
 
 # Remove often changing files to prevent cache re-upload on no changes in dependencies
 before_cache:
