@@ -28,7 +28,7 @@ Shipkit enables Mockito to automatically publish new versions to
 
 ### Getting started
 
-To start with ShipKit you have to add the plugin first:
+To start with Shipkit you have to add the plugin first:
 ```groovy
 plugins {
   // the latest version can found at https://github.com/mockito/shipkit/releases
@@ -36,7 +36,7 @@ plugins {
 }
 ```
 
-Then you are able to `init` ShipKit with
+Then you are able to `init` Shipkit with
 ```
 ./gradlew initShipkit
 ```
