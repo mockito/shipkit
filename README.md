@@ -28,7 +28,25 @@ Shipkit enables Mockito to automatically publish new versions to
 
 ### Getting started
 
-See the project [wiki](https://github.com/mockito/shipkit/wiki/Getting-started-with-Shipkit) for more information.
+To start with ShipKit you have to add the plugin first:
+```groovy
+plugins {
+  // the latest version can found at https://github.com/mockito/shipkit/releases
+  id "org.shipkit.java" version "0.9.74" 
+}
+```
+
+Then you are able to `init` ShipKit with
+```
+./gradlew initShipkit
+```
+
+To perfom a release just run 
+```
+./gradlew performRelease
+```
+
+For more and detailed information see the project [wiki](https://github.com/mockito/shipkit/wiki/Getting-started-with-Shipkit).
 
 ### We need help!
 
