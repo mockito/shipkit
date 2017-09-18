@@ -45,10 +45,8 @@ class ShipkitConfigurationPluginTest extends PluginSpecification {
         def conf = root.plugins.apply(ShipkitConfigurationPlugin).configuration
 
         then:
-        conf.gitHub.url == "https://github.com"
-        conf.gitHub.apiUrl == "https://api.github.com"
-        conf.gitHub.repository == "mockito/shipkit"
-        conf.gitHub.readOnlyAuthToken == "e7fe8fcfd6ffedac384c8c4c71b2a48e646ed1ab"
+        conf.gitHub.repository == "unspecified"
+        conf.gitHub.readOnlyAuthToken == "unspecified"
     }
 
     @Override
