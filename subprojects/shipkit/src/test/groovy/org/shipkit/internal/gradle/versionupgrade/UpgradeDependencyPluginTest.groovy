@@ -82,7 +82,7 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
     }
 
     def "configures tasks based on git auth"() {
-        conf.gitHub.repository = 'my-repo'
+        conf.gitHub.repository = 'my-org/my-repo'
         conf.gitHub.writeAuthToken = 'foo'
 
         when:
@@ -92,14 +92,15 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
         then:
         GitPullTask pull = project.tasks[PULL_UPSTREAM]
         pull.secretValue == 'foo'
-        pull.url == 'https://dummy:foo@github.com/my-repo.git'
+        pull.url == 'https://dummy:foo@github.com/my-org/my-repo.git'
 
         GitPushTask push = project.tasks[PUSH_VERSION_UPGRADE]
         push.secretValue == 'foo'
-        push.url == 'https://dummy:foo@github.com/my-repo.git'
+        push.url == 'https://dummy:foo@github.com/my-org/my-repo.git'
 
         CreatePullRequestTask pr = project.tasks[CREATE_PULL_REQUEST]
-        pr.forkRepositoryName == 'my-repo'
+        pr.forkRepositoryName == 'my-org/my-repo'
+        pr.upstreamRepositoryName == 'mockito/my-repo'
     }
 
     def "should configure checkoutVersionBranch"() {
@@ -172,6 +173,5 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
         task.authToken == "writeToken"
         task.versionUpgrade == versionUpgrade
         task.versionBranch == "upgrade-shipkit-to-1.2.30"
-        task.upstreamRepositoryName == "mockito/mockito"
     }
 }

@@ -50,7 +50,7 @@ public class InitPlugin implements Plugin<Project> {
     public void apply(final Project project) {
         project.getPlugins().apply(VersioningPlugin.class);
         project.getPlugins().apply(ShipkitConfigurationPlugin.class);
-        final GitAuthPlugin gitAuthPlugin = project.getPlugins().apply(GitAuthPlugin.class);
+        final GitAuthPlugin gitAuthPlugin = project.getRootProject().getPlugins().apply(GitAuthPlugin.class);
 
         TaskMaker.task(project, INIT_TRAVIS_TASK, InitTravisTask.class, new Action<InitTravisTask>() {
             public void execute(InitTravisTask t) {

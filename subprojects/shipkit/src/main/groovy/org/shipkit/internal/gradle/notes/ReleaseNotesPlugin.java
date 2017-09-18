@@ -9,6 +9,7 @@ import org.shipkit.gradle.notes.FetchReleaseNotesTask;
 import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.contributors.github.GitHubContributorsPlugin;
+import org.shipkit.internal.gradle.git.GitAuthPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.gradle.version.VersioningPlugin;
@@ -46,18 +47,25 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
         project.getPlugins().apply(VersioningPlugin.class);
         project.getPlugins().apply(GitHubContributorsPlugin.class);
+        GitAuthPlugin authPlugin = project.getRootProject().getPlugins().apply(GitAuthPlugin.class);
 
-        releaseNotesTasks(project, conf);
+        releaseNotesTasks(project, conf, authPlugin);
     }
 
-    private static void releaseNotesTasks(final Project project, final ShipkitConfiguration conf) {
+    private static void releaseNotesTasks(final Project project, final ShipkitConfiguration conf, final GitAuthPlugin authPlugin) {
         final FetchReleaseNotesTask releaseNotesFetcher = TaskMaker.task(project, FETCH_NOTES_TASK, FetchReleaseNotesTask.class, new Action<FetchReleaseNotesTask>() {
             public void execute(final FetchReleaseNotesTask t) {
                 t.setDescription("Fetches release notes data from Git and GitHub and serializes them to a file");
                 t.setOutputFile(new File(project.getBuildDir(), "detailed-release-notes.ser"));
                 t.setGitHubApiUrl(conf.getGitHub().getApiUrl());
                 t.setGitHubReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
-                t.setGitHubRepository(conf.getGitHub().getRepository());
+
+                authPlugin.provideAuthTo(t, new Action<GitAuthPlugin.GitAuth>() {
+                    public void execute(GitAuthPlugin.GitAuth gitAuth) {
+                        t.setGitHubRepository(gitAuth.getRepositoryName());
+                    }
+                });
+
                 t.setPreviousVersion(conf.getPreviousReleaseVersion());
                 t.setTagPrefix(conf.getGit().getTagPrefix());
                 t.setIgnoreCommitsContaining(conf.getReleaseNotes().getIgnoreCommitsContaining());
@@ -81,6 +89,12 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
                         singletonList(releaseNotesFile), "release notes updated", t);
                     t.getOutputs().file(releaseNotesFile);
                 }
+
+                authPlugin.provideAuthTo(t, new Action<GitAuthPlugin.GitAuth>() {
+                    public void execute(GitAuthPlugin.GitAuth gitAuth) {
+                        t.setGitHubRepository(gitAuth.getRepositoryName());
+                    }
+                });
             }
         });
     }
@@ -101,7 +115,6 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         task.setGitHubLabelMapping(conf.getReleaseNotes().getLabelMapping());
         task.setReleaseNotesFile(project.file(conf.getReleaseNotes().getFile()));
         task.setGitHubUrl(conf.getGitHub().getUrl());
-        task.setGitHubRepository(conf.getGitHub().getRepository());
         task.setPreviousVersion(project.getExtensions().getByType(VersionInfo.class).getPreviousVersion());
 
         task.setReleaseNotesData(releaseNotesFetcher.getOutputFile());

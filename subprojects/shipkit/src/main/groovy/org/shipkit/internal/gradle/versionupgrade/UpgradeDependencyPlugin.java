@@ -77,7 +77,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
     @Override
     public void apply(final Project project) {
         IncubatingWarning.warn("upgrade-dependency plugin");
-        final GitAuthPlugin gitAuthPlugin = project.getPlugins().apply(GitAuthPlugin.class);
+        final GitAuthPlugin gitAuthPlugin = project.getRootProject().getPlugins().apply(GitAuthPlugin.class);
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
         upgradeDependencyExtension = project.getExtensions().create("upgradeDependency", UpgradeDependencyExtension.class);
@@ -195,12 +195,24 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.setAuthToken(conf.getLenient().getGitHub().getWriteAuthToken());
                 task.setVersionBranch(getVersionBranchName(upgradeDependencyExtension));
                 task.setVersionUpgrade(upgradeDependencyExtension);
-                task.setUpstreamRepositoryName(conf.getGitHub().getRepository());
 
                 gitAuthPlugin.provideAuthTo(task, new Action<GitAuthPlugin.GitAuth>() {
                     @Override
                     public void execute(GitAuthPlugin.GitAuth gitAuth) {
                         task.setForkRepositoryName(gitAuth.getRepositoryName());
+                        String repoName = gitAuth.getRepositoryName().split("/")[1];
+
+                        /*
+                        TODO SF We need to change creation of pull requests because they require shipkit.gitHub.repository to be set.
+                        Let's create ticket for this.
+                        I am currently working on making this configuration setting optional.
+                        I need this for bootstrap scenarios and it will make the configuration simpler, too.
+
+                        Most likely, we will implement it by passing and additional parameter to version upgrade plugin
+
+                        Below is a temporary hack
+                        */
+                        task.setUpstreamRepositoryName("mockito/" + repoName);
                     }
                 });
 

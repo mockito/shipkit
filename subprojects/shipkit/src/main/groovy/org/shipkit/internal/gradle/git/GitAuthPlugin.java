@@ -1,6 +1,7 @@
 package org.shipkit.internal.gradle.git;
 
 import org.gradle.api.Action;
+import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -32,22 +33,32 @@ public class GitAuthPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
+        if (project.getParent() != null) {
+            //TODO SF let's have shipkit configuration use the same pattern and add some unit tests
+            throw new GradleException("Plugin '" + this.getClass().getSimpleName() + "' is intended to be applied only root project.\n" +
+                "This is needed so that we don't invoke git commands multiple times, per each submodule.\n" +
+                "Please apply this plugin to the root project instead of '" + project.getPath() + "'.");
+        }
         identifyTask = TaskMaker.task(project, IDENTIFY_GIT_ORIGIN_TASK, IdentifyGitOriginRepoTask.class, new Action<IdentifyGitOriginRepoTask>() {
             public void execute(IdentifyGitOriginRepoTask t) {
                 t.setDescription("Identifies current git origin repo.");
             }
         });
+
+        //Due to gnarly dependencies between plugins and tasks, we really need to apply this plugin after we declared the task
+        //Trust me, it's all good :-)
         project.getPlugins().apply(ShipkitConfigurationPlugin.class);
     }
 
+    //TODO SF rename this method and surrounding types. This method provides more than just auth.
     public void provideAuthTo(Task t, final Action<GitAuth> action) {
         t.dependsOn(identifyTask);
         identifyTask.doLast(new Action<Task>() {
             public void execute(Task task) {
                 ShipkitConfiguration conf = identifyTask.getProject().getPlugins().getPlugin(ShipkitConfigurationPlugin.class).getConfiguration();
-                String repoUrl = getGitHubUrl(identifyTask.getOriginRepo(), conf);
+                String repoUrl = getGitHubUrl(identifyTask.getRepository(), conf);
                 String writeToken = conf.getLenient().getGitHub().getWriteAuthToken();
-                action.execute(new GitAuth(repoUrl, writeToken, identifyTask.getOriginRepo()));
+                action.execute(new GitAuth(repoUrl, writeToken, identifyTask.getRepository()));
             }
         });
     }

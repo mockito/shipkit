@@ -85,7 +85,7 @@ public class GitPlugin implements Plugin<Project> {
                 t.getTargets().add(GitUtil.getTag(conf, project));
                 t.setDryRun(conf.isDryRun());
 
-                project.getPlugins().apply(GitAuthPlugin.class).provideAuthTo(t, new Action<GitAuthPlugin.GitAuth>() {
+                project.getRootProject().getPlugins().apply(GitAuthPlugin.class).provideAuthTo(t, new Action<GitAuthPlugin.GitAuth>() {
                     public void execute(GitAuthPlugin.GitAuth gitAuth) {
                         t.setUrl(gitAuth.getRepositoryUrl());
                         t.setSecretValue(gitAuth.getSecretValue());

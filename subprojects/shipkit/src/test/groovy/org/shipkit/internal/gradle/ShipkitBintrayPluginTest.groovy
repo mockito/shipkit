@@ -27,9 +27,6 @@ class ShipkitBintrayPluginTest extends PluginSpecification {
         then:
         project.bintray.pkg.version.vcsTag == "v1.0"
         project.bintray.dryRun == true
-        project.bintray.pkg.vcsUrl == "https://github.com/repo.git"
-        project.bintray.pkg.issueTrackerUrl == "https://github.com/repo/issues"
-        project.bintray.pkg.websiteUrl == "https://github.com/repo"
         project.bintray.pkg.desc == "some proj"
         project.bintray.pkg.name == "org.shipkit"
     }

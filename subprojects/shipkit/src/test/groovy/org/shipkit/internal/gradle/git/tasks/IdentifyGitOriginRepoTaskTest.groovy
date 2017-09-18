@@ -1,5 +1,6 @@
 package org.shipkit.internal.gradle.git.tasks
 
+import org.gradle.testfixtures.ProjectBuilder
 import testutil.PluginSpecification
 
 class IdentifyGitOriginRepoTaskTest extends PluginSpecification {
@@ -13,6 +14,18 @@ class IdentifyGitOriginRepoTaskTest extends PluginSpecification {
         conf.gitHub.repository = null
     }
 
+    def "the task is useful even if shipkit configuration plugin is not applied"() {
+        def p = new ProjectBuilder().build()
+        def t = p.tasks.create("identify", IdentifyGitOriginRepoTask)
+        t.originRepoProvider = Stub(GitOriginRepoProvider) { getOriginGitRepo() >> "my-repo" }
+
+        when:
+        t.identifyGitOriginRepo()
+
+        then:
+        t.repository == "my-repo"
+    }
+
     def "should use repository from shipkit configuration if provided"() {
         conf.gitHub.repository = "repo"
 
@@ -20,19 +33,7 @@ class IdentifyGitOriginRepoTaskTest extends PluginSpecification {
         task.identifyGitOriginRepo()
 
         then:
-        task.originRepo == "repo"
-        0 * originProvider._
-    }
-
-    def "should not call originProvider when originRepo already set manually"() {
-        given:
-        task.originRepo = "origin"
-
-        when:
-        task.identifyGitOriginRepo()
-
-        then:
-        task.originRepo == "origin"
+        task.repository == "repo"
         0 * originProvider._
     }
 
@@ -45,7 +46,7 @@ class IdentifyGitOriginRepoTaskTest extends PluginSpecification {
         task.identifyGitOriginRepo()
 
         then:
-        task.originRepo == IdentifyGitOriginRepoTask.FALLBACK_GITHUB_REPO
+        task.repository == IdentifyGitOriginRepoTask.FALLBACK_GITHUB_REPO
     }
 
     def "should get repo from provider only once"() {
@@ -54,10 +55,10 @@ class IdentifyGitOriginRepoTaskTest extends PluginSpecification {
 
         when:
         task.identifyGitOriginRepo()
-        task.identifyGitOriginRepo() //2nd call to verify single call to provider
 
         then:
         1 * originProvider.getOriginGitRepo() >> "originRepo"
-        task.originRepo == "originRepo"
+        task.repository == "originRepo"
+        conf.gitHub.repository == "originRepo"
     }
 }
