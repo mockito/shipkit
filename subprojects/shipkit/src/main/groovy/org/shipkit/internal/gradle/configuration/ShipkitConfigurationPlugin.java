@@ -3,6 +3,8 @@ package org.shipkit.internal.gradle.configuration;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.gradle.api.plugins.ObjectConfigurationAction;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.gradle.init.InitPlugin;
@@ -32,10 +34,11 @@ import java.io.File;
  */
 public class ShipkitConfigurationPlugin implements Plugin<Project> {
 
+    private final static Logger LOG = Logging.getLogger(ShipkitConfigurationPlugin.class);
     public static final String SHIPKIT_FILE_RELATIVE_PATH = "gradle/shipkit.gradle";
     public static final String DRY_RUN_PROPERTY = "dryRun";
 
-    private ShipkitConfiguration configuration;
+    private ShipkitConfiguration conf;
 
     public static File getShipkitFile(Project project) {
         return new File(project.getRootDir(), "gradle/shipkit.gradle");
@@ -48,40 +51,40 @@ public class ShipkitConfigurationPlugin implements Plugin<Project> {
             project.getPlugins().apply(VersioningPlugin.class);
             VersionInfo info = project.getExtensions().getByType(VersionInfo.class);
 
-            configuration = project.getRootProject().getExtensions()
+            conf = project.getRootProject().getExtensions()
                     .create("shipkit", ShipkitConfiguration.class);
 
-            loadConfigFromFile(project.getRootProject(), getShipkitFile(project));
+            loadConfigFromFile(project.getRootProject(), getShipkitFile(project), conf);
 
             if (project.hasProperty(DRY_RUN_PROPERTY)) {
-                configuration.setDryRun(true);
+                conf.setDryRun(true);
                 //TODO (maybe) we can actually implement it so that we automatically preconfigure everything by command line parameters
                 //e.g. shipkit.gitHub.repository is also a property
             }
 
-            configuration.setPreviousReleaseVersion(info.getPreviousVersion());
+            conf.setPreviousReleaseVersion(info.getPreviousVersion());
 
         } else {
             //not root project, get extension from root project
-            configuration = project.getRootProject().getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
+            conf = project.getRootProject().getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
         }
     }
 
-    private void loadConfigFromFile(final Project rootProject, File shipkitFile) {
+    private static void loadConfigFromFile(final Project rootProject, File shipkitFile, ShipkitConfiguration conf) {
         if (!shipkitFile.exists()) {
             // sets some defaults so that they can't be used to run any task (except for bootstrap ones)
             // but also configuration doesn't fail when running Shipkit for the first time
             // and configuration files are not created yet
-            configuration.getGitHub().setUrl("https://github.com");
-            configuration.getGitHub().setApiUrl("https://api.github.com");
-            configuration.getGitHub().setRepository("mockito/shipkit");
-            configuration.getGitHub().setReadOnlyAuthToken("e7fe8fcfd6ffedac384c8c4c71b2a48e646ed1ab");
+            conf.getGitHub().setRepository("unspecified");
+            conf.getGitHub().setReadOnlyAuthToken("unspecified");
+            LOG.lifecycle("  Configuration file '{}' does not exist. Please run '{}'." +
+                "  Getting Started Guide: https://github.com/mockito/shipkit/wiki/Getting-started-with-Shipkit", shipkitFile.getName(), InitPlugin.INIT_SHIPKIT_TASK);
         } else {
             // apply configuration properties from config file
             rootProject.apply(new Action<ObjectConfigurationAction>() {
                 @Override
-                public void execute(ObjectConfigurationAction objectConfigurationAction) {
-                    objectConfigurationAction.from(getShipkitFile(rootProject));
+                public void execute(ObjectConfigurationAction action) {
+                    action.from(getShipkitFile(rootProject));
                 }
             });
         }
@@ -91,6 +94,6 @@ public class ShipkitConfigurationPlugin implements Plugin<Project> {
      * Returns the release configuration instance that is hooked up to the root project
      */
     public ShipkitConfiguration getConfiguration() {
-        return configuration;
+        return conf;
     }
 }
