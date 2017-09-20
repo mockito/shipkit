@@ -29,21 +29,30 @@ class InitShipkitFileTest extends Specification {
 
         then:
         shipkitFile.text ==
-            """//This file was created automatically and is intended to be checked-in.
+            """//This default Shipkit configuration file was created automatically and is intended to be checked-in.
+//Default configuration is sufficient for local testing and trying out Shipkit.
+//To leverage Shipkit fully, please fix the TODO items, refer to our Getting Started Guide for help:
+// https://github.com/mockito/shipkit/wiki/Getting-started-with-Shipkit
 shipkit {
-   gitHub.repository = \"mockito/mockito\"
+   gitHub.repository = "mockito/mockito"
 
-   //TODO when you finish trying out Shipkit, use your own token below (http://link/needed)
-   gitHub.readOnlyAuthToken = \"76826c9ec886612f504d12fd4268b16721c4f85d\"
+   //TODO generate and use your own read-only GitHub personal access token
+   gitHub.readOnlyAuthToken = "76826c9ec886612f504d12fd4268b16721c4f85d"
+
+   //TODO generate GitHub write token, and ensure your Travis CI has this env variable exported
+   gitHub.writeAuthToken = System.getenv("GH_WRITE_TOKEN")
 }
 
 allprojects {
-   plugins.withId(\"org.shipkit.bintray\") {
-       //TODO when you finish trying out Shipkit, use your own Bintray repository below (http://link/needed)
+   plugins.withId("org.shipkit.bintray") {
        bintray {
+           //TODO sign up for free open source account with Bintray, generate the API key
            key = '7ea297848ca948adb7d3ee92a83292112d7ae989'
+           //TODO don't check in the key, remove above line and use env variable exported on CI:
+           //key = System.getenv("BINTRAY_API_KEY")
+
            pkg {
-               repo = 'bootstrap'
+               //TODO configure Bintray settings per your project (https://github.com/bintray/gradle-bintray-plugin)               repo = 'bootstrap'
                user = 'shipkit-bootstrap-bot'
                userOrg = 'shipkit-bootstrap'
                name = 'maven'
