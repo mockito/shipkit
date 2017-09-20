@@ -44,7 +44,7 @@ shipkit {
 }
 
 allprojects {
-   plugins.withId("org.shipkit.bintray") {
+   plugins.withId("com.jfrog.bintray") {
        bintray {
            //TODO sign up for free open source account with Bintray, generate the API key
            key = '7ea297848ca948adb7d3ee92a83292112d7ae989'

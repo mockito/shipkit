@@ -58,7 +58,7 @@ public class InitShipkitFile {
             "}\n" +
             "\n" +
             "allprojects {\n" +
-            "   plugins.withId(\"org.shipkit.bintray\") {\n" +
+            "   plugins.withId(\"com.jfrog.bintray\") {\n" +
             "       bintray {\n" +
             "           //TODO sign up for free open source account with Bintray, generate the API key\n" +
             "           key = '@bintray.key@'\n" +
