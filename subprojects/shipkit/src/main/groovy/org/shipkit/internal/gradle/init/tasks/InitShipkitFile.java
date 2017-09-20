@@ -1,7 +1,5 @@
 package org.shipkit.internal.gradle.init.tasks;
 
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.init.InitShipkitFileTask;
 import org.shipkit.internal.notes.util.IOUtil;
 import org.shipkit.internal.util.TemplateResolver;
@@ -9,8 +7,6 @@ import org.shipkit.internal.util.TemplateResolver;
 import java.io.File;
 
 public class InitShipkitFile {
-
-    private static final Logger LOG = Logging.getLogger(InitShipkitFile.class);
 
     public void initShipkitFile(InitShipkitFileTask task) {
         File shipkitFile = task.getShipkitFile();
@@ -23,7 +19,7 @@ public class InitShipkitFile {
             InitMessages.skipping(shipkitFile.getAbsolutePath(), taskPath);
         } else {
             createShipkitFile(shipkitFile, originRepoName);
-            LOG.lifecycle("{} -   Shipkit configuration file generated at {}! Please review and check in!", shipkitFile.getPath());
+            InitMessages.generated(shipkitFile.getAbsolutePath(), taskPath);
         }
     }
 
