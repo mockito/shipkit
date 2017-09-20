@@ -15,16 +15,15 @@ public class InitShipkitFile {
     public void initShipkitFile(InitShipkitFileTask task) {
         File shipkitFile = task.getShipkitFile();
         String originRepoName = task.getOriginRepoName();
-        initShipkitFile(shipkitFile, originRepoName);
+        initShipkitFile(shipkitFile, originRepoName, task.getPath());
     }
 
-    static void initShipkitFile(File shipkitFile, String originRepoName) {
+    static void initShipkitFile(File shipkitFile, String originRepoName, String taskPath) {
         if (shipkitFile.exists()) {
-            LOG.lifecycle("  Shipkit file already exists, nothing to do: {}", shipkitFile.getPath());
+            InitMessages.skipping(shipkitFile.getAbsolutePath(), taskPath);
         } else {
             createShipkitFile(shipkitFile, originRepoName);
-            LOG.lifecycle("  Shipkit configuration created at {}!\n" +
-                "  You can modify it manually. Remember to check it into VCS!", shipkitFile.getPath());
+            LOG.lifecycle("{} -   Shipkit configuration file generated at {}! Please review and check in!", shipkitFile.getPath());
         }
     }
 

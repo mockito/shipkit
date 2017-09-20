@@ -14,7 +14,7 @@ class InitShipkitFileTest extends Specification {
         shipkitFile << "foo"
 
         when:
-        InitShipkitFile.initShipkitFile(shipkitFile, "mockito/mockito")
+        InitShipkitFile.initShipkitFile(shipkitFile, "mockito/mockito", ":init")
 
         then:
         shipkitFile.text == "foo"

@@ -13,7 +13,7 @@ public class InitTravis {
 
     public void initTravis(InitTravisTask task) {
         if (task.getOutputFile().exists()) {
-            LOG.lifecycle("  {} - file exists, skipping generation of '{}'.", task.getPath(), task.getOutputFile().getName());
+            InitMessages.skipping(task.getOutputFile().getAbsolutePath(), task.getPath());
             return;
         }
         InputStream resource = this.getClass().getClassLoader().getResourceAsStream("template.travis.yml");

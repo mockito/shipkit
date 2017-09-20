@@ -17,7 +17,7 @@ public class InitVersioning {
     public void initVersioning(InitVersioningTask task) {
         File file = task.getVersionFile();
         if (file.exists()) {
-            LOG.lifecycle("  File '{}' already exists, nothing to do.", file.getName());
+            InitMessages.skipping(file.getAbsolutePath(), task.getPath());
         } else {
             createVersionPropertiesFile(task.getProject(), file);
         }
