@@ -34,6 +34,7 @@ class InitShipkitFileTest extends Specification {
 //To leverage Shipkit fully, please fix the TODO items, refer to our Getting Started Guide for help:
 // https://github.com/mockito/shipkit/wiki/Getting-started-with-Shipkit
 shipkit {
+   //TODO is the repository correct?
    gitHub.repository = "mockito/mockito"
 
    //TODO generate and use your own read-only GitHub personal access token

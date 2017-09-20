@@ -48,6 +48,7 @@ public class InitShipkitFile {
             "//To leverage Shipkit fully, please fix the TODO items, refer to our Getting Started Guide for help:\n" +
             "// https://github.com/mockito/shipkit/wiki/Getting-started-with-Shipkit\n" +
             "shipkit {\n" +
+            "   //TODO is the repository correct?\n" +
             "   gitHub.repository = \"@gitHub.repository@\"\n" +
             "\n" +
             "   //TODO generate and use your own read-only GitHub personal access token\n" +
