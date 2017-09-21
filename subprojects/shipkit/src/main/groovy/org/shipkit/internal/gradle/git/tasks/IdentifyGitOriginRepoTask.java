@@ -33,6 +33,9 @@ public class IdentifyGitOriginRepoTask extends DefaultTask {
     @TaskAction
     public void identifyGitOriginRepo() {
         if (repository != null) {
+            //Useful to override the default behavior or supply origin repository using some custom logic.
+            //See javadoc for "setRepository(String repository)" method.
+            LOG.lifecycle("  No need to identify Git origin repository because it was set directly on the task. Repository: {}", repository);
             return;
         }
 
@@ -64,6 +67,7 @@ public class IdentifyGitOriginRepoTask extends DefaultTask {
      * Git remote origin repo in a format "user/repo", eg. "mockito/shipkit".
      * You set the value to override the default behavior of the task and avoid forking off 'git' process to identify the repository.
      * Might be useful for edge cases.
+     * For example, if the user has custom logic to identify repository.
      */
     public void setRepository(String repository) {
         this.repository = repository;
