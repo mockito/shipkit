@@ -50,6 +50,7 @@ public class InitPlugin implements Plugin<Project> {
 
     @Override
     public void apply(final Project project) {
+        //TODO SF let's add an integration test
         project.getPlugins().apply(VersioningPlugin.class);
         project.getPlugins().apply(ShipkitConfigurationPlugin.class);
         final GitOriginPlugin gitOriginPlugin = project.getRootProject().getPlugins().apply(GitOriginPlugin.class);
