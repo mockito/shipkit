@@ -13,13 +13,12 @@ public class InitTravis {
 
     public void initTravis(InitTravisTask task) {
         if (task.getOutputFile().exists()) {
-            LOG.lifecycle("  {} - file exists, skipping generation of '{}'.", task.getPath(), task.getOutputFile().getName());
+            InitMessages.skipping(task.getOutputFile().getAbsolutePath(), task.getPath());
             return;
         }
         InputStream resource = this.getClass().getClassLoader().getResourceAsStream("template.travis.yml");
         String template = IOUtil.readFully(resource);
         IOUtil.writeFile(task.getOutputFile(), template);
-        LOG.lifecycle("  {} - generated default '{}', don't forget to check it in to your source control!",
-            task.getPath(), task.getOutputFile().getName());
+        InitMessages.generated(task.getOutputFile().getAbsolutePath(), task.getPath());
     }
 }

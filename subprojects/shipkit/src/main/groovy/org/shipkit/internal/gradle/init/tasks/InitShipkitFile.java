@@ -1,7 +1,5 @@
 package org.shipkit.internal.gradle.init.tasks;
 
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.init.InitShipkitFileTask;
 import org.shipkit.internal.notes.util.IOUtil;
 import org.shipkit.internal.util.TemplateResolver;
@@ -10,21 +8,18 @@ import java.io.File;
 
 public class InitShipkitFile {
 
-    private static final Logger LOG = Logging.getLogger(InitShipkitFile.class);
-
     public void initShipkitFile(InitShipkitFileTask task) {
         File shipkitFile = task.getShipkitFile();
         String originRepoName = task.getOriginRepoName();
-        initShipkitFile(shipkitFile, originRepoName);
+        initShipkitFile(shipkitFile, originRepoName, task.getPath());
     }
 
-    static void initShipkitFile(File shipkitFile, String originRepoName) {
+    static void initShipkitFile(File shipkitFile, String originRepoName, String taskPath) {
         if (shipkitFile.exists()) {
-            LOG.lifecycle("  Shipkit file already exists, nothing to do: {}", shipkitFile.getPath());
+            InitMessages.skipping(shipkitFile.getAbsolutePath(), taskPath);
         } else {
             createShipkitFile(shipkitFile, originRepoName);
-            LOG.lifecycle("  Shipkit configuration created at {}!\n" +
-                "  You can modify it manually. Remember to check it into VCS!", shipkitFile.getPath());
+            InitMessages.generated(shipkitFile.getAbsolutePath(), taskPath);
         }
     }
 
@@ -48,20 +43,31 @@ public class InitShipkitFile {
     }
 
     private static final String DEFAULT_SHIPKIT_CONFIG_FILE_CONTENT =
-        "//This file was created automatically and is intended to be checked-in.\n" +
+        "//This default Shipkit configuration file was created automatically and is intended to be checked-in.\n" +
+            "//Default configuration is sufficient for local testing and trying out Shipkit.\n" +
+            "//To leverage Shipkit fully, please fix the TODO items, refer to our Getting Started Guide for help:\n" +
+            "// https://github.com/mockito/shipkit/wiki/Getting-started-with-Shipkit\n" +
             "shipkit {\n" +
+            "   //TODO is the repository correct?\n" +
             "   gitHub.repository = \"@gitHub.repository@\"\n" +
             "\n" +
-            "   //TODO when you finish trying out Shipkit, use your own token below (http://link/needed)\n" +
+            "   //TODO generate and use your own read-only GitHub personal access token\n" +
             "   gitHub.readOnlyAuthToken = \"@gitHub.readOnlyAuthToken@\"\n" +
+            "\n" +
+            "   //TODO generate GitHub write token, and ensure your Travis CI has this env variable exported\n" +
+            "   gitHub.writeAuthToken = System.getenv(\"GH_WRITE_TOKEN\")\n" +
             "}\n" +
             "\n" +
             "allprojects {\n" +
-            "   plugins.withId(\"org.shipkit.bintray\") {\n" +
-            "       //TODO when you finish trying out Shipkit, use your own Bintray repository below (http://link/needed)\n" +
+            "   plugins.withId(\"com.jfrog.bintray\") {\n" +
             "       bintray {\n" +
+            "           //TODO sign up for free open source account with Bintray, generate the API key\n" +
             "           key = '@bintray.key@'\n" +
+            "           //TODO don't check in the key, remove above line and use env variable exported on CI:\n" +
+            "           //key = System.getenv(\"BINTRAY_API_KEY\")\n" +
+            "\n" +
             "           pkg {\n" +
+            "               //TODO configure Bintray settings per your project (https://github.com/bintray/gradle-bintray-plugin)" +
             "               repo = '@bintray.pkg.repo@'\n" +
             "               user = '@bintray.pkg.user@'\n" +
             "               userOrg = '@bintray.pkg.userOrg@'\n" +
