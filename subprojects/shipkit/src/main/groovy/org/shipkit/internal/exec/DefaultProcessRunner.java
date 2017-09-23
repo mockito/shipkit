@@ -58,7 +58,9 @@ public class DefaultProcessRunner implements ProcessRunner {
         if (result.getExitValue() != 0) {
             return executionOfCommandFailed(maskedCommandLine, result);
         } else {
-            return result.getOutput();
+            String output = result.getOutput();
+            LOG.info("Output from external process '{}':\n{}", maskedCommandLine, output);
+            return output;
         }
     }
 
