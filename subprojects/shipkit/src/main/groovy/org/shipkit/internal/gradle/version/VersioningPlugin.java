@@ -56,10 +56,10 @@ public class VersioningPlugin implements Plugin<Project> {
         final VersionInfo versionInfo;
         if (versionFile.isFile()) {
             versionInfo = Version.versionInfo(versionFile);
-            LOG.lifecycle("  Building version '{}'.", versionInfo.getVersion());
+            LOG.lifecycle("  Building version '{}' (value loaded from '{}' file).", versionInfo.getVersion(), versionFile.getName());
         } else {
             versionInfo = Version.defaultVersionInfo(versionFile, project.getVersion().toString());
-            LOG.lifecycle("  Building version '{}' (value loaded from '{}' file).", versionInfo.getVersion(), versionFile.getName());
+            LOG.lifecycle("  Building version '{}'.", versionInfo.getVersion());
         }
 
         project.getExtensions().add(VersionInfo.class.getName(), versionInfo);

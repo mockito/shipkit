@@ -77,7 +77,7 @@ public class ShipkitConfigurationPlugin implements Plugin<Project> {
             // and configuration files are not created yet
             conf.getGitHub().setRepository("unspecified");
             conf.getGitHub().setReadOnlyAuthToken("unspecified");
-            LOG.lifecycle("  Configuration file '{}' does not exist. Please run '{}'." +
+            LOG.lifecycle("  Configuration file '{}' does not exist. '{}' task can be used to bootstrap Shipkit.\n" +
                 "  Getting Started Guide: https://github.com/mockito/shipkit/wiki/Getting-started-with-Shipkit", shipkitFile.getName(), InitPlugin.INIT_SHIPKIT_TASK);
         } else {
             // apply configuration properties from config file
