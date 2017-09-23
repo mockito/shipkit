@@ -26,4 +26,17 @@ class FileUtilTest extends Specification {
         expect:
         f.text == "foo"
     }
+
+    def "finds files by pattern"(){
+        def test = tmp.newFile("test.log")
+        tmp.newFile("test.txt")
+        tmp.newFolder("testDir")
+        def test2 = tmp.newFile("testDir/test2.log")
+        tmp.newFolder("testDir", "testDir2")
+        def test3 = tmp.newFile("testDir/testDir2/test3.log")
+
+        expect:
+        FileUtil.findFilesByPattern(tmp.root.absolutePath, "**/**.log") as Set ==
+            [test.absolutePath, test2.absolutePath, test3.absolutePath] as Set
+    }
 }
