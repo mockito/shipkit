@@ -7,21 +7,21 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.internal.exec.DefaultProcessRunner;
-import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
+import org.shipkit.internal.gradle.git.GitOriginPlugin;
 import org.shipkit.internal.util.ExposedForTesting;
 
 import javax.inject.Inject;
 
 /**
- * Task that computes git origin repository.
- * Shouldn't be used directly, but through {@link org.shipkit.internal.gradle.git.GitAuthPlugin#provideAuthTo(Task, Action)}
+ * Task that identifies git origin repository.
+ * See {@link #getRepository()}
  */
 public class IdentifyGitOriginRepoTask extends DefaultTask {
 
     private final static Logger LOG = Logging.getLogger(IdentifyGitOriginRepoTask.class);
     final static String FALLBACK_GITHUB_REPO = "mockito/shipkit-example";
 
-    private String originRepo;
+    private String repository;
 
     private GitOriginRepoProvider originRepoProvider;
 
@@ -32,47 +32,45 @@ public class IdentifyGitOriginRepoTask extends DefaultTask {
 
     @TaskAction
     public void identifyGitOriginRepo() {
-        if (originRepo != null) {
-            LOG.lifecycle("  Using Git origin repository configured on the task: {}", originRepo);
+        if (repository != null) {
+            //Useful to override the default behavior or supply origin repository using some custom logic.
+            //See javadoc for "setRepository(String repository)" method.
+            LOG.lifecycle("  No need to identify Git origin repository because it was set directly on the task. Repository: {}", repository);
             return;
         }
 
-        ShipkitConfigurationPlugin plugin = getProject().getPlugins().findPlugin(ShipkitConfigurationPlugin.class);
-        if (plugin != null) {
-            originRepo = plugin.getConfiguration().getLenient().getGitHub().getRepository();
-            if (originRepo != null) {
-                LOG.lifecycle("  Using Git origin repository from Shipkit configuration: {}", originRepo);
-                return;
-            }
-        }
-
         try {
-            originRepo = originRepoProvider.getOriginGitRepo();
-            LOG.lifecycle("  Identified Git origin repository: " + originRepo);
+            repository = originRepoProvider.getOriginGitRepo();
+            LOG.lifecycle("  Identified Git origin repository: " + repository);
         } catch (Exception e) {
+            //TODO SF instead of fallback, let's fail and suggest the user what to do.
             LOG.lifecycle("  Problems getting url of git remote origin (run with --debug to see stack trace).\n" +
                 "  Using fallback '" + FALLBACK_GITHUB_REPO + "' instead.\n" +
                 "  GitHub repository can be configured in in shipkit file.\n");
             LOG.debug("  Problems getting url of git remote origin", e);
-            originRepo = FALLBACK_GITHUB_REPO;
+            repository = FALLBACK_GITHUB_REPO;
         }
     }
 
     /**
      * Git remote origin repo in a format "user/repo", eg. "mockito/shipkit".
-     * Instead of setting this repository on a task, configure it in the shipkit file,
-     * using {@link org.shipkit.gradle.configuration.ShipkitConfiguration.GitHub#setRepository(String)}
-     * Internal classes and other tasks should get the repo via {@link org.shipkit.internal.gradle.git.GitAuthPlugin#provideAuthTo(Task, Action)}
+     * If you call this getter, ensure that the task has executed first.
+     * Internal classes and other tasks should get the repo via {@link GitOriginPlugin#provideOriginRepo(Task, Action)}
+     * See also {@link #setRepository(String)}
      */
-    public String getOriginRepo() {
-        return originRepo;
+    public String getRepository() {
+        //TODO SF graceful failure explaining that the task did not run yet
+        return repository;
     }
 
     /**
-     * See {@link #getOriginRepo()}
+     * Git remote origin repo in a format "user/repo", eg. "mockito/shipkit".
+     * You set the value to override the default behavior of the task and avoid forking off 'git' process to identify the repository.
+     * Might be useful for edge cases.
+     * For example, if the user has custom logic to identify repository.
      */
-    public void setOriginRepo(String originRepo) {
-        this.originRepo = originRepo;
+    public void setRepository(String repository) {
+        this.repository = repository;
     }
 
     @ExposedForTesting

@@ -10,29 +10,26 @@ class IdentifyGitOriginRepoTaskTest extends PluginSpecification {
     void setup() {
         task = project.tasks["identifyGitOrigin"]
         task.originRepoProvider = originProvider
-        conf.gitHub.repository = null
     }
 
-    def "should use repository from shipkit configuration if provided"() {
-        conf.gitHub.repository = "repo"
+    def "gets origin repo"() {
+        originProvider.getOriginGitRepo() >> "my-repo"
 
         when:
         task.identifyGitOriginRepo()
 
         then:
-        task.originRepo == "repo"
-        0 * originProvider._
+        task.repository == "my-repo"
     }
 
-    def "should not call originProvider when originRepo already set manually"() {
-        given:
-        task.originRepo = "origin"
+    def "if repo is specified avoid forking off git process"() {
+        task.repository = "foo"
 
         when:
         task.identifyGitOriginRepo()
 
         then:
-        task.originRepo == "origin"
+        task.repository == "foo"
         0 * originProvider._
     }
 
@@ -45,19 +42,6 @@ class IdentifyGitOriginRepoTaskTest extends PluginSpecification {
         task.identifyGitOriginRepo()
 
         then:
-        task.originRepo == IdentifyGitOriginRepoTask.FALLBACK_GITHUB_REPO
-    }
-
-    def "should get repo from provider only once"() {
-        given:
-        originProvider.getOriginGitRepo() >> "originRepo"
-
-        when:
-        task.identifyGitOriginRepo()
-        task.identifyGitOriginRepo() //2nd call to verify single call to provider
-
-        then:
-        1 * originProvider.getOriginGitRepo() >> "originRepo"
-        task.originRepo == "originRepo"
+        task.repository == IdentifyGitOriginRepoTask.FALLBACK_GITHUB_REPO
     }
 }

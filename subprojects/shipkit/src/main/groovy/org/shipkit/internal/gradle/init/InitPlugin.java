@@ -12,7 +12,7 @@ import org.shipkit.gradle.init.InitVersioningTask;
 import org.shipkit.gradle.version.BumpVersionFileTask;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
-import org.shipkit.internal.gradle.git.GitAuthPlugin;
+import org.shipkit.internal.gradle.git.GitOriginPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.gradle.version.VersioningPlugin;
 
@@ -26,6 +26,8 @@ import java.io.File;
  * <ul>
  *     <li>{@link VersioningPlugin}
  *      - so that 'initVersioning' task knows what version file needs to be generated.</li>
+ *      <li>{@link GitOriginPlugin}
+ *      - so that we can configure accurate repository name in shipkit file</li>
  * </ul>
  *
  * Adds tasks:
@@ -48,9 +50,10 @@ public class InitPlugin implements Plugin<Project> {
 
     @Override
     public void apply(final Project project) {
+        //TODO SF let's add an integration test
         project.getPlugins().apply(VersioningPlugin.class);
         project.getPlugins().apply(ShipkitConfigurationPlugin.class);
-        final GitAuthPlugin gitAuthPlugin = project.getPlugins().apply(GitAuthPlugin.class);
+        final GitOriginPlugin gitOriginPlugin = project.getRootProject().getPlugins().apply(GitOriginPlugin.class);
 
         TaskMaker.task(project, INIT_TRAVIS_TASK, InitTravisTask.class, new Action<InitTravisTask>() {
             public void execute(InitTravisTask t) {
@@ -75,9 +78,9 @@ public class InitPlugin implements Plugin<Project> {
                 t.setDescription("Creates Shipkit configuration file unless it already exists");
                 t.setShipkitFile(shipkitFile);
 
-                gitAuthPlugin.provideAuthTo(t, new Action<GitAuthPlugin.GitAuth>() {
-                    public void execute(GitAuthPlugin.GitAuth gitAuth) {
-                        t.setOriginRepoName(gitAuth.getRepositoryName());
+                gitOriginPlugin.provideOriginRepo(t, new Action<String>() {
+                    public void execute(String originRepo) {
+                        t.setOriginRepoName(originRepo);
                     }
                 });
             }

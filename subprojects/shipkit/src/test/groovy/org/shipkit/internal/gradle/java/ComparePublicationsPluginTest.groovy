@@ -61,14 +61,11 @@ class ComparePublicationsPluginTest extends PluginSpecification {
 
     def "sets previousVersionPomLocalFile and previousVersionSourcesJarLocalFile to Bintray defaults if BintrayPlugin is applied"() {
         given:
-        def parent = new ProjectBuilder().withProjectDir(tmp.root).withName("parent").build()
-        def child = new ProjectBuilder().withName("child").withParent(parent).build()
+        conf.gitHub.repository = "repo"
+        def child = new ProjectBuilder().withName("child").withParent(project).build()
 
         child.plugins.apply(ShipkitBintrayPlugin)
         child.getExtensions().getByType(BintrayExtension).user = "test";
-
-        def releaseConfig = parent.getExtensions().getByType(ShipkitConfiguration)
-        releaseConfig.gitHub.repository = "repo"
 
         when:
         child.plugins.apply(ComparePublicationsPlugin)

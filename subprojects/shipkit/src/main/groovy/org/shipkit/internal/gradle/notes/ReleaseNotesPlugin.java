@@ -46,7 +46,6 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
         project.getPlugins().apply(VersioningPlugin.class);
         project.getPlugins().apply(GitHubContributorsPlugin.class);
-
         releaseNotesTasks(project, conf);
     }
 
@@ -96,12 +95,12 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         task.setVersion(project.getVersion().toString());
         task.setTagPrefix(conf.getGit().getTagPrefix());
 
+        task.setGitHubRepository(conf.getGitHub().getRepository());
         task.setDevelopers(conf.getTeam().getDevelopers());
         task.setContributors(conf.getTeam().getContributors());
         task.setGitHubLabelMapping(conf.getReleaseNotes().getLabelMapping());
         task.setReleaseNotesFile(project.file(conf.getReleaseNotes().getFile()));
         task.setGitHubUrl(conf.getGitHub().getUrl());
-        task.setGitHubRepository(conf.getGitHub().getRepository());
         task.setPreviousVersion(project.getExtensions().getByType(VersionInfo.class).getPreviousVersion());
 
         task.setReleaseNotesData(releaseNotesFetcher.getOutputFile());
