@@ -53,14 +53,17 @@ public class VersioningPlugin implements Plugin<Project> {
     public void apply(final Project project) {
         final File versionFile = project.file(VERSION_FILE_NAME);
 
-        final VersionInfo versionInfo = versionFile.exists() ?
-                Version.versionInfo(versionFile) :
-                Version.defaultVersionInfo(versionFile, project.getVersion().toString());
+        final VersionInfo versionInfo;
+        if (versionFile.isFile()) {
+            versionInfo = Version.versionInfo(versionFile);
+            LOG.lifecycle("  Building version '{}'.", versionInfo.getVersion());
+        } else {
+            versionInfo = Version.defaultVersionInfo(versionFile, project.getVersion().toString());
+            LOG.lifecycle("  Building version '{}' (value loaded from '{}' file).", versionInfo.getVersion(), versionFile.getName());
+        }
 
         project.getExtensions().add(VersionInfo.class.getName(), versionInfo);
-
         final String version = versionInfo.getVersion();
-        LOG.lifecycle("  Building version '{}' (value loaded from '{}' file).", version, versionFile.getName());
 
         project.allprojects(new Action<Project>() {
             @Override
