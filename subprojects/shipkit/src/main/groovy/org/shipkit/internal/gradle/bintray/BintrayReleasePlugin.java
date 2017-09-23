@@ -5,7 +5,9 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
+import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.java.JavaBintrayPlugin;
 import org.shipkit.internal.gradle.notes.ReleaseNotesPlugin;
@@ -35,6 +37,7 @@ public class BintrayReleasePlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
         project.getPlugins().apply(ReleasePlugin.class);
+        final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
         project.allprojects(new Action<Project>() {
             @Override
@@ -61,7 +64,12 @@ public class BintrayReleasePlugin implements Plugin<Project> {
                         deferredConfiguration(subproject, new Runnable() {
                             public void run() {
                                 UpdateReleaseNotesTask updateNotes = (UpdateReleaseNotesTask) project.getTasks().getByName(ReleaseNotesPlugin.UPDATE_NOTES_TASK);
-                                updateNotes.setPublicationRepository(BintrayUtil.getRepoLink(bintray));
+                                boolean userSpecifiedRepo = conf.getLenient().getReleaseNotes().getPublicationRepository();
+                                if (userSpecifiedRepo != null) {
+                                    updateNotes.setPublicationRepository(userSpecifiedRepo);
+                                } else {
+                                    updateNotes.setPublicationRepository(BintrayUtil.getRepoLink(bintray));
+                                }
                             }
                         });
                     }
