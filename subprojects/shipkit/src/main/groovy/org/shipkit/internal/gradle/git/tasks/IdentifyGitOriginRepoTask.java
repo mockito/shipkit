@@ -19,7 +19,7 @@ import javax.inject.Inject;
 public class IdentifyGitOriginRepoTask extends DefaultTask {
 
     private final static Logger LOG = Logging.getLogger(IdentifyGitOriginRepoTask.class);
-    final static String FALLBACK_GITHUB_REPO = "mockito/shipkit-example";
+    final static String FALLBACK_GITHUB_REPO = "unspecified-user/unspecified-repo";
 
     private String repository;
 
@@ -43,10 +43,9 @@ public class IdentifyGitOriginRepoTask extends DefaultTask {
             repository = originRepoProvider.getOriginGitRepo();
             LOG.lifecycle("  Identified Git origin repository: " + repository);
         } catch (Exception e) {
-            //TODO SF instead of fallback, let's fail and suggest the user what to do.
-            LOG.lifecycle("  Problems getting url of git remote origin (run with --debug to see stack trace).\n" +
+            LOG.lifecycle("  Problems getting url of git remote origin (run with -i or -d for more info).\n" +
                 "  Using fallback '" + FALLBACK_GITHUB_REPO + "' instead.\n" +
-                "  GitHub repository can be configured in in shipkit file.\n");
+                "  Please update it in the shipkit file.\n");
             LOG.debug("  Problems getting url of git remote origin", e);
             repository = FALLBACK_GITHUB_REPO;
         }

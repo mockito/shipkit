@@ -90,6 +90,14 @@ public class InitPlugin implements Plugin<Project> {
             public void execute(Task t) {
                 t.setDescription("Initializes Shipkit");
                 t.dependsOn(INIT_TRAVIS_TASK, INIT_VERSIONING_TASK, INIT_SHIPKIT_FILE_TASK);
+                t.doLast(new Action<Task>() {
+                    @Override
+                    public void execute(Task task) {
+                        LOG.lifecycle("  Initialization complete. Thank you for using Shipkit!\n" +
+                            "  Please review auto-generated default files before checking them in.\n" +
+                            "  Guide: https://github.com/mockito/shipkit/wiki/Getting-started-with-Shipkit");
+                    }
+                });
             }
         });
 
