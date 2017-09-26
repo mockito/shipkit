@@ -111,7 +111,7 @@ Core features offered by 1.0:
 
 ## Development guide
 
-See [CONTRIBUTING.md](https://github.com/mockito/shipkit/blob/master/CONTRIBUTING.md)
+See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Project Execution
 
