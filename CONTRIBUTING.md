@@ -1,6 +1,9 @@
 # Development guide
 
-This file contains guidelines for both groups: core developers and occasional contributors.
+This guide describes how to contribute and develop in our team.
+See [how-we-work.md](docs/how-we-work.md) for info how we roll the project.
+
+This document contains guidelines for both groups: core developers and occasional contributors.
 The purpose is to have a reference point and summary of various design discussions the team has.
 It makes it easy to build high quality product if we create, update and consistently follow high level guidelines.
 Doing code review is faster if we can reference clear guidelines rather than explaining the same principle again and again.
