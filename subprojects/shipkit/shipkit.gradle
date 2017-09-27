@@ -6,6 +6,8 @@ apply plugin: 'codenarc'
 
 apply plugin: 'com.gradle.plugin-publish'
 
+apply from: "$rootDir/gradle/upgrade-downstream.gradle"
+
 checkstyle {
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
 }
