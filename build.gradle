@@ -17,9 +17,7 @@ apply plugin: 'org.shipkit.gradle-plugin'
 
 allprojects {
     group = 'org.shipkit'
-}
 
-subprojects {
     repositories {
         jcenter()
         maven { url "https://plugins.gradle.org/m2/" }
