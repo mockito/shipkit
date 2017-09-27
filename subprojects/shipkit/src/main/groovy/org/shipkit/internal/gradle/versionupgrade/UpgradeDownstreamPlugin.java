@@ -117,7 +117,7 @@ public class UpgradeDownstreamPlugin implements Plugin<Project> {
     }
 
     private String getDependencyProperty(Project project) {
-        VersionInfo info = project.getExtensions().getByType(VersionInfo.class);
+        VersionInfo info = project.getRootProject().getExtensions().getByType(VersionInfo.class);
         return String.format("-Pdependency=%s:%s:%s", project.getGroup().toString(), project.getName(), info.getPreviousVersion());
     }
 
