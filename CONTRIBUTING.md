@@ -22,9 +22,11 @@ This will install the artifacts in local maven repository for easy sharing.
 Notice the version you're building in the build output.
 2. Clone shipkit-example repo and ensure that 'shipkit-example/build.gradle' file uses the correct version of shipkit (declared at the top of build.gradle).
 It should use the same version that was built in the previous step.
-3. Basic testing (for most contributors):
- - Smoke test (no tasks are run): ```./gradlew testRelease -m```
- - Test most things, without actually making any code pushes/publications: ```./gradlew testRelease -x gitPush -x bintrayUpload```
+3. Basic testing for contributors:
+ - Smoke test (no tasks are run): ```./gradlew performRelease -m```
+ - Test most things, without actually making any code pushes/publications:
+ ```./gradlew releaseNeeded performRelease releaseCleanUp -x gitPush -x bintrayUpload -PdryRun```
+ TODO: add "contributorTestRelease" task that wraps above similar to "testRelease" task.
  - Release notes content: ```./gradlew updateReleaseNotes -Ppreview```
     To generate sizable release notes content, before running 'updateReleaseNotes' you can downgrade the 'previousVersion' in 'version.properties'.
     Release notes are generated from 'previousVersion' to current 'version' as declared in 'version.properties' file.
