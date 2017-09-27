@@ -1,22 +1,19 @@
 package org.shipkit.internal.gradle.release.tasks;
 
 import org.gradle.api.DefaultTask;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 
-import java.util.List;
-
 /**
  * Uploads files as gists to GitHub API.
- * Uses {@link UploadGistsTask#getFilesPatterns()} to determine the files that need to be uploaded.
+ * Uses {@link UploadGistsTask#getFilesToUpload()} to determine the files that need to be uploaded.
  * Uploads each of them individually.
- * Looks for files only in the {@link UploadGistsTask#getRootDir()}.
  */
 public class UploadGistsTask extends DefaultTask {
 
-    private String rootDir;
-    @Input private List<String> filesPatterns;
+    @Input private FileCollection filesToUpload;
     @Input private String gitHubApiUrl;
     @Input private String gitHubWriteToken;
 
@@ -26,35 +23,17 @@ public class UploadGistsTask extends DefaultTask {
     }
 
     /**
-     * List of patterns such that all of the files that match them would be uploaded to Gist.
-     * All of the patterns are in Ant format, @see <a href="https://ant.apache.org/manual/dirtasks.html#patterns">https://ant.apache.org/manual/dirtasks.html#patterns</a>
-     * eg. ["**.log", "**\/**.txt"]
-     * BEWARE! Only files that are below {@link #getRootDir()} would be included in the results.
+     * Collection of files for which Gists will be created
      */
-    public List<String> getFilesPatterns() {
-        return filesPatterns;
+    public FileCollection getFilesToUpload() {
+        return filesToUpload;
     }
 
     /**
-     * See {@link #getFilesPatterns()}
+     * See {@link #getFilesToUpload()}
      */
-    public void setFilesPatterns(List<String> filesPatterns) {
-        this.filesPatterns = filesPatterns;
-    }
-
-
-    /**
-     * Directory where search for files matching {@link #getFilesPatterns()} would be initiated.
-     */
-    public String getRootDir() {
-        return rootDir;
-    }
-
-    /**
-     * See {@link #getRootDir()}
-     */
-    public void setRootDir(String rootDir) {
-        this.rootDir = rootDir;
+    public void setFilesToUpload(FileCollection filesToUpload) {
+        this.filesToUpload = filesToUpload;
     }
 
     /**

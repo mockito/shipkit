@@ -1,6 +1,5 @@
 package org.shipkit.internal.gradle.release.tasks
 
-import org.shipkit.internal.util.GitHubApi
 import testutil.PluginSpecification
 
 class UploadGistsTest extends PluginSpecification {
@@ -11,25 +10,33 @@ class UploadGistsTest extends PluginSpecification {
         tmp.newFile("test2.log") << "content2"
 
         def task = project.tasks.create("uploadGists", UploadGistsTask.class);
-        task.rootDir = tmp.root.absolutePath
-        task.filesPatterns = ["**/**.log"]
+        task.filesToUpload = project.files("test.log", "test2.log")
 
-        def gitHubApi = Mock(GitHubApi)
+        def gistsApi = Mock(GistsApi)
 
         when:
-        new UploadGists().uploadGists(task, gitHubApi)
+        new UploadGists().uploadGists(task, gistsApi)
 
         then:
-        1 * gitHubApi.post("/gists",
-            '{"public":"true",' +
-            '"files":{"test.log":{"content":"content"}},' +
-            '"description":"test.log"}') >> '{"html_url": "http://gist.github.com/1234"}'
-
-        1 * gitHubApi.post("/gists",
-            '{"public":"true",' +
-            '"files":{"test2.log":{"content":"content2"}},' +
-            '"description":"test2.log"}') >> '{"html_url": "http://gist.github.com/1234"}'
+        1 * gistsApi.uploadFile("test.log", "content")
+        1 * gistsApi.uploadFile("test2.log", "content2")
     }
 
+    def "should not fail if uploading one of the files fails"(){
+        given:
+        tmp.newFile("test.log") << "content"
+        tmp.newFile("test2.log") << "content2"
 
+        def task = project.tasks.create("uploadGists", UploadGistsTask.class);
+        task.filesToUpload = project.files("test.log", "test2.log")
+
+        def gistsApi = Mock(GistsApi)
+
+        when:
+        new UploadGists().uploadGists(task, gistsApi)
+
+        then:
+        1 * gistsApi.uploadFile("test.log", "content") >> { throw new RuntimeException()}
+        1 * gistsApi.uploadFile("test2.log", "content2")
+    }
 }

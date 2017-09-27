@@ -22,15 +22,4 @@ class FileUtil {
 
         notesFile.text = content + existingWithoutHeader
     }
-
-    /**
-     * Finds all files matching {@param pattern} in {@param rootDir} and below it.
-     * @param pattern in Ant format @see <a href="https://ant.apache.org/manual/dirtasks.html#patterns">https://ant.apache.org/manual/dirtasks.html#patterns</a>
-     * eg. ["**.log", "**\/**.txt"]
-     * @param rootDir - absolute path to root for search
-     */
-    static List<String> findFilesByPattern(String rootDir, String pattern){
-        FileNameFinder fnf = new FileNameFinder();
-        return fnf.getFileNames(rootDir, pattern);
-    }
 }
