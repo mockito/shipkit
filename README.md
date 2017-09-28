@@ -7,6 +7,7 @@
 - General information and table of contents: [README.md](README.md)
     - Help us! How to contribute: [CONTRIBUTING.md](CONTRIBUTING.md)
     - Work with us! How we work: [docs/how-we-work.md](docs/how-we-work.md)
+    - Shipkit release notes: [docs/release-notes.md](docs/release-notes.md)
 - Getting started guide: [docs/getting-started.md](docs/getting-started.md)
 
 ## Imagine
