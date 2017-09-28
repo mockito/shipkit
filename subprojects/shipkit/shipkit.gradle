@@ -1,4 +1,3 @@
-
 apply plugin: 'maven'
 apply plugin: 'idea'
 apply plugin: 'groovy'
@@ -6,6 +5,8 @@ apply plugin: 'checkstyle'
 apply plugin: 'codenarc'
 
 apply plugin: 'com.gradle.plugin-publish'
+
+apply from: "$rootDir/gradle/upgrade-downstream.gradle"
 
 checkstyle {
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
@@ -52,7 +53,6 @@ if (JavaVersion.current().isJava8Compatible()) {
         }
     }
 }
-
 
 task fastInstall { Task t ->
     description = "Fast installation for quick local testing."

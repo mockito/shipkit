@@ -1,6 +1,8 @@
 include "shipkit"
 include "testDownstream"
 
+rootProject.name = "shipkit-root"
+
 rootProject.children.each { project ->
     String projectDirName = "subprojects/$project.name"
     project.projectDir = new File(settingsDir, projectDirName)
