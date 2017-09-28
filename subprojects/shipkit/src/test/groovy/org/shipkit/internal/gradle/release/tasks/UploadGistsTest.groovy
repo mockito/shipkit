@@ -22,13 +22,14 @@ class UploadGistsTest extends PluginSpecification {
         1 * gistsApi.uploadFile("test2.log", "content2")
     }
 
-    def "should not fail if uploading one of the files fails"(){
+    def "should still try to upload other files if uploading one of them fails"(){
         given:
         tmp.newFile("test.log") << "content"
         tmp.newFile("test2.log") << "content2"
+        tmp.newFile("test3.log") << "content3"
 
         def task = project.tasks.create("uploadGists", UploadGistsTask.class);
-        task.filesToUpload = project.files("test.log", "test2.log")
+        task.filesToUpload = project.files("test.log", "test2.log", "test3.log")
 
         def gistsApi = Mock(GistsApi)
 
@@ -37,6 +38,9 @@ class UploadGistsTest extends PluginSpecification {
 
         then:
         1 * gistsApi.uploadFile("test.log", "content") >> { throw new RuntimeException()}
+        // check if other uploadFile calls were executed
         1 * gistsApi.uploadFile("test2.log", "content2")
+        1 * gistsApi.uploadFile("test3.log", "content3")
+        thrown(RuntimeException)
     }
 }
