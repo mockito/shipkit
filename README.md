@@ -2,6 +2,13 @@
 
 [![Build Status](https://travis-ci.org/mockito/shipkit.svg?branch=master)](https://travis-ci.org/mockito/shipkit)
 
+## Documentation
+
+- General information and table of contents: [README.md](README.md)
+    - Help us! How to contribute: [CONTRIBUTING.md](CONTRIBUTING.md)
+    - Work with us! How we work: [docs/how-we-work.md](docs/how-we-work.md)
+- Getting started guide: [docs/getting-started.md](docs/getting-started.md)
+
 ## Imagine
 
 You will be more productive if your releases are fully automated and happen on every change.
@@ -79,7 +86,7 @@ Perform release:
 ./gradlew performRelease
 ```
 
-For more and detailed information see the project [wiki](https://github.com/mockito/shipkit/wiki/Getting-started-with-Shipkit).
+For more and detailed information see [docs/getting-started.md](docs/getting-started.md)
 
 ### History
 
