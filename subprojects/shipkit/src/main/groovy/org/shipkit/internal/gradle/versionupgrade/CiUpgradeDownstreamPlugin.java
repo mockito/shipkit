@@ -22,10 +22,10 @@ public class CiUpgradeDownstreamPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
-        project.getPlugins().apply(CiReleasePlugin.class);
+        project.getRootProject().getPlugins().apply(CiReleasePlugin.class);
         project.getPlugins().apply(UpgradeDownstreamPlugin.class);
 
-        ShipkitExecTask ciPerformReleaseTask = (ShipkitExecTask) project.getTasks().findByName(CiReleasePlugin.CI_PERFORM_RELEASE_TASK);
+        ShipkitExecTask ciPerformReleaseTask = (ShipkitExecTask) project.getRootProject().getTasks().findByName(CiReleasePlugin.CI_PERFORM_RELEASE_TASK);
 
         ciPerformReleaseTask.getExecCommands().add(execCommand(
                 "Upgrading downstream projects", asList("./gradlew", UpgradeDownstreamPlugin.UPGRADE_DOWNSTREAM_TASK)));
