@@ -21,16 +21,16 @@ import static org.shipkit.internal.gradle.java.JavaPublishPlugin.MAVEN_LOCAL_TAS
  * Configures Java project for automated releases with Bintray.
  * <p>
  * Applies following plugins:
- *
+ * <p>
  * <ul>
- *     <li>{@link ReleasePlugin}</li>
+ * <li>{@link ReleasePlugin}</li>
  * </ul>
- *
+ * <p>
  * Adds following behavior to all submodules that have {@link JavaBintrayPlugin}:
- *
+ * <p>
  * <ul>
- *     <li>Hooks up bintray upload tasks to the release tasks</li>
- *     <li>Configures Bintray publication repository on the release notes tasks</li>
+ * <li>Hooks up bintray upload tasks to the release tasks</li>
+ * <li>Configures Bintray publication repository on the release notes tasks</li>
  * </ul>
  */
 public class BintrayReleasePlugin implements Plugin<Project> {
@@ -64,7 +64,7 @@ public class BintrayReleasePlugin implements Plugin<Project> {
                         deferredConfiguration(subproject, new Runnable() {
                             public void run() {
                                 UpdateReleaseNotesTask updateNotes = (UpdateReleaseNotesTask) project.getTasks().getByName(ReleaseNotesPlugin.UPDATE_NOTES_TASK);
-                                String userSpecifiedRepo = conf.getLenient().getReleaseNotes().getPublicationRepository();
+                                String userSpecifiedRepo = conf.getReleaseNotes().getPublicationRepository();
                                 if (userSpecifiedRepo != null) {
                                     updateNotes.setPublicationRepository(userSpecifiedRepo);
                                 } else {
