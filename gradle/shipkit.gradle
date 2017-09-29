@@ -5,7 +5,13 @@ shipkit {
     team.developers = ['szczepiq:Szczepan Faber', 'mstachniuk:Marcin Stachniuk',
                        'wwilk:Wojtek Wilk', 'epeee:Erhard Pointl', 'NagRock:Maciej Kuster']
 
-    releaseNotes.publicationRepository = "https://plugins.gradle.org/plugin/org.shipkit.java"
+    // Comment in after the next version of shipkit is released
+    //releaseNotes.publicationRepository = "https://plugins.gradle.org/plugin/org.shipkit.java"
+}
+
+// Remove me after the next version of shipkit is released
+afterEvaluate {
+    project.rootProject.tasks.updateReleaseNotes.publicationRepository = "https://plugins.gradle.org/plugin/org.shipkit.java"
 }
 
 apply plugin: 'org.shipkit.upgrade-dependency'
