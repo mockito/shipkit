@@ -2,7 +2,7 @@
 
 We are a community project and we work as a team.
  - See [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute
- - See [README.md](README.md) for everything else.
+ - See [documentation index](README.md#documentation)
 
 ### Getting contributions
 
