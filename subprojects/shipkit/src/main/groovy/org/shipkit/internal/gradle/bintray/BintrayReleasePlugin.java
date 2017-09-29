@@ -64,7 +64,7 @@ public class BintrayReleasePlugin implements Plugin<Project> {
                         deferredConfiguration(subproject, new Runnable() {
                             public void run() {
                                 UpdateReleaseNotesTask updateNotes = (UpdateReleaseNotesTask) project.getTasks().getByName(ReleaseNotesPlugin.UPDATE_NOTES_TASK);
-                                boolean userSpecifiedRepo = conf.getLenient().getReleaseNotes().getPublicationRepository();
+                                String userSpecifiedRepo = conf.getLenient().getReleaseNotes().getPublicationRepository();
                                 if (userSpecifiedRepo != null) {
                                     updateNotes.setPublicationRepository(userSpecifiedRepo);
                                 } else {
