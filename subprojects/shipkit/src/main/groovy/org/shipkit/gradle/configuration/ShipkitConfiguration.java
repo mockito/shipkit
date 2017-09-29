@@ -140,7 +140,7 @@ public class ShipkitConfiguration {
 
         /**
          * GitHub repository name, for example: "mockito/shipkit"
-         *
+         * <p>
          * //TODO SF Javadoc about getRepository() throughout the project need to include information how we obtain this repo automatically
          */
         public String getRepository() {
@@ -254,6 +254,24 @@ public class ShipkitConfiguration {
          */
         public void setIgnoreCommitsContaining(Collection<String> commitMessageParts) {
             store.put("releaseNotes.ignoreCommitsContaining", commitMessageParts);
+        }
+
+        /**
+         * Set the Publication Repository where your project can be found
+         *
+         * @see #getPublicationRepository()
+         */
+        public void setPublicationRepository(String publicationRepository) {
+            store.put("releaseNotes.publicationRepository", publicationRepository);
+        }
+
+        /**
+         * Get the Publication Repository
+         *
+         * @see #setPublicationRepository(String)
+         */
+        public String getPublicationRepository() {
+            return store.getString("releaseNotes.publicationRepository");
         }
     }
 
