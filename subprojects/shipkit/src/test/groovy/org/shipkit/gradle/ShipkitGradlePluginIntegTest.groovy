@@ -15,6 +15,7 @@ class ShipkitGradlePluginIntegTest extends GradleSpecification {
             shipkit {
                 gitHub.readOnlyAuthToken = "foo"
                 gitHub.repository = "repo"
+                releaseNotes.publicationRepository = "publicRepo"
             }
         """
 
