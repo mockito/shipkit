@@ -4,11 +4,13 @@
 
 ## Documentation
 
-- General information and table of contents: [README.md](README.md)
+- Project information: [README.md](README.md)
     - Help us! How to contribute: [CONTRIBUTING.md](CONTRIBUTING.md)
     - Work with us! How we work: [docs/how-we-work.md](docs/how-we-work.md)
     - Shipkit release notes: [docs/release-notes.md](docs/release-notes.md)
-- Getting started guide: [docs/getting-started.md](docs/getting-started.md)
+- User guides
+    - Getting started: [docs/getting-started.md](docs/getting-started.md)
+    - How Shipkit works: [docs/how-shipkit-works.md](docs/how-shipkit-works.md)
 
 ## Imagine
 
@@ -116,14 +118,3 @@ Other talks: Engineering at scale with [Gradle and Play Framework at LinkedIn](h
 - 2017, November - Szczepan's [continous delivery talk at QCon](https://qconsf.com/sf2017/presentation/lessons-linkedin-and-mockito) (San Franciso), will include Mockito use of Shipkit.
 - 2017, Q4 - 1.0 release.
 - 2018, helping community adopt Shipkit while adding writing great features on the way!
-
-## Development guide
-
-See [CONTRIBUTING.md](CONTRIBUTING.md)
-
-## How we work
-
-See [how-we-work.md](docs/how-we-work.md) on information how we roll this amazing community project:
-
-- How to get and appreciate contributions
-- How to give and receive great code review feedback
