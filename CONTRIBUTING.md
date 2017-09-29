@@ -1,7 +1,8 @@
 # Development guide
 
 This guide describes how to contribute and develop in our team.
-See [how-we-work.md](docs/how-we-work.md) for info how we roll the project.
+See [docs/how-we-work.md](docs/how-we-work.md) for info how we roll the project.
+See all documentation index in [README.md](README.md#documentation).
 
 This document contains guidelines for both groups: core developers and occasional contributors.
 The purpose is to have a reference point and summary of various design discussions the team has.
