@@ -49,5 +49,6 @@ class PluginSpecification extends Specification {
         conf = applyShipkitConfiguration()
         this.conf.gitHub.readOnlyAuthToken = "token"
         this.conf.gitHub.repository = "repo"
+        this.conf.releaseNotes.publicationRepository = "publicRepo"
     }
 }
