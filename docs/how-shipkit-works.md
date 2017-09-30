@@ -1,5 +1,9 @@
 ## How Shipkit works?
 
+Want to find out how Shipkit works?
+- see also [getting started guide](doc/getting-started.md)
+- or the entire [documentation index](README.md#documentation)
+
 ### Version bumps
 
 Yesterday version is already old.
@@ -95,6 +99,12 @@ How does it sound? Start discussion by opening a ticket in GitHub!
 
 ### Automated releases
 
+TBD.
+
 ### Avoiding unnecessary releases
 
+TBD.
+
 ### Publishing Java libraries
+
+TBD.
