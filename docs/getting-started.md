@@ -6,23 +6,37 @@ See also [documentation index](README.md#documentation)
 Please help us with the documentation.
 Pull requests are very welcome!
 
+To quickly learn how Shipkit works you can test drive this guide using our [Shipkit Bootstrap project](https://github.com/mockito/shipkit-bootstrap).
+Otherwise, apply below steps to your own project:
+
 ### Adding dependency
 
-First step on the way to use Shipkit is adding a dependency on “org.shipkit:shipkit:${version}” which currently can be downloaded from “https://plugins.gradle.org/m2/”, so you need to add this Maven repository to your gradle configuration if you don’t already have it. Additionally you need to apply “org.shipkit.java” plugin, only in your root project.
+Add below to your root "build.gradle" file.
+Get the latest version of "org.shipkit.java" plugin from [Gradle Plugin Portal](https://plugins.gradle.org/plugin/org.shipkit.java)
 
-Afterwards your build file should look like this:
+```Gradle
+plugins {
+    id "org.shipkit.java" version "TODO"
+}
 
-    buildscript {
-        repositories {
-            maven { url "https://plugins.gradle.org/m2/" }
-        }
+apply plugin: "org.shipkit.java"
+```
 
-        dependencies {
-            classpath "org.shipkit:shipkit:0.9.73"
-        }
+For advanced users, if you need to use the traditional way of configuring Gradle plugins:
+
+```Gradle
+buildscript {
+    repositories {
+        maven { url "https://plugins.gradle.org/m2/" }
     }
 
-    apply plugin: "org.shipkit.java"
+    dependencies {
+        classpath "org.shipkit:shipkit:0.9.73"
+    }
+}
+
+apply plugin: "org.shipkit.java"
+```
 
 ### Initializing Shipkit
 
@@ -46,10 +60,12 @@ It is filled with examplary values and a few may be kept but most of them you ne
 
 At the beginning of shipkit.gradle you can find shipkit extension:
 
-    shipkit {
-        gitHub.repository = "wwilk/shipkit-demo"
-        gitHub.readOnlyAuthToken = "e7fe8fcfd6ffedac384c8c4c71b2a48e646"
-    }
+```Gradle
+shipkit {
+    gitHub.repository = "wwilk/shipkit-demo"
+    gitHub.readOnlyAuthToken = "e7fe8fcfd6ffedac384c8c4c71b2a48e646"
+}
+```
 
 Property **github.repository** is by default filled with your remote origin URL, while **github.readOnlyAuthToken** is set to the token for generic [shipkit-org](https://github.com/shipkit-org) account.
 It is sufficient to test release locally.
@@ -60,21 +76,23 @@ See [here for more information](https://github.com/mockito/shipkit/wiki/Getting-
 
 Bintray configuration of the generated shipkit.gradle looks like this:
 
-    allprojects {
-        plugins.withId("org.shipkit.bintray") {
-            bintray {
-                key = '7ea297848ca948adb7d3ee92a83292112d7ae989'
-                pkg {
-                    repo = 'bootstrap'
-                    user = 'shipkit-bootstrap-bot'
-                    userOrg = 'shipkit-bootstrap'
-                    name = 'maven'
-                    licenses = ['MIT']
-                    labels = ['continuous delivery', 'release automation', 'shipkit']
-                }
+```Gradle
+allprojects {
+    plugins.withId("org.shipkit.bintray") {
+        bintray {
+            key = '7ea297848ca948adb7d3ee92a83292112d7ae989'
+            pkg {
+                repo = 'bootstrap'
+                user = 'shipkit-bootstrap-bot'
+                userOrg = 'shipkit-bootstrap'
+                name = 'maven'
+                licenses = ['MIT']
+                labels = ['continuous delivery', 'release automation', 'shipkit']
             }
         }
     }
+}
+```
 
 To only play around with Shipkit you don’t need to change any Bintray configuration!
 Shipkit maintains shipkit-bootstrap Bintray organisation for you to try on Shipkit publishing without even creating a Bintray account!
@@ -133,28 +151,30 @@ Shipkit uses Gradle Bintray Plugin underneath and its Bintray extension, so you 
 You can sign in to Travis with your GitHub account, and then you need to enable your project to be built on Travis.
 Here is how generated (by running initShipkit task) ".travis.yml" file looks like:
 
-    # More details on how to configure the Travis build
-    # https://docs.travis-ci.com/user/customizing-the-build/
+```yml
+# More details on how to configure the Travis build
+# https://docs.travis-ci.com/user/customizing-the-build/
 
-    # Speed up build with travis caches
-    cache:
-      directories:
-        - $HOME/.gradle/caches/
-        - $HOME/.gradle/wrapper/
+# Speed up build with travis caches
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
 
-    language: java
+language: java
 
-    jdk:
-      - oraclejdk8
+jdk:
+  - oraclejdk8
 
-    #don't build tags
-    branches:
-      except:
-      - /^v\d/
+#don't build tags
+branches:
+  except:
+  - /^v\d/
 
-    #Build and perform release (if needed)
-    script:
-     - ./gradlew build -s && ./gradlew ciPerformRelease
+#Build and perform release (if needed)
+script:
+ - ./gradlew build -s && ./gradlew ciPerformRelease
+```
 
 The "script" part of Travis CI setup consists of 2 operations separate with "&&". This is the easiest way to configure releases in Travis. The first operation is typically the "build" command, but you totally configure it. Second operation uses "&&" so that it is only triggered if the build succeeds. "ciPerformRelease" task is the core of Shipkit, it aggregates few other tasks:
 
@@ -169,10 +189,12 @@ You can try it by pushing anything to master, which should start the Travis buil
 
 ### Reference projects
 
-Sometimes it is best to lear from real projects.
+Sometimes it is best to learn from real projects.
 You can view "shipkit.gradle", ".travis.yml" and "build.gradle" of projects that already use Shipkit:
 
- - Shipkit Minimum Example - coming soon!
  - [Shipkit Example](https://github.com/mockito/shipkit-example) - small and simple example, best to get started
  - [Mockito](https://github.com/mockito/mockito) - real project with various interesting Shipkit customizations
  - [Powermock](https://github.com/powermock/powermock) - another real project
+ - [Shipkit Bootstrap project](https://github.com/mockito/shipkit-bootstrap) - use it to learn Shipkit quickly by test driving this user guide.
+ Bootstrap project does not use Shipkit until you make it so :)
+
