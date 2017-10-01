@@ -10,7 +10,7 @@ import spock.lang.Specification
 import static TestUtil.commandAvailable
 
 //ignore the test when there is no 'ls' utility
-@IgnoreIf({!commandAvailable("ls")})
+@IgnoreIf({ !commandAvailable("ls") })
 class DefaultProcessRunnerTest extends Specification {
 
     @Rule TemporaryFolder tmp = new TemporaryFolder()

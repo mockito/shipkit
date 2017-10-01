@@ -18,7 +18,7 @@ class FetcherCallableTest extends Specification {
 
         then:
         result
-        result == [6, 7, 8 ,9 ,10] as Set
+        result == [6, 7, 8, 9, 10] as Set
     }
 
     def "call using empty list"() {

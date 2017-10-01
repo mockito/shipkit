@@ -3,7 +3,6 @@ package org.shipkit.internal.notes.contributors
 import org.shipkit.internal.notes.util.Function
 import spock.lang.Specification
 
-
 class ConcurrentDispatcherTest extends Specification {
 
     def "Dispatch"() {

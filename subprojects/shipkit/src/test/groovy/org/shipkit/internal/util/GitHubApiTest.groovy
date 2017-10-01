@@ -4,7 +4,7 @@ import spock.lang.Specification
 
 class GitHubApiTest extends Specification {
 
-    def "should mask access token"(){
+    def "should mask access token"() {
         given:
         def api = new GitHubApi("https://api.github.com", "accessToken")
 

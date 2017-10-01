@@ -8,7 +8,7 @@ class OfflineChecker {
 
     static isOffline(String testUrl) {
         try {
-            new URL(testUrl).withInputStream {}
+            new URL(testUrl).withInputStream { }
             return false
         } catch (Exception ignored) {
             return true

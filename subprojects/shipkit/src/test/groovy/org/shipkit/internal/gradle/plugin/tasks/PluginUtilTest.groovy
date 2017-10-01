@@ -4,7 +4,7 @@ import testutil.PluginSpecification
 
 import static org.shipkit.internal.gradle.plugin.PluginDiscoveryPluginTest.META_INF_GRADLE_PLUGINS
 
-class PluginUtilTest extends PluginSpecification{
+class PluginUtilTest extends PluginSpecification {
 
     def "implementation class"() {
         when:

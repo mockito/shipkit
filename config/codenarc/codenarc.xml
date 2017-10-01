@@ -15,4 +15,10 @@
 
     <ruleset-ref path='rulesets/unused.xml'/>
 
+    <ruleset-ref path='rulesets/formatting.xml'>
+        <exclude name="ClassJavadoc"/>
+        <exclude name="LineLength"/>
+        <exclude name="SpaceAroundMapEntryColon"/>
+    </ruleset-ref>
+
 </ruleset>

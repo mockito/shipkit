@@ -6,7 +6,6 @@ import static org.shipkit.internal.util.RepositoryNameUtil.repositoryNameToCamel
 import static org.shipkit.internal.util.RepositoryNameUtil.repositoryNameToCapitalizedCamelCase
 import static org.shipkit.internal.util.RepositoryNameUtil.extractRepoNameFromGitHubUrl
 
-
 class RepositoryNameUtilTest extends Specification {
 
     def "should convert to camelCase"(String repoName, String camelCase, String capitalizedCamelCase) {
@@ -21,7 +20,7 @@ class RepositoryNameUtilTest extends Specification {
         "org/repo_name"           | "orgRepoName"           | "OrgRepoName"
     }
 
-    def "should extract repo name from url"(){
+    def "should extract repo name from url"() {
         expect:
         "mockito/shipkit" == extractRepoNameFromGitHubUrl("https://github.com/mockito/shipkit")
         "mockito/shipkit.git" == extractRepoNameFromGitHubUrl("https://github.com/mockito/shipkit.git")

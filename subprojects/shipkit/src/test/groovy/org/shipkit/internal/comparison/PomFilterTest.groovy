@@ -66,7 +66,7 @@ class PomFilterTest extends Specification {
             currentVersion: "0.2.2",
             projectGroup: "org.mockito")
 
-    def "removes version and sets all dependencies of the same projectGroup to the proper version"(){
+    def "removes version and sets all dependencies of the same projectGroup to the proper version"() {
         when:
         def result = underTest.filter(input)
 
@@ -74,7 +74,7 @@ class PomFilterTest extends Specification {
         result == filteredOutput
     }
 
-    def "parses correctly poms without dependencies tag"(){
+    def "parses correctly poms without dependencies tag"() {
         given:
         def emptyPom = "<project>" +
                 "<version>0.1.2</version>" +
@@ -87,7 +87,7 @@ class PomFilterTest extends Specification {
         result == "<project/>\n"
     }
 
-    def "parses correctly poms with empty dependencies tag"(){
+    def "parses correctly poms with empty dependencies tag"() {
         given:
         def emptyPom = "<project>" +
                 "<version>0.1.2</version>" +
@@ -101,15 +101,15 @@ class PomFilterTest extends Specification {
         result == "<project>\n  <dependencies/>\n</project>\n"
     }
 
-    def "removes contributors"(){
+    def "removes contributors"() {
         given:
         def emptyPom = "<project>" +
                 "<version>0.1.2</version>" +
                 "<dependencies></dependencies>" +
                 "<contributors>" +
                 "   <contributor>" +
-                "       <name>Wojtek Wilk</name>"+
-                "       <url>https://github.com/wwilk</url>"+
+                "       <name>Wojtek Wilk</name>" +
+                "       <url>https://github.com/wwilk</url>" +
                 "   </contributor>" +
                 "</contributors>" +
                 "</project>"
@@ -121,7 +121,7 @@ class PomFilterTest extends Specification {
         result == "<project>\n  <dependencies/>\n</project>\n"
     }
 
-    def "removes developers"(){
+    def "removes developers"() {
         given:
         def emptyPom = "<project>" +
                 "<version>0.1.2</version>" +

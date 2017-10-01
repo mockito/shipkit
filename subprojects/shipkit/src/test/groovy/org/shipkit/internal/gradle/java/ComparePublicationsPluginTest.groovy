@@ -24,7 +24,7 @@ class ComparePublicationsPluginTest extends PluginSpecification {
 
         new File(tmp.root.absolutePath + "/version.properties") << "version=1.0.1\npreviousVersion=1.0.0"
 
-        parent.allprojects{
+        parent.allprojects {
             group = "org.group"
         }
 

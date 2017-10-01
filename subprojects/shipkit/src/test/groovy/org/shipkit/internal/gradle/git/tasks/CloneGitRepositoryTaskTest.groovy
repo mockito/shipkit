@@ -14,7 +14,7 @@ class CloneGitRepositoryTaskTest extends Specification {
 
     @Subject task = new ProjectBuilder().build().tasks.create("cloneGitRepositoryTask", CloneGitRepositoryTask)
 
-    void setup(){
+    void setup() {
         tempFolder = tmp.newFolder()
     }
 
