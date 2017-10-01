@@ -4,6 +4,7 @@ import org.apache.commons.lang.builder.EqualsBuilder
 import org.gradle.api.Project
 import org.gradle.api.plugins.PluginContainer
 import org.shipkit.internal.gradle.bintray.ShipkitBintrayPlugin
+import org.shipkit.internal.gradle.plugin.GradlePortalPublishPlugin
 import spock.lang.Specification
 
 class DefaultArtifactUrlResolverFactoryTest extends Specification {
@@ -32,4 +33,17 @@ class DefaultArtifactUrlResolverFactoryTest extends Specification {
         EqualsBuilder.reflectionEquals(result, new BintrayDefaultArtifactUrlResolver(project, "artifactName", "0.0.1"))
     }
 
+    def "returns Gradle plugin resolver when GradlePortalPublishPlugin is applied to the project"() {
+        given:
+        def pluginContainer = Mock(PluginContainer)
+        project.plugins >> pluginContainer
+        project.group >> "testGroup"
+        pluginContainer.hasPlugin(GradlePortalPublishPlugin) >> true
+
+        when:
+        def result = underTest.getDefaultResolver(project, "artifactName", "0.0.1")
+
+        then:
+        EqualsBuilder.reflectionEquals(result, new GradlePluginArtifactUrlResolver("testGroup", "artifactName", "0.0.1"))
+    }
 }

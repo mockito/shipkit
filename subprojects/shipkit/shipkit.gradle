@@ -8,6 +8,9 @@ apply plugin: 'com.gradle.plugin-publish'
 
 apply from: "$rootDir/gradle/upgrade-downstream.gradle"
 
+//TODO: WW uncomment when GradlePluginArtifactUrlResolver is released
+//apply plugin: 'org.shipkit.compare-publications'
+
 checkstyle {
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
 }
