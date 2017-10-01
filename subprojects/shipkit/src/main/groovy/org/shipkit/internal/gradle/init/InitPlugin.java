@@ -95,7 +95,7 @@ public class InitPlugin implements Plugin<Project> {
                     public void execute(Task task) {
                         LOG.lifecycle("  Initialization complete. Thank you for using Shipkit!\n" +
                             "  Please review auto-generated default files before checking them in.\n" +
-                            "  Guide: https://github.com/mockito/shipkit/wiki/Getting-started-with-Shipkit");
+                            "  Guide: https://github.com/mockito/shipkit/blob/master/docs/getting-started.md");
                     }
                 });
             }
