@@ -257,7 +257,12 @@ public class ShipkitConfiguration {
         }
 
         /**
-         * Set the Publication Repository where your project can be found
+         * Set the Publication Repository where we look for your published binary.
+         * E.g.
+         * <pre>
+         *   releaseNotes.publicationRepository = "https://plugins.gradle.org/plugin/org.shipkit.java"
+         * </pre>
+         * This will be used for adding and linking the repository in the release notes.
          *
          * @see #getPublicationRepository()
          */
