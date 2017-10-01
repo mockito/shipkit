@@ -12,11 +12,12 @@ import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
  * The plugin applies following plugins:
  *
  * <ul>
- *     <li>{@link CiReleasePlugin}</li>
- *     <li>{@link UpgradeDownstreamPlugin}</li>
+ *     <li>{@link CiReleasePlugin} (to the root project)</li>
+ *     <li>{@link UpgradeDownstreamPlugin} (to the current project)</li>
  * </ul>
  *
  * It adds "upgradeDownstream" task to the execution commands of "ciPerformRelease" task.
+ * Intended to be applied to the project which should be updated in the downstream project.
  */
 public class CiUpgradeDownstreamPlugin implements Plugin<Project> {
 
