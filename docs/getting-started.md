@@ -70,7 +70,7 @@ shipkit {
 Property **github.repository** is by default filled with your remote origin URL, while **github.readOnlyAuthToken** is set to the token for generic [shipkit-org](https://github.com/shipkit-org) account.
 It is sufficient to test release locally.
 To perform write operations (like git push) you would need a write token but if you don't specify it Shipkit will use your local GitHub authentication.
-See [here for more information](https://github.com/mockito/shipkit/wiki/Getting-started-with-Shipkit#github)
+GitHub configuration is covered in more detail later in this document.
 
 ### Bintray configuration
 

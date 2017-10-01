@@ -16,14 +16,14 @@ import spock.lang.Specification
  * that is required by {@link org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin}
  * Configuration methods are overridable, so you don't have to rely on this behaviour if you don't need it.
  */
-class PluginSpecification extends Specification{
+class PluginSpecification extends Specification {
     @Rule
     TemporaryFolder tmp = new TemporaryFolder()
 
     Project project
     ShipkitConfiguration conf
 
-    void setup(){
+    void setup() {
         initProject()
         createShipkitFile()
         createShipkitConfiguration()
@@ -34,18 +34,18 @@ class PluginSpecification extends Specification{
         project.version = "1.5.23"
     }
 
-    void createShipkitFile(){
+    void createShipkitFile() {
         def rootPath = tmp.root.absolutePath
         def shipkitFile = new File(rootPath + "/gradle/shipkit.gradle");
         IOUtil.createParentDirectory(shipkitFile)
         shipkitFile << "shipkit { }"
     }
 
-    ShipkitConfiguration applyShipkitConfiguration(){
+    ShipkitConfiguration applyShipkitConfiguration() {
         return project.plugins.apply(ShipkitConfigurationPlugin).configuration
     }
 
-    void createShipkitConfiguration(){
+    void createShipkitConfiguration() {
         conf = applyShipkitConfiguration()
         this.conf.gitHub.readOnlyAuthToken = "token"
         this.conf.gitHub.repository = "repo"

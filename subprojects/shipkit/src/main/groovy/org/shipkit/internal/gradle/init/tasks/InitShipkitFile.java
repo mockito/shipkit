@@ -46,7 +46,7 @@ public class InitShipkitFile {
         "//This default Shipkit configuration file was created automatically and is intended to be checked-in.\n" +
             "//Default configuration is sufficient for local testing and trying out Shipkit.\n" +
             "//To leverage Shipkit fully, please fix the TODO items, refer to our Getting Started Guide for help:\n" +
-            "// https://github.com/mockito/shipkit/wiki/Getting-started-with-Shipkit\n" +
+            "// https://github.com/mockito/shipkit/blob/master/docs/getting-started.md\n" +
             "shipkit {\n" +
             "   //TODO is the repository correct?\n" +
             "   gitHub.repository = \"@gitHub.repository@\"\n" +
