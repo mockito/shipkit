@@ -16,9 +16,11 @@
     <ruleset-ref path='rulesets/unused.xml'/>
 
     <ruleset-ref path='rulesets/formatting.xml'>
+        <rule-config name="SpaceAroundMapEntryColon">
+            <property name="characterAfterColonRegex" value="\s"/>
+        </rule-config>
         <exclude name="ClassJavadoc"/>
         <exclude name="LineLength"/>
-        <exclude name="SpaceAroundMapEntryColon"/>
     </ruleset-ref>
 
 </ruleset>
