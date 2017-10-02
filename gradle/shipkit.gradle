@@ -4,10 +4,13 @@ shipkit {
 
     team.developers = ['szczepiq:Szczepan Faber', 'mstachniuk:Marcin Stachniuk',
                        'wwilk:Wojtek Wilk', 'epeee:Erhard Pointl', 'NagRock:Maciej Kuster']
+
+    // Comment in after the next version of shipkit is released
+    //releaseNotes.publicationRepository = "https://plugins.gradle.org/plugin/org.shipkit.java"
 }
 
+// Remove me after the next version of shipkit is released
 afterEvaluate {
-    //TODO let's create a property for this setting in 'shipkit' extension
     project.rootProject.tasks.updateReleaseNotes.publicationRepository = "https://plugins.gradle.org/plugin/org.shipkit.java"
 }
 
