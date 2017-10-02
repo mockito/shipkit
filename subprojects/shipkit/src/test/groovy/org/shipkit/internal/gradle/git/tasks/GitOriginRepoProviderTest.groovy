@@ -8,12 +8,12 @@ class GitOriginRepoProviderTest extends Specification {
     ProcessRunner runner
     GitOriginRepoProvider underTest
 
-    void setup(){
+    void setup() {
         runner = Mock(ProcessRunner)
         underTest = new GitOriginRepoProvider(runner)
     }
 
-    def "should return git remote correctly for ssh config" (){
+    def "should return git remote correctly for ssh config" () {
         given:
         runner.run(_) >> "git@github.com:mockito/mockito.git\n"
 
@@ -21,7 +21,7 @@ class GitOriginRepoProviderTest extends Specification {
         underTest.originGitRepo == "mockito/mockito"
     }
 
-    def "should return git remote correctly for https config" (){
+    def "should return git remote correctly for https config" () {
         given:
         runner.run(_) >> "https://github.com/mockito/mockito.git\n"
 

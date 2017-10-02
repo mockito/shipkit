@@ -4,7 +4,6 @@ import java.lang.reflect.Method
 
 class ReflectionUtil {
 
-
     public static final int SET_LENGTH = 3
     public static final String GET = "get"
     public static final String IS = "is"

@@ -6,7 +6,7 @@ class PomFilter {
     String previousVersion;
     String currentVersion;
 
-    PomFilter(){
+    PomFilter() {
 
     }
 
@@ -24,7 +24,7 @@ class PomFilter {
      * - removes contributors and developers
      * @return filtered pom
      */
-    String filter(String pom){
+    String filter(String pom) {
         def projectXml = new XmlParser().parseText(pom)
 
         projectXml.remove(projectXml.version)
@@ -55,13 +55,13 @@ class PomFilter {
     }
 
     def removeContributors(Node pom) {
-        if(!pom.contributors.isEmpty()) {
+        if (!pom.contributors.isEmpty()) {
             pom.remove(pom.contributors)
         }
     }
 
     def removeDevelopers(Node pom) {
-        if(!pom.developers.isEmpty()) {
+        if (!pom.developers.isEmpty()) {
             pom.remove(pom.developers)
         }
     }

@@ -42,7 +42,7 @@ Release notes:
             getAuthorCount() >> 1
             getContributions() >> [Stub(Contribution) {
                 getAuthorName() >> "Szczepan Faber"
-            }]
+            } ]
         }
 
         def d = new DefaultReleaseNotesData("2.0.0", new Date(1483500000000), c, [], "v1.9.0", "v2.0.0")
@@ -106,7 +106,7 @@ Release notes:
 
     def "release headline with no commits"() {
         expect:
-        DetailedFormatter.authorsSummary(Stub(ContributionSet), [:],"link") == "no code changes (no commits)"
+        DetailedFormatter.authorsSummary(Stub(ContributionSet), [:], "link") == "no code changes (no commits)"
     }
 
     def "authors summary with 1 commit"() {

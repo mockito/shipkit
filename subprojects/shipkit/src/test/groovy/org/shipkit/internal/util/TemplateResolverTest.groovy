@@ -20,7 +20,7 @@ class TemplateResolverTest extends Specification {
     }
 """
 
-    def "should resolve template" (){
+    def "should resolve template" () {
         given:
         def resolver = new TemplateResolver(input)
                             .withProperty("gitHub.repository", "mockito/shipkit-example")
@@ -31,7 +31,7 @@ class TemplateResolverTest extends Specification {
         resolver.resolve() == output
     }
 
-    def "should fail on null key" (){
+    def "should fail on null key" () {
         given:
         def resolver = new TemplateResolver("test")
 
@@ -43,7 +43,7 @@ class TemplateResolverTest extends Specification {
         ex.message == "key cannot be null."
     }
 
-    def "should fail on null value" (){
+    def "should fail on null value" () {
         given:
         def resolver = new TemplateResolver("test")
 

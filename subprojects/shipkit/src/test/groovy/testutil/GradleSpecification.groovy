@@ -36,7 +36,7 @@ abstract class GradleSpecification extends Specification implements GradleVersio
                 classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3"
                 classpath "com.gradle.publish:plugin-publish-plugin:0.9.6"
             }
-            
+
             repositories {
                 jcenter()
                 maven { url "https://plugins.gradle.org/m2/" }
@@ -82,7 +82,7 @@ abstract class GradleSpecification extends Specification implements GradleVersio
 
     protected List<String> skippedTaskPathsGradleBugWorkaround(String output) {
         //Due to https://github.com/gradle/gradle/issues/2732 no tasks are returned in dry-run mode. When fixed ".taskPaths(SKIPPED)" should be used directly
-        return output.readLines().findAll { it.endsWith(" SKIPPED") }.collect { it.substring(0, it.lastIndexOf(" "))}
+        return output.readLines().findAll { it.endsWith(" SKIPPED") }.collect { it.substring(0, it.lastIndexOf(" ")) }
     }
 
     private static String findClassesDir() {

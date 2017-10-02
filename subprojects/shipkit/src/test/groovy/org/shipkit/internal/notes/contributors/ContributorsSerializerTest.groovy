@@ -69,5 +69,4 @@ class ContributorsSerializerTest extends Specification {
         contributors.getAllContributors().containsAll(actual.getAllContributors())
     }
 
-
 }

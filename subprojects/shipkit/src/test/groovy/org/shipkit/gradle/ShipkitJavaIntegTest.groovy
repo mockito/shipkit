@@ -10,7 +10,8 @@ class ShipkitJavaIntegTest extends GradleSpecification {
         /**
          * TODO this test is just a starting point we will make it better and create more integration tests
          * Stuff that we should do:
-         *  1. (Most important) Avoid writing too many integration tests. Most code should be covered by unit tests (see testing pyramid)
+         *  1. (Most important) Avoid writing too many integration tests. Most code should be covered by unit tests
+         *      (see testing pyramid)
          *  2. Push out complexity to base class GradleSpecification
          *      so that what remains in the test is the essential part of a tested feature
          *  3. Add more specific assertions rather than just a list of tasks in dry run mode
@@ -32,7 +33,7 @@ class ShipkitJavaIntegTest extends GradleSpecification {
                 git.email = "shipkit.org@gmail.com"
                 gitHub.repository = "repo"
             }
-            
+
             allprojects {
                 plugins.withId("org.shipkit.bintray") {
                     bintray {

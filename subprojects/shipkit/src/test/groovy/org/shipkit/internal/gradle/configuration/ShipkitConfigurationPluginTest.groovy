@@ -9,7 +9,7 @@ class ShipkitConfigurationPluginTest extends PluginSpecification {
     Project root
     Project subproject
 
-    void setup(){
+    void setup() {
         root = new ProjectBuilder().withProjectDir(tmp.root).build()
         subproject = new ProjectBuilder().withParent(root).build()
     }
@@ -50,12 +50,12 @@ class ShipkitConfigurationPluginTest extends PluginSpecification {
     }
 
     @Override
-    void createShipkitConfiguration(){
+    void createShipkitConfiguration() {
         // default are not needed in this test
     }
 
     @Override
-    void createShipkitFile(){
+    void createShipkitFile() {
         // config file created in setup is not needed in this test
     }
 }
