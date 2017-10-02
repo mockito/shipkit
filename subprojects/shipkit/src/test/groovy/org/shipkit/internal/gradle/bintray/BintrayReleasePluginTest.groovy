@@ -13,10 +13,6 @@ class BintrayReleasePluginTest extends PluginSpecification {
         project.plugins.apply(BintrayReleasePlugin)
         project.plugins.apply(JavaBintrayPlugin)
 
-        project.bintray.pkg.userOrg = "some-org"
-        project.bintray.pkg.repo = "some-repo"
-        project.bintray.pkg.name = "some-pkg"
-
         when:
         project.evaluate()
 
