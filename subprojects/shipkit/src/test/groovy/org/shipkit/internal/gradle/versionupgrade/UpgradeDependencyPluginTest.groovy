@@ -144,7 +144,7 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
 
         then:
         task.execCommands[0].commandLine ==
-            ["git", "commit", "-m", "shipkit version upgraded to 1.2.30", dependencyFile.absolutePath]
+            ["git", "commit", "--author", "shipkit-org <<shipkit.org@gmail.com>>", "-m", "shipkit version upgraded to 1.2.30", dependencyFile.absolutePath]
     }
 
     def "should configure pushVersionUpgrade"() {
