@@ -360,6 +360,34 @@ public class ShipkitConfiguration {
             //TODO protect this setter and other relevant from invalid input (null value)
             store.put("git.commitMessagePostfix", commitMessagePostfix);
         }
+
+        /**
+         * Text will be used as description for pull request to downstream repositories.
+         */
+        public String getPullRequestDescription() {
+            return store.getString("git.pullRequestDescription");
+        }
+
+        /**
+         * See {@link #getPullRequestDescription()}
+         */
+        public void setPullRequestDescription(String pullRequestDescription) {
+            store.put("git.pullRequestDescription", pullRequestDescription);
+        }
+
+        /**
+         * Text will be used as title for pull request to downstream repositories.
+         */
+        public String getPullRequestTitle() {
+            return store.getString("git.pullRequestTitle");
+        }
+
+        /**
+         * See {@link #getPullRequestDescription()}
+         */
+        public void setPullRequestTitle(String pullRequestTitle) {
+            store.put("git.pullRequestTitle", pullRequestTitle);
+        }
     }
 
     /**

@@ -16,6 +16,8 @@ class CreatePullRequestTest extends Specification {
         createPullRequestTask.setUpstreamRepositoryName("mockito/shipkit-example")
         createPullRequestTask.setForkRepositoryName("wwilk/shipkit-example")
         createPullRequestTask.setVersionUpgrade(versionUpgrade)
+        createPullRequestTask.setPullRequestDescription("Description of this PR")
+        createPullRequestTask.setPullRequestTitle("Title of this PR")
         def gitHubApi = Mock(GitHubApi)
 
         when:
@@ -23,10 +25,8 @@ class CreatePullRequestTest extends Specification {
 
         then:
         1 * gitHubApi.post("/repos/mockito/shipkit-example/pulls",
-            '{  "title": "Version of shipkit upgraded to 0.1.5",' +
-                '  "body": "This pull request was automatically created by Shipkit\'s' +
-                            ' \'org.shipkit.upgrade-downstream\' Gradle plugin (http://shipkit.org).' +
-                            ' Please merge it so that you are using fresh version of \'shipkit\' dependency.",' +
+            '{  "title": "Title of this PR",' +
+                '  "body": "Description of this PR",' +
                 '  "head": "wwilk:shipkit-version-upgraded-0.1.5",' +
                 '  "base": "master",' +
                 '  "maintainer_can_modify": true}')
@@ -44,5 +44,35 @@ class CreatePullRequestTest extends Specification {
 
         then:
         0 * gitHubApi._
+    }
+
+    def "should throw exception when pull request title is empty"() {
+        given:
+        def tasksContainer = new ProjectBuilder().build().tasks
+        def createPullRequestTask = tasksContainer.create("createPullRequest", CreatePullRequestTask)
+        createPullRequestTask.setPullRequestDescription("Description of PR")
+        def gitHubApi = Mock(GitHubApi)
+
+        when:
+        new CreatePullRequest().createPullRequest(createPullRequestTask, gitHubApi)
+
+        then:
+        def e = thrown(IllegalArgumentException)
+        e.getMessage() == "Cannot create pull request for empty pull request title. Set it with git.pullRequestTitle property in configuration."
+    }
+
+    def "should not call github API when pull request description is empty"() {
+        given:
+        def tasksContainer = new ProjectBuilder().build().tasks
+        def createPullRequestTask = tasksContainer.create("createPullRequest", CreatePullRequestTask)
+        createPullRequestTask.setPullRequestTitle("Title of PR")
+        def gitHubApi = Mock(GitHubApi)
+
+        when:
+        new CreatePullRequest().createPullRequest(createPullRequestTask, gitHubApi)
+
+        then:
+        def e = thrown(IllegalArgumentException)
+        e.getMessage() == "Cannot create pull request for empty pull request description. Set it with git.pullRequestDescription property in configuration."
     }
 }

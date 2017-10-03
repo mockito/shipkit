@@ -198,6 +198,8 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.setAuthToken(conf.getLenient().getGitHub().getWriteAuthToken());
                 task.setVersionBranch(getVersionBranchName(upgradeDependencyExtension));
                 task.setVersionUpgrade(upgradeDependencyExtension);
+                task.setPullRequestTitle(conf.getGit().getPullRequestTitle());
+                task.setPullRequestDescription(conf.getGit().getPullRequestDescription());
 
                 gitOriginPlugin.provideOriginRepo(task, new Action<String>() {
                     @Override

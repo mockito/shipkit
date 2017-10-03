@@ -22,6 +22,8 @@ public class CreatePullRequestTask extends DefaultTask {
     @Input private String authToken;
     @Input private String versionBranch;
     @Input private String forkRepositoryName;
+    @Input private String pullRequestDescription;
+    @Input private String pullRequestTitle;
 
     private boolean dryRun;
     private UpgradeDependencyExtension versionUpgrade;
@@ -123,4 +125,34 @@ public class CreatePullRequestTask extends DefaultTask {
     public boolean isDryRun() {
         return dryRun;
     }
+
+    /**
+     * Description of pull request for downstream repositories.
+     */
+    public String getPullRequestDescription() {
+        return pullRequestDescription;
+    }
+
+    /**
+     * See {@link #getPullRequestDescription()}
+     */
+    public void setPullRequestDescription(String pullRequestDescription) {
+        this.pullRequestDescription = pullRequestDescription;
+    }
+
+    /**
+     * Title of pull request for downstream repositories.
+     */
+    public String getPullRequestTitle() {
+        return pullRequestTitle;
+    }
+
+    /**
+     * See {@link #getPullRequestTitle()}
+     */
+    public void setPullRequestTitle(String pullRequestTitle) {
+        this.pullRequestTitle = pullRequestTitle;
+    }
+
+
 }

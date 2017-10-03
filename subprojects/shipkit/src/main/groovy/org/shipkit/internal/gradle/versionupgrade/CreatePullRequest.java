@@ -2,10 +2,13 @@ package org.shipkit.internal.gradle.versionupgrade;
 
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
+import org.gradle.internal.impldep.org.apache.commons.lang.StringUtils;
 import org.shipkit.internal.util.GitHubApi;
 import org.shipkit.internal.util.IncubatingWarning;
 
 import java.io.IOException;
+
+import static org.gradle.internal.impldep.org.apache.commons.lang.StringUtils.isBlank;
 
 class CreatePullRequest {
 
@@ -20,6 +23,9 @@ class CreatePullRequest {
             LOG.lifecycle("  Skipping pull request creation due to dryRun = true");
             return;
         }
+
+        checkPullRequestMetadata(task);
+
         String headBranch = getHeadBranch(task.getForkRepositoryName(), task.getVersionBranch());
 
         IncubatingWarning.warn("creating pull requests");
@@ -37,16 +43,22 @@ class CreatePullRequest {
         gitHubApi.post("/repos/" + task.getUpstreamRepositoryName() + "/pulls", body);
     }
 
+    private void checkPullRequestMetadata(CreatePullRequestTask task) {
+        if (isBlank(getTitle(task))) {
+            throw new IllegalArgumentException("Cannot create pull request for empty pull request title. Set it with git.pullRequestTitle property in configuration.");
+        }
+
+        if (isBlank(getMessage(task))) {
+            throw new IllegalArgumentException("Cannot create pull request for empty pull request description. Set it with git.pullRequestDescription property in configuration.");
+        }
+    }
+
     private String getMessage(CreatePullRequestTask task) {
-        return String.format("This pull request was automatically created by Shipkit's" +
-         " 'org.shipkit.upgrade-downstream' Gradle plugin (http://shipkit.org)." +
-        " Please merge it so that you are using fresh version of '%s' dependency.",
-            task.getVersionUpgrade().getDependencyName());
+        return task.getPullRequestDescription();
     }
 
     private String getTitle(CreatePullRequestTask task) {
-        UpgradeDependencyExtension versionUpgrade = task.getVersionUpgrade();
-        return String.format("Version of %s upgraded to %s", versionUpgrade.getDependencyName(), versionUpgrade.getNewVersion());
+        return task.getPullRequestTitle();
     }
 
     private String getHeadBranch(String forkRepositoryName, String headBranch) {
