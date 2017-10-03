@@ -5,7 +5,6 @@ import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.gradle.notes.tasks.FetchReleaseNotes;
 
 import java.io.File;
@@ -36,7 +35,7 @@ public class FetchReleaseNotesTask extends DefaultTask {
     }
 
     /**
-     * See {@link ShipkitConfiguration.GitHub#getUrl()}
+     * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.GitHub#getUrl()}
      */
     public String getGitHubApiUrl() {
         return gitHubApiUrl;
@@ -50,7 +49,7 @@ public class FetchReleaseNotesTask extends DefaultTask {
     }
 
     /**
-     * See {@link ShipkitConfiguration.GitHub#getReadOnlyAuthToken()}
+     * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.GitHub#getReadOnlyAuthToken()}
      */
     public String getGitHubReadOnlyAuthToken() {
         return gitHubReadOnlyAuthToken;
@@ -64,7 +63,7 @@ public class FetchReleaseNotesTask extends DefaultTask {
     }
 
     /**
-     * See {@link ShipkitConfiguration.GitHub#getRepository()}
+     * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.GitHub#getRepository()}
      */
     public String getGitHubRepository() {
         return gitHubRepository;
@@ -79,7 +78,7 @@ public class FetchReleaseNotesTask extends DefaultTask {
 
     /**
      * Previous released version we generate the release notes from.
-     * See {@link ShipkitConfiguration#getPreviousReleaseVersion()}
+     * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration#getPreviousReleaseVersion()}
      */
     public String getPreviousVersion() {
         return previousVersion;
@@ -135,7 +134,7 @@ public class FetchReleaseNotesTask extends DefaultTask {
     }
 
     /**
-     * See {@link ShipkitConfiguration.Git#getTagPrefix()}
+     * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.Git#getTagPrefix()}
      */
     public String getTagPrefix() {
         return tagPrefix;
@@ -179,7 +178,7 @@ public class FetchReleaseNotesTask extends DefaultTask {
     }
 
     /**
-     * See {@link ShipkitConfiguration.ReleaseNotes#getIgnoreCommitsContaining()}
+     * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.ReleaseNotes#getIgnoreCommitsContaining()}
      */
     public Collection<String> getIgnoreCommitsContaining() {
         return ignoreCommitsContaining;
