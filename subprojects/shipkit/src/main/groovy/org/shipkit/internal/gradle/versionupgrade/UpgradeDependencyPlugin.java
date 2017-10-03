@@ -14,6 +14,7 @@ import org.shipkit.internal.gradle.git.GitOriginPlugin;
 import org.shipkit.internal.gradle.git.GitUrlInfo;
 import org.shipkit.internal.gradle.git.tasks.GitCheckOutTask;
 import org.shipkit.internal.gradle.git.tasks.GitPullTask;
+import org.shipkit.internal.gradle.util.GitUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.util.IncubatingWarning;
 
@@ -158,7 +159,8 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                     public void run() {
                         String message = String.format("%s version upgraded to %s", upgradeDependencyExtension.getDependencyName(), upgradeDependencyExtension.getNewVersion());
                         exec.execCommand(execCommand("Committing build file",
-                            "git", "commit", "-m", message, upgradeDependencyExtension.getBuildFile().getAbsolutePath()));
+                            "git", "commit", "--author", GitUtil.getGitGenericUserNotation(conf.getGit().getUser(), conf.getGit().getEmail()),
+                            "-m", message, upgradeDependencyExtension.getBuildFile().getAbsolutePath()));
                     }
                 });
                 exec.onlyIf(wasBuildFileUpdatedSpec(replaceVersionTask));
