@@ -15,6 +15,8 @@ class UpgradeDependencyPluginIntegTest extends GradleSpecification {
             shipkit {
                 gitHub.writeAuthToken = "secret"
                 gitHub.repository = "repo"
+                git.pullRequestDescription = "pull request description"
+                git.pullRequestTitle = "pull request title"
             }
         """
 
