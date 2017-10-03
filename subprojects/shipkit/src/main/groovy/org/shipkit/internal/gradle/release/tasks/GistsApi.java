@@ -13,8 +13,10 @@ public class GistsApi {
     }
 
     /**
-     * Creates a Gist with content {@param #fileContent} and uploads it.
+     * Creates a Gist with the given fileContent and uploads it.
      * Returns the url that you can use to access the uploaded Gist.
+     *
+     * @param fileContent the content which will be uploaded
      */
     public String uploadFile(String fileName, String fileContent) throws Exception {
         String body = getBody(fileName, fileContent);
