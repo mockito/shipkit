@@ -32,11 +32,11 @@ import static java.util.Arrays.asList;
  *         Therefore we need to checkout real branch like "master"</li>
  *     <li>
  *         'setGitUserName' - sets generic user name so that CI server can commit code as neatly described robot,
- *         uses value from {@link ShipkitConfiguration.Git#getUser()}
+ *         uses value from {@link org.shipkit.gradle.configuration.ShipkitConfiguration.Git#getUser()}
  *     </li>
  *     <li>
  *         'setGitUserEmail' - sets generic user email so that CI server can commit code as neatly described robot,
- *         uses value from {@link ShipkitConfiguration.Git#getEmail()}
+ *         uses value from {@link org.shipkit.gradle.configuration.ShipkitConfiguration.Git#getEmail()}
  *     </li>
  *     <li>
  *         'ciReleasePrepare' - prepares for release from CI,
