@@ -4,7 +4,6 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.gradle.configuration.ShipkitConfiguration;
 
 /**
  * Uploads files as gists to GitHub API.
@@ -37,28 +36,28 @@ public class UploadGistsTask extends DefaultTask {
     }
 
     /**
-     * See {@link ShipkitConfiguration.GitHub#getApiUrl()}
+     * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.GitHub#getApiUrl()}
      */
     public String getGitHubApiUrl() {
         return gitHubApiUrl;
     }
 
     /**
-     * See {@link ShipkitConfiguration.GitHub#getApiUrl()}
+     * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.GitHub#getApiUrl()}
      */
     public void setGitHubApiUrl(String gitHubApiUrl) {
         this.gitHubApiUrl = gitHubApiUrl;
     }
 
     /**
-     * See {@link ShipkitConfiguration.GitHub#getWriteAuthToken()}
+     * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.GitHub#getWriteAuthToken()}
      */
     public String getGitHubWriteToken() {
         return gitHubWriteToken;
     }
 
     /**
-     * See {@link ShipkitConfiguration.GitHub#getWriteAuthToken()}
+     * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.GitHub#getWriteAuthToken()}
      */
     public void setGitHubWriteToken(String gitHubWriteToken) {
         this.gitHubWriteToken = gitHubWriteToken;
