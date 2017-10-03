@@ -5,7 +5,6 @@ import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.gradle.notes.tasks.UpdateReleaseNotes;
 import org.shipkit.internal.notes.header.HeaderProvider;
 import org.shipkit.internal.notes.model.ReleaseNotesData;
@@ -92,7 +91,7 @@ public class UpdateReleaseNotesTask extends DefaultTask {
     }
 
     /**
-     * See {@link ShipkitConfiguration.Git#getTagPrefix()}
+     * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.Git#getTagPrefix()}
      */
     public String getTagPrefix() {
         return tagPrefix;
@@ -107,7 +106,7 @@ public class UpdateReleaseNotesTask extends DefaultTask {
 
     /**
      * GitHub URL address, for example: https://github.com
-     * See {@link ShipkitConfiguration.GitHub#getUrl()}
+     * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.GitHub#getUrl()}
      */
     public String getGitHubUrl() {
         return gitHubUrl;
@@ -207,7 +206,7 @@ public class UpdateReleaseNotesTask extends DefaultTask {
     }
 
     /**
-     * Developers as configured in {@link ShipkitConfiguration.Team#getDevelopers()}
+     * Developers as configured in {@link org.shipkit.gradle.configuration.ShipkitConfiguration.Team#getDevelopers()}
      */
     public Collection<String> getDevelopers() {
         return developers;
@@ -221,7 +220,7 @@ public class UpdateReleaseNotesTask extends DefaultTask {
     }
 
     /**
-     * Contributors as configured in {@link ShipkitConfiguration.Team#getContributors()}
+     * Contributors as configured in {@link org.shipkit.gradle.configuration.ShipkitConfiguration.Team#getContributors()}
      */
     public Collection<String> getContributors() {
         return contributors;
