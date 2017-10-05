@@ -4,12 +4,8 @@ import java.io.IOException;
 
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.util.GitHubApi;
 import org.shipkit.internal.util.IncubatingWarning;
-
-import static org.shipkit.internal.gradle.util.StringUtil.isEmpty;
-
 
 class CreatePullRequest {
 
@@ -24,8 +20,6 @@ class CreatePullRequest {
             LOG.lifecycle("  Skipping pull request creation due to dryRun = true");
             return;
         }
-
-        checkPullRequestMetadata(task);
 
         String headBranch = getHeadBranch(task.getForkRepositoryName(), task.getVersionBranch());
 
@@ -44,15 +38,6 @@ class CreatePullRequest {
         gitHubApi.post("/repos/" + task.getUpstreamRepositoryName() + "/pulls", body);
     }
 
-    private void checkPullRequestMetadata(CreatePullRequestTask task) {
-        if (isEmpty(task.getPullRequestTitle())) {
-            throw new IllegalArgumentException("Cannot create pull request for empty pull request title. Set it with git.pullRequestTitle property in configuration.");
-        }
-
-        if (isEmpty(task.getPullRequestDescription())) {
-            throw new IllegalArgumentException("Cannot create pull request for empty pull request description. Set it with git.pullRequestDescription property in configuration.");
-        }
-    }
 
     private String getHeadBranch(String forkRepositoryName, String headBranch) {
         return getUserOfForkRepo(forkRepositoryName) + ":" + headBranch;
