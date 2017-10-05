@@ -127,7 +127,7 @@ public class CreatePullRequestTask extends DefaultTask {
     }
 
     /**
-     * Description of pull request for downstream repositories.
+     * Description of pull request.
      */
     public String getPullRequestDescription() {
         return pullRequestDescription;
@@ -141,7 +141,7 @@ public class CreatePullRequestTask extends DefaultTask {
     }
 
     /**
-     * Title of pull request for downstream repositories.
+     * Title of pull request.
      */
     public String getPullRequestTitle() {
         return pullRequestTitle;
