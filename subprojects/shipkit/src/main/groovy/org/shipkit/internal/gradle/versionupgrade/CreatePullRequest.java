@@ -1,13 +1,15 @@
 package org.shipkit.internal.gradle.versionupgrade;
 
+import java.io.IOException;
+
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
+import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.util.GitHubApi;
 import org.shipkit.internal.util.IncubatingWarning;
 
-import java.io.IOException;
+import static org.shipkit.internal.gradle.util.StringUtil.isEmpty;
 
-import static org.apache.commons.lang.StringUtils.isBlank;
 
 class CreatePullRequest {
 
@@ -43,11 +45,11 @@ class CreatePullRequest {
     }
 
     private void checkPullRequestMetadata(CreatePullRequestTask task) {
-        if (isBlank(task.getPullRequestTitle())) {
+        if (isEmpty(task.getPullRequestTitle())) {
             throw new IllegalArgumentException("Cannot create pull request for empty pull request title. Set it with git.pullRequestTitle property in configuration.");
         }
 
-        if (isBlank(task.getPullRequestDescription())) {
+        if (isEmpty(task.getPullRequestDescription())) {
             throw new IllegalArgumentException("Cannot create pull request for empty pull request description. Set it with git.pullRequestDescription property in configuration.");
         }
     }
