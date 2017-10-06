@@ -8,7 +8,7 @@ UpgradeDependencyPlugin is aiming at solving these problems by automating the pr
 
 You use it by configuring your shipkit.gradle file like that:
 
-```    
+```
 apply plugin: 'org.shipkit.upgrade-dependency'
 
 upgradeDependency {
@@ -47,5 +47,5 @@ Executing task **performVersionUpgrade** actually does quite a few things:
 
 If the task succeeds the only thing for you to do is wait for all GitHub checks to pass and merge it!
 
-Want to know more? See [the code!](https://github.com/mockito/shipkit/blob/master/subprojects/shipkit/src/main/groovy/org/shipkit/internal/gradle/versionupgrade/UpgradeDependencyPlugin.java). Whole plugin configuration is there. Note that each mentioned step of **performVersionUpgrade** is a separate task and can be used on its own.
+Want to know more? See [the code](https://github.com/mockito/shipkit/blob/master/subprojects/shipkit/src/main/groovy/org/shipkit/internal/gradle/versionupgrade/UpgradeDependencyPlugin.java)! Whole plugin configuration is there. Note that each mentioned step of **performVersionUpgrade** is a separate task and can be used on its own.
 
