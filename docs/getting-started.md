@@ -1,7 +1,7 @@
 ## Getting started
 
 Thank you for using Shipkit!
-See also [documentation index](../README.md#documentation)
+See also [documentation index](/README.md#documentation)
 
 Please help us with the documentation.
 Pull requests are very welcome!
