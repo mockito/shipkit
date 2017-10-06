@@ -1,8 +1,8 @@
 ## How we work
 
 We are a community project and we work as a team.
- - See [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute
- - See [documentation index](README.md#documentation)
+ - See [CONTRIBUTING.md](../CONTRIBUTING.md) for how to contribute
+ - See [documentation index](../README.md#documentation)
 
 ### Getting contributions
 
