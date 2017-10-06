@@ -30,8 +30,8 @@ There is a couple of them:
 - Environment variable **SKIP_RELEASE** is set to any value (eg. 'true')
 - Commit message contains "[ci skip-release]"
 - The build is a pull request, see [Travis Documentation](https://docs.travis-ci.com/user/environment-variables/) for more information
-- Branch is a releasable one, see **releaseBranchRegex** in [Configuration section](#Configuration)
-- One of the publications changed, see [section below](#Comparing_publications)
+- Branch is a releasable one, see **releaseBranchRegex** in [Configuration section](#configuration)
+- One of the publications changed, see [section below](#comparing-publications)
 
 ## Usage
 

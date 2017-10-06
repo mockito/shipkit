@@ -103,7 +103,7 @@ TBD.
 
 ### Avoiding unnecessary releases
 
-See [documentation for ReleaseNeededPlugin]("/docs/release-needed-plugin.md").
+See [documentation for ReleaseNeededPlugin](/docs/release-needed-plugin.md).
 
 ### Publishing Java libraries
 
@@ -111,4 +111,4 @@ TBD.
 
 ### Upgrading dependencies
 
-Check out [documentation for UpgradeDependencyPlugin]("/docs/upgrade-dependency-plugin.md").
+Check out [documentation for UpgradeDependencyPlugin](/docs/upgrade-dependency-plugin.md).
