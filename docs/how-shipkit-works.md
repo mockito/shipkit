@@ -1,8 +1,8 @@
 ## How Shipkit works?
 
 Want to find out how Shipkit works?
-- see also [getting started guide](doc/getting-started.md)
-- or the entire [documentation index](README.md#documentation)
+- see also [getting started guide](/docs/getting-started.md)
+- or the entire [documentation index](/README.md#documentation)
 
 ### Version bumps
 
