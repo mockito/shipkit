@@ -32,7 +32,9 @@ class InitShipkitFileTest extends Specification {
             """//This default Shipkit configuration file was created automatically and is intended to be checked-in.
 //Default configuration is sufficient for local testing and trying out Shipkit.
 //To leverage Shipkit fully, please fix the TODO items, refer to our Getting Started Guide for help:
-// https://github.com/mockito/shipkit/blob/master/docs/getting-started.md
+//
+//     https://github.com/mockito/shipkit/blob/master/docs/getting-started.md
+//
 shipkit {
    //TODO is the repository correct?
    gitHub.repository = "mockito/mockito"
