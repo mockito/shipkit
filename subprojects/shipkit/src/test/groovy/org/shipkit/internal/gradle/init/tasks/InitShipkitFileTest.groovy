@@ -55,7 +55,8 @@ allprojects {
            //key = System.getenv("BINTRAY_API_KEY")
 
            pkg {
-               //TODO configure Bintray settings per your project (https://github.com/bintray/gradle-bintray-plugin)               repo = 'bootstrap'
+               //TODO configure Bintray settings per your project (https://github.com/bintray/gradle-bintray-plugin)
+               repo = 'bootstrap'
                user = 'shipkit-bootstrap-bot'
                userOrg = 'shipkit-bootstrap'
                name = 'maven'
