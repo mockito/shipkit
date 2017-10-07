@@ -69,7 +69,7 @@ public class InitShipkitFile {
             "           //key = System.getenv(\"BINTRAY_API_KEY\")\n" +
             "\n" +
             "           pkg {\n" +
-            "               //TODO configure Bintray settings per your project (https://github.com/bintray/gradle-bintray-plugin)" +
+            "               //TODO configure Bintray settings per your project (https://github.com/bintray/gradle-bintray-plugin)\n" +
             "               repo = '@bintray.pkg.repo@'\n" +
             "               user = '@bintray.pkg.user@'\n" +
             "               userOrg = '@bintray.pkg.userOrg@'\n" +
