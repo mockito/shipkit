@@ -9,6 +9,7 @@ import org.shipkit.gradle.git.IdentifyGitBranchTask;
 import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
 import org.shipkit.internal.gradle.git.GitBranchPlugin;
 import org.shipkit.internal.gradle.notes.ReleaseNotesPlugin;
+import org.shipkit.internal.gradle.notes.tasks.UpdateReleaseNotes;
 import org.shipkit.internal.gradle.version.VersioningPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
@@ -62,7 +63,7 @@ public class ReleasePlugin implements Plugin<Project> {
                 t.dependsOn(GitPlugin.PERFORM_GIT_PUSH_TASK);
                 t.dependsOn(IDENTIFY_GIT_BRANCH);
 
-                final UpdateReleaseNotesTask updateReleaseNotes = (UpdateReleaseNotesTask) project.getTasks().getByName(UPDATE_NOTES_TASK);
+                final UpdateReleaseNotesTask updateReleaseNotesTask = (UpdateReleaseNotesTask) project.getTasks().getByName(UPDATE_NOTES_TASK);
                 final IdentifyGitBranchTask identifyGitBranchTask = (IdentifyGitBranchTask) project.getTasks().getByName(IDENTIFY_GIT_BRANCH);
 
                 TaskSuccessfulMessage.logOnSuccess(t, new Supplier<String>() {
@@ -70,7 +71,7 @@ public class ReleasePlugin implements Plugin<Project> {
                     public String get() {
                         return "\n" +
                             "Release shipped!\n" +
-                            "    - Release notes:      " + updateReleaseNotes.getReleaseNotesUrl(identifyGitBranchTask.getBranch());
+                            "    - Release notes:      " + new UpdateReleaseNotes().getReleaseNotesUrl(updateReleaseNotesTask, identifyGitBranchTask.getBranch());
                     }
                 });
             }
