@@ -7,6 +7,7 @@ import org.gradle.api.Task;
 import org.shipkit.gradle.exec.ShipkitExecTask;
 import org.shipkit.gradle.git.IdentifyGitBranchTask;
 import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
+import org.shipkit.internal.gradle.git.GitBranchPlugin;
 import org.shipkit.internal.gradle.notes.ReleaseNotesPlugin;
 import org.shipkit.internal.gradle.version.VersioningPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
@@ -29,6 +30,7 @@ import static org.shipkit.internal.gradle.release.ReleaseNeededPlugin.RELEASE_NE
  *     <li>{@link ReleaseNotesPlugin}</li>
  *     <li>{@link VersioningPlugin}</li>
  *     <li>{@link GitPlugin}</li>
+ *     <li>{@link GitBranchPlugin}</li>
  * </ul>
  *
  * Adds tasks:
@@ -49,6 +51,7 @@ public class ReleasePlugin implements Plugin<Project> {
         project.getPlugins().apply(ReleaseNotesPlugin.class);
         project.getPlugins().apply(GitPlugin.class);
         project.getPlugins().apply(ReleaseNeededPlugin.class);
+        project.getPlugins().apply(GitBranchPlugin.class);
 
         TaskMaker.task(project, PERFORM_RELEASE_TASK, new Action<Task>() {
             public void execute(final Task t) {
@@ -57,6 +60,7 @@ public class ReleasePlugin implements Plugin<Project> {
 
                 t.dependsOn(VersioningPlugin.BUMP_VERSION_FILE_TASK, UPDATE_NOTES_TASK);
                 t.dependsOn(GitPlugin.PERFORM_GIT_PUSH_TASK);
+                t.dependsOn(IDENTIFY_GIT_BRANCH);
 
                 final UpdateReleaseNotesTask updateReleaseNotes = (UpdateReleaseNotesTask) project.getTasks().getByName(UPDATE_NOTES_TASK);
                 final IdentifyGitBranchTask identifyGitBranchTask = (IdentifyGitBranchTask) project.getTasks().getByName(IDENTIFY_GIT_BRANCH);
