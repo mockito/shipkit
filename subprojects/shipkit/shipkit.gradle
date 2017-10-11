@@ -35,6 +35,12 @@ dependencies {
     testCompile gradleTestKit()
 }
 
+test {
+    testLogging {
+        info.events = ["failed", "skipped"]
+    }
+}
+
 pluginBundle {
     website = 'http://shipkit.org/'
     vcsUrl = 'https://github.com/mockito/shipkit'
