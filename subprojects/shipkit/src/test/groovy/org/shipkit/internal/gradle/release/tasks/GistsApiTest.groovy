@@ -5,7 +5,7 @@ import spock.lang.Specification
 
 class GistsApiTest extends Specification {
 
-    def "should call GitHubApi and return correct url"(){
+    def "should call GitHubApi and return correct url"() {
         given:
         def gitHubApi = Mock(GitHubApi)
         def gistsApi = new GistsApi(gitHubApi)

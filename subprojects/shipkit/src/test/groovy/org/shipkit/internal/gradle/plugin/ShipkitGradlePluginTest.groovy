@@ -4,7 +4,7 @@ import testutil.PluginSpecification
 
 class ShipkitGradlePluginTest extends PluginSpecification {
 
-    def "applies"(){
+    def "applies"() {
         expect:
         project.plugins.apply("org.shipkit.gradle-plugin")
     }

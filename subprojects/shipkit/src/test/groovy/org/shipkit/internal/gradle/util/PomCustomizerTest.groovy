@@ -25,7 +25,7 @@ class PomCustomizerTest extends Specification {
         }
     }
 
-    def node = new Node(null,"project")
+    def node = new Node(null, "project")
     def conf = new ShipkitConfiguration()
 
     def "pom contributors from settings"() {

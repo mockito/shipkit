@@ -140,7 +140,7 @@ public class ShipkitConfiguration {
 
         /**
          * GitHub repository name, for example: "mockito/shipkit"
-         *
+         * <p>
          * //TODO SF Javadoc about getRepository() throughout the project need to include information how we obtain this repo automatically
          */
         public String getRepository() {
@@ -254,6 +254,29 @@ public class ShipkitConfiguration {
          */
         public void setIgnoreCommitsContaining(Collection<String> commitMessageParts) {
             store.put("releaseNotes.ignoreCommitsContaining", commitMessageParts);
+        }
+
+        /**
+         * Set the Publication Repository where we look for your published binary.
+         * E.g.
+         * <pre>
+         *   releaseNotes.publicationRepository = "https://plugins.gradle.org/plugin/org.shipkit.java"
+         * </pre>
+         * This will be used for adding and linking the repository in the release notes.
+         *
+         * @see #getPublicationRepository()
+         */
+        public void setPublicationRepository(String publicationRepository) {
+            store.put("releaseNotes.publicationRepository", publicationRepository);
+        }
+
+        /**
+         * Get the Publication Repository
+         *
+         * @see #setPublicationRepository(String)
+         */
+        public String getPublicationRepository() {
+            return store.getString("releaseNotes.publicationRepository");
         }
     }
 

@@ -22,7 +22,6 @@ class IdentifyGitBranchTaskTest extends Specification {
         def t = project.tasks.create("identify", IdentifyGitBranchTask)
         t.branch = "master"
 
-
         when:
         t.execute()
 

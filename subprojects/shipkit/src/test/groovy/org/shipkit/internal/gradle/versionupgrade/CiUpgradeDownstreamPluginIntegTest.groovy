@@ -21,7 +21,7 @@ class CiUpgradeDownstreamPluginIntegTest extends GradleSpecification {
 
         buildFile << """
             apply plugin: "org.shipkit.ci-upgrade-downstream"
-            
+
             upgradeDownstream{
                 repositories = ['wwilk/mockito']
             }

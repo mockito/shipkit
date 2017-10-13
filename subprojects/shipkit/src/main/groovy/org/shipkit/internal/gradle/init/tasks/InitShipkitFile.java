@@ -46,7 +46,9 @@ public class InitShipkitFile {
         "//This default Shipkit configuration file was created automatically and is intended to be checked-in.\n" +
             "//Default configuration is sufficient for local testing and trying out Shipkit.\n" +
             "//To leverage Shipkit fully, please fix the TODO items, refer to our Getting Started Guide for help:\n" +
-            "// https://github.com/mockito/shipkit/blob/master/docs/getting-started.md\n" +
+            "//\n" +
+            "//     https://github.com/mockito/shipkit/blob/master/docs/getting-started.md\n" +
+            "//\n" +
             "shipkit {\n" +
             "   //TODO is the repository correct?\n" +
             "   gitHub.repository = \"@gitHub.repository@\"\n" +
@@ -67,7 +69,7 @@ public class InitShipkitFile {
             "           //key = System.getenv(\"BINTRAY_API_KEY\")\n" +
             "\n" +
             "           pkg {\n" +
-            "               //TODO configure Bintray settings per your project (https://github.com/bintray/gradle-bintray-plugin)" +
+            "               //TODO configure Bintray settings per your project (https://github.com/bintray/gradle-bintray-plugin)\n" +
             "               repo = '@bintray.pkg.repo@'\n" +
             "               user = '@bintray.pkg.user@'\n" +
             "               userOrg = '@bintray.pkg.userOrg@'\n" +

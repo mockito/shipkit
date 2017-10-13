@@ -19,7 +19,7 @@ class UpgradeDownstreamPluginIntegTest extends GradleSpecification {
 
         buildFile << """
             apply plugin: "org.shipkit.upgrade-downstream"
-            
+
             upgradeDownstream{
                 repositories = ['wwilk/mockito']
             }

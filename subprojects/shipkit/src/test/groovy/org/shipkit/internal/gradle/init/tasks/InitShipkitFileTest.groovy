@@ -32,7 +32,9 @@ class InitShipkitFileTest extends Specification {
             """//This default Shipkit configuration file was created automatically and is intended to be checked-in.
 //Default configuration is sufficient for local testing and trying out Shipkit.
 //To leverage Shipkit fully, please fix the TODO items, refer to our Getting Started Guide for help:
-// https://github.com/mockito/shipkit/blob/master/docs/getting-started.md
+//
+//     https://github.com/mockito/shipkit/blob/master/docs/getting-started.md
+//
 shipkit {
    //TODO is the repository correct?
    gitHub.repository = "mockito/mockito"
@@ -53,7 +55,8 @@ allprojects {
            //key = System.getenv("BINTRAY_API_KEY")
 
            pkg {
-               //TODO configure Bintray settings per your project (https://github.com/bintray/gradle-bintray-plugin)               repo = 'bootstrap'
+               //TODO configure Bintray settings per your project (https://github.com/bintray/gradle-bintray-plugin)
+               repo = 'bootstrap'
                user = 'shipkit-bootstrap-bot'
                userOrg = 'shipkit-bootstrap'
                name = 'maven'

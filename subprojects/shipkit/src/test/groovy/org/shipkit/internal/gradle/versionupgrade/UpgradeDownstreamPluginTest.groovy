@@ -9,7 +9,7 @@ import testutil.PluginSpecification
 
 class UpgradeDownstreamPluginTest extends PluginSpecification {
 
-    void setup(){
+    void setup() {
         project.plugins.apply(ShipkitJavaPlugin)
     }
 

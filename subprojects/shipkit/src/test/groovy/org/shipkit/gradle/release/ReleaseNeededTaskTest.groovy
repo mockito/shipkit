@@ -11,7 +11,7 @@ class ReleaseNeededTaskTest extends Specification {
     def project = new ProjectBuilder().build()
     ReleaseNeededTask task = project.tasks.create("releaseNeeded", ReleaseNeededTask)
 
-    def "release is needed" (commitMessage, branch, pullRequest, skipEnvVar, comparisonResults, releaseNeeded){
+    def "release is needed" (commitMessage, branch, pullRequest, skipEnvVar, comparisonResults, releaseNeeded) {
         given:
         task.setCommitMessage(commitMessage)
         task.setBranch(branch)
@@ -29,20 +29,20 @@ class ReleaseNeededTaskTest extends Specification {
         new ReleaseNeeded().releaseNeeded(task, envVariables) == releaseNeeded
 
         where:
-        commitMessage       | branch    | pullRequest |skipEnvVar | comparisonResults || releaseNeeded
-        "message"           | "master"  | false       | null      | ["", "diff"]      || true  // base case (in all other cases only one parameter changes)
+        commitMessage       | branch    | pullRequest | skipEnvVar | comparisonResults || releaseNeeded
+        "message"           | "master"  | false       | null       | ["", "diff"]      || true  // base case (in all other cases only one parameter changes)
 
-        null                | "master"  | false       | null      | ["", "diff"]      || true  // null commit msg
-        " "                 | "master"  | false       | null      | ["", "diff"]      || true  // only whitespaces in commit msg
-        "message"           | "master"  | false       | null      | ["", "diff"]      || true  // publications differ
+        null                | "master"  | false       | null       | ["", "diff"]      || true  // null commit msg
+        " "                 | "master"  | false       | null       | ["", "diff"]      || true  // only whitespaces in commit msg
+        "message"           | "master"  | false       | null       | ["", "diff"]      || true  // publications differ
 
-        "[ci skip-release]" | "master"  | false       | null      | ["", "diff"]      || false // skip-release in commit msg
-        "message"           | "feature" | false       | null      | ["", "diff"]      || false // feature branch
-        "message"           | null      | false       | null      | ["", "diff"]      || false // null branch
-        "message"           | "master"  | true        | null      | ["", "diff"]      || false // pull request
-        "message"           | "master"  | false       | "true"    | ["", "diff"]      || false // SKIP_RELEASE set
-        "message"           | "master"  | false       | null      | ["", ""]          || false  // publications are the same
-        "message"           | "master"  | false       | null      | []                || true   // no comparison results
+        "[ci skip-release]" | "master"  | false       | null       | ["", "diff"]      || false // skip-release in commit msg
+        "message"           | "feature" | false       | null       | ["", "diff"]      || false // feature branch
+        "message"           | null      | false       | null       | ["", "diff"]      || false // null branch
+        "message"           | "master"  | true        | null       | ["", "diff"]      || false // pull request
+        "message"           | "master"  | false       | "true"     | ["", "diff"]      || false // SKIP_RELEASE set
+        "message"           | "master"  | false       | null       | ["", ""]          || false  // publications are the same
+        "message"           | "master"  | false       | null       | []                || true   // no comparison results
     }
 
     def "should fail if release not needed and mode is explosive"() {

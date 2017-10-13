@@ -4,6 +4,7 @@ import org.gradle.api.Action;
 import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
+import org.shipkit.internal.notes.util.Supplier;
 
 public class TaskSuccessfulMessage {
 
@@ -18,6 +19,15 @@ public class TaskSuccessfulMessage {
             @Override
             public void execute(Task task) {
                 LOG.lifecycle(message);
+            }
+        });
+    }
+
+    public static void logOnSuccess(Task task, final Supplier<String> supplier) {
+        task.doLast(new Action<Task>() {
+            @Override
+            public void execute(Task task) {
+                LOG.lifecycle(supplier.get());
             }
         });
     }

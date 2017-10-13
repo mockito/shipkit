@@ -1,8 +1,8 @@
 ## How Shipkit works?
 
 Want to find out how Shipkit works?
-- see also [getting started guide](doc/getting-started.md)
-- or the entire [documentation index](README.md#documentation)
+- see also [getting started guide](/docs/getting-started.md)
+- or the entire [documentation index](/README.md#documentation)
 
 ### Version bumps
 
@@ -103,8 +103,12 @@ TBD.
 
 ### Avoiding unnecessary releases
 
-TBD.
+See [documentation for ReleaseNeededPlugin](/docs/release-needed-plugin.md).
 
 ### Publishing Java libraries
 
 TBD.
+
+### Upgrading dependencies
+
+Check out [documentation for UpgradeDependencyPlugin](/docs/upgrade-dependency-plugin.md).

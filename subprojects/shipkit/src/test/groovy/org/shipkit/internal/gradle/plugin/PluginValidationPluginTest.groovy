@@ -47,7 +47,7 @@ class PluginValidationPluginTest extends PluginSpecification {
         project.file(META_INF_GRADLE_PLUGINS).mkdirs()
         project.file(pluginPackage).mkdirs()
         project.file("$META_INF_GRADLE_PLUGINS/${propertiesFileName}.properties") << "implementation-class=org.shipkit.internal.gradle.$className"
-        if(generateImplClass) {
+        if (generateImplClass) {
             project.file("$pluginPackage/${className}.${extension}") << "some content"
         }
 

@@ -5,7 +5,6 @@ import org.gradle.api.Task;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.SkipWhenEmpty;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.gradle.git.tasks.GitCommitImpl;
 
 import java.io.File;
@@ -33,9 +32,9 @@ public class GitCommitTask extends DefaultTask {
      * Registers a change to be committed.
      * Invoke this method only in Gradle's configuration phase because this method calls 'dependsOn' automatically.
      *
-     * @param files to be committed
+     * @param files             to be committed
      * @param changeDescription description to be included in commit message
-     * @param taskMakingChange task that makes the change, we will automatically set 'dependsOn' this task
+     * @param taskMakingChange  task that makes the change, we will automatically set 'dependsOn' this task
      */
     public void addChange(List<File> files, String changeDescription, Task taskMakingChange) {
         dependsOn(taskMakingChange);
@@ -44,7 +43,7 @@ public class GitCommitTask extends DefaultTask {
     }
 
     /**
-     * See {@link ShipkitConfiguration.Git#getUser()}
+     * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.Git#getUser()}
      */
     public String getGitUserName() {
         return gitUserName;
@@ -58,7 +57,7 @@ public class GitCommitTask extends DefaultTask {
     }
 
     /**
-     * See {@link ShipkitConfiguration.Git#getEmail()}
+     * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.Git#getEmail()}
      */
     public String getGitUserEmail() {
         return gitUserEmail;
@@ -72,7 +71,7 @@ public class GitCommitTask extends DefaultTask {
     }
 
     /**
-     * See {@link ShipkitConfiguration.Git#getCommitMessagePostfix()}
+     * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.Git#getCommitMessagePostfix()}
      */
     public String getCommitMessagePostfix() {
         return commitMessagePostfix;

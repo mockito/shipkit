@@ -5,13 +5,17 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.shipkit.gradle.exec.ShipkitExecTask;
+import org.shipkit.gradle.git.IdentifyGitBranchTask;
+import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
 import org.shipkit.internal.gradle.notes.ReleaseNotesPlugin;
 import org.shipkit.internal.gradle.version.VersioningPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.gradle.util.TaskSuccessfulMessage;
+import org.shipkit.internal.notes.util.Supplier;
 
 import static java.util.Arrays.asList;
+import static org.shipkit.internal.gradle.git.GitBranchPlugin.IDENTIFY_GIT_BRANCH;
 import static org.shipkit.internal.gradle.notes.ReleaseNotesPlugin.UPDATE_NOTES_TASK;
 import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
 import static org.shipkit.internal.gradle.release.ReleaseNeededPlugin.RELEASE_NEEDED;
@@ -41,7 +45,7 @@ public class ReleasePlugin implements Plugin<Project> {
     public static final String RELEASE_CLEAN_UP_TASK = "releaseCleanUp";
 
     @Override
-    public void apply(Project project) {
+    public void apply(final Project project) {
         project.getPlugins().apply(ReleaseNotesPlugin.class);
         project.getPlugins().apply(GitPlugin.class);
         project.getPlugins().apply(ReleaseNeededPlugin.class);
@@ -53,6 +57,18 @@ public class ReleasePlugin implements Plugin<Project> {
 
                 t.dependsOn(VersioningPlugin.BUMP_VERSION_FILE_TASK, UPDATE_NOTES_TASK);
                 t.dependsOn(GitPlugin.PERFORM_GIT_PUSH_TASK);
+
+                final UpdateReleaseNotesTask updateReleaseNotes = (UpdateReleaseNotesTask) project.getTasks().getByName(UPDATE_NOTES_TASK);
+                final IdentifyGitBranchTask identifyGitBranchTask = (IdentifyGitBranchTask) project.getTasks().getByName(IDENTIFY_GIT_BRANCH);
+
+                TaskSuccessfulMessage.logOnSuccess(t, new Supplier<String>() {
+                    @Override
+                    public String get() {
+                        return "\n" +
+                            "Release shipped!\n" +
+                            "    - Release notes:      " + updateReleaseNotes.getReleaseNotesUrl(identifyGitBranchTask.getBranch());
+                    }
+                });
             }
         });
 
