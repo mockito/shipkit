@@ -78,7 +78,7 @@ public class TestDownstreamTask extends DefaultTask {
     }
 
     private void createRunTestReleaseTask(final String camelCaseRepoName, CloneGitRepositoryTask copy) {
-        final File buildOutputFile = new File(getProject().getBuildDir(), camelCaseRepoName + "-build.log");
+        final File buildOutputFile = new File(getLogDirectory(), camelCaseRepoName + "-build.log");
         SilentExecTask run = getProject().getTasks().create(
                 "test" + capitalize(camelCaseRepoName),
                 SilentExecTask.class);
@@ -103,5 +103,9 @@ public class TestDownstreamTask extends DefaultTask {
                 LOG.lifecycle("  Run test of {}. The output will be saved in {}", camelCaseRepoName, buildOutputFile.getAbsoluteFile());
             }
         });
+    }
+
+    protected File getLogDirectory() {
+        return getProject().getBuildDir();
     }
 }

@@ -12,6 +12,3 @@ afterEvaluate {
 }
 
 apply plugin: 'org.shipkit.upgrade-dependency'
-
-apply plugin: 'org.shipkit.upload-gists'
-project.tasks.uploadGists.filesToUpload = project.fileTree("subprojects/testDownstream/build").filter {it.name.endsWith(".log")}

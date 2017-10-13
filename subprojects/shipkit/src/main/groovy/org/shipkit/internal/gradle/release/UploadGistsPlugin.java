@@ -24,11 +24,13 @@ import org.shipkit.internal.gradle.util.TaskMaker;
  */
 public class UploadGistsPlugin implements Plugin<Project> {
 
+    public static final String UPLOAD_GISTS_TASK = "uploadGists";
+
     @Override
     public void apply(final Project project) {
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
-        TaskMaker.task(project, "uploadGists", UploadGistsTask.class, new Action<UploadGistsTask>() {
+        TaskMaker.task(project, UPLOAD_GISTS_TASK, UploadGistsTask.class, new Action<UploadGistsTask>() {
             @Override
             public void execute(UploadGistsTask uploadGistsTask) {
                 uploadGistsTask.setDescription("Uploads to Gist files provided by 'filesToUpload' task property.");
