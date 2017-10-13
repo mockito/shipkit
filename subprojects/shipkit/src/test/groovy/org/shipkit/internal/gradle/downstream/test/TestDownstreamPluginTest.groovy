@@ -25,7 +25,7 @@ class TestDownstreamPluginTest extends PluginSpecification {
 
         then:
         UploadGistsTask uploadGists = project.tasks.uploadGists
-        uploadGists.filesToUpload.collect{ it.name } == ["a.log", "b.log"]
+        uploadGists.filesToUpload.collect { it.name } == ["a.log", "b.log"]
     }
 
 }
