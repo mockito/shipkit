@@ -15,7 +15,7 @@ import org.shipkit.internal.gradle.release.TravisPlugin;
  * Applies following plugins:
  *
  * <ul>
- *     <li>{@link PomContributorsPlugin}</li>
+ *     <li>{@link GitHubPlugin}</li>
  *     <li>{@link BintrayReleasePlugin}</li>
  *     <li>{@link TravisPlugin}</li>
  * </ul>
