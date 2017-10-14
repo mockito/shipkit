@@ -13,8 +13,7 @@ TODO write here about Gradle, shipkit file and refer to the getting started guid
 How do we:
 - [bump versions](/docs/features/version-bumps.md)
 - [generate release notes](/docs/features/automated-release-notes.md)
-- [publish binaries](/docs/gradle-plugins/publishing-binaries.md)
-- [publish binaries](/docs/gradle-plugins/publishing-binaries.md)
+- [publish binaries](/docs/features/publishing-binaries.md)
 - [avoid unnecessary releases](/docs/gradle-plugins/release-needed-plugin.md)
 - [automatically upgrade dependencies](/docs/gradle-plugins/upgrade-dependency-plugin.md)
 
