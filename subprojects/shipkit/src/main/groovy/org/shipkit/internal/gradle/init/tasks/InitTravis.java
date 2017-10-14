@@ -8,13 +8,14 @@ import java.io.InputStream;
 public class InitTravis {
 
     public void initTravis(InitTravisTask task) {
+        String relativePath = task.getProject().getRootProject().relativePath(task.getOutputFile());
         if (task.getOutputFile().exists()) {
-            InitMessages.skipping(task.getOutputFile().getAbsolutePath());
+            InitMessages.skipping(relativePath);
             return;
         }
         InputStream resource = this.getClass().getClassLoader().getResourceAsStream("template.travis.yml");
         String template = IOUtil.readFully(resource);
         IOUtil.writeFile(task.getOutputFile(), template);
-        InitMessages.generated(task.getOutputFile().getAbsolutePath());
+        InitMessages.generated(relativePath);
     }
 }
