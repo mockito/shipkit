@@ -1,6 +1,7 @@
 # ReleaseNeededPlugin
 
 See also "[How Shipkit Works](/docs/how-shipkit-works.md)" documentation index.
+Help us with docs and submit a PR if something is amiss!
 
 Releasing every time we have a change in the project may lead to quite
 a lot of releases. It would be better to release only when the change is
@@ -56,3 +57,7 @@ or
 ## Comparing publications
 
 TBD.
+
+Thank you for reading!
+Questions or feedback?
+Start discussion [by opening a ticket](https://github.com/mockito/shipkit/issues/new) in GitHub!

@@ -1,6 +1,7 @@
 ### Version bumps
 
 See also "[How Shipkit Works](/docs/how-shipkit-works.md)" documentation index.
+Help us with docs and submit a PR if something is amiss!
 
 Yesterday version is already old.
 Frequent, automated releases need some way to manage incrementing versions.
@@ -41,4 +42,6 @@ Occasionally, you might need to release a more notable version like new major ve
 In this case, just update the file manually and commit that change.
 Shipkit will build and release the version as specified in the file.
 
-What do you think? Start discussion [by opening a ticket](https://github.com/mockito/shipkit/issues/new) in GitHub!
+Thank you for reading!
+Questions or feedback?
+Start discussion [by opening a ticket](https://github.com/mockito/shipkit/issues/new) in GitHub!

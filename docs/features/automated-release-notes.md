@@ -1,6 +1,7 @@
 ### Release notes
 
 See also "[How Shipkit Works](/docs/how-shipkit-works.md)" documentation index.
+Help us with docs and submit a PR if something is amiss!
 
 Your users need to know what they are getting when upgrading versions.
 You want to build great software? Have a great changelog.
@@ -32,6 +33,8 @@ To talk to GitHub REST API Shipkit needs GitHub read-only auth token.
 It is very [easy and quick to generate](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/) the auth token on GitHub.
 Then, you only need to configure it in ```shipkit.gradle``` file.
 
+TODO document that we push the release notes to GitHub and add github settings to the example. Link to the example project.
+
 #### User guide
 
 When you made your first release, you will notice where Shipkit puts the release notes by default.
@@ -49,4 +52,6 @@ This builds stronger team, with high visibility of changes and constant peer rev
 When merging pull request in GitHub, the default commit message will have #id of the PR.
 This is perfect of Shipkit because we can pick up the #id from the commit message during release notes generation.
 
-How does it sound? Start discussion [by opening a ticket](https://github.com/mockito/shipkit/issues/new) in GitHub!
+Thank you for reading!
+Questions or feedback?
+Start discussion [by opening a ticket](https://github.com/mockito/shipkit/issues/new) in GitHub!

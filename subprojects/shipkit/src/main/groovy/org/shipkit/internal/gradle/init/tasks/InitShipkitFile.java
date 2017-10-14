@@ -63,8 +63,12 @@ public class InitShipkitFile {
             "\n" +
             "allprojects {\n" +
             "   plugins.withId(\"com.jfrog.bintray\") {\n" +
+            "\n" +
+            "       //Bintray configuration is handled by JFrog Bintray Gradle Plugin\n" +
+            "       //For reference see the official documentation: https://github.com/bintray/gradle-bintray-plugin\n" +
             "       bintray {\n" +
-            "           //TODO sign up for free open source account with Bintray, generate the API key\n" +
+            "\n" +
+            "           //TODO sign up for free open source account with https://bintray.com, then look up your API key on your profile page in Bintray\n" +
             "           key = '@bintray.key@'\n" +
             "           //TODO don't check in the key, remove above line and use env variable exported on CI:\n" +
             "           //key = System.getenv(\"BINTRAY_API_KEY\")\n" +

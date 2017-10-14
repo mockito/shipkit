@@ -69,6 +69,8 @@ You have code that wants to be delivered to your customers, Shipkit has tools to
 - keeping secure tokens safe - masks sensitive values from logging and error messages from underlying tools like git
 - and all that in a sweet little package, fully integrated, neatly automated, easy to roll out
 
+For details see "[How Shipkit Works?](/docs/how-shipkit-works.gradle)"
+
 ## Quick start
 
 Add Gradle plugin:

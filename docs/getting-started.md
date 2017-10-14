@@ -202,3 +202,7 @@ You can view "shipkit.gradle", ".travis.yml" and "build.gradle" of projects that
  - [Shipkit Bootstrap project](https://github.com/mockito/shipkit-bootstrap) - use it to learn Shipkit quickly by test driving this user guide.
  Bootstrap project does not use Shipkit until you make it so :)
 
+Thank you for reading!
+Questions or feedback?
+Start discussion [by opening a ticket](https://github.com/mockito/shipkit/issues/new) in GitHub!
+
