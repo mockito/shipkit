@@ -32,7 +32,7 @@ public class InitVersioning {
             + "version=" + version + "\n";
 
         IOUtil.writeFile(versionFile, versionFileContent);
-        InitMessages.generated(versionFile.getAbsolutePath());
+        InitMessages.generated(versionFile.getName());
         LOG.lifecycle("  Version number is now stored in '{}' file. Don't set 'version' in *.gradle file.", versionFile.getName());
     }
 
