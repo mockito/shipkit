@@ -1,5 +1,7 @@
 # ReleaseNeededPlugin
 
+See also "[How Shipkit Works](/docs/how-shipkit-works.md)" documentation index.
+
 Releasing every time we have a change in the project may lead to quite
 a lot of releases. It would be better to release only when the change is
 interesting from the customer perspective. How to achieve that? Shipkit
