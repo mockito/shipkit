@@ -31,6 +31,7 @@ class ShipkitGradlePluginIntegTest extends GradleSpecification {
         expect:
         BuildResult result = pass("performRelease", "-m", "-s")
         skippedTaskPathsGradleBugWorkaround(result.output).join("\n") == """:bumpVersionFile
+:identifyGitBranch
 :fetchContributors
 :fetchReleaseNotes
 :updateReleaseNotes
@@ -44,7 +45,6 @@ class ShipkitGradlePluginIntegTest extends GradleSpecification {
 :publishPluginJavaDocsJar
 :buildArchives
 :gitTag
-:identifyGitBranch
 :gitPush
 :performGitPush
 :discoverPlugins
