@@ -1,5 +1,7 @@
 # Upgrade dependency plugin
 
+Note that this plugin is incubating!
+
 Let's say we have two projects **child** and **parent**. **Child** depends on **parent**. At one point **parent** releases a new version, and dependency on it in **child** needs to be updated. One or two times you can update this dependency manually, but the more often it happens the more manual work you have. What happens if you have more of parent projects? You need to update a lot of dependencies. Even more manual work.
 
 UpgradeDependencyPlugin is aiming at solving these problems by automating the process.
