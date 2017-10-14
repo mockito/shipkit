@@ -10,11 +10,11 @@ public class InitMessages {
 
     private static final Logger LOG = Logging.getLogger(InitMessages.class);
 
-    public static void skipping(String filePath, String taskPath) {
-        LOG.lifecycle("{} - file exists, skipping generation of {}", taskPath, filePath);
+    public static void skipping(String filePath) {
+        LOG.lifecycle("File exists, skipping generation of {}", filePath);
     }
 
-    public static void generated(String fileAbsolutePath, String taskPath) {
-        LOG.lifecycle("{} - generated (please review and check in!): {}", taskPath, fileAbsolutePath);
+    public static void generated(String fileAbsolutePath) {
+        LOG.lifecycle("Generated (please review and check in!): {}", fileAbsolutePath);
     }
 }

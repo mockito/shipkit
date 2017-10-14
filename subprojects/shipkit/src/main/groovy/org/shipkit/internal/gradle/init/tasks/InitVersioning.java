@@ -17,7 +17,7 @@ public class InitVersioning {
     public void initVersioning(InitVersioningTask task) {
         File file = task.getVersionFile();
         if (file.exists()) {
-            InitMessages.skipping(file.getAbsolutePath(), task.getPath());
+            InitMessages.skipping(file.getAbsolutePath());
         } else {
             createVersionPropertiesFile(task.getProject(), file, task.getPath());
         }
@@ -31,7 +31,7 @@ public class InitVersioning {
             + "version=" + version + "\n";
 
         IOUtil.writeFile(versionFile, versionFileContent);
-        InitMessages.generated(versionFile.getAbsolutePath(), taskPath);
+        InitMessages.generated(versionFile.getAbsolutePath());
         LOG.lifecycle("{} - the version is now stored in '{}' file. Avoid setting 'version' in *.gradle file.", taskPath, versionFile.getName());
     }
 

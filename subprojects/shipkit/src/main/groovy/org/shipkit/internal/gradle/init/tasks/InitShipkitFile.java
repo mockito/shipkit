@@ -11,15 +11,15 @@ public class InitShipkitFile {
     public void initShipkitFile(InitShipkitFileTask task) {
         File shipkitFile = task.getShipkitFile();
         String originRepoName = task.getOriginRepoName();
-        initShipkitFile(shipkitFile, originRepoName, task.getPath());
+        initShipkitFile(shipkitFile, originRepoName);
     }
 
-    static void initShipkitFile(File shipkitFile, String originRepoName, String taskPath) {
+    static void initShipkitFile(File shipkitFile, String originRepoName) {
         if (shipkitFile.exists()) {
-            InitMessages.skipping(shipkitFile.getAbsolutePath(), taskPath);
+            InitMessages.skipping(shipkitFile.getAbsolutePath());
         } else {
             createShipkitFile(shipkitFile, originRepoName);
-            InitMessages.generated(shipkitFile.getAbsolutePath(), taskPath);
+            InitMessages.generated(shipkitFile.getAbsolutePath());
         }
     }
 
