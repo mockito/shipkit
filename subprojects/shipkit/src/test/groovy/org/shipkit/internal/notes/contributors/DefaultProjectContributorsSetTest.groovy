@@ -35,9 +35,9 @@ class DefaultProjectContributorsSetTest extends Specification {
 
     def "does not drop contributors with the same amount of contributions"() {
         set.addContributor(new DefaultProjectContributor(
-                "Szczepan Faber 1", "szczepiq", "http://github.com/szczepiq", 2000))
+                "Szczepan Faber 1", "mockitoguy", "http://github.com/mockitoguy", 2000))
         set.addContributor(new DefaultProjectContributor(
-                "Szczepan Faber 2", "szczepiq", "http://github.com/szczepiq", 2000))
+                "Szczepan Faber 2", "mockitoguy", "http://github.com/mockitoguy", 2000))
 
         expect:
         set.allContributors.size() == 2

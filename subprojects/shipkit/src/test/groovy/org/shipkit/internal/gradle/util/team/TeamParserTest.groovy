@@ -9,11 +9,11 @@ class TeamParserTest extends Specification {
 
     def "parses person"() {
         when:
-        def p = parsePerson("szczepiq:Szczepan Faber")
+        def p = parsePerson("mockitoguy:Szczepan Faber")
 
         then:
         p.name == 'Szczepan Faber'
-        p.gitHubUser == 'szczepiq'
+        p.gitHubUser == 'mockitoguy'
     }
 
     def "validates persons"() {

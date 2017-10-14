@@ -18,7 +18,7 @@ class RecentContributorsFetcherTest extends Specification {
                 parseDate("2017-05-04 00:00:00 -0000"), parseDate("2017-05-06 00:00:00 -0000"))
 
         then:
-        c.toString() == "[Roman Elizarov/elizarov, Szczepan Faber/szczepiq]"
+        c.toString() == "[Roman Elizarov/elizarov, Szczepan Faber/mockitoguy]"
     }
 
     def "no contributors for given dates"() {

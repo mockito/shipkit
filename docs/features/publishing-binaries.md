@@ -59,7 +59,7 @@ shipkit {
     gitHub.repository = 'mockito/shipkit-example'
     gitHub.readOnlyAuthToken = 'e7fe8fcdd6ffed5c38498c4c79b2a68e6f6ed1bb'
     gitHub.writeAuthToken = System.getenv('GH_WRITE_TOKEN')
-    team.developers = ['szczepiq:Szczepan Faber', 'mstachniuk:Marcin Stachniuk', 'wwilk:Wojtek Wilk']
+    team.developers = ['mockitoguy:Szczepan Faber', 'mstachniuk:Marcin Stachniuk', 'wwilk:Wojtek Wilk']
 }
 
 allprojects {
@@ -76,7 +76,7 @@ allprojects {
 
             pkg {
                 repo = 'examples'
-                user = 'szczepiq'
+                user = 'mockitoguy'
                 userOrg = 'shipkit'
                 name = 'basic'
                 licenses = ['MIT']

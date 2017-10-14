@@ -118,8 +118,8 @@ Release notes:
 
         expect:
         DetailedFormatter.authorsSummary(c,
-                ["Szczepan Faber": new DefaultContributor("Szczepan Faber", "szczepiq", "http://github.com/szczepiq") ]
-                , "link") == "[1 commit](link) by [Szczepan Faber](http://github.com/szczepiq)"
+                ["Szczepan Faber": new DefaultContributor("Szczepan Faber", "mockitoguy", "http://github.com/mockitoguy") ]
+                , "link") == "[1 commit](link) by [Szczepan Faber](http://github.com/mockitoguy)"
     }
 
     def "authors summary with multiple authors"() {

@@ -2,7 +2,7 @@ shipkit {
     gitHub.repository = "mockito/shipkit"
     gitHub.readOnlyAuthToken = "e7fe8fcdd6ffed5c38498c4c79b2a68e6f6ed1bb"
 
-    team.developers = ['szczepiq:Szczepan Faber', 'mstachniuk:Marcin Stachniuk',
+    team.developers = ['mockitoguy:Szczepan Faber', 'mstachniuk:Marcin Stachniuk',
                        'wwilk:Wojtek Wilk', 'epeee:Erhard Pointl', 'NagRock:Maciej Kuster']
 
     releaseNotes.publicationRepository = "https://plugins.gradle.org/plugin/org.shipkit.java"

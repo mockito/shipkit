@@ -367,7 +367,7 @@ public class ShipkitConfiguration {
         /**
          * Developers to include in generated pom file.
          * It should be a collection of elements like "GITHUB_USER:FULL_NAME", example:
-         * ['szczepiq:Szczepan Faber', 'mstachniuk:Marcin Stachniuk'].
+         * ['mockitoguy:Szczepan Faber', 'mstachniuk:Marcin Stachniuk'].
          * <p>
          * See POM reference for <a href="https://maven.apache.org/pom.html#Developers">Developers</a>.
          */
@@ -386,7 +386,7 @@ public class ShipkitConfiguration {
         /**
          * Contributors to include in generated pom file.
          * It should be a collection of elements like "GITHUB_USER:FULL_NAME", example:
-         * ['szczepiq:Szczepan Faber', 'mstachniuk:Marcin Stachniuk']
+         * ['mockitoguy:Szczepan Faber', 'mstachniuk:Marcin Stachniuk']
          * <p>
          * See POM reference for <a href="https://maven.apache.org/pom.html#Contributors">Contributors</a>.
          */
