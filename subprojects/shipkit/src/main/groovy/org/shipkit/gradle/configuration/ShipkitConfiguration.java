@@ -140,11 +140,8 @@ public class ShipkitConfiguration {
 
         /**
          * GitHub repository name, for example: "mockito/shipkit"
-         * <p>
-         * //TODO SF Javadoc about getRepository() throughout the project need to include information how we obtain this repo automatically
          */
         public String getRepository() {
-            //TODO SF we need a custom exception message that explains how we detect repository automatically and how to use it
             return store.getString("gitHub.repository");
         }
 
