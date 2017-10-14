@@ -15,6 +15,6 @@ public class InitMessages {
     }
 
     public static void generated(String fileAbsolutePath, String taskPath) {
-        LOG.lifecycle("{} - generated default file: {}! Please review and check in!", taskPath, fileAbsolutePath);
+        LOG.lifecycle("{} - generated (please review and check in!): {}", taskPath, fileAbsolutePath);
     }
 }
