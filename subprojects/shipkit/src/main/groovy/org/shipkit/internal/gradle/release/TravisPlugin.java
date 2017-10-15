@@ -5,11 +5,15 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
+import org.shipkit.gradle.configuration.ShipkitConfiguration;
+import org.shipkit.gradle.git.GitCommitTask;
 import org.shipkit.gradle.git.IdentifyGitBranchTask;
 import org.shipkit.gradle.release.ReleaseNeededTask;
 import org.shipkit.internal.gradle.configuration.BasicValidator;
 import org.shipkit.internal.gradle.configuration.LazyConfiguration;
+import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitBranchPlugin;
+import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.git.GitSetupPlugin;
 import org.shipkit.internal.gradle.git.tasks.GitCheckOutTask;
 import org.shipkit.internal.gradle.util.StringUtil;
@@ -39,6 +43,7 @@ public class TravisPlugin implements Plugin<Project> {
     @Override
     public void apply(final Project project) {
         project.getPlugins().apply(CiReleasePlugin.class);
+        ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
         final String branch = System.getenv("TRAVIS_BRANCH");
         LOG.info("Branch from 'TRAVIS_BRANCH' env variable: {}", branch);
@@ -74,5 +79,12 @@ public class TravisPlugin implements Plugin<Project> {
                 t.setPullRequest(isPullRequest);
             }
         });
+
+        GitCommitTask gitCommit = (GitCommitTask) project.getTasks().getByName(GitPlugin.GIT_COMMIT_TASK);
+        //can we construct the url from some Travis env variable?
+        //this needs to be safe for local invocation where there are no travis env variables.
+        String travisJobUrl = "https://travis-ci.org/mockito/shipkit/builds/288214072";
+        String postfix = ". CI job: " + travisJobUrl + " " + conf.getGit().getCommitMessagePostfix();
+        gitCommit.setCommitMessagePostfix(postfix);
     }
 }
