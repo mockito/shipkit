@@ -1,7 +1,6 @@
 package org.shipkit.gradle.init;
 
 import org.gradle.api.DefaultTask;
-import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.internal.gradle.init.tasks.InitVersioning;
 
@@ -15,7 +14,7 @@ import java.io.File;
  */
 public class InitVersioningTask extends DefaultTask {
 
-    @OutputFile private File versionFile;
+    private File versionFile;
 
     @TaskAction public void initVersioning() {
         new InitVersioning().initVersioning(this);

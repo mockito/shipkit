@@ -6,12 +6,12 @@ import spock.lang.Specification
 class GitHubAllContributorsJsonTest extends Specification {
 
     def "parse regular contributors"() {
-        def contributorJson = new JsonObject(login: "szczepiq",
-                url: "https://api.github.com/users/szczepiq",
-                html_url: "https://github.com/szczepiq",
+        def contributorJson = new JsonObject(login: "mockitoguy",
+                url: "https://api.github.com/users/mockitoguy",
+                html_url: "https://github.com/mockitoguy",
                 "contributions": 2427)
-        def userJson = new JsonObject(login: "szczepiq",
-                url: "https://api.github.com/users/szczepiq",
+        def userJson = new JsonObject(login: "mockitoguy",
+                url: "https://api.github.com/users/mockitoguy",
                 name: "Szczepan Faber")
 
         when:
@@ -19,8 +19,8 @@ class GitHubAllContributorsJsonTest extends Specification {
 
         then:
         contributor.name == "Szczepan Faber"
-        contributor.login == "szczepiq"
-        contributor.profileUrl == "https://github.com/szczepiq"
+        contributor.login == "mockitoguy"
+        contributor.profileUrl == "https://github.com/mockitoguy"
         contributor.numberOfContributions == 2427
     }
 
