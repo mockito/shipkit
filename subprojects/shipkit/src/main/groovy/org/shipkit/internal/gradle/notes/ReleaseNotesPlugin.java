@@ -25,6 +25,7 @@ import static java.util.Collections.singletonList;
  * <ul>
  * <li>{@link ShipkitConfigurationPlugin}</li>
  * <li>{@link VersioningPlugin}</li>
+ * <li>{@link GitHubContributorsPlugin}</li>
  * </ul>
  * <p>
  * The plugin adds following tasks:
