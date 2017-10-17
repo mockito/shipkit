@@ -1,12 +1,10 @@
 package org.shipkit.internal.notes.contributors.github
 
-import spock.lang.Ignore
 import spock.lang.Specification
 import spock.lang.Subject
 
 import static org.shipkit.internal.util.DateUtil.parseDate
 
-@Ignore
 class RecentContributorsFetcherTest extends Specification {
 
     @Subject fetcher = new RecentContributorsFetcher()
