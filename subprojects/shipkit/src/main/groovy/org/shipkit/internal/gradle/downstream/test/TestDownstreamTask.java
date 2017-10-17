@@ -79,9 +79,9 @@ public class TestDownstreamTask extends DefaultTask {
 
     private void createRunTestReleaseTask(final String camelCaseRepoName, CloneGitRepositoryTask copy) {
         final File buildOutputFile = new File(getLogDirectory(), camelCaseRepoName + "-build.log");
-        SilentExecTask run = getProject().getTasks().create(
+        TestDownstreamReleaseTask run = getProject().getTasks().create(
                 "test" + capitalize(camelCaseRepoName),
-                SilentExecTask.class);
+                TestDownstreamReleaseTask.class);
         run.dependsOn(copy);
         run.setWorkDir(copy.getTargetDir());
 

@@ -3,7 +3,8 @@ package org.shipkit.internal.gradle.downstream.test;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.specs.Spec;
+import org.gradle.api.file.ConfigurableFileTree;
+import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
 import org.shipkit.internal.gradle.release.UploadGistsPlugin;
 import org.shipkit.internal.gradle.release.tasks.UploadGistsTask;
 import org.shipkit.internal.gradle.util.TaskMaker;
@@ -13,8 +14,15 @@ import java.io.File;
 
 /**
  * This plugin tests your library end-to-end (e2e) using downstream projects.
- * It adds testDownstream task which can be configured to run tests for certain repositories
+ * It adds testDownstream task which can be configured to run tests for certain repositories.
+ * Output of each downstream test release task is saved to file which is uploaded to Gist
+ * even if the task is not successful.
  * See {@link TestDownstreamTask} for more information
+ *
+ * Applies following plugins:
+ * <ul>
+ *     <li>{@link UploadGistsPlugin}</li>
+ * </ul>
  *
  * Adds tasks:
  * <ul>
@@ -39,18 +47,24 @@ public class TestDownstreamPlugin implements Plugin<Project> {
 
         final UploadGistsTask uploadGistsTask = (UploadGistsTask) project.getTasks().findByName(UploadGistsPlugin.UPLOAD_GISTS_TASK);
 
-        uploadGistsTask.setFilesToUpload(
+        uploadGistsTask.setFilesToUpload((ConfigurableFileTree)
             project
                 .fileTree(testDownstreamTask.getLogDirectory())
-                .filter(new Spec<File>() {
-                    @Override
-                    public boolean isSatisfiedBy(File file) {
-                        return file.getName().endsWith(".log");
-                    }
-                })
+                .include("*.log")
         );
 
-        testDownstreamTask.finalizedBy(uploadGistsTask);
+        // it has to be deferred because TestDownstreamReleaseTask are added by user after applying this plugin
+        DeferredConfiguration.deferredConfiguration(project, new Runnable() {
+            @Override
+            public void run() {
+                project.getTasks().withType(TestDownstreamReleaseTask.class, new Action<TestDownstreamReleaseTask>() {
+                    @Override
+                    public void execute(TestDownstreamReleaseTask testDownstreamReleaseTask) {
+                        testDownstreamReleaseTask.finalizedBy(uploadGistsTask);
+                    }
+                });
+            }
+        });
     }
 
 }
