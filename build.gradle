@@ -13,6 +13,7 @@ buildscript {
 apply from: "$rootDir/gradle/java6-compatibility.gradle"
 apply from: "$rootDir/gradle/precommit.gradle"
 
+apply plugin: 'base'
 apply plugin: 'org.shipkit.gradle-plugin'
 
 allprojects {
