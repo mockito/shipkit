@@ -63,11 +63,11 @@ public class GitSetupPlugin implements Plugin<Project> {
                 //Travis default clone is shallow which will prevent correct release notes generation for repos with lots of commits
                 t.setDescription("Ensures good chunk of recent commits is available for release notes automation.");
                 t.execCommand(ExecCommandFactory.execCommand("Getting more commits",
-                    asList("git", "fetch", "--unshallow"), new Action<ExecResult>() {
+                    asList("git", "fetch", "--unshallow", "tags"), new Action<ExecResult>() {
                         @Override
                         public void execute(ExecResult result) {
                             if (result.getExitValue() != 0) {
-                                LOG.lifecycle("  'git fetch --unshallow' failed and will be ignored." +
+                                LOG.lifecycle("  'git fetch --unshallow --tags' failed and will be ignored." +
                                     "\n  Most likely the repository already contains all history.");
                             }
                         }
