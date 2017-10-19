@@ -98,13 +98,17 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
 
         task.setGitHubRepository(conf.getGitHub().getRepository());
         task.setDevelopers(conf.getTeam().getDevelopers());
+
         task.setContributors(conf.getTeam().getContributors());
+        if (conf.getTeam().getContributors().isEmpty()) {
+            task.setContributorsDataFile(contributorsFetcher.getOutputs().getFiles().getSingleFile());
+        }
+
         task.setGitHubLabelMapping(conf.getReleaseNotes().getLabelMapping());
         task.setReleaseNotesFile(project.file(conf.getReleaseNotes().getFile()));
         task.setGitHubUrl(conf.getGitHub().getUrl());
         task.setPreviousVersion(project.getExtensions().getByType(VersionInfo.class).getPreviousVersion());
 
         task.setReleaseNotesData(releaseNotesFetcher.getOutputFile());
-        task.setContributorsDataFile(contributorsFetcher.getOutputs().getFiles().getSingleFile());
     }
 }
