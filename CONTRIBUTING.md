@@ -16,7 +16,7 @@ Be pragmatic, all rules have exceptions given good reasons.
 
 ## Local development
 
-### Local development
+### Building and testing
 
 1. Clone shipkit repo, make your changes, then run ```./gradlew fastInstall```
 This will install the artifacts in local maven repository for easy sharing.
@@ -40,6 +40,17 @@ It should use the same version that was built in the previous step.
  For example, it will switch git user.
  Remember to switch it back when you finished.
  - Clone "mockito/mockito" repository and make testing with a proper project :)
+
+### Troubleshooting releases
+
+Sometimes we cannot release new version Shipkit because there is a bug in Shipkit.
+Since we cannot release, we cannot release a bugfix.
+To break the stalemate, we need to release from local, for example:
+
+```
+./gradlew testRelease
+./gradlew performRelease
+```
 
 ## Dependencies on external libraries
 
