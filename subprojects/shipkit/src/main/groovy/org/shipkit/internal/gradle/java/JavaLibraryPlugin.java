@@ -6,7 +6,11 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.file.CopySpec;
 import org.gradle.api.tasks.bundling.Jar;
+import org.shipkit.internal.gradle.java.tasks.CreateDependenciesFile;
 import org.shipkit.internal.gradle.util.JavaPluginUtil;
+import org.shipkit.internal.gradle.util.TaskMaker;
+
+import java.io.File;
 
 /**
  * Makes a java library that has not only the main jar but also sources and javadoc jars.
@@ -46,15 +50,36 @@ public class JavaLibraryPlugin implements Plugin<Project> {
             }
         });
 
+
+        final File dependenciesFile = new File(project.getBuildDir(), "shipkit-dependencies");
+
+        Task copyDepsToFile = TaskMaker.task(project, "createDependenciesFile", CreateDependenciesFile.class, new Action<CreateDependenciesFile>() {
+            @Override
+            public void execute(CreateDependenciesFile task) {
+                task.setDescription("Creates file with resolved runtime dependencies.");
+                task.setOutputFile(dependenciesFile);
+                task.setConfiguration(project.getConfigurations().getByName("default"));
+            }
+        });
+
+        final CopySpec dependencyFile = project.copySpec(new Action<CopySpec>() {
+            public void execute(CopySpec copy) {
+                copy.from(dependenciesFile);
+            }
+        });
+
+
         ((Jar) project.getTasks().getByName("jar")).with(license);
 
         final Jar sourcesJar = project.getTasks().create(SOURCES_JAR_TASK, Jar.class, new Action<Jar>() {
             public void execute(Jar jar) {
                 jar.from(JavaPluginUtil.getMainSourceSet(project).getAllSource());
                 jar.setClassifier("sources");
-                jar.with(license);
+                jar.with(license, dependencyFile);
             }
         });
+
+        sourcesJar.dependsOn(copyDepsToFile);
 
         final Task javadocJar = project.getTasks().create(JAVADOC_JAR_TASK, Jar.class, new Action<Jar>() {
             public void execute(Jar jar) {
