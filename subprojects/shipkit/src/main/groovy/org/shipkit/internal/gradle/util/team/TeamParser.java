@@ -53,7 +53,7 @@ public class TeamParser {
     private static InvalidInput invalidInput(String notation) {
         return new InvalidInput("Invalid value of team member: '" + notation + "'" +
                 "\nIt should be: 'GITHUB_USER:FULL_NAME'" +
-                "\nExample of correct notation: 'szczepiq:Szczepan Faber'" +
+                "\nExample of correct notation: 'mockitoguy:Szczepan Faber'" +
                 "\nSee Javadoc for ShipkitConfiguration.Team class.");
     }
 }

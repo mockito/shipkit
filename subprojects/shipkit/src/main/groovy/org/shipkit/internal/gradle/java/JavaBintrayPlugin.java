@@ -15,6 +15,7 @@ import static org.shipkit.internal.gradle.java.JavaPublishPlugin.PUBLICATION_NAM
  * <ul>
  *     <li>{@link JavaPublishPlugin}</li>
  *     <li>{@link ShipkitBintrayPlugin}</li>
+ *     <li>{@link ComparePublicationsPlugin}</li>
  * </ul>
  */
 public class JavaBintrayPlugin implements Plugin<Project> {

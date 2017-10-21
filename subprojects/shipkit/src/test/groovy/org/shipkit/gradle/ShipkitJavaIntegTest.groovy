@@ -59,6 +59,7 @@ class ShipkitJavaIntegTest extends GradleSpecification {
         BuildResult result = pass("performRelease", "-m", "-s")
         //git push and bintray upload tasks should run as late as possible
         skippedTaskPathsGradleBugWorkaround(result.output).join("\n") == """:bumpVersionFile
+:identifyGitBranch
 :fetchContributors
 :fetchReleaseNotes
 :updateReleaseNotes
@@ -82,7 +83,6 @@ class ShipkitJavaIntegTest extends GradleSpecification {
 :impl:javadocJar
 :impl:sourcesJar
 :impl:publishJavaLibraryPublicationToMavenLocal
-:identifyGitBranch
 :gitPush
 :performGitPush
 :api:bintrayUpload
