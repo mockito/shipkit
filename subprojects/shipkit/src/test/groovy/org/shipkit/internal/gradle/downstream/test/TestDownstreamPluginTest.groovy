@@ -1,5 +1,6 @@
 package org.shipkit.internal.gradle.downstream.test
 
+import org.shipkit.internal.gradle.release.CiContext
 import org.shipkit.internal.gradle.release.tasks.UploadGistsTask
 import testutil.PluginSpecification
 
@@ -26,6 +27,47 @@ class TestDownstreamPluginTest extends PluginSpecification {
         then:
         UploadGistsTask uploadGists = project.tasks.uploadGists
         uploadGists.filesToUpload.collect { it.name } == ["a.log", "b.log"]
+        project.tasks.testDownstream.uploadGistsTask == uploadGists
     }
 
+    def "should enable uploadGists task when CI build and ghWriteToken set"() {
+        given:
+        def ciContext = Mock(CiContext)
+        ciContext.ciBuild >> true
+        conf.gitHub.writeAuthToken = "writeToken"
+
+        when:
+        def testDownstreamPlugin = new TestDownstreamPlugin(ciContext)
+        testDownstreamPlugin.apply(project)
+
+        then:
+        project.tasks.uploadGists.enabled
+    }
+
+    def "should disable uploadGists task when ghWriteToken null"() {
+        given:
+        def ciContext = Mock(CiContext)
+        conf.gitHub.writeAuthToken = null
+
+        when:
+        def testDownstreamPlugin = new TestDownstreamPlugin(ciContext)
+        testDownstreamPlugin.apply(project)
+
+        then:
+        !project.tasks.uploadGists.enabled
+    }
+
+    def "should disable uploadGists task when not CI build"() {
+        given:
+        def ciContext = Mock(CiContext)
+        ciContext.ciBuild >> false
+        conf.gitHub.writeAuthToken = "writeToken"
+
+        when:
+        def testDownstreamPlugin = new TestDownstreamPlugin(ciContext)
+        testDownstreamPlugin.apply(project)
+
+        then:
+        !project.tasks.uploadGists.enabled
+    }
 }
