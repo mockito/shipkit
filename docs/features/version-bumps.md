@@ -1,7 +1,7 @@
 ### Version bumps
 
 See also "[How Shipkit Works](/docs/how-shipkit-works.md)" documentation index.
-Help us with docs and submit a PR if something is amiss!
+Please help us with docs and submit a PR with improvements!
 
 Yesterday version is already old.
 Frequent, automated releases need some way to manage incrementing versions.

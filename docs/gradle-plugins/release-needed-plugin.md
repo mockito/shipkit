@@ -1,7 +1,7 @@
 # ReleaseNeededPlugin
 
 See also "[How Shipkit Works](/docs/how-shipkit-works.md)" documentation index.
-Help us with docs and submit a PR if something is amiss!
+Please help us with docs and submit a PR with improvements!
 
 Releasing every time we have a change in the project may lead to quite
 a lot of releases. It would be better to release only when the change is
