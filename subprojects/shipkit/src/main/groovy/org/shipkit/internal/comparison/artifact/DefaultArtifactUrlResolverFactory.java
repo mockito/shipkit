@@ -6,6 +6,8 @@ import org.shipkit.internal.gradle.plugin.GradlePortalPublishPlugin;
 
 public class DefaultArtifactUrlResolverFactory {
 
+    private static final String VERSION_PLACEHOLDER = "{VERSION}";
+
     public DefaultArtifactUrlResolver getDefaultResolver(Project project, String artifactBaseName, String previousVersion) {
         if (project.getPlugins().hasPlugin(ShipkitBintrayPlugin.class)) {
             return new BintrayDefaultArtifactUrlResolver(project, artifactBaseName, previousVersion);
@@ -15,4 +17,11 @@ public class DefaultArtifactUrlResolverFactory {
         return null;
     }
 
+    public static String resolveUrlFromPublicationRepository(String publicationRepository, String version) {
+        if (publicationRepository.contains(VERSION_PLACEHOLDER)) {
+            return publicationRepository.replace(VERSION_PLACEHOLDER, version);
+        } else { // backwards compatibility with previous solution
+            return publicationRepository + "/" + version;
+        }
+    }
 }

@@ -154,7 +154,7 @@ Release notes:
                                     c("Tim van der Lippe", 10)]
         }
 
-        def summary = DetailedFormatter.releaseSummary("1.2.3", new Date(1483500000000), c, [:], "link",
+        def summary = DetailedFormatter.releaseSummary("1.2.3", c, [:], "link",
                 "https://bintray.com/shipkit")
 
         expect:
