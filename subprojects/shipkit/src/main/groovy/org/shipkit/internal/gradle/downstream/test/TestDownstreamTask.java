@@ -7,6 +7,7 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.shipkit.internal.exec.SilentExecTask;
 import org.shipkit.internal.gradle.git.tasks.CloneGitRepositoryTask;
+import org.shipkit.internal.gradle.release.tasks.UploadGistsTask;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,6 +34,8 @@ public class TestDownstreamTask extends DefaultTask {
     private static final Logger LOG = Logging.getLogger(TestDownstreamTask.class);
 
     private List<String> repositories = new ArrayList<String>();
+    private File logsDirectory;
+    private UploadGistsTask uploadGistsTask;
 
     /**
      * URL of repository which will be downloaded and downstream test will be run on it
@@ -78,11 +81,12 @@ public class TestDownstreamTask extends DefaultTask {
     }
 
     private void createRunTestReleaseTask(final String camelCaseRepoName, CloneGitRepositoryTask copy) {
-        final File buildOutputFile = new File(getProject().getBuildDir(), camelCaseRepoName + "-build.log");
+        final File buildOutputFile = new File(logsDirectory, camelCaseRepoName + "-build.log");
         SilentExecTask run = getProject().getTasks().create(
                 "test" + capitalize(camelCaseRepoName),
                 SilentExecTask.class);
         run.dependsOn(copy);
+        run.finalizedBy(uploadGistsTask);
         run.setWorkDir(copy.getTargetDir());
 
         dependsOn(run);
@@ -100,8 +104,48 @@ public class TestDownstreamTask extends DefaultTask {
         run.doFirst(new Action<Task>() {
             @Override
             public void execute(Task task) {
-                LOG.lifecycle("  Run test of {}. The output will be saved in {}", camelCaseRepoName, buildOutputFile.getAbsoluteFile());
+                LOG.lifecycle(testDownstreamLogMessage(camelCaseRepoName, buildOutputFile, uploadGistsTask.isEnabled(), uploadGistsTask.getName()));
             }
         });
+    }
+
+    static String testDownstreamLogMessage(String camelCaseRepoName, File buildOutputFile, boolean gistsUploadEnabled, String uploadGistsTaskName) {
+        String prefix = "Run test of %s. ";
+        if (gistsUploadEnabled) {
+            return String.format(prefix +
+                "The output will be uploaded to Gist, search for logs of '%s' task to see the access link.",
+                camelCaseRepoName, uploadGistsTaskName);
+        } else {
+            return String.format(prefix + "The output will be saved in %s",
+                camelCaseRepoName, buildOutputFile.getAbsoluteFile());
+        }
+    }
+
+    /**
+     * Directory where logs, containing output from test release tasks, are stored
+     */
+    public File getLogsDirectory() {
+        return logsDirectory;
+    }
+
+    /**
+     * See {@link #getLogsDirectory()}
+     */
+    public void setLogsDirectory(File logsDirectory) {
+        this.logsDirectory = logsDirectory;
+    }
+
+    /**
+     * UploadGistsTask that all test release tasks are finalized by
+     */
+    public UploadGistsTask getUploadGistsTask() {
+        return uploadGistsTask;
+    }
+
+    /**
+     * See {@link #getUploadGistsTask()}
+     */
+    public void setUploadGistsTask(UploadGistsTask uploadGistsTask) {
+        this.uploadGistsTask = uploadGistsTask;
     }
 }
