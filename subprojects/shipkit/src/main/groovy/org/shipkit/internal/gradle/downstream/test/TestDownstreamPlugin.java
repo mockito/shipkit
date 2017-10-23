@@ -70,7 +70,7 @@ public class TestDownstreamPlugin implements Plugin<Project> {
         boolean shouldUploadLogs = ciContext.isCiBuild() && !StringUtil.isEmpty(conf.getLenient().getGitHub().getWriteAuthToken());
 
         if (shouldUploadLogs) {
-            LOG.debug("  Skipping UploadGists task execution." +
+            LOG.debug("  Skipping UploadGists task execution -> test-downstream plugin will not send logs to Gist (setting uploadGists.enabled=false)." +
                 "  It's only enabled when build is run in CI environment and GH_WRITE_TOKEN env property is set.");
         }
         uploadGistsTask.setEnabled(shouldUploadLogs);

@@ -104,19 +104,21 @@ public class TestDownstreamTask extends DefaultTask {
         run.doFirst(new Action<Task>() {
             @Override
             public void execute(Task task) {
-                String message = "Run test of {}. ";
-                if (uploadGistsTask.isEnabled()) {
-                    LOG.lifecycle(message +
-                        "The output will be uploaded to Gist, search for logs of '{}' task to see the access link.",
-                        camelCaseRepoName, uploadGistsTask.getName());
-                } else {
-                    LOG.lifecycle(message + "The output will be saved in {}",
-                        camelCaseRepoName, buildOutputFile.getAbsoluteFile());
-
-                }
-
+                LOG.lifecycle(testDownstreamLogMessage(camelCaseRepoName, buildOutputFile, uploadGistsTask.isEnabled(), uploadGistsTask.getName()));
             }
         });
+    }
+
+    static String testDownstreamLogMessage(String camelCaseRepoName, File buildOutputFile, boolean gistsUploadEnabled, String uploadGistsTaskName) {
+        String prefix = "Run test of %s. ";
+        if (gistsUploadEnabled) {
+            return String.format(prefix +
+                "The output will be uploaded to Gist, search for logs of '%s' task to see the access link.",
+                camelCaseRepoName, uploadGistsTaskName);
+        } else {
+            return String.format(prefix + "The output will be saved in %s",
+                camelCaseRepoName, buildOutputFile.getAbsoluteFile());
+        }
     }
 
     /**
