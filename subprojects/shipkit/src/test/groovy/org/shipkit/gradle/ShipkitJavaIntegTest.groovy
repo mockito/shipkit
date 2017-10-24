@@ -72,7 +72,7 @@ class ShipkitJavaIntegTest extends GradleSpecification {
 :api:jar
 :api:javadoc
 :api:javadocJar
-:api:createDependenciesFile
+:api:createDependencyInfoFile
 :api:sourcesJar
 :api:publishJavaLibraryPublicationToMavenLocal
 :impl:generatePomFileForJavaLibraryPublication
@@ -82,7 +82,7 @@ class ShipkitJavaIntegTest extends GradleSpecification {
 :impl:jar
 :impl:javadoc
 :impl:javadocJar
-:impl:createDependenciesFile
+:impl:createDependencyInfoFile
 :impl:sourcesJar
 :impl:publishJavaLibraryPublicationToMavenLocal
 :gitPush

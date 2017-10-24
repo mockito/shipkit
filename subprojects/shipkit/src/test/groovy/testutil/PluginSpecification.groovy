@@ -17,6 +17,9 @@ import spock.lang.Specification
  * Configuration methods are overridable, so you don't have to rely on this behaviour if you don't need it.
  */
 class PluginSpecification extends Specification {
+
+    String projectVersion = "1.5.23"
+
     @Rule
     TemporaryFolder tmp = new TemporaryFolder()
 
@@ -31,7 +34,7 @@ class PluginSpecification extends Specification {
 
     void initProject() {
         project = new ProjectBuilder().withProjectDir(tmp.root).build()
-        project.version = "1.5.23"
+        project.version = projectVersion
     }
 
     void createShipkitFile() {

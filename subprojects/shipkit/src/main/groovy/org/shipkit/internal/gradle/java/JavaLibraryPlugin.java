@@ -1,14 +1,13 @@
 package org.shipkit.internal.gradle.java;
 
-import org.gradle.api.Action;
-import org.gradle.api.Plugin;
-import org.gradle.api.Project;
-import org.gradle.api.Task;
+import groovy.lang.Closure;
+import org.gradle.api.*;
 import org.gradle.api.file.CopySpec;
 import org.gradle.api.tasks.bundling.Jar;
-import org.shipkit.internal.gradle.java.tasks.CreateDependenciesFile;
+import org.shipkit.internal.gradle.java.tasks.CreateDependencyInfoFileTask;
 import org.shipkit.internal.gradle.util.JavaPluginUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
+import org.shipkit.version.VersionInfo;
 
 import java.io.File;
 
@@ -43,6 +42,7 @@ public class JavaLibraryPlugin implements Plugin<Project> {
     @Override
     public void apply(final Project project) {
         project.getPlugins().apply("java");
+        final VersionInfo versionInfo = project.getRootProject().getExtensions().findByType(VersionInfo.class);
 
         final CopySpec license = project.copySpec(new Action<CopySpec>() {
             public void execute(CopySpec copy) {
@@ -50,24 +50,18 @@ public class JavaLibraryPlugin implements Plugin<Project> {
             }
         });
 
+        final File dependenciesFile = new File(project.getBuildDir(), "dependency-info.json");
 
-        final File dependenciesFile = new File(project.getBuildDir(), "shipkit-dependencies");
-
-        Task copyDepsToFile = TaskMaker.task(project, "createDependenciesFile", CreateDependenciesFile.class, new Action<CreateDependenciesFile>() {
+        Task createDependencyInfoFileTask = TaskMaker.task(project, "createDependencyInfoFile", CreateDependencyInfoFileTask.class, new Action<CreateDependencyInfoFileTask>() {
             @Override
-            public void execute(CreateDependenciesFile task) {
+            public void execute(CreateDependencyInfoFileTask task) {
                 task.setDescription("Creates file with resolved runtime dependencies.");
                 task.setOutputFile(dependenciesFile);
-                task.setConfiguration(project.getConfigurations().getByName("default"));
+                task.setConfiguration(project.getConfigurations().getByName("runtime"));
+                task.setProjectGroup(project.getGroup().toString());
+                task.setCurrentProjectVersion(versionInfo.getVersion());
             }
         });
-
-        final CopySpec dependencyFile = project.copySpec(new Action<CopySpec>() {
-            public void execute(CopySpec copy) {
-                copy.from(dependenciesFile);
-            }
-        });
-
 
         ((Jar) project.getTasks().getByName("jar")).with(license);
 
@@ -75,11 +69,17 @@ public class JavaLibraryPlugin implements Plugin<Project> {
             public void execute(Jar jar) {
                 jar.from(JavaPluginUtil.getMainSourceSet(project).getAllSource());
                 jar.setClassifier("sources");
-                jar.with(license, dependencyFile);
+                jar.with(license);
+                jar.metaInf(new Closure(this) {
+                    public Object doCall(CopySpec copySpec) {
+                        copySpec.from(dependenciesFile);
+                        return copySpec;
+                    }
+                });
             }
         });
 
-        sourcesJar.dependsOn(copyDepsToFile);
+        sourcesJar.dependsOn(createDependencyInfoFileTask);
 
         final Task javadocJar = project.getTasks().create(JAVADOC_JAR_TASK, Jar.class, new Action<Jar>() {
             public void execute(Jar jar) {
