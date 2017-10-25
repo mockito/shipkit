@@ -55,7 +55,7 @@ class CreateDependencyInfoFileTest extends PluginSpecification {
     }
 
     private Set<ResolvedArtifact> resolvedArtifacts() {
-        def artifacts = new HashSet<ResolvedArtifact>()
+        def artifacts = new LinkedHashSet<ResolvedArtifact>()
 
         def artifact = Mock(ResolvedArtifact)
         artifact.classifier >> "artClassifier"
