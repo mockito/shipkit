@@ -24,12 +24,6 @@ public class CreateDependencyInfoFile {
 
         JsonArray dependencies = createJsonArray();
 
-        for (Dependency dependency : task.getConfiguration().getAllDependencies()) {
-            if (dependency instanceof SelfResolvingDependency) {
-                addSelfResolvingDependency(dependencies, (SelfResolvingDependency) dependency);
-            }
-        }
-
         for (ResolvedArtifact artifact : task.getConfiguration().getResolvedConfiguration().getResolvedArtifacts()) {
             addResolvedDependency(task, dependencies, artifact);
         }
@@ -62,20 +56,6 @@ public class CreateDependencyInfoFile {
 
     private ModuleVersionIdentifier moduleVersionId(ResolvedArtifact artifact) {
         return artifact.getModuleVersion() == null ? null : artifact.getModuleVersion().getId();
-    }
-
-    private void addSelfResolvingDependency(JsonArray dependencies, SelfResolvingDependency selfResolvingDependency) {
-        JsonObject selfDependency = createJsonObject();
-        JsonArray files = createJsonArray();
-        Set<File> resolvedFiles = selfResolvingDependency.resolve();
-        if (!resolvedFiles.isEmpty()) {
-            for (File file : resolvedFiles) {
-                files.add(file.getName());
-            }
-            selfDependency.put("selfResolved", "true");
-            selfDependency.put("files", files);
-            dependencies.add(selfDependency);
-        }
     }
 
     private JsonObject createJsonObject() {
