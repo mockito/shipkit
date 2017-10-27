@@ -11,7 +11,7 @@ import spock.lang.Specification
 class DetailedFormatterTest extends Specification {
 
     def f = new DetailedFormatter("Info about shipkit\n\n", "Release notes:\n\n", ["noteworthy": "Noteworthy", "bug": "Bugfixes"],
-            "http://commits/{0}...{1}", "Bintray", [:], false)
+            "http://commits/{0}...{1}", "Bintray/", [:], false)
 
     def "no releases"() {
         expect:
@@ -155,7 +155,7 @@ Release notes:
         }
 
         def summary = DetailedFormatter.releaseSummary("1.2.3", c, [:], "link",
-                "https://bintray.com/shipkit")
+                "https://bintray.com/shipkit/")
 
         expect:
         summary == """[100 commits](link) by 4 authors - published to [![Bintray](https://img.shields.io/badge/Bintray-1.2.3-green.svg)](https://bintray.com/shipkit/1.2.3)

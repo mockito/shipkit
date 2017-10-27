@@ -18,10 +18,6 @@ public class DefaultArtifactUrlResolverFactory {
     }
 
     public static String resolveUrlFromPublicationRepository(String publicationRepository, String version) {
-        if (publicationRepository.contains(VERSION_PLACEHOLDER)) {
-            return publicationRepository.replace(VERSION_PLACEHOLDER, version);
-        } else { // backwards compatibility with previous solution
-            return publicationRepository + "/" + version;
-        }
+        return publicationRepository + version;
     }
 }

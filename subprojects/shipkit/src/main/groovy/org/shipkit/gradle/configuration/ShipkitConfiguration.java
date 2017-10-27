@@ -255,10 +255,10 @@ public class ShipkitConfiguration {
 
         /**
          * Set the Publication Repository where we look for your published binary.
-         * Can contain placeholder {VERSION} which will be replaced with a currently built version.
+         * Version will be concatenated to it.
          * E.g.
          * <pre>
-         *   releaseNotes.publicationRepository = "https://plugins.gradle.org/plugin/org.shipkit.java/{VERSION}"
+         *   releaseNotes.publicationRepository = "https://plugins.gradle.org/plugin/org.shipkit.java/"
          * </pre>
          * For version = "1.2.3" will result in:
          * "https://plugins.gradle.org/plugin/org.shipkit.java/1.2.3"
