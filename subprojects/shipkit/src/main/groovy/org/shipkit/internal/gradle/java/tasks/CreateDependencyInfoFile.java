@@ -1,9 +1,6 @@
 package org.shipkit.internal.gradle.java.tasks;
 
-import org.gradle.api.artifacts.Dependency;
-import org.gradle.api.artifacts.ModuleVersionIdentifier;
-import org.gradle.api.artifacts.ResolvedArtifact;
-import org.gradle.api.artifacts.SelfResolvingDependency;
+import org.gradle.api.artifacts.*;
 import org.json.simple.JsonArray;
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
@@ -24,8 +21,10 @@ public class CreateDependencyInfoFile {
 
         JsonArray dependencies = createJsonArray();
 
-        for (ResolvedArtifact artifact : task.getConfiguration().getResolvedConfiguration().getResolvedArtifacts()) {
-            addResolvedDependency(task, dependencies, artifact);
+        for (Dependency dependency: task.getConfiguration().getAllDependencies()) {
+            if (dependency instanceof ModuleDependency && !isSiblingDependency(task, dependency)) {
+                addResolvedDependency(dependencies, (ModuleDependency) dependency);
+            }
         }
 
         result.put("dependencies", dependencies);
@@ -33,29 +32,36 @@ public class CreateDependencyInfoFile {
         IOUtil.writeFile(task.getOutputFile(), Jsoner.prettyPrint(result.toJson()));
     }
 
-    private void addResolvedDependency(CreateDependencyInfoFileTask task, JsonArray dependencies, ResolvedArtifact artifact) {
-        JsonObject dependency = createJsonObject();
-
-        ModuleVersionIdentifier moduleVersionId = moduleVersionId(artifact);
-
-        if (moduleVersionId != null && task.getProjectGroup().equals(moduleVersionId.getGroup())
-            && task.getCurrentProjectVersion().equals(moduleVersionId.getVersion())) {
-            return; // skip sibling projects from the same group and of the same version
+    private void addResolvedDependency(JsonArray dependencies, ModuleDependency dependency) {
+        if (!dependency.getArtifacts().isEmpty()) {
+            for (DependencyArtifact artifact : dependency.getArtifacts()) {
+                dependencies.add(getDependencyForSingleArtifact(dependency, artifact));
+            }
+        } else {
+            dependencies.add(getDependencyForSingleArtifact(dependency, null));
         }
-
-        dependency.put("artifactName", artifact.getName());
-        dependency.put("artifactClassifier", artifact.getClassifier());
-        dependency.put("artifactExtension", artifact.getExtension());
-        dependency.put("artifactType", artifact.getType());
-        dependency.put("dependencyGroup", moduleVersionId == null ? null : moduleVersionId.getGroup());
-        dependency.put("dependencyName", moduleVersionId == null ? null : moduleVersionId.getName());
-        dependency.put("dependencyVersion", moduleVersionId == null ? null : moduleVersionId.getVersion());
-
-        dependencies.add(dependency);
     }
 
-    private ModuleVersionIdentifier moduleVersionId(ResolvedArtifact artifact) {
-        return artifact.getModuleVersion() == null ? null : artifact.getModuleVersion().getId();
+    private boolean isSiblingDependency(CreateDependencyInfoFileTask task, Dependency dependency) {
+        return task.getProjectGroup().equals(dependency.getGroup())
+            && task.getCurrentProjectVersion().equals(dependency.getVersion());
+    }
+
+    private JsonObject getDependencyForSingleArtifact(ModuleDependency dependency, DependencyArtifact artifact) {
+        JsonObject result = createJsonObject();
+
+        result.put("dependencyGroup", dependency.getGroup());
+        result.put("dependencyName", dependency.getName());
+        result.put("dependencyVersion", dependency.getVersion());
+
+        if (artifact != null) {
+            result.put("artifactName", artifact.getName());
+            result.put("artifactClassifier", artifact.getClassifier());
+            result.put("artifactExtension", artifact.getExtension());
+            result.put("artifactType", artifact.getType());
+        }
+
+        return result;
     }
 
     private JsonObject createJsonObject() {

@@ -1,13 +1,12 @@
 package org.shipkit.internal.gradle.java;
 
-import groovy.lang.Closure;
 import org.gradle.api.*;
 import org.gradle.api.file.CopySpec;
 import org.gradle.api.tasks.bundling.Jar;
+import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
 import org.shipkit.internal.gradle.java.tasks.CreateDependencyInfoFileTask;
 import org.shipkit.internal.gradle.util.JavaPluginUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
-import org.shipkit.version.VersionInfo;
 
 import java.io.File;
 
@@ -42,7 +41,6 @@ public class JavaLibraryPlugin implements Plugin<Project> {
     @Override
     public void apply(final Project project) {
         project.getPlugins().apply("java");
-        final VersionInfo versionInfo = project.getRootProject().getExtensions().findByType(VersionInfo.class);
 
         final CopySpec license = project.copySpec(new Action<CopySpec>() {
             public void execute(CopySpec copy) {
@@ -54,12 +52,18 @@ public class JavaLibraryPlugin implements Plugin<Project> {
 
         Task createDependencyInfoFileTask = TaskMaker.task(project, "createDependencyInfoFile", CreateDependencyInfoFileTask.class, new Action<CreateDependencyInfoFileTask>() {
             @Override
-            public void execute(CreateDependencyInfoFileTask task) {
+            public void execute(final CreateDependencyInfoFileTask task) {
                 task.setDescription("Creates file with resolved runtime dependencies.");
                 task.setOutputFile(dependenciesFile);
                 task.setConfiguration(project.getConfigurations().getByName("runtime"));
-                task.setProjectGroup(project.getGroup().toString());
-                task.setCurrentProjectVersion(versionInfo.getVersion());
+                task.setCurrentProjectVersion(project.getVersion().toString());
+
+                DeferredConfiguration.deferredConfiguration(project, new Runnable() {
+                    @Override
+                    public void run() {
+                        task.setProjectGroup(project.getGroup().toString());
+                    }
+                });
             }
         });
 
@@ -70,12 +74,7 @@ public class JavaLibraryPlugin implements Plugin<Project> {
                 jar.from(JavaPluginUtil.getMainSourceSet(project).getAllSource());
                 jar.setClassifier("sources");
                 jar.with(license);
-                jar.metaInf(new Closure(this) {
-                    public Object doCall(CopySpec copySpec) {
-                        copySpec.from(dependenciesFile);
-                        return copySpec;
-                    }
-                });
+                jar.getMetaInf().from(dependenciesFile);
             }
         });
 

@@ -16,6 +16,7 @@ class JavaLibraryPluginTest extends PluginSpecification {
 
         when:
         project.plugins.apply(JavaLibraryPlugin)
+        project.evaluate()
 
         then:
         CreateDependencyInfoFileTask task = project.tasks.createDependencyInfoFile
