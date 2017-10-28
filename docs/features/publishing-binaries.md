@@ -1,7 +1,7 @@
-### Release notes
+### Publishing binaries
 
 See also "[How Shipkit Works](/docs/how-shipkit-works.md)" documentation index.
-Help us with docs and submit a PR if something is amiss!
+Please help us with docs and submit a PR with improvements!
 
 You have the code but your users need compiled and tested binaries so that they can use your code!
 
@@ -51,7 +51,10 @@ script:
 
 #### User guide
 
-Our example project contains following "[shipkit.gradle](https://github.com/mockito/shipkit-example/blob/master/gradle/shipkit.gradle)" file:
+Below is working "[shipkit.gradle](https://github.com/mockito/shipkit-example/blob/master/gradle/shipkit.gradle)" file from our example project.
+
+Configuring how binaries are published relies on [JFrog Bintray Gradle plugin](https://github.com/bintray/gradle-bintray-plugin).
+It is a separate OSS project, owned by JFrog and hosted on GitHub.
 
 ```gradle
 //shipkit.gradle
@@ -81,6 +84,40 @@ allprojects {
                 name = 'basic'
                 licenses = ['MIT']
                 labels = ['continuous delivery', 'release automation', 'mockito', 'shipkit']
+            }
+        }
+    }
+}
+```
+
+#### Shipping to Maven Central
+
+To publish to Maven Central, please [include your Bintray repository in JCenter](TODO) and configure [Bintray's Gradle plugin](https://github.com/bintray/gradle-bintray-plugin) accordingly.
+
+We use env variables to manage secret Nexus credentials, needed for publication to Maven Central.
+
+```gradle
+//shipkit.gradle
+shipkit {
+
+    // (...)
+
+}
+
+allprojects {
+    plugins.withId('com.jfrog.bintray') {
+        bintray {
+            pkg {
+
+                // (...)
+
+                version {
+                    mavenCentralSync {
+                        sync = true
+                        user = System.env.NEXUS_TOKEN_USER
+                        password = System.env.NEXUS_TOKEN_PWD
+                    }
+                }
             }
         }
     }
