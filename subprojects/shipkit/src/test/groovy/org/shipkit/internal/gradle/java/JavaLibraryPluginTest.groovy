@@ -11,9 +11,6 @@ class JavaLibraryPluginTest extends PluginSpecification {
     }
 
     def "should configure createDependencyInfoFile"() {
-        given:
-        project.group = "projectGroup"
-
         when:
         project.plugins.apply(JavaLibraryPlugin)
         project.evaluate()
@@ -22,7 +19,5 @@ class JavaLibraryPluginTest extends PluginSpecification {
         CreateDependencyInfoFileTask task = project.tasks.createDependencyInfoFile
         task.configuration == project.configurations.getByName("runtime")
         task.outputFile == new File(project.buildDir, "dependency-info.json")
-        task.currentProjectVersion == projectVersion
-        task.projectGroup == "projectGroup"
     }
 }

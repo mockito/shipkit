@@ -50,20 +50,12 @@ public class JavaLibraryPlugin implements Plugin<Project> {
 
         final File dependenciesFile = new File(project.getBuildDir(), "dependency-info.json");
 
-        Task createDependencyInfoFileTask = TaskMaker.task(project, "createDependencyInfoFile", CreateDependencyInfoFileTask.class, new Action<CreateDependencyInfoFileTask>() {
+        final CreateDependencyInfoFileTask dependencyInfoTask = TaskMaker.task(project, "createDependencyInfoFile", CreateDependencyInfoFileTask.class, new Action<CreateDependencyInfoFileTask>() {
             @Override
             public void execute(final CreateDependencyInfoFileTask task) {
                 task.setDescription("Creates file with resolved runtime dependencies.");
                 task.setOutputFile(dependenciesFile);
                 task.setConfiguration(project.getConfigurations().getByName("runtime"));
-                task.setCurrentProjectVersion(project.getVersion().toString());
-
-                DeferredConfiguration.deferredConfiguration(project, new Runnable() {
-                    @Override
-                    public void run() {
-                        task.setProjectGroup(project.getGroup().toString());
-                    }
-                });
             }
         });
 
@@ -74,11 +66,11 @@ public class JavaLibraryPlugin implements Plugin<Project> {
                 jar.from(JavaPluginUtil.getMainSourceSet(project).getAllSource());
                 jar.setClassifier("sources");
                 jar.with(license);
-                jar.getMetaInf().from(dependenciesFile);
+                jar.getMetaInf().from(dependencyInfoTask.getOutputFile());
             }
         });
 
-        sourcesJar.dependsOn(createDependencyInfoFileTask);
+        sourcesJar.dependsOn(dependencyInfoTask);
 
         final Task javadocJar = project.getTasks().create(JAVADOC_JAR_TASK, Jar.class, new Action<Jar>() {
             public void execute(Jar jar) {
