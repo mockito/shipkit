@@ -1,7 +1,7 @@
 package org.shipkit.internal.notes.util;
 
 // TODO remove once we migrate to java8
-public interface Function<T, R> {
+public interface Supplier<T> {
 
-    R apply(T t);
+    T get();
 }

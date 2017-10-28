@@ -17,31 +17,32 @@ public class InitVersioning {
     public void initVersioning(InitVersioningTask task) {
         File file = task.getVersionFile();
         if (file.exists()) {
-            InitMessages.skipping(file.getAbsolutePath(), task.getPath());
+            String relativePath = task.getProject().getRootProject().relativePath(file);
+            InitMessages.skipping(relativePath);
         } else {
-            createVersionPropertiesFile(task.getProject(), file, task.getPath());
+            createVersionPropertiesFile(task.getProject(), file);
         }
     }
 
-    private void createVersionPropertiesFile(Project project, File versionFile, String taskPath) {
-        String version = determineVersion(project, versionFile, taskPath);
+    private void createVersionPropertiesFile(Project project, File versionFile) {
+        String version = determineVersion(project, versionFile);
 
         String versionFileContent = "#Version of the produced binaries. This file is intended to be checked-in.\n"
             + "#It will be automatically bumped by release automation.\n"
             + "version=" + version + "\n";
 
         IOUtil.writeFile(versionFile, versionFileContent);
-        InitMessages.generated(versionFile.getAbsolutePath(), taskPath);
-        LOG.lifecycle("{} - the version is now stored in '{}' file. Avoid setting 'version' in *.gradle file.", taskPath, versionFile.getName());
+        InitMessages.generated(versionFile.getName());
+        LOG.lifecycle("  Version number is now stored in '{}' file. Don't set 'version' in *.gradle file.", versionFile.getName());
     }
 
-    private String determineVersion(Project project, File versionFile, String taskPath) {
+    private String determineVersion(Project project, File versionFile) {
         if ("unspecified".equals(project.getVersion())) {
-            LOG.info("{} - 'project.version' is unspecified. Version will be set to '{}'. You can change it in '{}'.",
-                taskPath, FALLBACK_INITIAL_VERSION, versionFile.getName());
+            LOG.info("'project.version' is unspecified. Version will be set to '{}'. You can change it in '{}'.",
+                FALLBACK_INITIAL_VERSION, versionFile.getName());
             return FALLBACK_INITIAL_VERSION;
         } else {
-            LOG.lifecycle("{} - configured '{}' version in '{}' file. Please remove 'version={}' setting from *.gradle file.",
+            LOG.lifecycle("  Configured '{}' version in '{}' file. Please remove 'version={}' setting from *.gradle file.",
                 project.getVersion(), versionFile.getName(), project.getVersion());
             return project.getVersion().toString();
         }

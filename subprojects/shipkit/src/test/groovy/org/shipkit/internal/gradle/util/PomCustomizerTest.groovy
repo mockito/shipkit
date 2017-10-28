@@ -30,7 +30,7 @@ class PomCustomizerTest extends Specification {
 
     def "pom contributors from settings"() {
         conf.gitHub.repository = "repo"
-        conf.team.developers = ["szczepiq:Szczepan Faber", "wwilk:Wojtek Wilk"]
+        conf.team.developers = ["mockitoguy:Szczepan Faber", "wwilk:Wojtek Wilk"]
         //wwilk will not be duplicated in developers/contributors
         conf.team.contributors = ["mstachniuk:Marcin Stachniuk", "wwilk:Wojtek Wilk"]
 
@@ -62,12 +62,12 @@ class PomCustomizerTest extends Specification {
   </ciManagement>
   <developers>
     <developer>
-      <id>szczepiq</id>
+      <id>mockitoguy</id>
       <name>Szczepan Faber</name>
       <roles>
         <role>Core developer</role>
       </roles>
-      <url>https://github.com/szczepiq</url>
+      <url>https://github.com/mockitoguy</url>
     </developer>
     <developer>
       <id>wwilk</id>
@@ -90,7 +90,7 @@ class PomCustomizerTest extends Specification {
 
     def "pom contributors from GitHub"() {
         conf.gitHub.repository = "repo"
-        conf.team.developers = ["szczepiq:Szczepan Faber", "wwilk:Wojtek Wilk"]
+        conf.team.developers = ["mockitoguy:Szczepan Faber", "wwilk:Wojtek Wilk"]
         conf.team.contributors = []
         //wwilk will not be duplicated in developers/contributors
         def contributorsSet = new DefaultProjectContributorsSet()
@@ -125,12 +125,12 @@ class PomCustomizerTest extends Specification {
   </ciManagement>
   <developers>
     <developer>
-      <id>szczepiq</id>
+      <id>mockitoguy</id>
       <name>Szczepan Faber</name>
       <roles>
         <role>Core developer</role>
       </roles>
-      <url>https://github.com/szczepiq</url>
+      <url>https://github.com/mockitoguy</url>
     </developer>
     <developer>
       <id>wwilk</id>

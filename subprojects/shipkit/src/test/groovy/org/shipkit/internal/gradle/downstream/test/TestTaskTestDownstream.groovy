@@ -1,6 +1,7 @@
 package org.shipkit.internal.gradle.downstream.test
 
 import org.gradle.testfixtures.ProjectBuilder
+import org.shipkit.internal.gradle.release.tasks.UploadGistsTask
 import spock.lang.Specification
 
 class TestTaskTestDownstream extends Specification {
@@ -8,8 +9,11 @@ class TestTaskTestDownstream extends Specification {
     def project = new ProjectBuilder().build()
 
     def "should extract project name correctly"() {
-        when:
+        given:
         TestDownstreamTask task = project.tasks.create("testDownstream", TestDownstreamTask)
+        task.setUploadGistsTask(project.tasks.create("uploadGists", UploadGistsTask))
+
+        when:
         task.addRepository("https://github.com/mockito/mockito")
 
         then:
@@ -19,8 +23,11 @@ class TestTaskTestDownstream extends Specification {
     }
 
     def "should extract project name correctly when slash is the last char in url"() {
-        when:
+        given:
         TestDownstreamTask task = project.tasks.create("testDownstream", TestDownstreamTask)
+        task.setUploadGistsTask(project.tasks.create("uploadGists", UploadGistsTask))
+
+        when:
         task.addRepository("https://github.com/mockito/shipkit-example/")
 
         then:

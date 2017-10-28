@@ -9,9 +9,12 @@ import org.shipkit.gradle.git.IdentifyGitBranchTask;
 import org.shipkit.gradle.release.ReleaseNeededTask;
 import org.shipkit.internal.gradle.configuration.BasicValidator;
 import org.shipkit.internal.gradle.configuration.LazyConfiguration;
+import org.shipkit.internal.gradle.downstream.test.TestDownstreamPlugin;
 import org.shipkit.internal.gradle.git.GitBranchPlugin;
 import org.shipkit.internal.gradle.git.GitSetupPlugin;
 import org.shipkit.internal.gradle.git.tasks.GitCheckOutTask;
+import org.shipkit.internal.gradle.release.tasks.UploadGists;
+import org.shipkit.internal.gradle.release.tasks.UploadGistsTask;
 import org.shipkit.internal.gradle.util.StringUtil;
 
 /**
@@ -56,9 +59,9 @@ public class TravisPlugin implements Plugin<Project> {
             public void run() {
                 BasicValidator.notNull(checkout.getRev(),
                         "Task " + checkout.getPath() + " does not know the target revision to check out.\n" +
-                                "In Travis CI builds, it is automatically configured from 'TRAVIS_BRANCH' environment variable.\n" +
-                                "If you are trying to run this task outside Travis, you can export the environment variable.\n" +
-                                "Alternatively, you can set the task's 'rev' property explicitly.");
+                        "In Travis CI builds, it is automatically configured from 'TRAVIS_BRANCH' environment variable.\n" +
+                        "If you are trying to run this task outside Travis, you can export the environment variable.\n" +
+                        "Alternatively, you can set the task's 'rev' property explicitly.");
             }
         });
 

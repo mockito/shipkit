@@ -14,7 +14,7 @@ class InitShipkitFileTest extends Specification {
         shipkitFile << "foo"
 
         when:
-        InitShipkitFile.initShipkitFile(shipkitFile, "mockito/mockito", ":init")
+        InitShipkitFile.initShipkitFile(shipkitFile, "shipkit.gradle", "mockito/mockito")
 
         then:
         shipkitFile.text == "foo"
@@ -32,7 +32,9 @@ class InitShipkitFileTest extends Specification {
             """//This default Shipkit configuration file was created automatically and is intended to be checked-in.
 //Default configuration is sufficient for local testing and trying out Shipkit.
 //To leverage Shipkit fully, please fix the TODO items, refer to our Getting Started Guide for help:
-// https://github.com/mockito/shipkit/blob/master/docs/getting-started.md
+//
+//     https://github.com/mockito/shipkit/blob/master/docs/getting-started.md
+//
 shipkit {
    //TODO is the repository correct?
    gitHub.repository = "mockito/mockito"
@@ -46,14 +48,19 @@ shipkit {
 
 allprojects {
    plugins.withId("com.jfrog.bintray") {
+
+       //Bintray configuration is handled by JFrog Bintray Gradle Plugin
+       //For reference see the official documentation: https://github.com/bintray/gradle-bintray-plugin
        bintray {
-           //TODO sign up for free open source account with Bintray, generate the API key
+
+           //TODO sign up for free open source account with https://bintray.com, then look up your API key on your profile page in Bintray
            key = '7ea297848ca948adb7d3ee92a83292112d7ae989'
            //TODO don't check in the key, remove above line and use env variable exported on CI:
            //key = System.getenv("BINTRAY_API_KEY")
 
            pkg {
-               //TODO configure Bintray settings per your project (https://github.com/bintray/gradle-bintray-plugin)               repo = 'bootstrap'
+               //TODO configure Bintray settings per your project (https://github.com/bintray/gradle-bintray-plugin)
+               repo = 'bootstrap'
                user = 'shipkit-bootstrap-bot'
                userOrg = 'shipkit-bootstrap'
                name = 'maven'

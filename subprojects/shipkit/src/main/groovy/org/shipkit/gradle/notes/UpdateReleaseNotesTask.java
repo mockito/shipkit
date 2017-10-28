@@ -33,7 +33,7 @@ public class UpdateReleaseNotesTask extends DefaultTask {
     @InputFile private File releaseNotesData;
     @Input private Collection<String> developers = new LinkedList<String>();
     @Input private Collection<String> contributors = new LinkedList<String>();
-    @InputFile private File contributorsDataFile;
+    @InputFile @Optional private File contributorsDataFile;
 
     @Input private boolean emphasizeVersion;
     @Input private String version;
@@ -125,13 +125,6 @@ public class UpdateReleaseNotesTask extends DefaultTask {
      */
     public String getGitHubRepository() {
         return gitHubRepository;
-    }
-
-    /**
-     * @return a link to the generated release notes file hosted on Github.
-     */
-    public String getReleaseNotesUrl(String branch) {
-        return new UpdateReleaseNotes().getReleaseNotesUrl(this, branch);
     }
 
     /**
@@ -242,7 +235,7 @@ public class UpdateReleaseNotesTask extends DefaultTask {
     }
 
     /**
-     * File name from reads contributors from GitHub
+     * File containing contributors fetched from GitHub
      */
     public File getContributorsDataFile() {
         return contributorsDataFile;

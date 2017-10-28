@@ -11,15 +11,16 @@ public class InitShipkitFile {
     public void initShipkitFile(InitShipkitFileTask task) {
         File shipkitFile = task.getShipkitFile();
         String originRepoName = task.getOriginRepoName();
-        initShipkitFile(shipkitFile, originRepoName, task.getPath());
+        String relativePath = task.getProject().getRootProject().relativePath(shipkitFile);
+        initShipkitFile(shipkitFile, relativePath, originRepoName);
     }
 
-    static void initShipkitFile(File shipkitFile, String originRepoName, String taskPath) {
+    static void initShipkitFile(File shipkitFile, String relativePath, String originRepoName) {
         if (shipkitFile.exists()) {
-            InitMessages.skipping(shipkitFile.getAbsolutePath(), taskPath);
+            InitMessages.skipping(relativePath);
         } else {
             createShipkitFile(shipkitFile, originRepoName);
-            InitMessages.generated(shipkitFile.getAbsolutePath(), taskPath);
+            InitMessages.generated(relativePath);
         }
     }
 
@@ -46,7 +47,9 @@ public class InitShipkitFile {
         "//This default Shipkit configuration file was created automatically and is intended to be checked-in.\n" +
             "//Default configuration is sufficient for local testing and trying out Shipkit.\n" +
             "//To leverage Shipkit fully, please fix the TODO items, refer to our Getting Started Guide for help:\n" +
-            "// https://github.com/mockito/shipkit/blob/master/docs/getting-started.md\n" +
+            "//\n" +
+            "//     https://github.com/mockito/shipkit/blob/master/docs/getting-started.md\n" +
+            "//\n" +
             "shipkit {\n" +
             "   //TODO is the repository correct?\n" +
             "   gitHub.repository = \"@gitHub.repository@\"\n" +
@@ -60,14 +63,18 @@ public class InitShipkitFile {
             "\n" +
             "allprojects {\n" +
             "   plugins.withId(\"com.jfrog.bintray\") {\n" +
+            "\n" +
+            "       //Bintray configuration is handled by JFrog Bintray Gradle Plugin\n" +
+            "       //For reference see the official documentation: https://github.com/bintray/gradle-bintray-plugin\n" +
             "       bintray {\n" +
-            "           //TODO sign up for free open source account with Bintray, generate the API key\n" +
+            "\n" +
+            "           //TODO sign up for free open source account with https://bintray.com, then look up your API key on your profile page in Bintray\n" +
             "           key = '@bintray.key@'\n" +
             "           //TODO don't check in the key, remove above line and use env variable exported on CI:\n" +
             "           //key = System.getenv(\"BINTRAY_API_KEY\")\n" +
             "\n" +
             "           pkg {\n" +
-            "               //TODO configure Bintray settings per your project (https://github.com/bintray/gradle-bintray-plugin)" +
+            "               //TODO configure Bintray settings per your project (https://github.com/bintray/gradle-bintray-plugin)\n" +
             "               repo = '@bintray.pkg.repo@'\n" +
             "               user = '@bintray.pkg.user@'\n" +
             "               userOrg = '@bintray.pkg.userOrg@'\n" +

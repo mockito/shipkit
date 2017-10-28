@@ -8,8 +8,7 @@ apply plugin: 'com.gradle.plugin-publish'
 
 apply from: "$rootDir/gradle/upgrade-downstream.gradle"
 
-//TODO: WW uncomment when GradlePluginArtifactUrlResolver is released
-//apply plugin: 'org.shipkit.compare-publications'
+apply plugin: 'org.shipkit.compare-publications'
 
 checkstyle {
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
@@ -34,6 +33,20 @@ dependencies {
     testCompile "org.objenesis:objenesis:2.5"
     testCompile "commons-lang:commons-lang:2.4"
     testCompile gradleTestKit()
+}
+
+test {
+    testLogging {
+        info.events = ["failed", "skipped"]
+    }
+    afterSuite { desc, result ->
+        if (!desc.parent)
+            logger.info("Test summary: " +
+                "${result.testCount} tests " +
+                "(${result.successfulTestCount} succeeded, " +
+                "${result.failedTestCount} failed, " +
+                "${result.skippedTestCount} skipped)")
+    }
 }
 
 pluginBundle {

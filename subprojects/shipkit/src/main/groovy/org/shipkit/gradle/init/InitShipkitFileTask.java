@@ -1,7 +1,6 @@
 package org.shipkit.gradle.init;
 
 import org.gradle.api.DefaultTask;
-import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.internal.gradle.init.tasks.InitShipkitFile;
 
@@ -15,7 +14,7 @@ import java.io.File;
 public class InitShipkitFileTask extends DefaultTask {
 
     private String originRepoName;
-    @OutputFile private File shipkitFile;
+    private File shipkitFile;
 
     /**
      * Initial Shipkit configuration will be generated to this file.

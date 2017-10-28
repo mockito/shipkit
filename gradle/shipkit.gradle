@@ -2,16 +2,10 @@ shipkit {
     gitHub.repository = "mockito/shipkit"
     gitHub.readOnlyAuthToken = "e7fe8fcdd6ffed5c38498c4c79b2a68e6f6ed1bb"
 
-    team.developers = ['szczepiq:Szczepan Faber', 'mstachniuk:Marcin Stachniuk',
+    team.developers = ['mockitoguy:Szczepan Faber', 'mstachniuk:Marcin Stachniuk',
                        'wwilk:Wojtek Wilk', 'epeee:Erhard Pointl', 'NagRock:Maciej Kuster']
 
-    // Comment in after the next version of shipkit is released
-    //releaseNotes.publicationRepository = "https://plugins.gradle.org/plugin/org.shipkit.java"
-}
-
-// Remove me after the next version of shipkit is released
-afterEvaluate {
-    project.rootProject.tasks.updateReleaseNotes.publicationRepository = "https://plugins.gradle.org/plugin/org.shipkit.java"
+    releaseNotes.publicationRepository = "https://plugins.gradle.org/plugin/org.shipkit.java"
 }
 
 apply plugin: 'org.shipkit.upgrade-dependency'
