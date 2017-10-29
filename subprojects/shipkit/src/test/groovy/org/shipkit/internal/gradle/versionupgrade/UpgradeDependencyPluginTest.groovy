@@ -182,7 +182,6 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
         task.pullRequestTitle == "Version of shipkit upgraded to ${versionUpgrade.newVersion}"
     }
 
-
     def "should configure createPullRequest basing on overriden values"() {
         given:
         project.extensions.dependency = "org.shipkit:shipkit:1.2.30"
