@@ -1,4 +1,4 @@
-# Upgrade dependency plugin
+### Upgrading dependencies conveniently
 
 Note that this plugin is incubating!
 
@@ -9,7 +9,7 @@ Let's say we have two projects **child** and **parent**. **Child** depends on **
 
 UpgradeDependencyPlugin is aiming at solving these problems by automating the process.
 
-## Configuration
+#### Configuration
 
 You use it by configuring your shipkit.gradle file like that:
 
@@ -26,7 +26,7 @@ where:
 - **baseBranch** - Git branch in **child** project to which we want to create a pull request with version upgrade. Defaults to "master".
 - **buildFile** - file in which Shipkit will be able to find the dependency on **parent** and replace the version with the new one. Its type is java.io.File and defaults to file('build.gradle')
 
-## Usage
+#### Usage
 
 Now when you have the plugin configured, you can go to your command line,  open **child** root dir and run:
 

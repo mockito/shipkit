@@ -1,4 +1,4 @@
-# ReleaseNeededPlugin
+### Avoiding unnecessary releases
 
 See also "[How Shipkit Works](/docs/how-shipkit-works.md)" documentation index.
 Please help us with docs and submit a PR with improvements!
@@ -14,7 +14,7 @@ The only difference between them is that **assertReleaseNeeded** fails
 the build if release is not needed, while **releaseNeeded** gives
 you information if release is needed without failing.
 
-## Configuration
+#### Configuration
 
 Implementations of ReleaseNeededTask allow you to configure following properties:
 - **releaseBranchRegex** is used to determine if we should release on this branch or not.
@@ -26,8 +26,7 @@ It is automatically set by Shipkit CI plugins, eg. TravisPlugin.
 Also set automatically by Shipkit CI plugins.
 - **branch** is a current Git branch. Also set by Shipkit CI Plugins.
 
-
-## Reasons why release may not be needed
+#### Reasons why release may not be needed
 
 There is a couple of them:
 - Environment variable **SKIP_RELEASE** is set to any value (eg. 'true')
@@ -36,7 +35,7 @@ There is a couple of them:
 - Branch is a releasable one, see **releaseBranchRegex** in [Configuration section](#configuration)
 - One of the publications changed, see [section below](#comparing-publications)
 
-## Usage
+#### Usage
 
 You usually don't need to apply this plugin. It comes with **ShipkitJavaPlugin**
 or **ShipkitGradlePlugin**. Also **assertReleaseNeeded** is a part of **ciPerformRelease** task.
@@ -52,11 +51,6 @@ or
 ```
 ./gradlew releaseNeeded
 ```
-
-
-## Comparing publications
-
-TBD.
 
 Thank you for reading!
 Questions or feedback?

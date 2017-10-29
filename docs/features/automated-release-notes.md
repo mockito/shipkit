@@ -1,4 +1,4 @@
-### Release notes
+### Automated release notes
 
 See also "[How Shipkit Works](/docs/how-shipkit-works.md)" documentation index.
 Please help us with docs and submit a PR with improvements!
