@@ -92,7 +92,7 @@ allprojects {
 
 #### Shipping to Maven Central
 
-To publish to Maven Central, please [include your Bintray repository in JCenter](TODO) and configure [Bintray's Gradle plugin](https://github.com/bintray/gradle-bintray-plugin) accordingly.
+To publish to Maven Central, please [include your Bintray repository in JCenter](http://bintray.com/bintray/jcenter) and configure [Bintray's Gradle plugin](https://github.com/bintray/gradle-bintray-plugin) accordingly.
 
 We use env variables to manage secret Nexus credentials, needed for publication to Maven Central.
 

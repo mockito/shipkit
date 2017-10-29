@@ -33,8 +33,6 @@ To talk to GitHub REST API Shipkit needs GitHub read-only auth token.
 It is very [easy and quick to generate](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/) the auth token on GitHub.
 Then, you only need to configure it in ```shipkit.gradle``` file.
 
-TODO document that we push the release notes to GitHub and add github settings to the example. Link to the example project.
-
 #### User guide
 
 When you made your first release, you will notice where Shipkit puts the release notes by default.
