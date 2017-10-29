@@ -14,10 +14,7 @@ import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.util.ExposedForTesting;
 import org.shipkit.version.VersionInfo;
 
-import java.io.File;
-
 import static org.shipkit.internal.util.ArgumentValidation.notNull;
-import static org.shipkit.internal.util.RepositoryNameUtil.repositoryNameToCamelCase;
 import static org.shipkit.internal.util.RepositoryNameUtil.repositoryNameToCapitalizedCamelCase;
 
 /**
@@ -76,27 +73,12 @@ public class UpgradeDownstreamPlugin implements Plugin<Project> {
                 notNull(upgradeDownstreamExtension.getRepositories(),
                     "'upgradeDownstream.repositories'");
                 for (String consumerRepositoryName : upgradeDownstreamExtension.getRepositories()) {
-                    Task cloneTask = createConsumerCloneTask(project, conf, consumerRepositoryName);
+                    Task cloneTask = CloneGitRepositoryTask.createCloneTask(project, conf.getGitHub().getUrl(), consumerRepositoryName);
                     Task performUpdate = createProduceUpgradeTask(project, consumerRepositoryName);
                     performUpdate.dependsOn(cloneTask);
                     performAllUpdates.dependsOn(performUpdate);
                 }
             }
-        });
-    }
-
-    private Task createConsumerCloneTask(final Project project, final ShipkitConfiguration conf, final String consumerRepository) {
-        return TaskMaker.task(project,
-            "clone" + repositoryNameToCapitalizedCamelCase(consumerRepository),
-            CloneGitRepositoryTask.class,
-            new Action<CloneGitRepositoryTask>() {
-                @Override
-                public void execute(final CloneGitRepositoryTask task) {
-                    task.setDescription("Clones consumer repo " + consumerRepository + " into a temporary directory.");
-                    String gitHubUrl = conf.getGitHub().getUrl();
-                    task.setRepositoryUrl(gitHubUrl + "/" + consumerRepository);
-                    task.setTargetDir(getConsumerRepoTempDir(project, consumerRepository));
-                }
         });
     }
 
@@ -106,14 +88,10 @@ public class UpgradeDownstreamPlugin implements Plugin<Project> {
             public void execute(final ShipkitExecTask task) {
                 task.setDescription("Performs dependency upgrade in " + consumerRepository);
                 task.execCommand(ExecCommandFactory.execCommand("Upgrading dependency",
-                    getConsumerRepoTempDir(project, consumerRepository),
+                    CloneGitRepositoryTask.getConsumerRepoCloneDir(project, consumerRepository),
                     "./gradlew", "performVersionUpgrade", getDependencyProperty(project)));
             }
         });
-    }
-
-    private File getConsumerRepoTempDir(Project project, String consumerRepository) {
-        return new File(project.getBuildDir().getAbsolutePath() + "/downstream-upgrade/" + repositoryNameToCamelCase(consumerRepository));
     }
 
     private String getDependencyProperty(Project project) {
