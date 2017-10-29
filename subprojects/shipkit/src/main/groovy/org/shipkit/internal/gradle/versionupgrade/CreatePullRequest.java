@@ -25,7 +25,7 @@ class CreatePullRequest {
 
         IncubatingWarning.warn("creating pull requests");
         LOG.lifecycle("  Creating a pull request of title '{}' in repository '{}' between base = '{}' and head = '{}'.",
-            task.getPullRequestTitle() , task.getUpstreamRepositoryName(), task.getVersionUpgrade().getBaseBranch(), headBranch);
+            task.getPullRequestTitle(), task.getUpstreamRepositoryName(), task.getVersionUpgrade().getBaseBranch(), headBranch);
 
         String body = "{" +
             "  \"title\": \"" + task.getPullRequestTitle() + "\"," +

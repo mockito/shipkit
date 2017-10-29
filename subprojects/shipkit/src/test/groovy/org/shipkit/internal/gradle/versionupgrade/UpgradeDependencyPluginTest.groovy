@@ -16,8 +16,6 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
 
     def setup() {
         conf.gitHub.writeAuthToken = "secret"
-        conf.git.pullRequestDescription = "pull request description"
-        conf.git.pullRequestTitle = "pull request title"
     }
 
     def "should initialize plugin correctly and with default values"() {

@@ -1,5 +1,6 @@
 package org.shipkit.internal.gradle.versionupgrade;
 
+import org.apache.commons.lang.StringUtils;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -23,43 +24,42 @@ import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
 /**
  * BEWARE! This plugin is in incubating state, so its API may change in the future!
  * The plugin applies following plugins:
- *
+ * <p>
  * <ul>
- *     <li>{@link ShipkitConfigurationPlugin}</li>
- *     <li>{@link GitOriginPlugin}</li>
+ * <li>{@link ShipkitConfigurationPlugin}</li>
+ * <li>{@link GitOriginPlugin}</li>
  * </ul>
- *
+ * <p>
  * and adds following tasks:
- *
+ * <p>
  * <ul>
- *     <li>checkoutVersionUpgradeBaseBranch - checkouts base branch - the branch to which version upgrade should be applied through pull request</li>
- *     <li>pullUpstream - syncs the fork on which we perform version upgrade with the upstream repo</li>
- *     <li>checkoutVersionUpgradeVersionBranch - checkouts version branch - a new branch where version will be upgraded</li>
- *     <li>replaceVersion - replaces version in build file, using dependency pattern</li>
- *     <li>commitVersionUpgrade - commits replaced version</li>
- *     <li>pushVersionUpgrade - pushes the commit to the version branch</li>
- *     <li>createPullRequest - creates a pull request between base and version branches</li>
- *     <li>performVersionUpgrade - task aggregating all of the above</li>
+ * <li>checkoutVersionUpgradeBaseBranch - checkouts base branch - the branch to which version upgrade should be applied through pull request</li>
+ * <li>pullUpstream - syncs the fork on which we perform version upgrade with the upstream repo</li>
+ * <li>checkoutVersionUpgradeVersionBranch - checkouts version branch - a new branch where version will be upgraded</li>
+ * <li>replaceVersion - replaces version in build file, using dependency pattern</li>
+ * <li>commitVersionUpgrade - commits replaced version</li>
+ * <li>pushVersionUpgrade - pushes the commit to the version branch</li>
+ * <li>createPullRequest - creates a pull request between base and version branches</li>
+ * <li>performVersionUpgrade - task aggregating all of the above</li>
  * </ul>
- *
+ * <p>
  * Plugin should be used in client projects that want to have automated version upgrades of some other dependency, that use the producer version of this plugin.
  * Project with the producer plugin applied would then clone a fork of client project and run './gradlew performVersionUpgrade -Pdependency=${group:name:version}' on it.
- *
+ * <p>
  * Example of plugin usage:
- *
+ * <p>
  * Configure your 'shipkit.gradle' file like here:
- *
- *      apply plugin: 'org.shipkit.upgrade-dependency'
- *
- *      upgradeDependency{
- *          baseBranch = 'release/2.x'
- *          buildFile = file('build.gradle')
- *      }
- *
+ * <p>
+ * apply plugin: 'org.shipkit.upgrade-dependency'
+ * <p>
+ * upgradeDependency{
+ * baseBranch = 'release/2.x'
+ * buildFile = file('build.gradle')
+ * }
+ * <p>
  * and then call it:
- *
+ * <p>
  * ./gradlew performVersionUpgrade -Pdependency=org.shipkit:shipkit:1.2.3
- *
  */
 public class UpgradeDependencyPlugin implements Plugin<Project> {
 
@@ -198,8 +198,8 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.setAuthToken(conf.getLenient().getGitHub().getWriteAuthToken());
                 task.setVersionBranch(getVersionBranchName(upgradeDependencyExtension));
                 task.setVersionUpgrade(upgradeDependencyExtension);
-                task.setPullRequestTitle(conf.getGit().getPullRequestTitle());
-                task.setPullRequestDescription(conf.getGit().getPullRequestDescription());
+                task.setPullRequestTitle(getPullRequestTitle(task));
+                task.setPullRequestDescription(getPullRequestDescription(task));
 
                 gitOriginPlugin.provideOriginRepo(task, new Action<String>() {
                     @Override
@@ -226,6 +226,26 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.dependsOn(CREATE_PULL_REQUEST);
             }
         });
+    }
+
+    private String getPullRequestDescription(CreatePullRequestTask task) {
+        if (StringUtils.isBlank(task.getPullRequestDescription())) {
+            return String.format("This pull request was automatically created by Shipkit's" +
+                    " 'org.shipkit.upgrade-downstream' Gradle plugin (http://shipkit.org)." +
+                    " Please merge it so that you are using fresh version of '%s' dependency.",
+                task.getVersionUpgrade().getDependencyName());
+        } else {
+            return task.getPullRequestDescription();
+        }
+    }
+
+    private String getPullRequestTitle(CreatePullRequestTask task) {
+        if (StringUtils.isBlank(task.getPullRequestDescription())) {
+            UpgradeDependencyExtension versionUpgrade = task.getVersionUpgrade();
+            return String.format("Version of %s upgraded to %s", versionUpgrade.getDependencyName(), versionUpgrade.getNewVersion());
+        } else {
+            return task.getPullRequestDescription();
+        }
     }
 
     private Spec<Task> wasBuildFileUpdatedSpec(final ReplaceVersionTask replaceVersionTask) {
