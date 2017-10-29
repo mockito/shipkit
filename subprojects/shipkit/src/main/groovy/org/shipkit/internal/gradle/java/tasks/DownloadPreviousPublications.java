@@ -12,7 +12,6 @@ public class DownloadPreviousPublications {
     private static final Logger LOG = Logging.getLogger(DownloadPreviousPublications.class);
 
     public void downloadPreviousPublications(DownloadPreviousPublicationsTask task) {
-        downloadRemoteFile(task.getPreviousPomUrl(), task.getPreviousPom());
         downloadRemoteFile(task.getPreviousSourcesJarUrl(), task.getPreviousSourcesJar());
     }
 

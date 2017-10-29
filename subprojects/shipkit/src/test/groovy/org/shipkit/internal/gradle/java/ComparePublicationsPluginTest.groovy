@@ -59,7 +59,7 @@ class ComparePublicationsPluginTest extends PluginSpecification {
         task.getPreviousVersion() == "0.1.0"
     }
 
-    def "sets previousVersionPomLocalFile and previousVersionSourcesJarLocalFile to Bintray defaults if BintrayPlugin is applied"() {
+    def "sets previousVersionSourcesJarLocalFile to Bintray defaults if BintrayPlugin is applied"() {
         given:
         conf.gitHub.repository = "repo"
         def child = new ProjectBuilder().withName("child").withParent(project).build()
@@ -75,11 +75,10 @@ class ComparePublicationsPluginTest extends PluginSpecification {
         DownloadPreviousPublicationsTask task = child.getTasks()
                 .getByName(ComparePublicationsPlugin.DOWNLOAD_PUBLICATIONS_TASK);
 
-        task.previousPomUrl.contains("bintray.com")
         task.previousSourcesJarUrl.contains("bintray.com")
     }
 
-    def "leaves previousVersionPomLocalFile and previousVersionSourcesJarLocalFile null if BintrayPlugin is NOT applied"() {
+    def "leaves previousVersionSourcesJarLocalFile null if BintrayPlugin is NOT applied"() {
         given:
         def parent = new ProjectBuilder().withProjectDir(tmp.root).withName("parent").build()
         def child = new ProjectBuilder().withName("child").withParent(parent).build()
@@ -92,7 +91,6 @@ class ComparePublicationsPluginTest extends PluginSpecification {
         DownloadPreviousPublicationsTask task = child.getTasks()
                 .getByName(ComparePublicationsPlugin.DOWNLOAD_PUBLICATIONS_TASK);
 
-        task.previousPomUrl == null
         task.previousSourcesJarUrl == null
     }
 
@@ -116,13 +114,10 @@ class ComparePublicationsPluginTest extends PluginSpecification {
                 .getByName(ComparePublicationsPlugin.COMPARE_PUBLICATIONS_TASK)
 
         def basePath = child.getBuildDir().absolutePath + "/previous-release-artifacts/child-1.0.0";
-        def expectedPom = new File(basePath + ".pom")
         def expectedSourcesJar = new File(basePath + "-sources.jar")
 
-        downloadTask.previousPom == expectedPom
         downloadTask.previousSourcesJar == expectedSourcesJar
 
-        comparisonTask.previousPom == expectedPom
         comparisonTask.previousSourcesJar == expectedSourcesJar
     }
 

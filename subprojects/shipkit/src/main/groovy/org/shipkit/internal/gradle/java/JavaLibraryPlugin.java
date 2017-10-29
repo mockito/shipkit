@@ -3,7 +3,6 @@ package org.shipkit.internal.gradle.java;
 import org.gradle.api.*;
 import org.gradle.api.file.CopySpec;
 import org.gradle.api.tasks.bundling.Jar;
-import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
 import org.shipkit.internal.gradle.java.tasks.CreateDependencyInfoFileTask;
 import org.shipkit.internal.gradle.util.JavaPluginUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
@@ -37,6 +36,7 @@ public class JavaLibraryPlugin implements Plugin<Project> {
 
     public final static String SOURCES_JAR_TASK = "sourcesJar";
     public final static String JAVADOC_JAR_TASK = "javadocJar";
+    public static final String DEPENDENCY_INFO_FILENAME = "dependency-info.json";
 
     @Override
     public void apply(final Project project) {
@@ -48,7 +48,7 @@ public class JavaLibraryPlugin implements Plugin<Project> {
             }
         });
 
-        final File dependenciesFile = new File(project.getBuildDir(), "dependency-info.json");
+        final File dependenciesFile = new File(project.getBuildDir(), DEPENDENCY_INFO_FILENAME);
 
         final CreateDependencyInfoFileTask dependencyInfoTask = TaskMaker.task(project, "createDependencyInfoFile", CreateDependencyInfoFileTask.class, new Action<CreateDependencyInfoFileTask>() {
             @Override

@@ -51,7 +51,6 @@ public class ComparePublicationsPlugin implements Plugin<Project> {
         final Jar sourcesJar = (Jar) project.getTasks().getByName(JavaLibraryPlugin.SOURCES_JAR_TASK);
 
         String basePreviousVersionArtifactPath = getBasePreviousVersionArtifactPath(project, conf, sourcesJar);
-        final File previousPom = new File(basePreviousVersionArtifactPath + ".pom");
         final File previousSourcesJar = new File(basePreviousVersionArtifactPath + "-sources.jar");
 
         TaskMaker.task(project, DOWNLOAD_PUBLICATIONS_TASK, DownloadPreviousPublicationsTask.class, new Action<DownloadPreviousPublicationsTask>() {
@@ -65,12 +64,8 @@ public class ComparePublicationsPlugin implements Plugin<Project> {
                         DefaultArtifactUrlResolver artifactUrlResolver =
                                 new DefaultArtifactUrlResolverFactory().getDefaultResolver(project, sourcesJar.getBaseName(), conf.getPreviousReleaseVersion());
 
-                        String previousVersionPomUrl = getDefaultIfNull(t.getPreviousPomUrl(), "previousPomUrl", ".pom", artifactUrlResolver);
-                        t.setPreviousPomUrl(previousVersionPomUrl);
                         String previousVersionSourcesJarUrl = getDefaultIfNull(t.getPreviousSourcesJarUrl(), "previousSourcesJarUrl", "-sources.jar", artifactUrlResolver);
                         t.setPreviousSourcesJarUrl(previousVersionSourcesJarUrl);
-
-                        t.setPreviousPom(previousPom);
                         t.setPreviousSourcesJar(previousSourcesJar);
                     }
                 });
@@ -87,16 +82,10 @@ public class ComparePublicationsPlugin implements Plugin<Project> {
 
                 t.setCurrentVersion(project.getVersion().toString());
                 t.setPreviousVersion(conf.getPreviousReleaseVersion());
-                t.setPreviousPom(previousPom);
                 t.setPreviousSourcesJar(previousSourcesJar);
 
                 //Set local sources jar for comparison with previously released
                 t.compareSourcesJar(sourcesJar);
-
-                //Set locally built pom file for comparison with previously released
-                //maven-publish plugin is messed up in Gradle API, we cannot really access generate pom task and we have to pass String
-                //The generate pom task is dynamically created by Gradle and we can only access it during execution
-                t.comparePom(JavaPublishPlugin.POM_TASK);
 
                 DeferredConfiguration.deferredConfiguration(project, new Runnable() {
                     @Override

@@ -2,17 +2,16 @@ package org.shipkit.internal.comparison;
 
 import org.shipkit.internal.comparison.diff.Diff;
 import org.shipkit.internal.comparison.diff.DirectoryDiffGenerator;
+import org.shipkit.internal.gradle.java.tasks.ComparePublications;
+import org.shipkit.internal.gradle.util.ZipUtil;
 import org.shipkit.internal.util.ExposedForTesting;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import static java.lang.String.format;
@@ -34,15 +33,26 @@ public class ZipComparator {
 
     public Diff areEqual(File previousFile, File currentFile) {
         notNull(previousFile, "previous version file to compare", currentFile, "current version file to compare");
-        return compareZips(previousFile, currentFile);
+        ZipFile previousZip = null;
+        ZipFile currentZip = null;
+        try {
+            previousZip = ZipUtil.openZipFile(previousFile);
+            currentZip = ZipUtil.openZipFile(currentFile);
+            return compareZips(previousZip, currentZip);
+        } finally {
+            ZipUtil.closeZipFile(previousZip);
+            ZipUtil.closeZipFile(currentZip);
+        }
     }
 
-    Diff compareZips(File previousFile, File currentFile) {
-        ZipFile file1 = openZipFile(previousFile.getAbsolutePath());
-        ZipFile file2 = openZipFile(currentFile.getAbsolutePath());
+    private Diff compareZips(ZipFile previousFile, ZipFile currentFile) {
 
-        Set<String> previous = extractEntries(file1);
-        Set<String> current = extractEntries(file2);
+        Set<String> previous = ZipUtil.extractEntries(previousFile);
+        Set<String> current = ZipUtil.extractEntries(currentFile);
+
+        // ignore differences in dependency-info.json
+        previous.remove(ComparePublications.DEPENDENCY_INFO_FILEPATH);
+        current.remove(ComparePublications.DEPENDENCY_INFO_FILEPATH);
 
         int differences = 0;
 
@@ -58,15 +68,15 @@ public class ZipComparator {
             }
             try {
                 current.remove(name);
-                if (!streamsEqual(file1.getInputStream(file1.getEntry(name)), file2.getInputStream(file2
-                        .getEntry(name)))) {
+                if (!streamsEqual(previousFile.getInputStream(previousFile.getEntry(name)),
+                                  currentFile.getInputStream(currentFile.getEntry(name)))) {
                     changedFiles.add(name);
                     differences += 1;
                     continue;
                 }
             } catch (Exception e) {
                 throw new ZipCompareException(format("Unable to compare zip entry '%s' found in '%s' with '%s'",
-                      name, previousFile.getAbsolutePath(), currentFile.getAbsolutePath()), e);
+                      name, previousFile.getName(), currentFile.getName()), e);
             }
         }
         for (String name : current) {
@@ -77,26 +87,11 @@ public class ZipComparator {
         String diffOutput = directoryDiffGenerator.generateDiffOutput(addedFiles, removedFiles, changedFiles);
 
         if (differences > 0) {
-            return Diff.ofDifferentFiles(previousFile, currentFile, diffOutput);
+            return Diff.ofDifferentFiles(previousFile.getName(), currentFile.getName(), diffOutput);
         }
-        return Diff.ofEqualFiles(previousFile, currentFile);
+        return Diff.ofEqualFiles(previousFile.getName(), currentFile.getName());
     }
 
-    private Set<String> extractEntries(ZipFile file1) {
-        Set<String> set1 = new LinkedHashSet<String>();
-        for (Enumeration e = file1.entries(); e.hasMoreElements();) {
-            set1.add(((ZipEntry) e.nextElement()).getName());
-        }
-        return set1;
-    }
-
-    private ZipFile openZipFile(String filePath) {
-        try {
-            return new ZipFile(filePath);
-        } catch (IOException e) {
-            throw new ZipCompareException("Could not open zip file " + filePath, e);
-        }
-    }
 
     static boolean streamsEqual(InputStream stream1, InputStream stream2) throws IOException {
         byte[] buf1 = new byte[4096];

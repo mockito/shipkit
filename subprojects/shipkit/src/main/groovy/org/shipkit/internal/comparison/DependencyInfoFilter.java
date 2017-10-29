@@ -19,12 +19,12 @@ public class DependencyInfoFilter {
     }
 
     /**
-     * Takes {@param content} of dependency-info.json file and:
+     * Takes {@param content} of {@value org.shipkit.internal.gradle.java.tasks.ComparePublications#DEPENDENCY_INFO_FILEPATH} file and:
      * - every json object inside is sorted alphabetically, so that it's easier to compare them
      * - every json array keeps its original order
      * - all submodules dependencies with the same {@link #projectGroup} and {@link #previousVersion}
      *   have their version replaced with {@link #currentVersion} so that they are not considered as differences
-     *   when comparing current and previous dependency-info.json
+     *   when comparing current and previous {@value org.shipkit.internal.gradle.java.tasks.ComparePublications#DEPENDENCY_INFO_FILEPATH}
      */
     public String filter(String content) {
         JsonObject root = Jsoner.deserialize(content, new JsonObject());

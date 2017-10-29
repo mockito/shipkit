@@ -14,7 +14,7 @@ import org.shipkit.internal.gradle.java.tasks.ComparePublications;
 import java.io.File;
 
 /**
- * Compares sources jars and pom files produced by the build with analogical artifacts
+ * Compares sources jars and {@link ComparePublications#DEPENDENCY_INFO_FILEPATH} files produced by the build with analogical artifacts
  * from last published build. If it determines that there were no changes it advises the user to
  * skip publication of the new version artifacts (e.g. skip the release).
  * <p>
@@ -30,12 +30,9 @@ public class ComparePublicationsTask extends DefaultTask {
     @Input @Optional private String previousVersion;
     @InputFiles private Jar sourcesJar;
 
-    @Input private String pomTaskName;
-
     //Not using @InputFile annotation on purpose below. @InputFile makes Gradle fail early
     // when the file path specified but file does not exist (@Optional does not help).
     // Using @Input is enough for this use case
-    @Input @Optional private File previousPom;
     @Input @Optional private File previousSourcesJar;
 
     /**
@@ -70,19 +67,6 @@ public class ComparePublicationsTask extends DefaultTask {
 
         //so that when we compare jars, the local sources jar is already built.
         this.dependsOn(sourcesJar);
-    }
-
-    /**
-     * Sets the pom task name for comparision with {@link #getPreviousSourcesJar()}.
-     * Task dependency will be automatically added from this task to pomTaskName supplied as parameter.
-     * During comparison, the algorithm will get the pom task, cast it to {@link GenerateMavenPom},
-     * and read {@link GenerateMavenPom#getDestination()}.
-     */
-    public void comparePom(String pomTaskName) {
-        this.pomTaskName = pomTaskName;
-
-        //so that pom is created before we do comparison
-        this.dependsOn(pomTaskName);
     }
 
     /**
@@ -133,20 +117,6 @@ public class ComparePublicationsTask extends DefaultTask {
     }
 
     /**
-     * Previously released pom file used for comparison with currently built pom file.
-     */
-    public File getPreviousPom() {
-        return previousPom;
-    }
-
-    /**
-     * See {@link #getPreviousPom()}
-     */
-    public void setPreviousPom(File previousPom) {
-        this.previousPom = previousPom;
-    }
-
-    /**
      * Previously released sources jar used for comparison with currently built sources jar.
      */
     public File getPreviousSourcesJar() {
@@ -165,13 +135,5 @@ public class ComparePublicationsTask extends DefaultTask {
      */
     public Jar getSourcesJar() {
         return sourcesJar;
-    }
-
-    /**
-     * Pom task name that builds current pom file.
-     * The task must be of type {@link GenerateMavenPom}.
-     */
-    public String getPomTaskName() {
-        return pomTaskName;
     }
 }
