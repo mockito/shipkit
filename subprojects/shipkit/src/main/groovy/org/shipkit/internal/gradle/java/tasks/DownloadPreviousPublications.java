@@ -24,8 +24,11 @@ public class DownloadPreviousPublications {
         try {
             IOUtil.downloadToFile(remoteUrl, localFile);
         } catch (Exception e) {
-            LOG.lifecycle("  Unable to download, ignoring. Run with '-d' for stack trace. Url: {}", remoteUrl);
-            LOG.debug("Unable to download, ignoring", e);
+            LOG.lifecycle("  Unable to download, ignoring. Run with '-d' for stack trace.\n " +
+                "  If the download URL is incorrect you may need to configure the URL manually.\n" +
+                "  See DownloadPreviousPublicationTask for details.\n" +
+                "  Url: {}", remoteUrl);
+            LOG.debug("Unable to download, ignoring.", e);
         }
     }
 }

@@ -46,4 +46,13 @@ class DefaultArtifactUrlResolverFactoryTest extends Specification {
         then:
         EqualsBuilder.reflectionEquals(result, new GradlePluginArtifactUrlResolver("testGroup", "artifactName", "0.0.1"))
     }
+
+    def "adds version to url if publicationRepository does not contain version placeholder"() {
+        when:
+        def result = DefaultArtifactUrlResolverFactory.resolveUrlFromPublicationRepository(
+            "https://bintray.com/a/b/c-", "1.7.4")
+
+        then:
+        result == "https://bintray.com/a/b/c-1.7.4"
+    }
 }
