@@ -1,6 +1,6 @@
 package org.shipkit.internal.gradle.versionupgrade;
 
-import org.apache.commons.lang.StringUtils;
+import org.shipkit.internal.gradle.util.StringUtil;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -229,7 +229,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
     }
 
     private String getPullRequestDescription(CreatePullRequestTask task) {
-        if (StringUtils.isBlank(task.getPullRequestDescription())) {
+        if (StringUtil.isEmpty(task.getPullRequestDescription())) {
             return String.format("This pull request was automatically created by Shipkit's" +
                     " 'org.shipkit.upgrade-downstream' Gradle plugin (http://shipkit.org)." +
                     " Please merge it so that you are using fresh version of '%s' dependency.",
@@ -240,7 +240,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
     }
 
     private String getPullRequestTitle(CreatePullRequestTask task) {
-        if (StringUtils.isBlank(task.getPullRequestDescription())) {
+        if (StringUtil.isEmpty(task.getPullRequestDescription())) {
             UpgradeDependencyExtension versionUpgrade = task.getVersionUpgrade();
             return String.format("Version of %s upgraded to %s", versionUpgrade.getDependencyName(), versionUpgrade.getNewVersion());
         } else {

@@ -166,27 +166,6 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
         conf.gitHub.apiUrl = "http://api.com"
         conf.gitHub.repository = "mockito/mockito"
         conf.gitHub.writeAuthToken = "writeToken"
-        when:
-        def versionUpgrade = project.plugins.apply(UpgradeDependencyPlugin).upgradeDependencyExtension
-        CreatePullRequestTask task = project.tasks.createPullRequest
-        task.setProperty("pullRequestDescription", "Custom Description")
-        task.setProperty("pullRequestTitle", "Custom Title")
-
-        then:
-        task.gitHubApiUrl == "http://api.com"
-        task.authToken == "writeToken"
-        task.authToken == "writeToken"
-        task.versionUpgrade == versionUpgrade
-        task.pullRequestDescription == "Custom Description"
-        task.pullRequestTitle == "Custom Title"
-    }
-
-    def "should configure createPullRequest with default values"() {
-        given:
-        project.extensions.dependency = "org.shipkit:shipkit:1.2.30"
-        conf.gitHub.apiUrl = "http://api.com"
-        conf.gitHub.repository = "mockito/mockito"
-        conf.gitHub.writeAuthToken = "writeToken"
 
         when:
         def versionUpgrade = project.plugins.apply(UpgradeDependencyPlugin).upgradeDependencyExtension
@@ -201,5 +180,27 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
                 "Shipkit's 'org.shipkit.upgrade-downstream' Gradle plugin (http://shipkit.org). " +
                 "Please merge it so that you are using fresh version of 'shipkit' dependency."
         task.pullRequestTitle == "Version of shipkit upgraded to ${versionUpgrade.newVersion}"
+    }
+
+
+    def "should configure createPullRequest basing on overriden values"() {
+        given:
+        project.extensions.dependency = "org.shipkit:shipkit:1.2.30"
+        conf.gitHub.apiUrl = "http://api.com"
+        conf.gitHub.repository = "mockito/mockito"
+        conf.gitHub.writeAuthToken = "writeToken"
+        when:
+        def versionUpgrade = project.plugins.apply(UpgradeDependencyPlugin).upgradeDependencyExtension
+        CreatePullRequestTask task = project.tasks.createPullRequest
+        task.setProperty("pullRequestDescription", "Custom Description")
+        task.setProperty("pullRequestTitle", "Custom Title")
+
+        then:
+        task.gitHubApiUrl == "http://api.com"
+        task.authToken == "writeToken"
+        task.authToken == "writeToken"
+        task.versionUpgrade == versionUpgrade
+        task.pullRequestDescription == "Custom Description"
+        task.pullRequestTitle == "Custom Title"
     }
 }
