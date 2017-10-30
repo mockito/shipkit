@@ -7,6 +7,7 @@ import org.shipkit.gradle.java.ComparePublicationsTask
 import org.shipkit.gradle.java.DownloadPreviousPublicationsTask
 import org.shipkit.internal.gradle.bintray.ShipkitBintrayPlugin
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin
+import org.shipkit.internal.gradle.java.tasks.CreateDependencyInfoFileTask
 import org.shipkit.internal.gradle.version.VersioningPlugin
 import testutil.PluginSpecification
 
@@ -151,5 +152,22 @@ class ComparePublicationsPluginTest extends PluginSpecification {
 
         then:
         noExceptionThrown()
+    }
+
+    def "should configure createDependencyInfoFile"() {
+        given:
+        project.group = "projectGroup"
+        project.version = "1.2.3"
+
+        when:
+        project.plugins.apply(ComparePublicationsPlugin)
+        project.evaluate()
+
+        then:
+        CreateDependencyInfoFileTask task = project.tasks.createDependencyInfoFile
+        task.configuration == project.configurations.getByName("runtime")
+        task.outputFile == new File(project.buildDir, "dependency-info.txt")
+        task.projectGroup == "projectGroup"
+        task.projectVersion == "1.2.3"
     }
 }

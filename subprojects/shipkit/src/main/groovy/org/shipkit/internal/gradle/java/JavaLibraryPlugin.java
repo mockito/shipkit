@@ -3,10 +3,7 @@ package org.shipkit.internal.gradle.java;
 import org.gradle.api.*;
 import org.gradle.api.file.CopySpec;
 import org.gradle.api.tasks.bundling.Jar;
-import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
-import org.shipkit.internal.gradle.java.tasks.CreateDependencyInfoFileTask;
 import org.shipkit.internal.gradle.util.JavaPluginUtil;
-import org.shipkit.internal.gradle.util.TaskMaker;
 
 import java.io.File;
 
@@ -48,17 +45,6 @@ public class JavaLibraryPlugin implements Plugin<Project> {
             }
         });
 
-        final File dependenciesFile = new File(project.getBuildDir(), "dependency-info.json");
-
-        final CreateDependencyInfoFileTask dependencyInfoTask = TaskMaker.task(project, "createDependencyInfoFile", CreateDependencyInfoFileTask.class, new Action<CreateDependencyInfoFileTask>() {
-            @Override
-            public void execute(final CreateDependencyInfoFileTask task) {
-                task.setDescription("Creates file with resolved runtime dependencies.");
-                task.setOutputFile(dependenciesFile);
-                task.setConfiguration(project.getConfigurations().getByName("runtime"));
-            }
-        });
-
         ((Jar) project.getTasks().getByName("jar")).with(license);
 
         final Jar sourcesJar = project.getTasks().create(SOURCES_JAR_TASK, Jar.class, new Action<Jar>() {
@@ -66,11 +52,8 @@ public class JavaLibraryPlugin implements Plugin<Project> {
                 jar.from(JavaPluginUtil.getMainSourceSet(project).getAllSource());
                 jar.setClassifier("sources");
                 jar.with(license);
-                jar.getMetaInf().from(dependencyInfoTask.getOutputFile());
             }
         });
-
-        sourcesJar.dependsOn(dependencyInfoTask);
 
         final Task javadocJar = project.getTasks().create(JAVADOC_JAR_TASK, Jar.class, new Action<Jar>() {
             public void execute(Jar jar) {

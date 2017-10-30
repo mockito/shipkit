@@ -13,6 +13,7 @@ import org.shipkit.internal.comparison.artifact.DefaultArtifactUrlResolver;
 import org.shipkit.internal.comparison.artifact.DefaultArtifactUrlResolverFactory;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
+import org.shipkit.internal.gradle.java.tasks.CreateDependencyInfoFileTask;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
 import java.io.File;
@@ -53,6 +54,28 @@ public class ComparePublicationsPlugin implements Plugin<Project> {
         String basePreviousVersionArtifactPath = getBasePreviousVersionArtifactPath(project, conf, sourcesJar);
         final File previousPom = new File(basePreviousVersionArtifactPath + ".pom");
         final File previousSourcesJar = new File(basePreviousVersionArtifactPath + "-sources.jar");
+
+        final File dependenciesFile = new File(project.getBuildDir(), "dependency-info.txt");
+
+        final CreateDependencyInfoFileTask dependencyInfoTask = TaskMaker.task(project, "createDependencyInfoFile", CreateDependencyInfoFileTask.class, new Action<CreateDependencyInfoFileTask>() {
+            @Override
+            public void execute(final CreateDependencyInfoFileTask task) {
+                task.setDescription("Creates file with resolved runtime dependencies.");
+                task.setOutputFile(dependenciesFile);
+                task.setConfiguration(project.getConfigurations().getByName("runtime"));
+                task.setProjectVersion(project.getVersion().toString());
+
+                DeferredConfiguration.deferredConfiguration(project, new Runnable() {
+                    @Override
+                    public void run() {
+                        task.setProjectGroup(project.getGroup().toString());
+                    }
+                });
+            }
+        });
+
+        sourcesJar.getMetaInf().from(dependencyInfoTask.getOutputFile());
+        sourcesJar.dependsOn(dependencyInfoTask);
 
         TaskMaker.task(project, DOWNLOAD_PUBLICATIONS_TASK, DownloadPreviousPublicationsTask.class, new Action<DownloadPreviousPublicationsTask>() {
             @Override

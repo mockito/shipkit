@@ -1,7 +1,9 @@
 package org.shipkit.internal.gradle.java.tasks;
 
 import org.gradle.api.DefaultTask;
+import org.gradle.api.Project;
 import org.gradle.api.artifacts.*;
+import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
@@ -17,6 +19,10 @@ public class CreateDependencyInfoFileTask extends DefaultTask {
 
     @InputFiles
     private Configuration configuration;
+    @Input
+    private String projectGroup;
+    @Input
+    private String projectVersion;
     @OutputFile
     private File outputFile;
 
@@ -52,4 +58,31 @@ public class CreateDependencyInfoFileTask extends DefaultTask {
         this.outputFile = outputFile;
     }
 
+    /**
+     * See {@link Project#getGroup()}
+     */
+    public String getProjectGroup() {
+        return projectGroup;
+    }
+
+    /**
+     * See {@link Project#getGroup()}
+     */
+    public void setProjectGroup(String projectGroup) {
+        this.projectGroup = projectGroup;
+    }
+
+    /**
+     * See {@link Project#getVersion()}
+     */
+    public String getProjectVersion() {
+        return projectVersion;
+    }
+
+    /**
+     * See {@link Project#getVersion()}
+     */
+    public void setProjectVersion(String projectVersion) {
+        this.projectVersion = projectVersion;
+    }
 }
