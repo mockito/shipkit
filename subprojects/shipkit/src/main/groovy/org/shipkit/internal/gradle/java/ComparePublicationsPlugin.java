@@ -21,16 +21,24 @@ import java.io.File;
 /**
  * Comparing current publications with previous release.
  * Intended for submodule.
+ * Adds createDependencyInfoFile task as a dependency of sourcesJar task.
+ * This task creates a dependency-info.txt file that contains all of declared dependencies of the project.
+ * The file is included in META-INF directory of sources jar.
+ * It is later used for comparing publications. Shipkit considers adding/changing version/removing a dependency
+ * as an important change after which release is necessary.
+ *
  * <p>
  * Applies:
  *
  * <ul>
  *     <li>{@link JavaPublishPlugin}</li>
+ *     <li>{@link ShipkitConfigurationPlugin}</li>
  * </ul>
  *
  * Adds following tasks:
  *
  * <ul>
+ *     <li>createDependencyInfoFile</li>
  *     <li>downloadPreviousReleaseArtifacts</li>
  *     <li>comparePublications</li>
  * </ul>
