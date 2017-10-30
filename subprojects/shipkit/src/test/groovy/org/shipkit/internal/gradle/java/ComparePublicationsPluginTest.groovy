@@ -166,7 +166,7 @@ class ComparePublicationsPluginTest extends PluginSpecification {
         then:
         CreateDependencyInfoFileTask task = project.tasks.createDependencyInfoFile
         task.configuration == project.configurations.getByName("runtime")
-        task.outputFile == new File(project.buildDir, "dependency-info.txt")
+        task.outputFile == new File(project.buildDir, "dependency-info.md")
         task.projectGroup == "projectGroup"
         task.projectVersion == "1.2.3"
     }

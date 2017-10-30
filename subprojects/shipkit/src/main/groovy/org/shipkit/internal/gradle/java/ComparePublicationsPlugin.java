@@ -22,7 +22,7 @@ import java.io.File;
  * Comparing current publications with previous release.
  * Intended for submodule.
  * Adds createDependencyInfoFile task as a dependency of sourcesJar task.
- * This task creates a dependency-info.txt file that contains all of declared dependencies of the project.
+ * This task creates a dependency-info.md file that contains all of declared dependencies of the project.
  * The file is included in META-INF directory of sources jar.
  * It is later used for comparing publications. Shipkit considers adding/changing version/removing a dependency
  * as an important change after which release is necessary.
@@ -63,7 +63,7 @@ public class ComparePublicationsPlugin implements Plugin<Project> {
         final File previousPom = new File(basePreviousVersionArtifactPath + ".pom");
         final File previousSourcesJar = new File(basePreviousVersionArtifactPath + "-sources.jar");
 
-        final File dependenciesFile = new File(project.getBuildDir(), "dependency-info.txt");
+        final File dependenciesFile = new File(project.getBuildDir(), "dependency-info.md");
 
         final CreateDependencyInfoFileTask dependencyInfoTask = TaskMaker.task(project, "createDependencyInfoFile", CreateDependencyInfoFileTask.class, new Action<CreateDependencyInfoFileTask>() {
             @Override
