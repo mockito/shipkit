@@ -1,6 +1,5 @@
 package org.shipkit.internal.gradle.versionupgrade;
 
-import org.shipkit.internal.gradle.util.StringUtil;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -60,7 +59,6 @@ import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
  * and then call it:
  *
  * ./gradlew performVersionUpgrade -Pdependency=org.shipkit:shipkit:1.2.3
- *
  */
 public class UpgradeDependencyPlugin implements Plugin<Project> {
 
@@ -200,7 +198,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.setVersionBranch(getVersionBranchName(upgradeDependencyExtension));
                 task.setVersionUpgrade(upgradeDependencyExtension);
                 task.setPullRequestTitle(getPullRequestTitle(task));
-                task.setPullRequestDescription(getPullRequestDescription(task));
+                task.setPullRequestDescription(getPullRequestDescription());
 
                 gitOriginPlugin.provideOriginRepo(task, new Action<String>() {
                     @Override
@@ -229,24 +227,15 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
         });
     }
 
-    private String getPullRequestDescription(CreatePullRequestTask task) {
-        if (StringUtil.isEmpty(task.getPullRequestDescription())) {
-            return String.format("This pull request was automatically created by Shipkit's" +
-                    " 'org.shipkit.upgrade-downstream' Gradle plugin (http://shipkit.org)." +
-                    " Please merge it so that you are using fresh version of '%s' dependency.",
-                task.getVersionUpgrade().getDependencyName());
-        } else {
-            return task.getPullRequestDescription();
-        }
+    private String getPullRequestDescription() {
+        return String.format("This pull request was automatically created by Shipkit's" +
+            " 'org.shipkit.upgrade-downstream' Gradle plugin (http://shipkit.org)." +
+            " Please merge it so that you are using fresh version of '%s' dependency.");
     }
 
     private String getPullRequestTitle(CreatePullRequestTask task) {
-        if (StringUtil.isEmpty(task.getPullRequestDescription())) {
-            UpgradeDependencyExtension versionUpgrade = task.getVersionUpgrade();
-            return String.format("Version of %s upgraded to %s", versionUpgrade.getDependencyName(), versionUpgrade.getNewVersion());
-        } else {
-            return task.getPullRequestDescription();
-        }
+        UpgradeDependencyExtension versionUpgrade = task.getVersionUpgrade();
+        return String.format("Version of %s upgraded to %s", versionUpgrade.getDependencyName(), versionUpgrade.getNewVersion());
     }
 
     private Spec<Task> wasBuildFileUpdatedSpec(final ReplaceVersionTask replaceVersionTask) {
