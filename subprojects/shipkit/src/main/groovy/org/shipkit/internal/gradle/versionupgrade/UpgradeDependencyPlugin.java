@@ -59,7 +59,6 @@ import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
  * and then call it:
  *
  * ./gradlew performVersionUpgrade -Pdependency=org.shipkit:shipkit:1.2.3
- *
  */
 public class UpgradeDependencyPlugin implements Plugin<Project> {
 
@@ -198,6 +197,8 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.setAuthToken(conf.getLenient().getGitHub().getWriteAuthToken());
                 task.setVersionBranch(getVersionBranchName(upgradeDependencyExtension));
                 task.setVersionUpgrade(upgradeDependencyExtension);
+                task.setPullRequestTitle(getPullRequestTitle(task));
+                task.setPullRequestDescription(getPullRequestDescription(task));
 
                 gitOriginPlugin.provideOriginRepo(task, new Action<String>() {
                     @Override
@@ -224,6 +225,18 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.dependsOn(CREATE_PULL_REQUEST);
             }
         });
+    }
+
+    private String getPullRequestDescription(CreatePullRequestTask task) {
+        return String.format("This pull request was automatically created by Shipkit's" +
+            " 'org.shipkit.upgrade-downstream' Gradle plugin (http://shipkit.org)." +
+            " Please merge it so that you are using fresh version of '%s' dependency.",
+            task.getVersionUpgrade().getDependencyName());
+    }
+
+    private String getPullRequestTitle(CreatePullRequestTask task) {
+        UpgradeDependencyExtension versionUpgrade = task.getVersionUpgrade();
+        return String.format("Version of %s upgraded to %s", versionUpgrade.getDependencyName(), versionUpgrade.getNewVersion());
     }
 
     private Spec<Task> wasBuildFileUpdatedSpec(final ReplaceVersionTask replaceVersionTask) {
