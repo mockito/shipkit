@@ -198,7 +198,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.setVersionBranch(getVersionBranchName(upgradeDependencyExtension));
                 task.setVersionUpgrade(upgradeDependencyExtension);
                 task.setPullRequestTitle(getPullRequestTitle(task));
-                task.setPullRequestDescription(getPullRequestDescription());
+                task.setPullRequestDescription(getPullRequestDescription(task));
 
                 gitOriginPlugin.provideOriginRepo(task, new Action<String>() {
                     @Override
@@ -227,10 +227,11 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
         });
     }
 
-    private String getPullRequestDescription() {
+    private String getPullRequestDescription(CreatePullRequestTask task) {
         return String.format("This pull request was automatically created by Shipkit's" +
             " 'org.shipkit.upgrade-downstream' Gradle plugin (http://shipkit.org)." +
-            " Please merge it so that you are using fresh version of '%s' dependency.");
+            " Please merge it so that you are using fresh version of '%s' dependency.",
+            task.getVersionUpgrade().getDependencyName());
     }
 
     private String getPullRequestTitle(CreatePullRequestTask task) {
