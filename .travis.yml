@@ -23,13 +23,19 @@ script:
 
 # Remove often changing files to prevent cache re-upload on no changes in dependencies
 before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-  - rm -fr $HOME/.gradle/caches/*/scripts/
-  - rm -fr $HOME/.gradle/caches/*/scripts-remapped/
-  - rm -fr $HOME/.gradle/caches/*/fileHashes/
-  - rm -fr $HOME/.gradle/caches/transforms-1/transforms-1.lock
+# pom, xml and jar files are known not to change
+# assume non-whitelisted extensions are changing
+# (this will include .lock, .bin, .metadata and potential future additions to gradle's caches folder)
+  - find $HOME/.gradle/caches -type f -not \( -iname \*.pom -o -iname \*.jar -o -iname \*.xml \) -delete
+# jar files which change
+  - rm -fr $HOME/.gradle/caches/*/workerMain/gradle-worker.jar
+# xml files which change
+  - find $HOME/.gradle/caches/modules-2 -name ivy.xml -delete
+# specific to shipkit build
   - rm -fr $HOME/.gradle/caches/jars-*/*/shipkit-*.jar
+  - find $HOME/.gradle/caches/modules-2 -name shipkit-\*.jar -delete
+# remove left over empty directories
+  - find $HOME/.gradle/caches -type d -empty -delete
 cache:
   directories:
     - $HOME/.gradle/caches/
