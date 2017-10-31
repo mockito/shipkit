@@ -15,4 +15,7 @@ public class DefaultArtifactUrlResolverFactory {
         return null;
     }
 
+    public static String resolveUrlFromPublicationRepository(String publicationRepository, String version) {
+        return publicationRepository + version;
+    }
 }

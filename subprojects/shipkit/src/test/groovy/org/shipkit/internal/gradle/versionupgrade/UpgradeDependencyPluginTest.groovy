@@ -176,5 +176,9 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
         task.authToken == "writeToken"
         task.versionUpgrade == versionUpgrade
         task.versionBranch == "upgrade-shipkit-to-1.2.30"
+        task.pullRequestDescription == "This pull request was automatically created by " +
+                "Shipkit's 'org.shipkit.upgrade-downstream' Gradle plugin (http://shipkit.org). " +
+                "Please merge it so that you are using fresh version of 'shipkit' dependency."
+        task.pullRequestTitle == "Version of shipkit upgraded to ${versionUpgrade.newVersion}"
     }
 }

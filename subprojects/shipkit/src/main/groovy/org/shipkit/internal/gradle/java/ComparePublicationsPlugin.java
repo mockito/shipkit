@@ -13,6 +13,7 @@ import org.shipkit.internal.comparison.artifact.DefaultArtifactUrlResolver;
 import org.shipkit.internal.comparison.artifact.DefaultArtifactUrlResolverFactory;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
+import org.shipkit.internal.gradle.java.tasks.CreateDependencyInfoFileTask;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
 import java.io.File;
@@ -20,18 +21,26 @@ import java.io.File;
 /**
  * Comparing current publications with previous release.
  * Intended for submodule.
+ * Adds createDependencyInfoFile task as a dependency of sourcesJar task.
+ * This task creates a dependency-info.md file that contains all of declared dependencies of the project.
+ * The file is included in META-INF directory of sources jar.
+ * It is later used for comparing publications. Shipkit considers adding/changing version/removing a dependency
+ * as an important change after which release is necessary.
+ *
  * <p>
  * Applies:
  *
  * <ul>
  *     <li>{@link JavaPublishPlugin}</li>
+ *     <li>{@link ShipkitConfigurationPlugin}</li>
  * </ul>
  *
  * Adds following tasks:
  *
  * <ul>
- *     <li>downloadPreviousReleaseArtifacts</li>
- *     <li>comparePublications</li>
+ *     <li>createDependencyInfoFile - {@link CreateDependencyInfoFileTask}</li>
+ *     <li>downloadPreviousReleaseArtifacts - {@link DownloadPreviousPublicationsTask}</li>
+ *     <li>comparePublications - {@link ComparePublicationsTask}</li>
  * </ul>
  */
 public class ComparePublicationsPlugin implements Plugin<Project> {
@@ -52,6 +61,26 @@ public class ComparePublicationsPlugin implements Plugin<Project> {
 
         String basePreviousVersionArtifactPath = getBasePreviousVersionArtifactPath(project, conf, sourcesJar);
         final File previousSourcesJar = new File(basePreviousVersionArtifactPath + "-sources.jar");
+
+        final CreateDependencyInfoFileTask dependencyInfoTask = TaskMaker.task(project, "createDependencyInfoFile", CreateDependencyInfoFileTask.class, new Action<CreateDependencyInfoFileTask>() {
+            @Override
+            public void execute(final CreateDependencyInfoFileTask task) {
+                task.setDescription("Creates a file with all declared runtime dependencies.");
+                task.setOutputFile(new File(project.getBuildDir(), "dependency-info.md"));
+                task.setConfiguration(project.getConfigurations().getByName("runtime"));
+                task.setProjectVersion(project.getVersion().toString());
+
+                DeferredConfiguration.deferredConfiguration(project, new Runnable() {
+                    @Override
+                    public void run() {
+                        task.setProjectGroup(project.getGroup().toString());
+                    }
+                });
+            }
+        });
+
+        sourcesJar.getMetaInf().from(dependencyInfoTask.getOutputFile());
+        sourcesJar.dependsOn(dependencyInfoTask);
 
         TaskMaker.task(project, DOWNLOAD_PUBLICATIONS_TASK, DownloadPreviousPublicationsTask.class, new Action<DownloadPreviousPublicationsTask>() {
             @Override

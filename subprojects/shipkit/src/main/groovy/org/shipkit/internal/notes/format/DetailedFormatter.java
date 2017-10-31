@@ -1,5 +1,6 @@
 package org.shipkit.internal.notes.format;
 
+import org.shipkit.internal.comparison.artifact.DefaultArtifactUrlResolverFactory;
 import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.util.DateUtil;
 import org.shipkit.internal.util.MultiMap;
@@ -46,7 +47,7 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         for (ReleaseNotesData d : data) {
             sb.append(header(d.getVersion(), d.getDate(), emphasizeVersion));
             String vcsCommitsLink = MessageFormat.format(vcsCommitsLinkTemplate, d.getPreviousVersionVcsTag(), d.getVcsTag());
-            sb.append(releaseSummary(d.getVersion(), d.getDate(), d.getContributions(), contributors, vcsCommitsLink, publicationRepository));
+            sb.append(releaseSummary(d.getVersion(), d.getContributions(), contributors, vcsCommitsLink, publicationRepository));
 
             if (!d.getContributions().getContributions().isEmpty()) {
                 //no point printing any improvements information if there are no code changes
@@ -68,7 +69,7 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         return prefix + version + " (" + DateUtil.formatDate(date) + ")" + postfix + " - ";
     }
 
-    static String releaseSummary(String version, Date date, ContributionSet contributions, Map<String, Contributor> contributors,
+    static String releaseSummary(String version, ContributionSet contributions, Map<String, Contributor> contributors,
                                  String vcsCommitsLink, String publicationRepository) {
         return authorsSummary(contributions, contributors, vcsCommitsLink) +
                 " - published to " + getBintrayBadge(version, publicationRepository) + "\n" +
@@ -79,7 +80,7 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         final String markdownPrefix = "[![Bintray](";
         final String shieldsIoBadgeLink = "https://img.shields.io/badge/Bintray-" + version + "-green.svg";
         final String markdownPostfix = ")]";
-        final String repositoryLinkWithVersion = publicationRepository + "/" + version;
+        final String repositoryLinkWithVersion = DefaultArtifactUrlResolverFactory.resolveUrlFromPublicationRepository(publicationRepository, version);
         return markdownPrefix + shieldsIoBadgeLink + markdownPostfix + "(" + repositoryLinkWithVersion + ")";
     }
 

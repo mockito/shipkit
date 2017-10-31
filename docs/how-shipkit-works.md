@@ -6,7 +6,16 @@ Want to find out how Shipkit works?
 
 ### High level
 
-TODO write here about Gradle, shipkit file and refer to the getting started guide
+Shipkit is a set of Gradle plugins.
+Shipkit works out of the box with Java libraries or Gradle plugin projects hosted on GitHub.
+
+Shipkit integrates with:
+ - Travis CI (it's not difficult to use Shipkit with any CI)
+ - Bintray (that's how we push to Maven Central)
+
+If you already have release process you can still leverage a specific feature of Shipkit.
+The best way to get started is to explain your use case to our team.
+Reach out by [opening a ticket on GitHub](TODO)
 
 ### Details
 
@@ -15,6 +24,9 @@ How do we:
 - [generate release notes](/docs/features/automated-release-notes.md)
 - [publish binaries](/docs/features/publishing-binaries.md)
 - [avoid unnecessary releases](/docs/gradle-plugins/release-needed-plugin.md)
+- [automatically include contributors in pom.xml](/docs/features/celebrating-contributors.md)
+
+Features we still work on:
 - [automatically upgrade dependencies](/docs/gradle-plugins/upgrade-dependency-plugin.md)
 
 TODO document all features mentioned in main README.md

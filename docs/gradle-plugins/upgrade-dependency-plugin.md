@@ -3,7 +3,7 @@
 Note that this plugin is incubating!
 
 See also "[How Shipkit Works](/docs/how-shipkit-works.md)" documentation index.
-Help us with docs and submit a PR if something is amiss!
+Please help us with docs and submit a PR with improvements!
 
 Let's say we have two projects **child** and **parent**. **Child** depends on **parent**. At one point **parent** releases a new version, and dependency on it in **child** needs to be updated. One or two times you can update this dependency manually, but the more often it happens the more manual work you have. What happens if you have more of parent projects? You need to update a lot of dependencies. Even more manual work.
 

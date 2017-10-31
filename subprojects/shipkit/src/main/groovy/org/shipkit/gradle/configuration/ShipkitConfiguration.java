@@ -254,11 +254,14 @@ public class ShipkitConfiguration {
         }
 
         /**
-         * Set the Publication Repository where we look for your published binary.
+         * Set the Publication Repository where we look for your published binary. Version will be concatenated to it.
+         * It is currently used to configure repository Badge URL when generating release notes.
          * E.g.
          * <pre>
-         *   releaseNotes.publicationRepository = "https://plugins.gradle.org/plugin/org.shipkit.java"
+         *   releaseNotes.publicationRepository = "https://plugins.gradle.org/plugin/org.shipkit.java/"
          * </pre>
+         * For version = "1.2.3" will result in:
+         * "https://plugins.gradle.org/plugin/org.shipkit.java/1.2.3"
          * This will be used for adding and linking the repository in the release notes.
          *
          * @see #getPublicationRepository()

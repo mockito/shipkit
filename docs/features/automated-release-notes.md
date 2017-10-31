@@ -1,7 +1,7 @@
 ### Release notes
 
 See also "[How Shipkit Works](/docs/how-shipkit-works.md)" documentation index.
-Help us with docs and submit a PR if something is amiss!
+Please help us with docs and submit a PR with improvements!
 
 Your users need to know what they are getting when upgrading versions.
 You want to build great software? Have a great changelog.
