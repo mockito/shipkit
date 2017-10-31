@@ -38,9 +38,9 @@ import java.io.File;
  * Adds following tasks:
  *
  * <ul>
- *     <li>createDependencyInfoFile</li>
- *     <li>downloadPreviousReleaseArtifacts</li>
- *     <li>comparePublications</li>
+ *     <li>createDependencyInfoFile - {@link CreateDependencyInfoFileTask}</li>
+ *     <li>downloadPreviousReleaseArtifacts - {@link DownloadPreviousPublicationsTask}</li>
+ *     <li>comparePublications - {@link ComparePublicationsTask}</li>
  * </ul>
  */
 public class ComparePublicationsPlugin implements Plugin<Project> {
@@ -63,13 +63,11 @@ public class ComparePublicationsPlugin implements Plugin<Project> {
         final File previousPom = new File(basePreviousVersionArtifactPath + ".pom");
         final File previousSourcesJar = new File(basePreviousVersionArtifactPath + "-sources.jar");
 
-        final File dependenciesFile = new File(project.getBuildDir(), "dependency-info.md");
-
         final CreateDependencyInfoFileTask dependencyInfoTask = TaskMaker.task(project, "createDependencyInfoFile", CreateDependencyInfoFileTask.class, new Action<CreateDependencyInfoFileTask>() {
             @Override
             public void execute(final CreateDependencyInfoFileTask task) {
-                task.setDescription("Creates file with resolved runtime dependencies.");
-                task.setOutputFile(dependenciesFile);
+                task.setDescription("Creates a file with all declared runtime dependencies.");
+                task.setOutputFile(new File(project.getBuildDir(), "dependency-info.md"));
                 task.setConfiguration(project.getConfigurations().getByName("runtime"));
                 task.setProjectVersion(project.getVersion().toString());
 

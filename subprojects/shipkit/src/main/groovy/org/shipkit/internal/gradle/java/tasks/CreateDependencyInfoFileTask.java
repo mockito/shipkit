@@ -13,6 +13,8 @@ import java.io.File;
 /**
  * Creates a file {@link #getOutputFile()} with information about all declared dependencies of the project.
  * Dependencies are taken from passed {@link #getConfiguration()}.
+ * Submodule dependencies that have the same version as {@link #getProjectVersion()} and group as {@link #getProjectGroup()}
+ * are represented in the file without version, so that they won't come up as a difference when comparing publications.
  *
  */
 public class CreateDependencyInfoFileTask extends DefaultTask {
@@ -59,28 +61,28 @@ public class CreateDependencyInfoFileTask extends DefaultTask {
     }
 
     /**
-     * See {@link Project#getGroup()}
+     * Current project group that will be used to determine submodules out of all declared runtime dependencies.
      */
     public String getProjectGroup() {
         return projectGroup;
     }
 
     /**
-     * See {@link Project#getGroup()}
+     * See {@link #getProjectGroup()}
      */
     public void setProjectGroup(String projectGroup) {
         this.projectGroup = projectGroup;
     }
 
     /**
-     * See {@link Project#getVersion()}
+     * Current project version that will be used to determine submodules out of all declared runtime dependencies.
      */
     public String getProjectVersion() {
         return projectVersion;
     }
 
     /**
-     * See {@link Project#getVersion()}
+     * See {@link #getProjectVersion()}
      */
     public void setProjectVersion(String projectVersion) {
         this.projectVersion = projectVersion;
