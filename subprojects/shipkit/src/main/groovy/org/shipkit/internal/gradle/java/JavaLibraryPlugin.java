@@ -34,7 +34,6 @@ public class JavaLibraryPlugin implements Plugin<Project> {
 
     public final static String SOURCES_JAR_TASK = "sourcesJar";
     public final static String JAVADOC_JAR_TASK = "javadocJar";
-    public static final String DEPENDENCY_INFO_FILENAME = "dependency-info.json";
 
     @Override
     public void apply(final Project project) {

@@ -27,11 +27,11 @@ class ZipComparatorTest extends Specification {
         !eq(zip1, extraFile)
     }
 
-    def "ignores META-INF/dependency-info.json differences"() {
+    def "ignores META-INF/dependency-info.md differences"() {
         ZipMaker zip = new ZipMaker(tmp.newFolder())
 
-        File zip1 = zip.newZip("META-INF/dependency-info.json", "a")
-        File zip2 = zip.newZip("META-INF/dependency-info.json", "b")
+        File zip1 = zip.newZip("META-INF/dependency-info.md", "a")
+        File zip2 = zip.newZip("META-INF/dependency-info.md", "b")
 
         expect:
         eq zip1, zip2

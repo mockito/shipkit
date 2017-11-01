@@ -9,49 +9,46 @@ class DependencyInfoComparatorTest extends Specification {
     @Rule
     TemporaryFolder tmp = new TemporaryFolder()
 
-    def "compares dependency-info files correctly"(String leftParsedContent, String rightParsedContent, boolean expectedResult) {
+    def "compares dependency-info files correctly"(String leftContent, String rightContent, boolean expectedResult) {
         given:
-        def filter = Mock(DependencyInfoFilter)
-        def dependencyInfoComparator = new DependencyInfoComparator(filter)
+        def dependencyInfoComparator = new DependencyInfoComparator()
 
         def leftFile = tmp.newFile("left")
         def rightFile = tmp.newFile("right")
-
-        def leftContent = "leftOriginalContent"
-        def rightContent = "rightOriginalContent"
-
-        leftFile << leftContent
-        rightFile << rightContent
-
-        filter.filter(leftContent) >> leftParsedContent
-        filter.filter(rightContent) >> rightParsedContent
 
         expect:
         dependencyInfoComparator.areEqual(leftFile, rightFile, leftContent, rightContent).areFilesEqual() == expectedResult
 
         where:
-        leftParsedContent | rightParsedContent    | expectedResult
-        "leftContent"     | "rightParsedContent"  | false
-        "sameContent"     | "sameContent"         | true
+        leftContent    | rightContent          | expectedResult
+        "leftContent"  | "rightParsedContent"  | false
+        "sameContent"  | "sameContent"         | true
     }
 
-    def "does not allow null projectGroup"() {
+    def "does not allow null previousSourcesJar"() {
         when:
-        new DependencyInfoComparator(null, "0.1", "0.2")
+        new DependencyInfoComparator().areEqual(null, new File(""), "", "")
         then:
         thrown(IllegalArgumentException)
     }
 
-    def "does not allow null previousVersion"() {
+    def "does not allow null currentSourcesJar"() {
         when:
-        new DependencyInfoComparator("org.mockito", null, "0.2")
+        new DependencyInfoComparator().areEqual(new File(""), null,  "", "")
         then:
         thrown(IllegalArgumentException)
     }
 
-    def "does not allow null currentVersion"() {
+    def "does not allow null previousFileContent"() {
         when:
-        new DependencyInfoComparator("org.mockito", "0.1", null)
+        new DependencyInfoComparator().areEqual(new File(""), new File(""), null, "")
+        then:
+        thrown(IllegalArgumentException)
+    }
+
+    def "does not allow null currentFileContent"() {
+        when:
+        new DependencyInfoComparator().areEqual(new File(""), new File(""), "", null)
         then:
         thrown(IllegalArgumentException)
     }

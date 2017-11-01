@@ -14,22 +14,12 @@ public class DependencyInfoComparator {
 
     private static final Logger LOG = Logging.getLogger(DependencyInfoComparator.class);
 
-    private final DependencyInfoFilter filter;
-
-    public DependencyInfoComparator(String projectGroup, String previousVersion, String currentVersion) {
-        notNull(projectGroup, "project group", previousVersion, "previous version",
-                currentVersion, "current version");
-        this.filter =
-                new DependencyInfoFilter(projectGroup, previousVersion, currentVersion);
-    }
-
-    DependencyInfoComparator(DependencyInfoFilter filter) {
-        this.filter = filter;
-    }
-
     public Diff areEqual(File previousSourcesJar, File currentSourcesJar,
                          String previousFileContent, String currentFileContent) {
-        notNull(previousFileContent, "previous dependency file to compare",
+        notNull(
+            previousSourcesJar, "previous sources jar",
+            currentSourcesJar, "current sources jar",
+            previousFileContent, "previous dependency file to compare",
             currentFileContent, "current dependency file to compare");
 
         String previousFileName = previousSourcesJar.getAbsolutePath() + "/" + ComparePublications.DEPENDENCY_INFO_FILEPATH;
@@ -39,25 +29,20 @@ public class DependencyInfoComparator {
             "  -- for previous version: \n{}\n\n" +
             "  -- for current version: \n{} \n", ComparePublications.DEPENDENCY_INFO_FILEPATH, previousSourcesJar, currentSourcesJar);
 
-        String filteredPreviousContent = filter.filter(previousFileContent);
-        String filteredCurrentContent = filter.filter(currentFileContent);
-
-        boolean areEqual = filteredPreviousContent.equals(filteredCurrentContent);
+        boolean areEqual = previousFileContent.equals(currentFileContent);
 
         LOG.debug("Comparison of declared dependencies:\n\n"  +
             "  -- previousVersion: \n{} \n\n" +
             "  -- currentVersion: \n{} \n",
-            filteredPreviousContent, filteredCurrentContent
+            previousFileContent, currentFileContent
         );
 
         if (!areEqual) {
-            String prefix = "  Here you can see the changes in declared dependencies between versions.\n\n";
+            String prefix = "    Here you can see the changes in declared runtime dependencies between versions.\n\n";
             String diffOutput = prefix +
                 new FileDiffGenerator().generateDiff(
-                    "Previous " + ComparePublications.DEPENDENCY_INFO_FILEPATH,
-                    "Current " + ComparePublications.DEPENDENCY_INFO_FILEPATH,
-                    filteredPreviousContent,
-                    filteredCurrentContent
+                    previousFileContent,
+                    currentFileContent
                 );
 
             return Diff.ofDifferentFiles(previousFileName, currentFileName, diffOutput);

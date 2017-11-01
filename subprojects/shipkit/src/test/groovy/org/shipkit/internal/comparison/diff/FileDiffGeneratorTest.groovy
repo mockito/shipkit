@@ -6,7 +6,7 @@ class FileDiffGeneratorTest extends Specification {
 
     def "handles empty files"() {
         when:
-        def result = new FileDiffGenerator().generateDiff("", "", "", "")
+        def result = new FileDiffGenerator().generateDiff("", "")
 
         then:
         result == ""
@@ -14,7 +14,7 @@ class FileDiffGeneratorTest extends Specification {
 
     def "handles different files"() {
         when:
-        def result = new FileDiffGenerator().generateDiff("a", "b",
+        def result = new FileDiffGenerator().generateDiff(
 """
 aa
 bb
@@ -42,7 +42,7 @@ ff
 
     def "handles same files"() {
         when:
-        def result = new FileDiffGenerator().generateDiff("a", "b", "aa\nbb", "aa\nbb")
+        def result = new FileDiffGenerator().generateDiff("aa\nbb", "aa\nbb")
 
         then:
         result == ""

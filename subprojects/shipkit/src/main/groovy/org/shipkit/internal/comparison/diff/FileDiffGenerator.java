@@ -12,22 +12,22 @@ public class FileDiffGenerator {
     private static final String INDENTATION = "    ";
 
     /**
-     * See {@link #generateDiff(String, String, String, String, int)}
+     * See {@link #generateDiff(String, String, int)}
      */
-    public String generateDiff(String previousFilePath, String currentFilePath, String previousContent, String currentContent) {
-        return generateDiff(previousFilePath, currentFilePath, previousContent, currentContent, 0);
+    public String generateDiff(String previousContent, String currentContent) {
+        return generateDiff(previousContent, currentContent, 0);
     }
 
     /**
      * generates diff between contents of two files in the same format as "git diff"
      */
-    public String generateDiff(String previousFilePath, String currentFilePath, String previousContent, String currentContent, int context) {
+    public String generateDiff(String previousContent, String currentContent, int context) {
         List<String> previousLines = breakIntoLines(previousContent);
         List<String> currentLines = breakIntoLines(currentContent);
 
         Patch<String> patch = DiffUtils.diff(previousLines, currentLines);
 
-        List<String> unifiedDiff = DiffUtils.generateUnifiedDiff(previousFilePath, currentFilePath, previousLines, patch, context);
+        List<String> unifiedDiff = DiffUtils.generateUnifiedDiff("", "", previousLines, patch, context);
 
         if (unifiedDiff.size() <= 2) {
             return ""; // no differences found

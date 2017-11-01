@@ -25,9 +25,6 @@ public class ComparePublicationsTask extends DefaultTask {
 
     @OutputFile private File comparisonResult;
 
-    @Input private String projectGroup;
-    @Input private String currentVersion;
-    @Input @Optional private String previousVersion;
     @InputFiles private Jar sourcesJar;
 
     //Not using @InputFile annotation on purpose below. @InputFile makes Gradle fail early
@@ -67,53 +64,6 @@ public class ComparePublicationsTask extends DefaultTask {
 
         //so that when we compare jars, the local sources jar is already built.
         this.dependsOn(sourcesJar);
-    }
-
-    /**
-     * The artifact group, used during pom comparison to ignore version changes of artifacts with that group.
-     * Needed to make the pom comparison robust and avoid false positives.
-     */
-    public String getProjectGroup() {
-        return projectGroup;
-    }
-
-    /**
-     * See {@link #getProjectGroup()}
-     */
-    public void setProjectGroup(String projectGroup) {
-        this.projectGroup = projectGroup;
-    }
-
-    /**
-     * Current project version, used during pom comparison to ignore version changes of internal dependencies.
-     * Used to make pom comparison robust and avoid false positives.
-     */
-    public String getCurrentVersion() {
-        return currentVersion;
-    }
-
-    /**
-     * See {@link #getCurrentVersion()}
-     */
-    public void setCurrentVersion(String currentVersion) {
-        this.currentVersion = currentVersion;
-    }
-
-    /**
-     * Previous version, used during pom comparison to ignore version changes of internal dependencies.
-     * Used to make pom comparison robust and avoid false positives.
-     * <p>
-     * If null it means there was no previous version and the task will not run any diffs.
-     */
-    public String getPreviousVersion() {
-        return previousVersion;
-    }
-
-    /**
-     * See {@link #getPreviousVersion()}
-     */
-    public void setPreviousVersion(String previousVersion) {
-        this.previousVersion = previousVersion;
     }
 
     /**

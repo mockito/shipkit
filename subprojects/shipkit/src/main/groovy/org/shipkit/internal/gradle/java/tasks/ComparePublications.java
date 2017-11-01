@@ -6,6 +6,7 @@ import org.shipkit.gradle.java.ComparePublicationsTask;
 import org.shipkit.internal.comparison.DependencyInfoComparator;
 import org.shipkit.internal.comparison.ZipComparator;
 import org.shipkit.internal.comparison.diff.Diff;
+import org.shipkit.internal.gradle.java.ComparePublicationsPlugin;
 import org.shipkit.internal.gradle.java.JavaLibraryPlugin;
 import org.shipkit.internal.gradle.util.ZipUtil;
 import org.shipkit.internal.notes.util.IOUtil;
@@ -16,13 +17,9 @@ import java.util.*;
 public class ComparePublications {
 
     private final static Logger LOG = Logging.getLogger(ComparePublications.class);
-    public static final String DEPENDENCY_INFO_FILEPATH = "META-INF/" + JavaLibraryPlugin.DEPENDENCY_INFO_FILENAME;
+    public static final String DEPENDENCY_INFO_FILEPATH = "META-INF/" + ComparePublicationsPlugin.DEPENDENCY_INFO_FILENAME;
 
     public void comparePublications(ComparePublicationsTask task) {
-        if (task.getPreviousVersion() == null) {
-            LOG.lifecycle("{} - previousVersion is not set, nothing to compare, skipping", task.getPath());
-            return;
-        }
         if (!task.getPreviousSourcesJar().exists()) {
             LOG.lifecycle("{} - previous publications not found, nothing to compare, skipping", task.getPath());
             return;
@@ -33,15 +30,15 @@ public class ComparePublications {
 
         File currentVersionSourcesJarFile = task.getSourcesJar().getArchivePath();
 
-        LOG.lifecycle("{} - about to compare publications, for versions {} and {}",
-                task.getPath(), task.getPreviousVersion(), task.getCurrentVersion());
+        LOG.lifecycle("{} - about to compare publications",
+                task.getPath());
 
         if (!ZipUtil.fileContainsEntry(task.getPreviousSourcesJar(), DEPENDENCY_INFO_FILEPATH)) {
             LOG.lifecycle("{} - previous {} file not found, nothing to compare, skipping", task.getPath(), DEPENDENCY_INFO_FILEPATH);
             return;
         }
 
-        DependencyInfoComparator dependencyInfoComparator = new DependencyInfoComparator(task.getProjectGroup(), task.getPreviousVersion(), task.getCurrentVersion());
+        DependencyInfoComparator dependencyInfoComparator = new DependencyInfoComparator();
         Diff depInfoDiff = dependencyInfoComparator.areEqual(task.getPreviousSourcesJar(), currentVersionSourcesJarFile,
                 ZipUtil.readEntryContent(task.getPreviousSourcesJar(), DEPENDENCY_INFO_FILEPATH),
                 ZipUtil.readEntryContent(currentVersionSourcesJarFile, DEPENDENCY_INFO_FILEPATH));

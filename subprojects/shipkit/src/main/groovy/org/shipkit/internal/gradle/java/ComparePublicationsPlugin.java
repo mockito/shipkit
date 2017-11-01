@@ -49,6 +49,7 @@ public class ComparePublicationsPlugin implements Plugin<Project> {
 
     final static String DOWNLOAD_PUBLICATIONS_TASK = "downloadPreviousReleaseArtifacts";
     public final static String COMPARE_PUBLICATIONS_TASK = "comparePublications";
+    public static final String DEPENDENCY_INFO_FILENAME = "dependency-info.md";
 
     final static String PREVIOUS_ARTIFACTS_DIR = "/previous-release-artifacts";
 
@@ -66,7 +67,7 @@ public class ComparePublicationsPlugin implements Plugin<Project> {
             @Override
             public void execute(final CreateDependencyInfoFileTask task) {
                 task.setDescription("Creates a file with all declared runtime dependencies.");
-                task.setOutputFile(new File(project.getBuildDir(), "dependency-info.md"));
+                task.setOutputFile(new File(project.getBuildDir(), DEPENDENCY_INFO_FILENAME));
                 task.setConfiguration(project.getConfigurations().getByName("runtime"));
                 task.setProjectVersion(project.getVersion().toString());
 
@@ -108,20 +109,10 @@ public class ComparePublicationsPlugin implements Plugin<Project> {
                 t.dependsOn(DOWNLOAD_PUBLICATIONS_TASK);
 
                 t.setComparisonResult(new File(project.getBuildDir(), "publications-comparison.txt"));
-
-                t.setCurrentVersion(project.getVersion().toString());
-                t.setPreviousVersion(conf.getPreviousReleaseVersion());
                 t.setPreviousSourcesJar(previousSourcesJar);
 
                 //Set local sources jar for comparison with previously released
                 t.compareSourcesJar(sourcesJar);
-
-                DeferredConfiguration.deferredConfiguration(project, new Runnable() {
-                    @Override
-                    public void run() {
-                        t.setProjectGroup(project.getGroup().toString());
-                    }
-                });
             }
         });
     }

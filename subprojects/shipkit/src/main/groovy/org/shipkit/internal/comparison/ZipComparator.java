@@ -50,7 +50,7 @@ public class ZipComparator {
         Set<String> previous = ZipUtil.extractEntries(previousFile);
         Set<String> current = ZipUtil.extractEntries(currentFile);
 
-        // ignore differences in dependency-info.json
+        // ignore differences in dependency-info.md
         previous.remove(ComparePublications.DEPENDENCY_INFO_FILEPATH);
         current.remove(ComparePublications.DEPENDENCY_INFO_FILEPATH);
 
