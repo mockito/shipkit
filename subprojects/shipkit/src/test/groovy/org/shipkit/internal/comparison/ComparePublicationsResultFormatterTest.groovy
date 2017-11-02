@@ -21,8 +21,8 @@ class ComparePublicationsResultFormatterTest extends Specification {
     }
 
     def "should format when files for both comparison are different" () {
-        def sourcesJarDiff = Diff.ofDifferentFiles("sources jar diff output")
-        def depInfoDiff = Diff.ofDifferentFiles("dependency info files diff output")
+        def sourcesJarDiff = Diff.ofDifferentFiles("    sources jar diff output")
+        def depInfoDiff = Diff.ofDifferentFiles("    dependency info files diff output")
 
         when:
         def result = formatter.formatResults(previousFile, currentFile, sourcesJarDiff, depInfoDiff)
@@ -45,7 +45,7 @@ class ComparePublicationsResultFormatterTest extends Specification {
     }
 
     def "should format when only sources jars are different" () {
-        def sourcesJarDiff = Diff.ofDifferentFiles("sources jar diff output")
+        def sourcesJarDiff = Diff.ofDifferentFiles("    sources jar diff output")
         def depInfoDiff = Diff.ofEqualFiles()
 
         when:
@@ -68,7 +68,7 @@ class ComparePublicationsResultFormatterTest extends Specification {
 
     def "should format when only dependency info files are different" () {
         def sourcesJarDiff = Diff.ofEqualFiles()
-        def depInfoDiff = Diff.ofDifferentFiles("dependency info files diff output")
+        def depInfoDiff = Diff.ofDifferentFiles("    dependency info files diff output")
 
         when:
         def result = formatter.formatResults(previousFile, currentFile, sourcesJarDiff, depInfoDiff)
