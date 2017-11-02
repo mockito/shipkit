@@ -1,8 +1,6 @@
 package org.shipkit.internal.gradle.git.tasks;
 
-import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Input;
@@ -11,7 +9,6 @@ import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.internal.exec.Exec;
 import org.shipkit.internal.exec.ProcessRunner;
-import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.util.ExposedForTesting;
 
 import java.io.File;
@@ -19,8 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.String.valueOf;
-import static org.shipkit.internal.util.RepositoryNameUtil.repositoryNameToCamelCase;
-import static org.shipkit.internal.util.RepositoryNameUtil.repositoryNameToCapitalizedCamelCase;
 
 /**
  * This task clone git project from repository to target dir.
@@ -48,39 +43,7 @@ public class CloneGitRepositoryTask extends DefaultTask {
         processRunner.run(getCloneCommand());
     }
 
-    /**
-     * Creates an instance of CloneGitRepositoryTask for given {@param #consumerRepository} in the root project
-     * or returns already existing one.
-     */
-    public static CloneGitRepositoryTask createCloneTask(final Project project, final String gitHubUrl, final String consumerRepository) {
-        String taskName = "clone" + repositoryNameToCapitalizedCamelCase(consumerRepository);
-        Project taskProject = project.getRootProject();
-
-        CloneGitRepositoryTask alreadyExistingTask = (CloneGitRepositoryTask) taskProject.getTasks().findByName(taskName);
-        if (alreadyExistingTask != null) {
-            return alreadyExistingTask;
-        }
-
-        return TaskMaker.task(taskProject,
-            taskName,
-            CloneGitRepositoryTask.class,
-            new Action<CloneGitRepositoryTask>() {
-                @Override
-                public void execute(final CloneGitRepositoryTask task) {
-                    task.setDescription("Clones consumer repo " + consumerRepository + " into a temporary directory.");
-                    task.setRepositoryUrl(gitHubUrl + "/" + consumerRepository);
-                    task.setTargetDir(getConsumerRepoCloneDir(project, consumerRepository));
-                }
-            });
-    }
-
-    /**
-     * Returns temporary dir where clone of {@param #consumerRepository} is stored.
-     */
-    public static File getConsumerRepoCloneDir(Project project, String consumerRepository) {
-        return new File(project.getRootProject().getBuildDir().getAbsolutePath() + "/downstream/" + repositoryNameToCamelCase(consumerRepository));
-    }
-
+    //TODO: WW investigate if this method can be removed from public API
     @ExposedForTesting
     List<String> getCloneCommand() {
         List<String> result = new ArrayList<String>();

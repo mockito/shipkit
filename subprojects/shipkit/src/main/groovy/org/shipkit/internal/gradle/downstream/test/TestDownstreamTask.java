@@ -7,6 +7,7 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.exec.SilentExecTask;
+import org.shipkit.internal.gradle.git.CloneGitRepositoryTaskFactory;
 import org.shipkit.internal.gradle.git.tasks.CloneGitRepositoryTask;
 import org.shipkit.internal.gradle.release.tasks.UploadGistsTask;
 
@@ -20,9 +21,10 @@ import static org.shipkit.internal.util.RepositoryNameUtil.*;
 
 /**
  * Aggregates all downstream-test-related tasks. It can be configured to run e2e tests on provided repositories.
- * Automatically added tasks:
- *  - clone client projects to '$buildDir/downstream'
- *  - execute 'testRelease' task using the newest Shipkit version
+ * E2E test for each downstream repository is divided into a few stages:
+ *  - clone downstream project to '$buildDir/downstream'
+ *  - execute 'testRelease' task using the newest Shipkit version inside the downstream clone
+ *  - saves output logs to file or creates gists for them (see {@link UploadGistsTask})
  *
  * Adds tasks:
  * <ul>
@@ -40,7 +42,8 @@ public class TestDownstreamTask extends DefaultTask {
     private String gitHubUrl;
 
     /**
-     * URL of repository which will be downloaded and downstream test will be run on it
+     * Creates an e2e test, for @param #repositoryUrl of downstream service, that should be executed
+     * whenever upstream service (the one where {@link TestDownstreamPlugin} is applied) is released.
      */
     public void addRepository(String repositoryUrl) {
         LOG.debug("Downstream test created for repository {}", repositoryUrl);
@@ -51,7 +54,7 @@ public class TestDownstreamTask extends DefaultTask {
     private void createTasks(String gitHubRepoUrl) {
         String repoName = extractRepoNameFromGitHubUrl(gitHubRepoUrl);
         String camelCaseRepoName = repositoryNameToCamelCase(repoName);
-        CloneGitRepositoryTask clone = CloneGitRepositoryTask.createCloneTask(getProject(), gitHubUrl, repoName);
+        CloneGitRepositoryTask clone = CloneGitRepositoryTaskFactory.createCloneTask(getProject(), gitHubUrl, repoName);
         createRunTestReleaseTask(camelCaseRepoName, clone);
     }
 

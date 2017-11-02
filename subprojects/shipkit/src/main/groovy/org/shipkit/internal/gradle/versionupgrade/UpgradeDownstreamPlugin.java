@@ -9,7 +9,7 @@ import org.shipkit.gradle.exec.ShipkitExecTask;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.exec.ExecCommandFactory;
-import org.shipkit.internal.gradle.git.tasks.CloneGitRepositoryTask;
+import org.shipkit.internal.gradle.git.CloneGitRepositoryTaskFactory;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.util.ExposedForTesting;
 import org.shipkit.version.VersionInfo;
@@ -73,7 +73,7 @@ public class UpgradeDownstreamPlugin implements Plugin<Project> {
                 notNull(upgradeDownstreamExtension.getRepositories(),
                     "'upgradeDownstream.repositories'");
                 for (String consumerRepositoryName : upgradeDownstreamExtension.getRepositories()) {
-                    Task cloneTask = CloneGitRepositoryTask.createCloneTask(project, conf.getGitHub().getUrl(), consumerRepositoryName);
+                    Task cloneTask = CloneGitRepositoryTaskFactory.createCloneTask(project, conf.getGitHub().getUrl(), consumerRepositoryName);
                     Task performUpdate = createProduceUpgradeTask(project, consumerRepositoryName);
                     performUpdate.dependsOn(cloneTask);
                     performAllUpdates.dependsOn(performUpdate);
@@ -88,7 +88,7 @@ public class UpgradeDownstreamPlugin implements Plugin<Project> {
             public void execute(final ShipkitExecTask task) {
                 task.setDescription("Performs dependency upgrade in " + consumerRepository);
                 task.execCommand(ExecCommandFactory.execCommand("Upgrading dependency",
-                    CloneGitRepositoryTask.getConsumerRepoCloneDir(project, consumerRepository),
+                    CloneGitRepositoryTaskFactory.getConsumerRepoCloneDir(project, consumerRepository),
                     "./gradlew", "performVersionUpgrade", getDependencyProperty(project)));
             }
         });
