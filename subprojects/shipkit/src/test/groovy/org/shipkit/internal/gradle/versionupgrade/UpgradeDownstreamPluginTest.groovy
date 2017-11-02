@@ -47,7 +47,7 @@ class UpgradeDownstreamPluginTest extends PluginSpecification {
 
         then:
         CloneGitRepositoryTask task = project.tasks['cloneWwilkMockito']
-        task.targetDir == project.file(project.buildDir.absolutePath + '/downstream-upgrade/wwilkMockito')
+        task.targetDir == project.file(project.buildDir.absolutePath + '/downstream/wwilkMockito')
         task.repositoryUrl == 'http://git.com/wwilk/mockito'
     }
 

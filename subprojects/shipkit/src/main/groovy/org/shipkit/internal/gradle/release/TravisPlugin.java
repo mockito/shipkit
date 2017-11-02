@@ -9,12 +9,9 @@ import org.shipkit.gradle.git.IdentifyGitBranchTask;
 import org.shipkit.gradle.release.ReleaseNeededTask;
 import org.shipkit.internal.gradle.configuration.BasicValidator;
 import org.shipkit.internal.gradle.configuration.LazyConfiguration;
-import org.shipkit.internal.gradle.downstream.test.TestDownstreamPlugin;
 import org.shipkit.internal.gradle.git.GitBranchPlugin;
 import org.shipkit.internal.gradle.git.GitSetupPlugin;
 import org.shipkit.internal.gradle.git.tasks.GitCheckOutTask;
-import org.shipkit.internal.gradle.release.tasks.UploadGists;
-import org.shipkit.internal.gradle.release.tasks.UploadGistsTask;
 import org.shipkit.internal.gradle.util.StringUtil;
 
 /**

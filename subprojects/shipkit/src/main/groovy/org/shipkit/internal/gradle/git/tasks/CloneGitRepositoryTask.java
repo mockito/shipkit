@@ -43,6 +43,7 @@ public class CloneGitRepositoryTask extends DefaultTask {
         processRunner.run(getCloneCommand());
     }
 
+    //TODO: WW investigate if this method can be removed from public API
     @ExposedForTesting
     List<String> getCloneCommand() {
         List<String> result = new ArrayList<String>();

@@ -1,15 +1,11 @@
 package org.shipkit.internal.gradle.git.tasks
 
 import org.gradle.testfixtures.ProjectBuilder
-import org.junit.Rule
-import org.junit.rules.TemporaryFolder
-import spock.lang.Specification
 import spock.lang.Subject
+import testutil.PluginSpecification
 
-class CloneGitRepositoryTaskTest extends Specification {
+class CloneGitRepositoryTaskTest extends PluginSpecification {
 
-    @Rule
-    TemporaryFolder tmp = new TemporaryFolder()
     def tempFolder
 
     @Subject task = new ProjectBuilder().build().tasks.create("cloneGitRepositoryTask", CloneGitRepositoryTask)
