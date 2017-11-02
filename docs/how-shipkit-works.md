@@ -15,7 +15,7 @@ Shipkit integrates with:
 
 If you already have release process you can still leverage a specific feature of Shipkit.
 The best way to get started is to explain your use case to our team.
-Reach out by [opening a ticket on GitHub](TODO)
+Reach out by [opening a ticket on GitHub](https://github.com/mockito/shipkit/issues/new)
 
 ### Details
 
@@ -28,8 +28,6 @@ How do we:
 
 Features we still work on:
 - [automatically upgrade dependencies](/docs/gradle-plugins/upgrade-dependency-plugin.md)
-
-TODO document all features mentioned in main README.md
 
 Thank you for reading!
 Questions or feedback?

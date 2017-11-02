@@ -18,6 +18,8 @@ We can teach anyone to code but we cannot teach anyone to love coding.
 Great code reviews can.
 Great code review feedback streamlines team's productivity, amplifies learning and makes working together fun and engaging.
 
+See Szczepan's article on how to give great code reviews: https://thenewstack.io/linkedin-code-review/
+
 #### Great code review comments, non-technical
 
 - try to give plenty of detailed, positive feedback.
