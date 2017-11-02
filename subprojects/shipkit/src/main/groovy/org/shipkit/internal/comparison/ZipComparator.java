@@ -87,9 +87,9 @@ public class ZipComparator {
         String diffOutput = directoryDiffGenerator.generateDiffOutput(addedFiles, removedFiles, changedFiles);
 
         if (differences > 0) {
-            return Diff.ofDifferentFiles(previousFile.getName(), currentFile.getName(), diffOutput);
+            return Diff.ofDifferentFiles(diffOutput);
         }
-        return Diff.ofEqualFiles(previousFile.getName(), currentFile.getName());
+        return Diff.ofEqualFiles();
     }
 
 

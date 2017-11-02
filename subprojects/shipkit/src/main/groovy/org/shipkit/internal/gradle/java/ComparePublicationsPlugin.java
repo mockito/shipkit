@@ -96,7 +96,7 @@ public class ComparePublicationsPlugin implements Plugin<Project> {
 
                         String previousVersionSourcesJarUrl = getDefaultIfNull(t.getPreviousSourcesJarUrl(), "previousSourcesJarUrl", "-sources.jar", artifactUrlResolver);
                         t.setPreviousSourcesJarUrl(previousVersionSourcesJarUrl);
-                        t.setPreviousSourcesJar(previousSourcesJar);
+                        t.setPreviousSourcesJarFile(previousSourcesJar);
                     }
                 });
             }

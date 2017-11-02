@@ -3,16 +3,15 @@ package org.shipkit.internal.gradle.java.tasks;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.java.ComparePublicationsTask;
-import org.shipkit.internal.comparison.DependencyInfoComparator;
+import org.shipkit.internal.comparison.ComparePublicationsResultFormatter;
+import org.shipkit.internal.comparison.StringComparator;
 import org.shipkit.internal.comparison.ZipComparator;
 import org.shipkit.internal.comparison.diff.Diff;
 import org.shipkit.internal.gradle.java.ComparePublicationsPlugin;
-import org.shipkit.internal.gradle.java.JavaLibraryPlugin;
 import org.shipkit.internal.gradle.util.ZipUtil;
 import org.shipkit.internal.notes.util.IOUtil;
 
 import java.io.File;
-import java.util.*;
 
 public class ComparePublications {
 
@@ -38,8 +37,8 @@ public class ComparePublications {
             return;
         }
 
-        DependencyInfoComparator dependencyInfoComparator = new DependencyInfoComparator();
-        Diff depInfoDiff = dependencyInfoComparator.areEqual(task.getPreviousSourcesJar(), currentVersionSourcesJarFile,
+        StringComparator stringComparator = new StringComparator();
+        Diff depInfoDiff = stringComparator.areEqual(
                 ZipUtil.readEntryContent(task.getPreviousSourcesJar(), DEPENDENCY_INFO_FILEPATH),
                 ZipUtil.readEntryContent(currentVersionSourcesJarFile, DEPENDENCY_INFO_FILEPATH));
 
@@ -49,21 +48,12 @@ public class ComparePublications {
         Diff jarsDiff = sourcesJarComparator.areEqual(task.getPreviousSourcesJar(), currentVersionSourcesJarFile);
         LOG.lifecycle("{} - source jars equal: {}", task.getPath(), jarsDiff.areFilesEqual());
 
-        List<Diff> differences = new ArrayList<Diff>();
-        differences.add(jarsDiff);
-        differences.add(depInfoDiff);
+        String comparisonResult = new ComparePublicationsResultFormatter().formatResults(
+            task.getPreviousSourcesJar(), currentVersionSourcesJarFile, jarsDiff, depInfoDiff);
 
-        StringBuilder comparisonResult = new StringBuilder();
-        for (Diff diff : differences) {
-            if (!diff.areFilesEqual()) {
-                comparisonResult.append("  Differences between files:\n  --- ")
-                        .append(diff.getPreviousFilePath()).append("\n")
-                        .append("  +++ ").append(diff.getCurrentFilePath()).append("\n\n")
-                        .append(diff.getDiffOutput()).append("\n");
-            }
-        }
+        LOG.lifecycle("{} - You can find detailed publication comparison results in file {}.", task.getPath(), task.getComparisonResult());
 
-        IOUtil.writeFile(task.getComparisonResult(), comparisonResult.toString());
+        IOUtil.writeFile(task.getComparisonResult(), comparisonResult);
     }
 
 }

@@ -74,7 +74,7 @@ class ComparePublicationsPluginTest extends PluginSpecification {
         def basePath = child.getBuildDir().absolutePath + "/previous-release-artifacts/child-1.0.0";
         def expectedSourcesJar = new File(basePath + "-sources.jar")
 
-        downloadTask.previousSourcesJar == expectedSourcesJar
+        downloadTask.previousSourcesJarFile == expectedSourcesJar
         comparisonTask.previousSourcesJar == expectedSourcesJar
     }
 
