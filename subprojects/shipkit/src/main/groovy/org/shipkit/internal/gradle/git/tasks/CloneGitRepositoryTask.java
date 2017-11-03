@@ -18,8 +18,11 @@ import java.util.List;
 import static java.lang.String.valueOf;
 
 /**
- * This task clone git project from repository to target dir.
- * It support clone from remote server and from local filesystem.
+ * This task clones git project from {@link #getRepositoryUrl()} to {@link #getTargetDir()}.
+ * It supports clone from remote server and from local filesystem.
+ * The task execution is skipped if {@link #getTargetDir()} exists and is not empty.
+ * If you want to always execute it, use clean task before calling this one.
+ * Note that it's a heavy operation and therefore multiple executions in the same build should be avoided.
  *
  * TODO ms - when you are ready, please move the new task types to the public packages,
  *   for example "org.shipkit.gradle.*". With 1.0 we need all task types to be public.
@@ -37,7 +40,12 @@ public class CloneGitRepositoryTask extends DefaultTask {
 
     @TaskAction
     public void cloneRepository() {
+        if (!isTargetEmpty()) {
+            LOG.lifecycle("{} -  Target dir {} already exists and is not empty. Skipping execution of the task.");
+        }
+
         LOG.lifecycle("  Cloning repository {}\n    into {}", repositoryUrl, targetDir);
+
         getProject().getBuildDir().mkdirs();    // build dir can be not created yet
         ProcessRunner processRunner = Exec.getProcessRunner(getProject().getBuildDir());
         processRunner.run(getCloneCommand());
@@ -119,5 +127,9 @@ public class CloneGitRepositoryTask extends DefaultTask {
     @Input
     public void setDepth(int depth) {
         this.depth = depth;
+    }
+
+    private boolean isTargetEmpty() {
+        return !targetDir.exists() || targetDir.list().length == 0;
     }
 }
