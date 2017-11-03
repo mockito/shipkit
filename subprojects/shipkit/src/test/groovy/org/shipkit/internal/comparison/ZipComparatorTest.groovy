@@ -27,10 +27,20 @@ class ZipComparatorTest extends Specification {
         !eq(zip1, extraFile)
     }
 
+    def "ignores META-INF/dependency-info.md differences"() {
+        ZipMaker zip = new ZipMaker(tmp.newFolder())
+
+        File zip1 = zip.newZip("META-INF/dependency-info.md", "a")
+        File zip2 = zip.newZip("META-INF/dependency-info.md", "b")
+
+        expect:
+        eq zip1, zip2
+    }
+
     def "fails early when any of the zips cannot be opened"() {
         when: new ZipComparator().areEqual(new File("foox"), new File("bar"))
         then:
-        def ex = thrown(ZipComparator.ZipCompareException)
+        def ex = thrown(RuntimeException)
         ex.message.contains("foox")
     }
 

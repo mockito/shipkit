@@ -2,65 +2,63 @@ package org.shipkit.internal.gradle.java.tasks;
 
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.gradle.api.publish.maven.tasks.GenerateMavenPom;
 import org.shipkit.gradle.java.ComparePublicationsTask;
-import org.shipkit.internal.comparison.PomComparator;
+import org.shipkit.internal.comparison.ComparePublicationsResultFormatter;
+import org.shipkit.internal.comparison.StringComparator;
 import org.shipkit.internal.comparison.ZipComparator;
 import org.shipkit.internal.comparison.diff.Diff;
+import org.shipkit.internal.gradle.java.ComparePublicationsPlugin;
+import org.shipkit.internal.gradle.util.ZipUtil;
 import org.shipkit.internal.notes.util.IOUtil;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ComparePublications {
 
     private final static Logger LOG = Logging.getLogger(ComparePublications.class);
+    public static final String DEPENDENCY_INFO_FILEPATH = "META-INF/" + ComparePublicationsPlugin.DEPENDENCY_INFO_FILENAME;
 
+    //TODO: WW create unit tests
     public void comparePublications(ComparePublicationsTask task) {
-        if (task.getPreviousVersion() == null) {
-            LOG.lifecycle("{} - previousVersion is not set, nothing to compare, skipping", task.getPath());
-            return;
-        }
-        if (!task.getPreviousPom().exists() || !task.getPreviousSourcesJar().exists()) {
+        if (!task.getPreviousSourcesJar().exists()) {
             LOG.lifecycle("{} - previous publications not found, nothing to compare, skipping", task.getPath());
             return;
         }
 
-        GenerateMavenPom pomTask = (GenerateMavenPom) task.getProject().getTasks().getByName(task.getPomTaskName());
-
         //TODO let's add decent validation and descriptive error messages to the user
-        assert pomTask.getDestination().isFile();
         assert task.getSourcesJar().getArchivePath().isFile();
 
-        File currentVersionPomFile = pomTask.getDestination();
         File currentVersionSourcesJarFile = task.getSourcesJar().getArchivePath();
 
-        LOG.lifecycle("{} - about to compare publications, for versions {} and {}",
-                task.getPath(), task.getPreviousVersion(), task.getCurrentVersion());
+        LOG.lifecycle("{} - about to compare publications",
+                task.getPath());
 
-        PomComparator pomComparator = new PomComparator(task.getProjectGroup(), task.getPreviousVersion(), task.getCurrentVersion());
-        Diff pomsDiff = pomComparator.areEqual(task.getPreviousPom(), currentVersionPomFile);
-        LOG.lifecycle("{} - pom files equal: {}", task.getPath(), pomsDiff.areFilesEqual());
+        Diff depInfoDiff = getDependencyInfoDiff(task, currentVersionSourcesJarFile);
+
+        LOG.lifecycle("{} - {} files equal: {}", task.getPath(), DEPENDENCY_INFO_FILEPATH, depInfoDiff.areFilesEqual());
 
         ZipComparator sourcesJarComparator = new ZipComparator();
         Diff jarsDiff = sourcesJarComparator.areEqual(task.getPreviousSourcesJar(), currentVersionSourcesJarFile);
         LOG.lifecycle("{} - source jars equal: {}", task.getPath(), jarsDiff.areFilesEqual());
 
-        List<Diff> differences = new ArrayList<Diff>();
-        differences.add(jarsDiff);
-        differences.add(pomsDiff);
+        String comparisonResult = new ComparePublicationsResultFormatter().formatResults(
+            task.getPreviousSourcesJar(), currentVersionSourcesJarFile, jarsDiff, depInfoDiff);
 
-        StringBuilder comparisonResult = new StringBuilder();
-        for (Diff diff : differences) {
-            if (!diff.areFilesEqual()) {
-                comparisonResult.append("  Differences between files:\n  --- ")
-                        .append(diff.getPreviousFile()).append("\n")
-                        .append("  +++ ").append(diff.getCurrentFile()).append("\n\n")
-                        .append(diff.getDiffOutput()).append("\n");
-            }
+        LOG.lifecycle("{} - You can find detailed publication comparison results in file {}.", task.getPath(), task.getComparisonResult());
+
+        IOUtil.writeFile(task.getComparisonResult(), comparisonResult);
+    }
+
+    private Diff getDependencyInfoDiff(ComparePublicationsTask task, File currentVersionSourcesJarFile) {
+        if (!ZipUtil.fileContainsEntry(task.getPreviousSourcesJar(), DEPENDENCY_INFO_FILEPATH)) {
+            LOG.lifecycle("{} - previous {} file not found, nothing to compare", task.getPath(), DEPENDENCY_INFO_FILEPATH);
+            return Diff.ofEqualFiles();
         }
 
-        IOUtil.writeFile(task.getComparisonResult(), comparisonResult.toString());
+        StringComparator stringComparator = new StringComparator();
+
+        return stringComparator.areEqual(
+            ZipUtil.readEntryContent(task.getPreviousSourcesJar(), DEPENDENCY_INFO_FILEPATH),
+            ZipUtil.readEntryContent(currentVersionSourcesJarFile, DEPENDENCY_INFO_FILEPATH));
     }
 }
