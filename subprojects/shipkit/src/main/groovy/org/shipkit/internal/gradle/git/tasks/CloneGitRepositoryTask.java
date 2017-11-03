@@ -37,7 +37,12 @@ public class CloneGitRepositoryTask extends DefaultTask {
 
     @TaskAction
     public void cloneRepository() {
+        if (!isTargetEmpty()) {
+            LOG.lifecycle("{} -  Target dir {} already exists and is not empty. Skipping execution of the task.");
+        }
+
         LOG.lifecycle("  Cloning repository {}\n    into {}", repositoryUrl, targetDir);
+
         getProject().getBuildDir().mkdirs();    // build dir can be not created yet
         ProcessRunner processRunner = Exec.getProcessRunner(getProject().getBuildDir());
         processRunner.run(getCloneCommand());
@@ -119,5 +124,9 @@ public class CloneGitRepositoryTask extends DefaultTask {
     @Input
     public void setDepth(int depth) {
         this.depth = depth;
+    }
+
+    private boolean isTargetEmpty() {
+        return !targetDir.exists() || targetDir.list().length == 0;
     }
 }
