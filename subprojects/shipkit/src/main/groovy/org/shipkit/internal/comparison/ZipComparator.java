@@ -45,6 +45,7 @@ public class ZipComparator {
         }
     }
 
+    //TODO: WW refactor this code so that it uses listeners
     private Diff compareZips(ZipFile previousFile, ZipFile currentFile) {
 
         Set<String> previous = ZipUtil.extractEntries(previousFile);

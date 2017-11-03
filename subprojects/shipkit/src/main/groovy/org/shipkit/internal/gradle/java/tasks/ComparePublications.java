@@ -18,6 +18,7 @@ public class ComparePublications {
     private final static Logger LOG = Logging.getLogger(ComparePublications.class);
     public static final String DEPENDENCY_INFO_FILEPATH = "META-INF/" + ComparePublicationsPlugin.DEPENDENCY_INFO_FILENAME;
 
+    //TODO: WW create unit tests
     public void comparePublications(ComparePublicationsTask task) {
         if (!task.getPreviousSourcesJar().exists()) {
             LOG.lifecycle("{} - previous publications not found, nothing to compare, skipping", task.getPath());
@@ -32,15 +33,7 @@ public class ComparePublications {
         LOG.lifecycle("{} - about to compare publications",
                 task.getPath());
 
-        if (!ZipUtil.fileContainsEntry(task.getPreviousSourcesJar(), DEPENDENCY_INFO_FILEPATH)) {
-            LOG.lifecycle("{} - previous {} file not found, nothing to compare, skipping", task.getPath(), DEPENDENCY_INFO_FILEPATH);
-            return;
-        }
-
-        StringComparator stringComparator = new StringComparator();
-        Diff depInfoDiff = stringComparator.areEqual(
-                ZipUtil.readEntryContent(task.getPreviousSourcesJar(), DEPENDENCY_INFO_FILEPATH),
-                ZipUtil.readEntryContent(currentVersionSourcesJarFile, DEPENDENCY_INFO_FILEPATH));
+        Diff depInfoDiff = getDependencyInfoDiff(task, currentVersionSourcesJarFile);
 
         LOG.lifecycle("{} - {} files equal: {}", task.getPath(), DEPENDENCY_INFO_FILEPATH, depInfoDiff.areFilesEqual());
 
@@ -56,4 +49,16 @@ public class ComparePublications {
         IOUtil.writeFile(task.getComparisonResult(), comparisonResult);
     }
 
+    private Diff getDependencyInfoDiff(ComparePublicationsTask task, File currentVersionSourcesJarFile) {
+        if (!ZipUtil.fileContainsEntry(task.getPreviousSourcesJar(), DEPENDENCY_INFO_FILEPATH)) {
+            LOG.lifecycle("{} - previous {} file not found, nothing to compare", task.getPath(), DEPENDENCY_INFO_FILEPATH);
+            return Diff.ofEqualFiles();
+        }
+
+        StringComparator stringComparator = new StringComparator();
+
+        return stringComparator.areEqual(
+            ZipUtil.readEntryContent(task.getPreviousSourcesJar(), DEPENDENCY_INFO_FILEPATH),
+            ZipUtil.readEntryContent(currentVersionSourcesJarFile, DEPENDENCY_INFO_FILEPATH));
+    }
 }
