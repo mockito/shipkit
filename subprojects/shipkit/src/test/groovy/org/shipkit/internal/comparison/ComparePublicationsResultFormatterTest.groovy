@@ -57,13 +57,7 @@ class ComparePublicationsResultFormatterTest extends Specification {
   --- ${previousFile.absolutePath}
   +++ ${currentFile.absolutePath}
 
-    sources jar diff output
-
-  Differences between files:
-  --- ${previousFile.absolutePath}/META-INF/dependency-info.md
-  +++ ${currentFile.absolutePath}/META-INF/dependency-info.md
-
-    No differences."""
+    sources jar diff output"""
     }
 
     def "should format when only dependency info files are different" () {
@@ -75,13 +69,7 @@ class ComparePublicationsResultFormatterTest extends Specification {
 
         then:
         result ==
-            """  Differences between files:
-  --- ${previousFile.absolutePath}
-  +++ ${currentFile.absolutePath}
-
-    No differences.
-
-  Differences between files:
+"""  Differences between files:
   --- ${previousFile.absolutePath}/META-INF/dependency-info.md
   +++ ${currentFile.absolutePath}/META-INF/dependency-info.md
 
@@ -90,7 +78,7 @@ class ComparePublicationsResultFormatterTest extends Specification {
     dependency info files diff output"""
     }
 
-    def "should format when all files are equal" () {
+    def "should be empty when all files are equal" () {
         def sourcesJarDiff = Diff.ofEqualFiles()
         def depInfoDiff = Diff.ofEqualFiles()
 
@@ -98,17 +86,6 @@ class ComparePublicationsResultFormatterTest extends Specification {
         def result = formatter.formatResults(previousFile, currentFile, sourcesJarDiff, depInfoDiff)
 
         then:
-        result ==
-            """  Differences between files:
-  --- ${previousFile.absolutePath}
-  +++ ${currentFile.absolutePath}
-
-    No differences.
-
-  Differences between files:
-  --- ${previousFile.absolutePath}/META-INF/dependency-info.md
-  +++ ${currentFile.absolutePath}/META-INF/dependency-info.md
-
-    No differences."""
+        result == ""
     }
 }

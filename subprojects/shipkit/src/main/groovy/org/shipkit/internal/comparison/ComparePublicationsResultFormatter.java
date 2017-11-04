@@ -21,20 +21,20 @@ public class ComparePublicationsResultFormatter {
         String result = "";
 
         // add diff between sources jars
-        result += getFileComparisonHeader(previousSourcesJar.getAbsolutePath(), currentSourcesJar.getAbsolutePath());
         if (!sourcesJarDiff.areFilesEqual()) {
-            result +=  sourcesJarDiff.getDiffOutput() + "\n\n";
-        } else {
-            result += NO_DIFFERENCES + "\n\n";
+            result += getFileComparisonHeader(previousSourcesJar.getAbsolutePath(), currentSourcesJar.getAbsolutePath());
+            result +=  sourcesJarDiff.getDiffOutput();
+        }
+
+        if (!sourcesJarDiff.areFilesEqual() && !dependencyInfoFilesDiff.areFilesEqual()) {
+            result += "\n\n";
         }
 
         // add diff between dependency-info.md files
-        result += getFileComparisonHeader(getDependencyInfoFilePath(previousSourcesJar), getDependencyInfoFilePath(currentSourcesJar));
         if (!dependencyInfoFilesDiff.areFilesEqual()) {
+            result += getFileComparisonHeader(getDependencyInfoFilePath(previousSourcesJar), getDependencyInfoFilePath(currentSourcesJar));
             result += LONG_INDENT + "Here you can see the changes in declared runtime dependencies between versions.\n\n";
             result += dependencyInfoFilesDiff.getDiffOutput();
-        } else {
-            result += NO_DIFFERENCES;
         }
 
         return result;
