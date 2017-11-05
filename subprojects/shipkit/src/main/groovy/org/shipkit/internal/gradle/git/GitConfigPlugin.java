@@ -9,6 +9,28 @@ import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.exec.ExecCommandFactory;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
+/**
+ * Tasks added by this plugin will set git repository option(s).
+ *
+ * The plugin applies following plugins:
+ *
+ * <ul>
+ *     <li>{@link ShipkitConfigurationPlugin}</li>
+ * </ul>
+ *
+ * and adds following tasks:
+ *
+ * <ul>
+ *     <li>
+ *         'setGitUserName' - sets generic user name so that CI server can commit code as neatly described robot,
+ *         uses value from {@link org.shipkit.gradle.configuration.ShipkitConfiguration.Git#getUser()}
+ *     </li>
+ *     <li>
+ *         'setGitUserEmail' - sets generic user email so that CI server can commit code as neatly described robot,
+ *         uses value from {@link org.shipkit.gradle.configuration.ShipkitConfiguration.Git#getEmail()}
+ *     </li>
+ * </ul>
+ */
 public class GitConfigPlugin implements Plugin<Project> {
 
     public static final String SET_USER_TASK = "setGitUserName";

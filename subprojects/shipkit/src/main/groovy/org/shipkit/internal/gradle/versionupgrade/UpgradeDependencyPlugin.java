@@ -28,6 +28,7 @@ import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
  * <ul>
  *     <li>{@link ShipkitConfigurationPlugin}</li>
  *     <li>{@link GitOriginPlugin}</li>
+ *     <li>{@link GitConfigPlugin}</li>
  * </ul>
  *
  * and adds following tasks:
@@ -52,7 +53,7 @@ import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
  *
  *      apply plugin: 'org.shipkit.upgrade-dependency'
  *
- *      upgradeDependency{
+ *      upgradeDependency {
  *          baseBranch = 'release/2.x'
  *          buildFile = file('build.gradle')
  *      }

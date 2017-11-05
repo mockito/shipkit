@@ -7,9 +7,7 @@ import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.process.ExecResult;
-import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.gradle.exec.ShipkitExecTask;
-import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.exec.ExecCommandFactory;
 import org.shipkit.internal.gradle.git.tasks.GitCheckOutTask;
 import org.shipkit.internal.gradle.util.TaskMaker;
@@ -21,7 +19,15 @@ import static org.shipkit.internal.gradle.git.GitConfigPlugin.SET_USER_TASK;
 /**
  * Plugin that adds Git tasks commonly used for setting up
  * working copy when running build on CI environment.
- * Adds following tasks:
+ *
+ * The plugin applies following plugins:
+ *
+ * <ul>
+ *     <li>{@link GitConfigPlugin}</li>
+ * </ul>
+ *
+ * and adds following tasks:
+ *
  * <ul>
  *     <li>
  *         'gitUnshallow' - performs 'git unshallow' to get sufficient amount of commits.
@@ -32,14 +38,6 @@ import static org.shipkit.internal.gradle.git.GitConfigPlugin.SET_USER_TASK;
  *         Needed for CI workflows, where CI server automatically checks out rev hash of the commit, detaching from HEAD.
  *         In detached HEAD, all commits are lost. We need to make commits for version bumps and release notes/changelog.
  *         Therefore we need to checkout real branch like "master"</li>
- *     <li>
- *         'setGitUserName' - sets generic user name so that CI server can commit code as neatly described robot,
- *         uses value from {@link org.shipkit.gradle.configuration.ShipkitConfiguration.Git#getUser()}
- *     </li>
- *     <li>
- *         'setGitUserEmail' - sets generic user email so that CI server can commit code as neatly described robot,
- *         uses value from {@link org.shipkit.gradle.configuration.ShipkitConfiguration.Git#getEmail()}
- *     </li>
  *     <li>
  *         'ciReleasePrepare' - prepares for release from CI,
  *         depends on most other tasks (unshallow, git checkout branch, set generic git user and email).
