@@ -15,6 +15,8 @@ import org.shipkit.internal.gradle.git.tasks.GitCheckOutTask;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
 import static java.util.Arrays.asList;
+import static org.shipkit.internal.gradle.git.GitConfigPlugin.SET_EMAIL_TASK;
+import static org.shipkit.internal.gradle.git.GitConfigPlugin.SET_USER_TASK;
 
 /**
  * Plugin that adds Git tasks commonly used for setting up
@@ -50,13 +52,12 @@ public class GitSetupPlugin implements Plugin<Project> {
 
     private static final String UNSHALLOW_TASK = "gitUnshallow";
     public static final String CHECKOUT_TASK = "gitCheckout";
-    private static final String SET_USER_TASK = "setGitUserName";
-    private static final String SET_EMAIL_TASK = "setGitUserEmail";
+
     public static final String CI_RELEASE_PREPARE_TASK = "ciReleasePrepare";
 
     @Override
     public void apply(Project project) {
-        final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
+        project.getPlugins().apply(GitConfigPlugin.class);
 
         TaskMaker.task(project, UNSHALLOW_TASK, ShipkitExecTask.class, new Action<ShipkitExecTask>() {
             public void execute(ShipkitExecTask t) {
@@ -78,22 +79,6 @@ public class GitSetupPlugin implements Plugin<Project> {
         TaskMaker.task(project, CHECKOUT_TASK, GitCheckOutTask.class, new Action<GitCheckOutTask>() {
             public void execute(final GitCheckOutTask t) {
                 t.setDescription("Checks out the branch that can be committed. CI systems often check out revision that is not committable.");
-            }
-        });
-
-        TaskMaker.task(project, SET_USER_TASK, ShipkitExecTask.class, new Action<ShipkitExecTask>() {
-            public void execute(final ShipkitExecTask t) {
-                t.setDescription("Overwrites local git 'user.name' with a generic name. Intended for CI.");
-                t.execCommand(ExecCommandFactory.execCommand("Setting git user name",
-                    "git", "config", "--local", "user.name", conf.getGit().getUser()));
-            }
-        });
-
-        TaskMaker.task(project, SET_EMAIL_TASK, ShipkitExecTask.class, new Action<ShipkitExecTask>() {
-            public void execute(final ShipkitExecTask t) {
-                t.setDescription("Overwrites local git 'user.email' with a generic email. Intended for CI.");
-                t.execCommand(ExecCommandFactory.execCommand("Setting git user email",
-                    "git", "config", "--local", "user.email", conf.getGit().getEmail()));
             }
         });
 
