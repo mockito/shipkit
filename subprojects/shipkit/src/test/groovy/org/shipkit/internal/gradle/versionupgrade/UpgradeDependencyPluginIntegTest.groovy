@@ -31,6 +31,8 @@ class UpgradeDependencyPluginIntegTest extends GradleSpecification {
 :pullUpstream
 :checkoutVersionBranch
 :replaceVersion
+:setGitUserEmail
+:setGitUserName
 :commitVersionUpgrade
 :pushVersionUpgrade
 :createPullRequest

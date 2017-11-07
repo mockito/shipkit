@@ -10,6 +10,7 @@ import org.shipkit.gradle.exec.ShipkitExecTask;
 import org.shipkit.gradle.git.GitPushTask;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
+import org.shipkit.internal.gradle.git.GitConfigPlugin;
 import org.shipkit.internal.gradle.git.GitOriginPlugin;
 import org.shipkit.internal.gradle.git.GitUrlInfo;
 import org.shipkit.internal.gradle.git.tasks.GitCheckOutTask;
@@ -27,6 +28,7 @@ import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
  * <ul>
  *     <li>{@link ShipkitConfigurationPlugin}</li>
  *     <li>{@link GitOriginPlugin}</li>
+ *     <li>{@link GitConfigPlugin}</li>
  * </ul>
  *
  * and adds following tasks:
@@ -51,7 +53,7 @@ import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
  *
  *      apply plugin: 'org.shipkit.upgrade-dependency'
  *
- *      upgradeDependency{
+ *      upgradeDependency {
  *          baseBranch = 'release/2.x'
  *          buildFile = file('build.gradle')
  *      }
@@ -80,6 +82,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
         IncubatingWarning.warn("upgrade-dependency plugin");
         final GitOriginPlugin gitOriginPlugin = project.getRootProject().getPlugins().apply(GitOriginPlugin.class);
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
+        project.getPlugins().apply(GitConfigPlugin.class);
 
         upgradeDependencyExtension = project.getExtensions().create("upgradeDependency", UpgradeDependencyExtension.class);
 
@@ -152,6 +155,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
             public void execute(final ShipkitExecTask exec) {
                 exec.setDescription("Commits updated build file.");
                 exec.mustRunAfter(REPLACE_VERSION);
+                exec.dependsOn(GitConfigPlugin.SET_EMAIL_TASK, GitConfigPlugin.SET_USER_TASK);
 
                 DeferredConfiguration.deferredConfiguration(project, new Runnable() {
                     @Override
