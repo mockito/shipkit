@@ -34,9 +34,9 @@ import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
  * and adds following tasks:
  *
  * <ul>
- *     <li>checkoutVersionUpgradeBaseBranch - checkouts base branch - the branch to which version upgrade should be applied through pull request</li>
+ *     <li>checkoutBaseBranch - checkouts base branch - the branch to which version upgrade should be applied through pull request</li>
  *     <li>pullUpstream - syncs the fork on which we perform version upgrade with the upstream repo</li>
- *     <li>checkoutVersionUpgradeVersionBranch - checkouts version branch - a new branch where version will be upgraded</li>
+ *     <li>checkoutVersionBranch - checkouts version branch - a new branch where version will be upgraded</li>
  *     <li>replaceVersion - replaces version in build file, using dependency pattern</li>
  *     <li>commitVersionUpgrade - commits replaced version</li>
  *     <li>pushVersionUpgrade - pushes the commit to the version branch</li>
