@@ -48,6 +48,8 @@ class ReleaseNeededTaskTest extends Specification {
         "[ci force-release]" | "master"  | false       | null       | ["", "diff"]      || true  // force-release
         "[ci force-release]" | "master"  | true        | null       | ["", "diff"]      || false // force-release
         "[ci force-release]" | "dev1"    | true        | null       | ["", "diff"]      || false // force-release
+        "[ci force-release]" | "master"  | false       | "true"     | ["", "diff"]      || false // force-release
+        "[ci force-release]" | "master"  | false       | "true"     | ["", ""]          || false // force-release
 
         "message"            | "master"  | false       | null       | []                || true   // no comparison results
     }

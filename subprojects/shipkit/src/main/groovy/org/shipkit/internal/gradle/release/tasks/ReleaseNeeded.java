@@ -63,7 +63,7 @@ public class ReleaseNeeded {
                 if (publicationsIdentical) {
                     return Pair.of(false, " Skipping release because publications are identical.");
                 }
-                return Pair.of(true, "Releasing because publication changed.");
+                return Pair.of(true, " Releasing because publication changed.");
             }
         } else {
             return Pair.of(false, " Skipping release because we are not on a releasable branch.");
