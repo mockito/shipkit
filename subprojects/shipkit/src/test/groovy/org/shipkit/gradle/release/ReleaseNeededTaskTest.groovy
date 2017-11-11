@@ -26,32 +26,32 @@ class ReleaseNeededTaskTest extends Specification {
         task.setReleasableBranchRegex("master")
 
         expect:
-        new ReleaseNeeded().releaseNeeded(task, envVariables).getLeft() == releaseNeeded
+        new ReleaseNeeded().releaseNeeded(task, envVariables) == releaseNeeded
 
         where:
-        commitMessage        | branch    | pullRequest | skipEnvVar | comparisonResults || releaseNeeded
-        "message"            | "master"  | false       | null       | ["", "diff"]      || true  // base case (in all other cases only one parameter changes)
+        commitMessage                    | branch    | pullRequest | skipEnvVar | comparisonResults || releaseNeeded
+        "message"                        | "master"  | false       | null       | ["", "diff"]      || true  // base case (in all other cases only one parameter changes)
 
-        null                 | "master"  | false       | null       | ["", "diff"]      || true  // null commit msg
-        " "                  | "master"  | false       | null       | ["", "diff"]      || true  // only whitespaces in commit msg
-        "message"            | "master"  | false       | null       | ["", "diff"]      || true  // publications differ
+        null                             | "master"  | false       | null       | ["", "diff"]      || true  // null commit msg
+        " "                              | "master"  | false       | null       | ["", "diff"]      || true  // only whitespaces in commit msg
+        "message"                        | "master"  | false       | null       | ["", "diff"]      || true  // publications differ
 
-        "[ci skip-release]"  | "master"  | false       | null       | ["", "diff"]      || false // skip-release in commit msg
-        "message"            | "feature" | false       | null       | ["", "diff"]      || false // feature branch
-        "message"            | null      | false       | null       | ["", "diff"]      || false // null branch
-        "message"            | "master"  | true        | null       | ["", "diff"]      || false // pull request
-        "message"            | "master"  | false       | "true"     | ["", "diff"]      || false // SKIP_RELEASE set
-        "message"            | "master"  | false       | null       | ["", ""]          || false  // publications are the same
+        "[ci skip-release]"              | "master"  | false       | null       | ["", "diff"]      || false // skip-release in commit msg
+        "message"                        | "feature" | false       | null       | ["", "diff"]      || false // feature branch
+        "message"                        | null      | false       | null       | ["", "diff"]      || false // null branch
+        "message"                        | "master"  | true        | null       | ["", "diff"]      || false // pull request
+        "message"                        | "master"  | false       | "true"     | ["", "diff"]      || false // SKIP_RELEASE set
+        "message"                        | "master"  | false       | null       | ["", ""]          || false  // publications are the same
 
-        "[ci force-release]" | "master"  | false       | null       | ["", ""]          || true  // force-release
-        "[ci force-release]" | "master"  | true        | null       | ["", ""]          || false // force-release
-        "[ci force-release]" | "master"  | false       | null       | ["", "diff"]      || true  // force-release
-        "[ci force-release]" | "master"  | true        | null       | ["", "diff"]      || false // force-release
-        "[ci force-release]" | "dev1"    | true        | null       | ["", "diff"]      || false // force-release
-        "[ci force-release]" | "master"  | false       | "true"     | ["", "diff"]      || false // force-release
-        "[ci force-release]" | "master"  | false       | "true"     | ["", ""]          || false // force-release
+        "[ci skip-compare-publications]" | "master"  | false       | null       | ["", ""]          || true  // skip-compare-publications
+        "[ci skip-compare-publications]" | "master"  | true        | null       | ["", ""]          || false // skip-compare-publications
+        "[ci skip-compare-publications]" | "master"  | false       | null       | ["", "diff"]      || true  // skip-compare-publications
+        "[ci skip-compare-publications]" | "master"  | true        | null       | ["", "diff"]      || false // skip-compare-publications
+        "[ci skip-compare-publications]" | "dev1"    | true        | null       | ["", "diff"]      || false // skip-compare-publications
+        "[ci skip-compare-publications]" | "master"  | false       | "true"     | ["", "diff"]      || false // skip-compare-publications
+        "[ci skip-compare-publications]" | "master"  | false       | "true"     | ["", ""]          || false // skip-compare-publications
 
-        "message"            | "master"  | false       | null       | []                || true   // no comparison results
+        "message"                        | "master"  | false       | null       | []                || true   // no comparison results
     }
 
     def "should fail if release not needed and mode is explosive"() {
