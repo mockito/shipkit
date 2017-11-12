@@ -80,7 +80,7 @@ public class ReleaseNeeded {
         }
     }
 
-    static class ReleaseNeed {
+    private static class ReleaseNeed {
         private final boolean needed;
         private final String explanation;
 
