@@ -50,6 +50,12 @@ public class ReleaseNeeded {
         boolean releasableBranch = task.getBranch() != null && task.getBranch().matches(task.getReleasableBranchRegex());
         LOG.lifecycle("  Current branch '{}' matches '{}': {}", task.getBranch(), task.getReleasableBranchRegex(), releasableBranch);
 
+        LOG.lifecycle("  Determine if we need a release based on: " +
+            "\n    - skip by env variable: " + skipEnvVariable +
+            "\n    - skip by commit message: " + skippedByCommitMessage +
+            "\n    - is pull request build: " + task.isPullRequest() +
+            "\n    - is releasable branch: " + releasableBranch);
+
         if (releasableBranch) {
             if (skippedByCommitMessage) {
                 return ReleaseNeed.of(false, " Skipping release due to skip release keyword in commit message.");
