@@ -1,7 +1,6 @@
 package org.shipkit.gradle.java;
 
 import org.gradle.api.DefaultTask;
-import org.gradle.api.publish.maven.tasks.GenerateMavenPom;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Optional;
