@@ -56,7 +56,7 @@ public class IOUtil {
             try {
                 closeable.close();
             } catch (IOException e) {
-                throw new RuntimeException("Problems closing stream", e);
+                throw new RuntimeException("Problems closing closeable", e);
             }
         }
     }
@@ -80,31 +80,26 @@ public class IOUtil {
      */
     public static void downloadToFile(String url, File file) {
         InputStream input = null;
-        FileOutputStream output = null;
         try {
             input = new BufferedInputStream(new URL(url).openStream());
 
             IOUtil.createParentDirectory(file);
 
-            FileOutputStream fos = new FileOutputStream(file);
-            byte[] buf = new byte[1024];
-            int n;
-            while ((n = input.read(buf)) != -1) {
-                fos.write(buf, 0, n);
+            FileOutputStream fos = null;
+            try {
+                fos = new FileOutputStream(file);
+                byte[] buf = new byte[1024];
+                int n;
+                while ((n = input.read(buf)) != -1) {
+                    fos.write(buf, 0, n);
+                }
+            } finally {
+                close(fos);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-            try {
-                if (input != null) {
-                    input.close();
-                }
-                if (output != null) {
-                    output.close();
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            close(input);
         }
     }
 
