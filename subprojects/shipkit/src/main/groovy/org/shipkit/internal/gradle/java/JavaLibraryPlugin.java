@@ -5,8 +5,6 @@ import org.gradle.api.file.CopySpec;
 import org.gradle.api.tasks.bundling.Jar;
 import org.shipkit.internal.gradle.util.JavaPluginUtil;
 
-import java.io.File;
-
 /**
  * Makes a java library that has not only the main jar but also sources and javadoc jars.
  * Intended to be applied in individual Java submodule.
