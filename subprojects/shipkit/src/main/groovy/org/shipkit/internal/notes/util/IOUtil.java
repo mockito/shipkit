@@ -52,13 +52,28 @@ public class IOUtil {
      * @param closeable the target, may be null
      */
     public static void close(Closeable closeable) {
+        close(closeable, false);
+    }
+
+    private static void close(Closeable closeable, boolean quietly) {
         if (closeable != null) {
             try {
                 closeable.close();
             } catch (IOException e) {
-                throw new RuntimeException("Problems closing closeable", e);
+                if (!quietly) {
+                    throw new RuntimeException("Problems closing closeable", e);
+                }
             }
         }
+    }
+
+    /**
+     * Closes the target. Does nothing when target is null. Is silent.
+     *
+     * @param closeable the target, may be null
+     */
+    public static void closeQuietly(Closeable closeable) {
+        close(closeable, true);
     }
 
     public static void createParentDirectory(File file) {
@@ -94,12 +109,12 @@ public class IOUtil {
                     fos.write(buf, 0, n);
                 }
             } finally {
-                close(fos);
+                closeQuietly(fos);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-            close(input);
+            closeQuietly(input);
         }
     }
 
