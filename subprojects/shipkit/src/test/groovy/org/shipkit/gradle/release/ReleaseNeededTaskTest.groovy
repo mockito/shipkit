@@ -54,6 +54,22 @@ class ReleaseNeededTaskTest extends Specification {
         "message"                        | "master"  | false       | null       | []                || true   // no comparison results
     }
 
+    def "skipComparePublications task property" (skipComparePublications, releaseNeeded) {
+        given:
+        task.setBranch('master')
+        task.setReleasableBranchRegex('master')
+        task.skipComparePublications skipComparePublications
+        task.comparisonResults.add(File.createTempFile("skipkit-comparePublications", "")) // adding one file which is identical
+
+        expect:
+        task.releaseNeeded() == releaseNeeded
+
+        where:
+        skipComparePublications  || releaseNeeded
+        true                     || true
+        false                    || false
+    }
+
     def "should fail if release not needed and mode is explosive"() {
         given:
         task.setExplosive(true)
