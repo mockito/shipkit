@@ -63,6 +63,8 @@ public class ReleaseNeeded {
                 return ReleaseNeed.of(false, " Skipping release due to skip release env variable.");
             } else if (task.isPullRequest()) {
                 return ReleaseNeed.of(false, " Skipping release due to is PR.");
+            } else if (task.isSkipComparePublications()) {
+                return ReleaseNeed.of(true, " Releasing due to 'skipComparePublications' property on task " + task.getName() + '.');
             } else if (skipComparePublications) {
                 return ReleaseNeed.of(true, " Releasing due to '" + SKIP_COMPARE_PUBLICATIONS + "' keyword in commit message.");
             } else {
