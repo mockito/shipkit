@@ -87,6 +87,13 @@ public class ReleaseNeededTask extends DefaultTask {
 
     /**
      * If the comparison of publications should be skipped.
+     * <br>
+     * This can be useful if you would like to trigger a release (based on the given condition) even if
+     * publications are identical.
+     * <br>
+     * E.g. mockito project uses this to make sure that releases to mavenCentral are actually triggered:
+     * <br>
+     * <code>assertReleaseNeeded.skipComparePublications = shouldReleaseToCentral(project)</code>
      */
     public boolean isSkipComparePublications() {
         return skipComparePublications;

@@ -19,8 +19,8 @@ import org.shipkit.internal.gradle.util.TaskMaker;
  *      <li>SKIP_RELEASE env variable: no release if this environment variable is available</li>
  *      <li>[ci skip-release] commit message: no release if this commit message is available</li>
  *      <li>PR build: no release if the build job is a pull request build</li>
- *      <li>skipComparePublications task property (ReleaseNeededTask): release if this property is true (although the previous and the current release might be identical)</li>
- *      <li>[ci skip-compare-publications] commit message: release if this commit message is available (although the previous and the current release might be identical)</li>
+ *      <li>skipComparePublications task property (ReleaseNeededTask): if the property is true, then comparing publications is skipped and the release can be triggered even if publications are identical. See {@link ReleaseNeededTask#isSkipComparePublications()} for a proper use case.</li>
+ *      <li>[ci skip-compare-publications] commit message: if this commit message is available, then comparing publications is skipped and the release can be triggered even if publications are identical.</li>
  *      <li>compare publications: release if previous publication is not identical to the current publication</li>
  *  </ul>
  *
