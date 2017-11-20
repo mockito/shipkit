@@ -45,9 +45,11 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         }
 
         for (ReleaseNotesData d : data) {
-            sb.append(header(d.getVersion(), d.getDate(), emphasizeVersion));
+            sb.append(header(d.getVersion(), emphasizeVersion));
             String vcsCommitsLink = MessageFormat.format(vcsCommitsLinkTemplate, d.getPreviousVersionVcsTag(), d.getVcsTag());
-            sb.append(releaseSummary(d.getVersion(), d.getContributions(), contributors, vcsCommitsLink, publicationRepository));
+            sb.append("\n");
+            sb.append(releaseSummary(d.getDate(), d.getVersion(), d.getContributions(), contributors, vcsCommitsLink,
+                publicationRepository));
 
             if (!d.getContributions().getContributions().isEmpty()) {
                 //no point printing any improvements information if there are no code changes
@@ -60,20 +62,20 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         return sb.toString().trim();
     }
 
-    static String header(String version, Date date, boolean emphasizeVersion) {
-        return emphasizeVersion ? buildHeader(version, date, "# ", "")
-                : buildHeader(version, date, "**", "**");
+    static String header(String version, boolean emphasizeVersion) {
+        return emphasizeVersion ? buildHeader(version, "# ", "")
+            : buildHeader(version, "#### ", "");
     }
 
-    private static String buildHeader(String version, Date date, String prefix, String postfix) {
-        return prefix + version + " (" + DateUtil.formatDate(date) + ")" + postfix + " - ";
+    private static String buildHeader(String version, String prefix, String postfix) {
+        return prefix + version + postfix;
     }
 
-    static String releaseSummary(String version, ContributionSet contributions, Map<String, Contributor> contributors,
-                                 String vcsCommitsLink, String publicationRepository) {
-        return authorsSummary(contributions, contributors, vcsCommitsLink) +
-                " - published to " + getBintrayBadge(version, publicationRepository) + "\n" +
-                authorsSummaryAppendix(contributions, contributors);
+    static String releaseSummary(Date date, String version, ContributionSet contributions, Map<String, Contributor>
+        contributors, String vcsCommitsLink, String publicationRepository) {
+        return " - "+ "(" + DateUtil.formatDate(date) + ") " + authorsSummary(contributions, contributors, vcsCommitsLink)
+            + " - published to " + getBintrayBadge(version, publicationRepository) + "\n" +
+            authorsSummaryAppendix(contributions, contributors);
     }
 
     private static String getBintrayBadge(String version, String publicationRepository) {
