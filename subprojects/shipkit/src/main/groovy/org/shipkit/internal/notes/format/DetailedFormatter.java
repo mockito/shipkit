@@ -73,7 +73,8 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
 
     static String releaseSummary(Date date, String version, ContributionSet contributions, Map<String, Contributor>
         contributors, String vcsCommitsLink, String publicationRepository) {
-        return " - "+ "(" + DateUtil.formatDate(date) + ") " + authorsSummary(contributions, contributors, vcsCommitsLink)
+        return " - " + "(" + DateUtil.formatDate(date) + ") "
+            + authorsSummary(contributions, contributors, vcsCommitsLink)
             + " - published to " + getBintrayBadge(version, publicationRepository) + "\n" +
             authorsSummaryAppendix(contributions, contributors);
     }
