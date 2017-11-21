@@ -32,10 +32,10 @@ No release information."""
 Release notes:
 
 #### 2.0.0
- - (2017-01-04) no code changes (no commits) - published to [![Bintray](https://img.shields.io/badge/Bintray-2.0.0-green.svg)](Bintray/2.0.0)
+ - 2017-01-04 - no code changes (no commits) - published to [![Bintray](https://img.shields.io/badge/Bintray-2.0.0-green.svg)](Bintray/2.0.0)
 
 #### 1.9.0
- - (2016-12-30) no code changes (no commits) - published to [![Bintray](https://img.shields.io/badge/Bintray-1.9.0-green.svg)](Bintray/1.9.0)"""
+ - 2016-12-30 - no code changes (no commits) - published to [![Bintray](https://img.shields.io/badge/Bintray-1.9.0-green.svg)](Bintray/1.9.0)"""
     }
 
     def "no improvements"() {
@@ -55,7 +55,7 @@ Release notes:
 Release notes:
 
 #### 2.0.0
- - (2017-01-04) [1 commit](http://commits/v1.9.0...v2.0.0) by Szczepan Faber - published to [![Bintray](https://img.shields.io/badge/Bintray-2.0.0-green.svg)](Bintray/2.0.0)
+ - 2017-01-04 - [1 commit](http://commits/v1.9.0...v2.0.0) by Szczepan Faber - published to [![Bintray](https://img.shields.io/badge/Bintray-2.0.0-green.svg)](Bintray/2.0.0)
  - No pull requests referenced in commit messages."""
     }
 
@@ -161,7 +161,7 @@ Release notes:
                 "https://bintray.com/shipkit/")
 
         expect:
-        summary == """ - (2017-01-04) [100 commits](link) by 4 authors - published to [![Bintray](https://img.shields.io/badge/Bintray-1.2.3-green.svg)](https://bintray.com/shipkit/1.2.3)
+        summary == """ - 2017-01-04 - [100 commits](link) by 4 authors - published to [![Bintray](https://img.shields.io/badge/Bintray-1.2.3-green.svg)](https://bintray.com/shipkit/1.2.3)
  - Commits: Szczepan Faber (40), Brice Dutheil (30), Rafael Winterhalter (20), Tim van der Lippe (10)
 """
     }

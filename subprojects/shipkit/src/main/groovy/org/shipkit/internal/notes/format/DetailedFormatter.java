@@ -63,20 +63,23 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
     }
 
     static String header(String version, boolean emphasizeVersion) {
-        return emphasizeVersion ? buildHeader(version, "# ", "")
-            : buildHeader(version, "#### ", "");
+        return emphasizeVersion ? buildHeader(version, "# ")
+            : buildHeader(version, "#### ");
     }
 
-    private static String buildHeader(String version, String prefix, String postfix) {
-        return prefix + version + postfix;
+    private static String buildHeader(String version, String prefix) {
+        return prefix + version;
     }
 
     static String releaseSummary(Date date, String version, ContributionSet contributions, Map<String, Contributor>
         contributors, String vcsCommitsLink, String publicationRepository) {
-        return " - " + "(" + DateUtil.formatDate(date) + ") "
-            + authorsSummary(contributions, contributors, vcsCommitsLink)
+        return summaryDatePrefix(date) + authorsSummary(contributions, contributors, vcsCommitsLink)
             + " - published to " + getBintrayBadge(version, publicationRepository) + "\n" +
             authorsSummaryAppendix(contributions, contributors);
+    }
+
+    private static String summaryDatePrefix(Date date) {
+        return " - " + DateUtil.formatDate(date) + " - ";
     }
 
     private static String getBintrayBadge(String version, String publicationRepository) {
