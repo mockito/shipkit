@@ -50,11 +50,22 @@ public class ReleaseNeeded {
         boolean releasableBranch = task.getBranch() != null && task.getBranch().matches(task.getReleasableBranchRegex());
         LOG.lifecycle("  Current branch '{}' matches '{}': {}", task.getBranch(), task.getReleasableBranchRegex(), releasableBranch);
 
-        LOG.lifecycle("  Determine if we need a release based on: " +
-            "\n    - skip by env variable: " + skipEnvVariable +
-            "\n    - skip by commit message: " + skippedByCommitMessage +
-            "\n    - is pull request build: " + task.isPullRequest() +
-            "\n    - is releasable branch: " + releasableBranch);
+        ComparisonResults results = new ComparisonResults(task.getComparisonResults());
+        boolean publicationsIdentical = results.areResultsIdentical();
+
+        LOG.lifecycle(results.getDescription());
+
+        LOG.lifecycle("Release is considered _not_ needed when:\n" +
+            " - 'SKIP_RELEASE' environment variable is present (currently: " + skipEnvVariable + ")\n" +
+            " - commit message contains '" + SKIP_RELEASE_KEYWORD + "' (currently: " + skippedByCommitMessage + ")\n" +
+            " - we are building a \"pull request\" (currently: " + task.isPullRequest() + ")\n" +
+            "Release is needed when all above is false and: \n" +
+            " - we are building on a branch that matches regex '" + task.getReleasableBranchRegex() + "' (currently: " + releasableBranch + ")\n:" +
+            " - and one of the following criteria is true:\n" +
+            "   - there are changes in the binaries when compared to previous version (currently: " + !publicationsIdentical + ")\n" +
+            "   - commit message contains '" + SKIP_COMPARE_PUBLICATIONS  + "' (currently: " + skipComparePublications + ")\n" +
+            "   - 'skipComparePublications' property on task " + task.getName() + " is true (currently: " + task.isSkipComparePublications() + ")\n"
+        );
 
         if (releasableBranch) {
             if (skippedByCommitMessage) {
@@ -68,10 +79,6 @@ public class ReleaseNeeded {
             } else if (skipComparePublications) {
                 return ReleaseNeed.of(true, " Releasing due to '" + SKIP_COMPARE_PUBLICATIONS + "' keyword in commit message.");
             } else {
-                ComparisonResults results = new ComparisonResults(task.getComparisonResults());
-                boolean publicationsIdentical = results.areResultsIdentical();
-                LOG.lifecycle(results.getDescription());
-
                 if (publicationsIdentical) {
                     return ReleaseNeed.of(false, " Skipping release because publications are identical.");
                 }
