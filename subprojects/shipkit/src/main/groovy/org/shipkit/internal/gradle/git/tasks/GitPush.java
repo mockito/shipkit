@@ -14,8 +14,6 @@ import java.util.List;
  * Utility class for configuring git push task with the correct git push arguments.
  */
 public class GitPush {
-    private final static Logger LOG = Logging.getLogger(TokenAvailabilityMessage.class);
-
     /**
      * Constructs git push arguments based of the url, targets and dry run
      */
@@ -45,5 +43,4 @@ public class GitPush {
             }
         }
     }
-
 }
