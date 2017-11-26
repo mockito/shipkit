@@ -17,8 +17,8 @@ class TestDownstreamPluginTest extends PluginSpecification {
     def "should find log files for uploadGists in log directory"() {
         given:
         project.setBuildDir(tmp.root)
-        tmp.newFile("a.log")
-        tmp.newFile("b.log")
+        def aLog = tmp.newFile("a.log")
+        def bLog = tmp.newFile("b.log")
         tmp.newFile("c.txt")
 
         when:
@@ -26,7 +26,7 @@ class TestDownstreamPluginTest extends PluginSpecification {
 
         then:
         UploadGistsTask uploadGists = project.tasks.uploadGists
-        uploadGists.filesToUpload.collect { it.name } == ["a.log", "b.log"]
+        uploadGists.filesToUpload.getFiles() == [aLog, bLog].toSet()
         project.tasks.testDownstream.uploadGistsTask == uploadGists
     }
 

@@ -9,16 +9,17 @@ import org.shipkit.internal.gradle.java.tasks.DownloadPreviousPublications;
 import java.io.File;
 
 /**
- * Downloads artifacts from last release and stores them to local files for further comparison
- * Currently it downloads .pom and -sources.jar
+ * Downloads last release source jar given by {@link #getPreviousSourcesJarUrl()}
+ * from repositories (eg. Bintray) and stores it to local file, given by {@link #getPreviousSourcesJarFile()}
+ * for further comparison.
+ *
+ * For details of the comparison see {@link ComparePublicationsTask}
  */
 public class DownloadPreviousPublicationsTask extends DefaultTask {
 
-    @Input private String previousPomUrl;
     @Input private String previousSourcesJarUrl;
 
-    @OutputFile private File previousPom;
-    @OutputFile private File previousSourcesJar;
+    @OutputFile private File previousSourcesJarFile;
 
     @TaskAction
     public void downloadPreviousPublications() {
@@ -26,58 +27,30 @@ public class DownloadPreviousPublicationsTask extends DefaultTask {
     }
 
     /**
-     * See {@link #setPreviousPomUrl(String)}
-     */
-    public String getPreviousPomUrl() {
-        return previousPomUrl;
-    }
-
-    /**
-     * @param previousPomUrl URL where previous version pom file can be found
-     */
-    public void setPreviousPomUrl(String previousPomUrl) {
-        this.previousPomUrl = previousPomUrl;
-    }
-
-    /**
-     * See {@link #setPreviousSourcesJarUrl(String)}
+     * URL where previous version sources jar can be found
      */
     public String getPreviousSourcesJarUrl() {
         return previousSourcesJarUrl;
     }
 
     /**
-     * @param previousSourcesJarUrl URL where previous version sources jar can be found
+     * See {@link #getPreviousSourcesJarUrl()}
      */
     public void setPreviousSourcesJarUrl(String previousSourcesJarUrl) {
         this.previousSourcesJarUrl = previousSourcesJarUrl;
     }
 
     /**
-     * @param previousPom temporary storage file for downloaded previous version pom
+     * temporary storage file for downloaded previous version sources jar
      */
-    public void setPreviousPom(File previousPom) {
-        this.previousPom = previousPom;
+    public File getPreviousSourcesJarFile() {
+        return previousSourcesJarFile;
     }
 
     /**
-     * See {@link #setPreviousPom(File)}
+     * See {@link #getPreviousSourcesJarFile()}
      */
-    public File getPreviousPom() {
-        return previousPom;
-    }
-
-    /**
-     * See {@link #setPreviousSourcesJar(File)}
-     */
-    public File getPreviousSourcesJar() {
-        return previousSourcesJar;
-    }
-
-    /**
-     * @param previousSourcesJar temporary storage file for downloaded previous version sources jar
-     */
-    public void setPreviousSourcesJar(File previousSourcesJar) {
-        this.previousSourcesJar = previousSourcesJar;
+    public void setPreviousSourcesJarFile(File previousSourcesJar) {
+        this.previousSourcesJarFile = previousSourcesJar;
     }
 }

@@ -5,7 +5,9 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
+import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.exec.SilentExecTask;
+import org.shipkit.internal.gradle.git.CloneGitRepositoryTaskFactory;
 import org.shipkit.internal.gradle.git.tasks.CloneGitRepositoryTask;
 import org.shipkit.internal.gradle.release.tasks.UploadGistsTask;
 
@@ -19,13 +21,14 @@ import static org.shipkit.internal.util.RepositoryNameUtil.*;
 
 /**
  * Aggregates all downstream-test-related tasks. It can be configured to run e2e tests on provided repositories.
- * Automatically added tasks clone client projects to '$buildDir/project-name-pristine' first, next clone project from 'pristine' to
- * '$buildDir/project-name-work' and execute 'testRelease' task using the newest shipkit version
+ * E2E test for each downstream repository is divided into a few stages:
+ *  - clone downstream project to '$buildDir/downstream'
+ *  - execute 'testRelease' task using the newest Shipkit version inside the downstream clone
+ *  - saves output logs to file or creates gists for them (see {@link UploadGistsTask})
  *
  * Adds tasks:
  * <ul>
- *     <li>cloneProjectFromGitHub$projectName - {@link CloneGitRepositoryTask}</li>
- *     <li>cloneProjectToWorkDir$projectName - {@link CloneGitRepositoryTask}</li>
+ *     <li>clone$projectName - {@link CloneGitRepositoryTask}</li>
  *     <li>test$projectName - {@link SilentExecTask}</li>
  * </ul>
  */
@@ -36,9 +39,11 @@ public class TestDownstreamTask extends DefaultTask {
     private List<String> repositories = new ArrayList<String>();
     private File logsDirectory;
     private UploadGistsTask uploadGistsTask;
+    private String gitHubUrl;
 
     /**
-     * URL of repository which will be downloaded and downstream test will be run on it
+     * Creates an e2e test, for @param #repositoryUrl of downstream service, that should be executed
+     * whenever upstream service (the one where {@link TestDownstreamPlugin} is applied) is released.
      */
     public void addRepository(String repositoryUrl) {
         LOG.debug("Downstream test created for repository {}", repositoryUrl);
@@ -49,35 +54,8 @@ public class TestDownstreamTask extends DefaultTask {
     private void createTasks(String gitHubRepoUrl) {
         String repoName = extractRepoNameFromGitHubUrl(gitHubRepoUrl);
         String camelCaseRepoName = repositoryNameToCamelCase(repoName);
-        CloneGitRepositoryTask clone = createCloneProjectFromGitHub(gitHubRepoUrl, camelCaseRepoName);
-        CloneGitRepositoryTask workDirCloneTask = createCloneProjectToWorkDirTask(camelCaseRepoName, clone);
-        createRunTestReleaseTask(camelCaseRepoName, workDirCloneTask);
-    }
-
-    private CloneGitRepositoryTask createCloneProjectFromGitHub(String gitHubRepoUrl, String camelCaseRepoName) {
-        CloneGitRepositoryTask clone = getProject().getTasks().create(
-                "cloneProjectFromGitHub" + capitalize(camelCaseRepoName),
-                CloneGitRepositoryTask.class);
-        clone.setRepositoryUrl(gitHubRepoUrl);
-        clone.setTargetDir(new File(getProject().getBuildDir(), camelCaseRepoName + "Pristine"));
-        clone.setDepth(50);
-        // For now for easier testing
-        clone.dependsOn("clean");
-        return clone;
-    }
-
-    private CloneGitRepositoryTask createCloneProjectToWorkDirTask(String camelCaseRepoName, CloneGitRepositoryTask clone) {
-        // Clone from *-pristine to *-work. Copy task will not work because of ignoring git specific files:
-        // https://discuss.gradle.org/t/copy-git-specific-files/11970
-        // Furthermore we can verify push to pristine origin
-        File workDir = new File(getProject().getBuildDir(), camelCaseRepoName + "Work");
-        CloneGitRepositoryTask copy = getProject().getTasks().create(
-                "cloneProjectToWorkDir" + capitalize(camelCaseRepoName),
-                CloneGitRepositoryTask.class);
-        copy.dependsOn(clone);
-        copy.setRepositoryUrl(clone.getTargetDir().getAbsolutePath());
-        copy.setTargetDir(workDir);
-        return copy;
+        CloneGitRepositoryTask clone = CloneGitRepositoryTaskFactory.createCloneTask(getProject(), gitHubUrl, repoName);
+        createRunTestReleaseTask(camelCaseRepoName, clone);
     }
 
     private void createRunTestReleaseTask(final String camelCaseRepoName, CloneGitRepositoryTask copy) {
@@ -147,5 +125,19 @@ public class TestDownstreamTask extends DefaultTask {
      */
     public void setUploadGistsTask(UploadGistsTask uploadGistsTask) {
         this.uploadGistsTask = uploadGistsTask;
+    }
+
+    /**
+     * See {@link ShipkitConfiguration.GitHub#getUrl()}
+     */
+    public String getGitHubUrl() {
+        return gitHubUrl;
+    }
+
+    /**
+     * See {@link ShipkitConfiguration.GitHub#getUrl()}
+     */
+    public void setGitHubUrl(String gitHubUrl) {
+        this.gitHubUrl = gitHubUrl;
     }
 }

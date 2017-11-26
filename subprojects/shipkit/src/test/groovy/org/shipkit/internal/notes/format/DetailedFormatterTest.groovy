@@ -31,9 +31,11 @@ No release information."""
 
 Release notes:
 
-**2.0.0 (2017-01-04)** - no code changes (no commits) - published to [![Bintray](https://img.shields.io/badge/Bintray-2.0.0-green.svg)](Bintray/2.0.0)
+#### 2.0.0
+ - 2017-01-04 - no code changes (no commits) - published to [![Bintray](https://img.shields.io/badge/Bintray-2.0.0-green.svg)](Bintray/2.0.0)
 
-**1.9.0 (2016-12-30)** - no code changes (no commits) - published to [![Bintray](https://img.shields.io/badge/Bintray-1.9.0-green.svg)](Bintray/1.9.0)"""
+#### 1.9.0
+ - 2016-12-30 - no code changes (no commits) - published to [![Bintray](https://img.shields.io/badge/Bintray-1.9.0-green.svg)](Bintray/1.9.0)"""
     }
 
     def "no improvements"() {
@@ -52,18 +54,19 @@ Release notes:
 
 Release notes:
 
-**2.0.0 (2017-01-04)** - [1 commit](http://commits/v1.9.0...v2.0.0) by Szczepan Faber - published to [![Bintray](https://img.shields.io/badge/Bintray-2.0.0-green.svg)](Bintray/2.0.0)
+#### 2.0.0
+ - 2017-01-04 - [1 commit](http://commits/v1.9.0...v2.0.0) by Szczepan Faber - published to [![Bintray](https://img.shields.io/badge/Bintray-2.0.0-green.svg)](Bintray/2.0.0)
  - No pull requests referenced in commit messages."""
     }
 
     def "formats header when emphasized version"() {
         expect:
-        DetailedFormatter.header("v0.1.0", new Date(1483500000000), false) == "**v0.1.0 (2017-01-04)** - "
+        DetailedFormatter.header("v0.1.0", false) == "#### v0.1.0"
     }
 
     def "formats header when regular version"() {
         expect:
-        DetailedFormatter.header("v0.1.0", new Date(1483500000000), true) == "# v0.1.0 (2017-01-04) - "
+        DetailedFormatter.header("v0.1.0", true) == "# v0.1.0"
     }
 
     def "formats no improvements"() {
@@ -154,11 +157,11 @@ Release notes:
                                     c("Tim van der Lippe", 10)]
         }
 
-        def summary = DetailedFormatter.releaseSummary("1.2.3", c, [:], "link",
+        def summary = DetailedFormatter.releaseSummary(new Date(1483500000000), "1.2.3", c, [:], "link",
                 "https://bintray.com/shipkit/")
 
         expect:
-        summary == """[100 commits](link) by 4 authors - published to [![Bintray](https://img.shields.io/badge/Bintray-1.2.3-green.svg)](https://bintray.com/shipkit/1.2.3)
+        summary == """ - 2017-01-04 - [100 commits](link) by 4 authors - published to [![Bintray](https://img.shields.io/badge/Bintray-1.2.3-green.svg)](https://bintray.com/shipkit/1.2.3)
  - Commits: Szczepan Faber (40), Brice Dutheil (30), Rafael Winterhalter (20), Tim van der Lippe (10)
 """
     }

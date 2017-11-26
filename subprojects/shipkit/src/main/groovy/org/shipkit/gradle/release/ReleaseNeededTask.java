@@ -25,6 +25,7 @@ public class ReleaseNeededTask extends DefaultTask {
     private String releasableBranchRegex;
     private String commitMessage;
     private boolean pullRequest;
+    private boolean skipComparePublications;
     private boolean explosive;
     private List<File> comparisonResults = new LinkedList<File>();
 
@@ -82,6 +83,27 @@ public class ReleaseNeededTask extends DefaultTask {
      */
     public void setPullRequest(boolean pullRequest) {
         this.pullRequest = pullRequest;
+    }
+
+    /**
+     * If the comparison of publications should be skipped.
+     * <br>
+     * This can be useful if you would like to trigger a release (based on the given condition) even if
+     * publications are identical.
+     * <br>
+     * E.g. mockito project uses this to make sure that releases to mavenCentral are actually triggered:
+     * <br>
+     * <code>assertReleaseNeeded.skipComparePublications = shouldReleaseToCentral(project)</code>
+     */
+    public boolean isSkipComparePublications() {
+        return skipComparePublications;
+    }
+
+    /**
+     * See {@link #isSkipComparePublications()}
+     */
+    public void setSkipComparePublications(boolean skipComparePublications) {
+        this.skipComparePublications = skipComparePublications;
     }
 
     /**

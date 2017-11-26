@@ -29,20 +29,45 @@ class ReleaseNeededTaskTest extends Specification {
         new ReleaseNeeded().releaseNeeded(task, envVariables) == releaseNeeded
 
         where:
-        commitMessage       | branch    | pullRequest | skipEnvVar | comparisonResults || releaseNeeded
-        "message"           | "master"  | false       | null       | ["", "diff"]      || true  // base case (in all other cases only one parameter changes)
+        commitMessage                    | branch    | pullRequest | skipEnvVar | comparisonResults || releaseNeeded
+        "message"                        | "master"  | false       | null       | ["", "diff"]      || true  // base case (in all other cases only one parameter changes)
 
-        null                | "master"  | false       | null       | ["", "diff"]      || true  // null commit msg
-        " "                 | "master"  | false       | null       | ["", "diff"]      || true  // only whitespaces in commit msg
-        "message"           | "master"  | false       | null       | ["", "diff"]      || true  // publications differ
+        null                             | "master"  | false       | null       | ["", "diff"]      || true  // null commit msg
+        " "                              | "master"  | false       | null       | ["", "diff"]      || true  // only whitespaces in commit msg
+        "message"                        | "master"  | false       | null       | ["", "diff"]      || true  // publications differ
 
-        "[ci skip-release]" | "master"  | false       | null       | ["", "diff"]      || false // skip-release in commit msg
-        "message"           | "feature" | false       | null       | ["", "diff"]      || false // feature branch
-        "message"           | null      | false       | null       | ["", "diff"]      || false // null branch
-        "message"           | "master"  | true        | null       | ["", "diff"]      || false // pull request
-        "message"           | "master"  | false       | "true"     | ["", "diff"]      || false // SKIP_RELEASE set
-        "message"           | "master"  | false       | null       | ["", ""]          || false  // publications are the same
-        "message"           | "master"  | false       | null       | []                || true   // no comparison results
+        "[ci skip-release]"              | "master"  | false       | null       | ["", "diff"]      || false // skip-release in commit msg
+        "message"                        | "feature" | false       | null       | ["", "diff"]      || false // feature branch
+        "message"                        | null      | false       | null       | ["", "diff"]      || false // null branch
+        "message"                        | "master"  | true        | null       | ["", "diff"]      || false // pull request
+        "message"                        | "master"  | false       | "true"     | ["", "diff"]      || false // SKIP_RELEASE set
+        "message"                        | "master"  | false       | null       | ["", ""]          || false  // publications are the same
+
+        "[ci skip-compare-publications]" | "master"  | false       | null       | ["", ""]          || true  // skip-compare-publications
+        "[ci skip-compare-publications]" | "master"  | true        | null       | ["", ""]          || false // skip-compare-publications
+        "[ci skip-compare-publications]" | "master"  | false       | null       | ["", "diff"]      || true  // skip-compare-publications
+        "[ci skip-compare-publications]" | "master"  | true        | null       | ["", "diff"]      || false // skip-compare-publications
+        "[ci skip-compare-publications]" | "dev1"    | true        | null       | ["", "diff"]      || false // skip-compare-publications
+        "[ci skip-compare-publications]" | "master"  | false       | "true"     | ["", "diff"]      || false // skip-compare-publications
+        "[ci skip-compare-publications]" | "master"  | false       | "true"     | ["", ""]          || false // skip-compare-publications
+
+        "message"                        | "master"  | false       | null       | []                || true   // no comparison results
+    }
+
+    def "skipComparePublications task property" (skipComparePublications, releaseNeeded) {
+        given:
+        task.setBranch('master')
+        task.setReleasableBranchRegex('master')
+        task.skipComparePublications skipComparePublications
+        task.comparisonResults.add(File.createTempFile("skipkit-comparePublications", "")) // adding one file which is identical
+
+        expect:
+        task.releaseNeeded() == releaseNeeded
+
+        where:
+        skipComparePublications  || releaseNeeded
+        true                     || true
+        false                    || false
     }
 
     def "should fail if release not needed and mode is explosive"() {

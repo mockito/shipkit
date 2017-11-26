@@ -55,7 +55,7 @@ public class TestDownstreamPlugin implements Plugin<Project> {
         IncubatingWarning.warn("downstream-testing plugin");
 
         project.getPlugins().apply(UploadGistsPlugin.class);
-        ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
+        final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
         final File logsDirectory = project.getBuildDir();
 
@@ -81,6 +81,7 @@ public class TestDownstreamPlugin implements Plugin<Project> {
                 task.setDescription("Runs all downstream tests.");
                 task.setLogsDirectory(logsDirectory);
                 task.setUploadGistsTask(uploadGistsTask);
+                task.setGitHubUrl(conf.getGitHub().getUrl());
             }
         });
     }
