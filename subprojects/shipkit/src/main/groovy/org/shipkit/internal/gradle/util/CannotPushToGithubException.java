@@ -1,5 +1,6 @@
 package org.shipkit.internal.gradle.util;
 
+import org.gradle.api.GradleException;
 import org.shipkit.gradle.git.GitPushTask;
 
 public class CannotPushToGithubException extends RuntimeException {
@@ -18,5 +19,9 @@ public class CannotPushToGithubException extends RuntimeException {
             message = GH_WRITE_TOKEN_INVALID_MSG;
         }
         return new CannotPushToGithubException(message, e);
+    }
+
+    public static boolean matchException(GradleException e) {
+        return e.getMessage().contains("Authentication failed") || e.getMessage().contains("Permission");
     }
 }
