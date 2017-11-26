@@ -1,7 +1,9 @@
 package org.shipkit.internal.gradle.util
 
+import org.gradle.api.GradleException
 import org.shipkit.gradle.git.GitPushTask
 import spock.lang.Specification
+import spock.lang.Unroll
 
 class CannotPushToGithubExceptionTest extends Specification {
 
@@ -24,6 +26,22 @@ class CannotPushToGithubExceptionTest extends Specification {
         def result = CannotPushToGithubException.create(originalException, gitPushTask)
         then:
         result.message == CannotPushToGithubException.GH_WRITE_TOKEN_INVALID_MSG
+    }
+
+    @Unroll
+    def "should match exception: #shouldMatch for message '#message'"() {
+        given:
+        GradleException ex = Mock(GradleException)
+        ex.getMessage() >> message
+
+        expect:
+        CannotPushToGithubException.matchException(ex) == shouldMatch
+
+        where:
+        message | shouldMatch
+        "sth Authentication failed sth" | true
+        "sth unable to access sth"      | true
+        "other message"                 | false
     }
 
 }
