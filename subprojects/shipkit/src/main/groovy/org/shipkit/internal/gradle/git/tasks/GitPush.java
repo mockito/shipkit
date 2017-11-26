@@ -2,6 +2,7 @@ package org.shipkit.internal.gradle.git.tasks;
 
 import org.shipkit.gradle.git.GitPushTask;
 import org.shipkit.internal.exec.DefaultProcessRunner;
+import org.shipkit.internal.gradle.util.CannotPushToGithubException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -28,9 +29,16 @@ public class GitPush {
 
     public void gitPush(GitPushTask task) {
         TokenAvailabilityMessage.logMessage("git push", task.getSecretValue());
-
-        new DefaultProcessRunner(task.getProject().getProjectDir())
+        try {
+            new DefaultProcessRunner(task.getProject().getProjectDir())
                 .setSecretValue(task.getSecretValue())
                 .run(GitPush.gitPushArgs(task.getUrl(), task.getTargets(), task.isDryRun()));
+        } catch (RuntimeException e) {
+            if (e.getMessage().contains("Authentication failed")) {
+                throw CannotPushToGithubException.create(e, task);
+            } else {
+                throw e;
+            }
+        }
     }
 }
