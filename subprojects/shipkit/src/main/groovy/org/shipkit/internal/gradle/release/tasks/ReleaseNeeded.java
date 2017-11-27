@@ -38,8 +38,6 @@ public class ReleaseNeeded {
 
     private ReleaseNeed releaseNeed(ReleaseNeededTask task, EnvVariables envVariables) {
         boolean skipEnvVariable = envVariables.getNonEmptyEnv(SKIP_RELEASE_ENV) != null;
-        LOG.lifecycle("  Environment variable {} present: {}", SKIP_RELEASE_ENV, skipEnvVariable);
-
         boolean commitMessageEmpty = task.getCommitMessage() == null || task.getCommitMessage().trim().isEmpty();
         boolean skippedByCommitMessage = !commitMessageEmpty && task.getCommitMessage().contains(SKIP_RELEASE_KEYWORD);
         boolean skipComparePublications = !commitMessageEmpty && task.getCommitMessage().contains(SKIP_COMPARE_PUBLICATIONS);
@@ -60,7 +58,7 @@ public class ReleaseNeeded {
             " - commit message contains '" + SKIP_RELEASE_KEYWORD + "' (currently: " + skippedByCommitMessage + ")\n" +
             " - we are building a \"pull request\" (currently: " + task.isPullRequest() + ")\n" +
             "Release is needed when all above is false and: \n" +
-            " - we are building on a branch that matches regex '" + task.getReleasableBranchRegex() + "' (currently: " + releasableBranch + ")\n:" +
+            " - we are building on a branch that matches regex '" + task.getReleasableBranchRegex() + "' (currently: " + releasableBranch + ")\n" +
             " - and one of the following criteria is true:\n" +
             "   - there are changes in the binaries when compared to previous version (currently: " + !publicationsIdentical + ")\n" +
             "   - commit message contains '" + SKIP_COMPARE_PUBLICATIONS  + "' (currently: " + skipComparePublications + ")\n" +
