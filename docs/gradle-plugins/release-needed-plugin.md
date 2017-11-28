@@ -32,6 +32,7 @@ Release is considered not needed when:
  * 'SKIP_RELEASE' environment variable is present
  * commit message contains '[ci skip-release]'
  * we are building a "pull request", see [Travis Documentation](https://docs.travis-ci.com/user/environment-variables/) for more information
+
 Release is needed when all above is false and:
  * we are building on a branch that matches releaseBranchRegex (e.g. 'master'), see **releaseBranchRegex** in [Configuration section](#configuration)
  * and one of the following criteria is true:
