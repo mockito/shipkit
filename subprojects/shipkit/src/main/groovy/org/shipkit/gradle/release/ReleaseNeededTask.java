@@ -12,12 +12,8 @@ import java.util.List;
  * Decides if the release is needed.
  * It is necessary to avoid making releases in certain scenarios like when we are building pull requests.
  * <p>
- * The release is <strong>not needed</strong> when any of below is true:
- *  - the env variable 'SKIP_RELEASE' is present
- *  - the commit message, loaded from 'TRAVIS_COMMIT_MESSAGE' env variable contains '[ci skip-release]' keyword
- *  - the env variable 'TRAVIS_PULL_REQUEST' is not empty, not an empty String and and not 'false'
- *  - the current Git branch does not match release-eligibility regex ({@link #getReleasableBranchRegex()}.
- *  - binaries have not changes since the previous release
+ * See {@link org.shipkit.internal.gradle.release.ReleaseNeededPlugin} to get more details about how we are checking
+ * if a release is needed.
  */
 public class ReleaseNeededTask extends DefaultTask {
 
