@@ -35,9 +35,9 @@ Release is considered not needed when:
 Release is needed when all above is false and:
  * we are building on a branch that matches releaseBranchRegex (e.g. 'master'), see **releaseBranchRegex** in [Configuration section](#configuration)
  * and one of the following criteria is true:
- ⋅⋅* there are changes in the binaries when compared to previous version
- ⋅⋅* commit message contains '[ci skip-compare-publications]'
- ⋅⋅* 'skipComparePublications' property on task releaseNeeded is true
+   * there are changes in the binaries when compared to previous version
+   * commit message contains '[ci skip-compare-publications]'
+   * 'skipComparePublications' property on task releaseNeeded is true
 
 #### Usage
 
