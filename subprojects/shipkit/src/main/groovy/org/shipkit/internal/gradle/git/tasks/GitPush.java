@@ -1,14 +1,12 @@
 package org.shipkit.internal.gradle.git.tasks;
 
-import org.gradle.api.GradleException;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
-import org.shipkit.gradle.git.GitPushTask;
-import org.shipkit.internal.exec.DefaultProcessRunner;
-import org.shipkit.internal.gradle.util.CannotPushToGithubException;
-
 import java.util.LinkedList;
 import java.util.List;
+
+import org.shipkit.gradle.git.GitPushTask;
+import org.shipkit.internal.exec.DefaultProcessRunner;
+import org.shipkit.internal.gradle.util.handler.GitPushTaskExceptionHandler;
+import org.shipkit.internal.gradle.util.handler.ProcessExceptionHandler;
 
 /**
  * Utility class for configuring git push task with the correct git push arguments.
@@ -29,18 +27,21 @@ public class GitPush {
         return args;
     }
 
-    public void gitPush(GitPushTask task) {
+    public void gitPush(final GitPushTask task) {
         TokenAvailabilityMessage.logMessage("git push", task.getSecretValue());
-        try {
-            new DefaultProcessRunner(task.getProject().getProjectDir())
-                .setSecretValue(task.getSecretValue())
-                .run(GitPush.gitPushArgs(task.getUrl(), task.getTargets(), task.isDryRun()));
-        } catch (GradleException e) {
-            if (CannotPushToGithubException.matchException(e)) {
-                throw CannotPushToGithubException.create(e, task);
-            } else {
-                throw e;
+
+        Runnable processRunner = new Runnable() {
+            public void run() {
+                new DefaultProcessRunner(task.getProject().getProjectDir())
+                    .setSecretValue(task.getSecretValue())
+                    .run(GitPush.gitPushArgs(task.getUrl(), task.getTargets(), task.isDryRun()));
             }
-        }
+        };
+
+        ProcessExceptionHandler exceptionHandler = new ProcessExceptionHandler();
+
+        exceptionHandler.addHandler(new GitPushTaskExceptionHandler(task));
+        exceptionHandler.runProcessExceptionally(processRunner);
     }
+
 }
