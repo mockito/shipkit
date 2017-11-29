@@ -13,7 +13,7 @@ public class ProcessExceptionHandler {
             processRunner.run();
         } catch (GradleException ex) {
             for (TaskExceptionHandler exceptionHandler : exceptionHandlers) {
-                if(exceptionHandler.matchException(ex)) {
+                if (exceptionHandler.matchException(ex)) {
                     throw exceptionHandler.create(ex);
                 }
             }
