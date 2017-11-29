@@ -10,22 +10,26 @@ class CannotPushToGithubExceptionTest extends Specification {
     def "should throw proper message for lack of GH_WRITE_TOKEN"() {
         given:
         GitPushTask gitPushTask = Mock(GitPushTask)
-        Exception originalException = new RuntimeException("Exception message")
+        GradleException originalException = new GradleException("Exception message", new Throwable("original cause"))
+
         when:
         def result = CannotPushToGithubException.create(originalException, gitPushTask)
         then:
         result.message == CannotPushToGithubException.GH_WRITE_TOKEN_NOT_SET_MSG
+        result.cause.cause == originalException.getCause()
     }
 
     def "should throw proper message for invalid of GH_WRITE_TOKEN"() {
         given:
         GitPushTask gitPushTask = Mock(GitPushTask)
+
         gitPushTask.getSecretValue() >> "fake-token"
-        Exception originalException = new RuntimeException("Exception message")
+        GradleException originalException = new GradleException("Exception message", new Throwable("original cause"))
         when:
         def result = CannotPushToGithubException.create(originalException, gitPushTask)
         then:
         result.message == CannotPushToGithubException.GH_WRITE_TOKEN_INVALID_MSG
+        result.cause.cause == originalException.getCause()
     }
 
     @Unroll

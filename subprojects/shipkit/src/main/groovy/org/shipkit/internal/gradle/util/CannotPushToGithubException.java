@@ -11,7 +11,7 @@ public class CannotPushToGithubException extends RuntimeException {
         super(message, cause);
     }
 
-    public static CannotPushToGithubException create(Exception e, GitPushTask task) {
+    public static CannotPushToGithubException create(GradleException e, GitPushTask task) {
         String message;
         if (task.getSecretValue() == null) {
             message = GH_WRITE_TOKEN_NOT_SET_MSG;
