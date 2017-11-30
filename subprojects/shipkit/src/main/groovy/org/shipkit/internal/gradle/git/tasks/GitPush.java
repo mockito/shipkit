@@ -1,16 +1,17 @@
 package org.shipkit.internal.gradle.git.tasks;
 
-import org.shipkit.gradle.git.GitPushTask;
-import org.shipkit.internal.exec.DefaultProcessRunner;
-
 import java.util.LinkedList;
 import java.util.List;
+
+import org.shipkit.gradle.git.GitPushTask;
+import org.shipkit.internal.exec.DefaultProcessRunner;
+import org.shipkit.internal.gradle.util.handler.Exceptions;
+import org.shipkit.internal.gradle.util.handler.GitPushTaskExceptionHandler;
 
 /**
  * Utility class for configuring git push task with the correct git push arguments.
  */
 public class GitPush {
-
     /**
      * Constructs git push arguments based of the url, targets and dry run
      */
@@ -26,11 +27,18 @@ public class GitPush {
         return args;
     }
 
-    public void gitPush(GitPushTask task) {
+    public void gitPush(final GitPushTask task) {
         TokenAvailabilityMessage.logMessage("git push", task.getSecretValue());
 
-        new DefaultProcessRunner(task.getProject().getProjectDir())
-                .setSecretValue(task.getSecretValue())
-                .run(GitPush.gitPushArgs(task.getUrl(), task.getTargets(), task.isDryRun()));
+        Runnable processRunner = new Runnable() {
+            public void run() {
+                new DefaultProcessRunner(task.getProject().getProjectDir())
+                    .setSecretValue(task.getSecretValue())
+                    .run(GitPush.gitPushArgs(task.getUrl(), task.getTargets(), task.isDryRun()));
+            }
+        };
+
+        Exceptions.handling(processRunner, new GitPushTaskExceptionHandler(task));
     }
+
 }
