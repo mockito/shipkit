@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.shipkit.gradle.git.GitPushTask;
 import org.shipkit.internal.exec.DefaultProcessRunner;
+import org.shipkit.internal.gradle.util.handler.Exceptions;
 import org.shipkit.internal.gradle.util.handler.GitPushTaskExceptionHandler;
-import org.shipkit.internal.gradle.util.handler.ProcessExceptionHandler;
 
 /**
  * Utility class for configuring git push task with the correct git push arguments.
@@ -38,10 +38,7 @@ public class GitPush {
             }
         };
 
-        ProcessExceptionHandler exceptionHandler = new ProcessExceptionHandler();
-
-        exceptionHandler.addHandler(new GitPushTaskExceptionHandler(task));
-        exceptionHandler.runProcessExceptionally(processRunner);
+        Exceptions.handling(processRunner, new GitPushTaskExceptionHandler(task));
     }
 
 }
