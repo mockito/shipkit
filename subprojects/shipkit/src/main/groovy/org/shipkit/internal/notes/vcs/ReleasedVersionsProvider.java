@@ -19,5 +19,5 @@ public interface ReleasedVersionsProvider {
      * @param tagPrefix required (at least empty String)
      *                  tag prefix, adding it to the version String should create vcs addressable revision, tag.
      */
-    Collection<ReleasedVersion> getReleasedVersions(String headVersion, Date headDate, Collection<String> versions, String tagPrefix);
+    Collection<ReleasedVersion> getReleasedVersions(String headVersion, Date headDate, Collection<String> versions, String tagPrefix) throws RevisionNotFoundException;
 }

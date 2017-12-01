@@ -1,5 +1,6 @@
 package org.shipkit.internal.notes.vcs
 
+import org.gradle.api.GradleException
 import org.shipkit.internal.exec.ProcessRunner
 import org.shipkit.internal.util.DateUtil
 import spock.lang.Specification
@@ -29,8 +30,35 @@ class RevisionDateProviderTest extends Specification {
         then:
         def ex = thrown(IllegalArgumentException)
         ex.message == "Can't get a proper date for revision number v1.0.0." +
-                " Are you sure this revision or tag exists?" +
-                " Following output was returned by git:\n" +
-                "fatal: ambiguous argument 'v1.0.0'"
+            " Are you sure this revision or tag exists?" +
+            " Following output was returned by git:\n" +
+            "fatal: ambiguous argument 'v1.0.0'"
+    }
+
+    def "gradle exception unknown revision"() {
+        runner.run("git", "log", "--pretty=%ad", "--date=iso", "v1.0.0", "-n", "1") >> {
+            throw new GradleException(
+                "fatal: ambiguous argument 'v1.0.0': unknown revision or path not in the working tree.")
+        }
+
+        when:
+        provider.getDate("v1.0.0")
+
+        then:
+        def ex = thrown(RevisionNotFoundException)
+        ex.revision == "v1.0.0"
+    }
+
+    def "other gradle exceptions"() {
+        runner.run("git", "log", "--pretty=%ad", "--date=iso", "v1.0.0", "-n", "1") >> {
+            throw new GradleException("other exception")
+        }
+
+        when:
+        provider.getDate("v1.0.0")
+
+        then:
+        def ex = thrown(GradleException)
+        ex.message == "other exception"
     }
 }

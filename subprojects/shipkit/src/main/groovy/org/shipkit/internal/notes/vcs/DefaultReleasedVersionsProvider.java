@@ -18,7 +18,7 @@ class DefaultReleasedVersionsProvider implements ReleasedVersionsProvider {
     }
 
     @Override
-    public Collection<ReleasedVersion> getReleasedVersions(String headVersion, Date headDate, Collection<String> versions, String tagPrefix) {
+    public Collection<ReleasedVersion> getReleasedVersions(String headVersion, Date headDate, Collection<String> versions, String tagPrefix) throws RevisionNotFoundException {
         //collect the versions
         if (versions.size() == 0 && headVersion == null) {
             throw new IllegalArgumentException("Not enough versions supplied." +

@@ -1,6 +1,7 @@
 package org.shipkit.internal.notes.generator;
 
 import org.shipkit.internal.notes.model.ReleaseNotesData;
+import org.shipkit.internal.notes.vcs.RevisionNotFoundException;
 
 import java.util.Collection;
 
@@ -28,5 +29,5 @@ public interface ReleaseNotesGenerator {
      */
     Collection<ReleaseNotesData> generateReleaseNotesData(String headVersion, Collection<String> targetVersions,
                                                           String tagPrefix, Collection<String> gitHubLabels,
-                                                          boolean onlyPullRequests);
+                                                          boolean onlyPullRequests) throws RevisionNotFoundException;
 }
