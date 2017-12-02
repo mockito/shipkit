@@ -1,55 +1,35 @@
 package org.shipkit.internal.gradle.util.handler
 
-import org.gradle.api.GradleException
-import org.shipkit.gradle.git.GitPushTask
 import org.shipkit.internal.gradle.util.handler.exceptions.CannotPushToGithubException
 import spock.lang.Specification
 import spock.lang.Unroll
 
 class GitPushTaskExceptionHandlerTest extends Specification {
 
-    def "should throw proper message for lack of GH_WRITE_TOKEN"() {
-        given:
-            GitPushTask gitPushTask = Mock(GitPushTask)
-            GradleException originalException = new GradleException("Authentication failed", new Throwable("original cause"))
-            GitPushTaskExceptionHandler gitPushTaskExceptionHandler = new GitPushTaskExceptionHandler(gitPushTask)
+    def "throws original exception because message does not match"() {
+        def e = new RuntimeException("foo")
+
         when:
-            gitPushTaskExceptionHandler.execute(originalException)
+        new GitPushTaskExceptionHandler(null).execute(e)
+
         then:
-            def result = thrown(CannotPushToGithubException)
-            result.message == GitPushTaskExceptionHandler.GH_WRITE_TOKEN_NOT_SET_MSG
-            result.cause.cause == originalException.getCause()
+        def ex = thrown(Exception)
+        ex == e
     }
 
-    def "should throw proper message for invalid of GH_WRITE_TOKEN"() {
-        given:
-            GitPushTask gitPushTask = Mock(GitPushTask)
-            GitPushTaskExceptionHandler gitPushTaskExceptionHandler = new GitPushTaskExceptionHandler(gitPushTask)
-            gitPushTask.getSecretValue() >> "fake-token"
-            GradleException originalException = new GradleException("Authentication failed", new Throwable("original cause"))
+    @Unroll def "wraps original exception when message matches"() {
+        def e = new RuntimeException(message)
+
         when:
-            gitPushTaskExceptionHandler.execute(originalException)
+        new GitPushTaskExceptionHandler(secret).execute(e)
+
         then:
-            def result = thrown(CannotPushToGithubException)
-            result.message == GitPushTaskExceptionHandler.GH_WRITE_TOKEN_INVALID_MSG
-            result.cause.cause == originalException.getCause()
-    }
-
-    @Unroll
-    def "should match exception: #shouldMatch for message '#message'"() {
-        given:
-            GradleException ex = Mock(GradleException)
-            ex.getMessage() >> message
-
-        expect:
-            GitPushTaskExceptionHandler gitPushTaskExceptionHandler = new GitPushTaskExceptionHandler(Mock(GitPushTask))
-            gitPushTaskExceptionHandler.matchException(ex) == shouldMatch
+        def ex = thrown(CannotPushToGithubException)
+        ex.cause == e
 
         where:
-            message | shouldMatch
-            "sth Authentication failed sth" | true
-            "sth unable to access sth"      | true
-            "other message"                 | false
+        message                         | secret | newMessage
+        "sth Authentication failed sth" | null   | GitPushTaskExceptionHandler.GH_WRITE_TOKEN_NOT_SET_MSG
+        "sth unable to access sth"      | "asdf" | GitPushTaskExceptionHandler.GH_WRITE_TOKEN_INVALID_MSG
     }
-
 }

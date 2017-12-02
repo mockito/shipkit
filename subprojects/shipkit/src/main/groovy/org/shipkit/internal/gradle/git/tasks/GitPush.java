@@ -38,7 +38,6 @@ public class GitPush {
             }
         };
 
-        Exceptions.handling(processRunner, new GitPushTaskExceptionHandler(task));
+        Exceptions.handling(processRunner, new GitPushTaskExceptionHandler(task.getSecretValue()));
     }
-
 }
