@@ -4,13 +4,13 @@ import org.shipkit.internal.gradle.util.handler.exceptions.CannotPushToGithubExc
 import spock.lang.Specification
 import spock.lang.Unroll
 
-class GitPushTaskExceptionHandlerTest extends Specification {
+class GitPushExceptionHandlerTest extends Specification {
 
     def "throws original exception because message does not match"() {
         def e = new RuntimeException("foo")
 
         when:
-        new GitPushTaskExceptionHandler(null).execute(e)
+        new GitPushExceptionHandler(null).execute(e)
 
         then:
         def ex = thrown(Exception)
@@ -21,7 +21,7 @@ class GitPushTaskExceptionHandlerTest extends Specification {
         def e = new RuntimeException(message)
 
         when:
-        new GitPushTaskExceptionHandler(secret).execute(e)
+        new GitPushExceptionHandler(secret).execute(e)
 
         then:
         def ex = thrown(CannotPushToGithubException)
@@ -29,7 +29,7 @@ class GitPushTaskExceptionHandlerTest extends Specification {
 
         where:
         message                         | secret | newMessage
-        "sth Authentication failed sth" | null   | GitPushTaskExceptionHandler.GH_WRITE_TOKEN_NOT_SET_MSG
-        "sth unable to access sth"      | "asdf" | GitPushTaskExceptionHandler.GH_WRITE_TOKEN_INVALID_MSG
+        "sth Authentication failed sth" | null   | GitPushExceptionHandler.GH_WRITE_TOKEN_NOT_SET_MSG
+        "sth unable to access sth"      | "asdf" | GitPushExceptionHandler.GH_WRITE_TOKEN_INVALID_MSG
     }
 }

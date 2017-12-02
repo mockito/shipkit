@@ -2,9 +2,9 @@ package org.shipkit.internal.gradle.util.handler;
 
 import org.gradle.api.Action;
 
-public class Exceptions {
+public class ExceptionHandling {
 
-    public static void handling(Runnable code, Action<RuntimeException> handler) {
+    public static void withExceptionHandling(Runnable code, Action<RuntimeException> handler) {
         try {
             code.run();
         } catch (RuntimeException e) {

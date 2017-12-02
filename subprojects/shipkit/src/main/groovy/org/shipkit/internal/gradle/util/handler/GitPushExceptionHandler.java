@@ -3,14 +3,14 @@ package org.shipkit.internal.gradle.util.handler;
 import org.gradle.api.Action;
 import org.shipkit.internal.gradle.util.handler.exceptions.CannotPushToGithubException;
 
-public class GitPushTaskExceptionHandler implements Action<RuntimeException> {
+public class GitPushExceptionHandler implements Action<RuntimeException> {
 
     public static final String GH_WRITE_TOKEN_NOT_SET_MSG = "Cannot push to remote repository. GH_WRITE_TOKEN env variable not set or you don't have write access to remote. Please recheck your configuration.";
     public static final String GH_WRITE_TOKEN_INVALID_MSG = "Cannot push to remote repository. GH_WRITE_TOKEN env variable is set but possibly invalid. Please recheck your configuration.";
 
     private String secretValue;
 
-    public GitPushTaskExceptionHandler(String secretValue) {
+    public GitPushExceptionHandler(String secretValue) {
         this.secretValue = secretValue;
     }
 
@@ -24,7 +24,7 @@ public class GitPushTaskExceptionHandler implements Action<RuntimeException> {
         return new CannotPushToGithubException(message, e);
     }
 
-    protected boolean matchException(Exception e) {
+    private boolean matchException(Exception e) {
         return e.getMessage().contains("Authentication failed") || e.getMessage().contains("unable to access");
     }
 

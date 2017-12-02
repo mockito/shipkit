@@ -3,14 +3,16 @@ package org.shipkit.internal.gradle.util.handler
 import org.gradle.api.Action
 import spock.lang.Specification
 
-class ExceptionsTest extends Specification {
+import static org.shipkit.internal.gradle.util.handler.ExceptionHandling.withExceptionHandling
+
+class ExceptionHandlingTest extends Specification {
 
     def runnable = Mock(Runnable)
     def handler = Mock(Action)
 
     def "no exception"() {
         when:
-        Exceptions.handling(runnable, handler)
+        withExceptionHandling(runnable, handler)
 
         then:
         1 * runnable.run()
@@ -21,7 +23,7 @@ class ExceptionsTest extends Specification {
         def e = new RuntimeException("Boo!")
 
         when:
-        Exceptions.handling(runnable, handler)
+        withExceptionHandling(runnable, handler)
 
         then:
         1 * runnable.run() >> { throw e }
