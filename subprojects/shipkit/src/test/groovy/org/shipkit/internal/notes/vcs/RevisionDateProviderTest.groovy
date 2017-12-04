@@ -36,9 +36,10 @@ class RevisionDateProviderTest extends Specification {
     }
 
     def "gradle exception unknown revision"() {
+        def gradleException = new GradleException(
+            "fatal: ambiguous argument 'v1.0.0': unknown revision or path not in the working tree.")
         runner.run("git", "log", "--pretty=%ad", "--date=iso", "v1.0.0", "-n", "1") >> {
-            throw new GradleException(
-                "fatal: ambiguous argument 'v1.0.0': unknown revision or path not in the working tree.")
+            throw gradleException
         }
 
         when:
@@ -47,6 +48,7 @@ class RevisionDateProviderTest extends Specification {
         then:
         def ex = thrown(RevisionNotFoundException)
         ex.revision == "v1.0.0"
+        ex.cause == gradleException
     }
 
     def "other gradle exceptions"() {

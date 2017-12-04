@@ -26,16 +26,17 @@ class RevisionDateProvider {
     }
 
     public Date getDate(String rev) throws RevisionNotFoundException {
-        try {
-            String gitOutput = runner.run("git", "log", "--pretty=%ad", "--date=iso", rev, "-n", "1");
-            if (!REVISION_DATE_PATTERN.matcher(gitOutput).matches()) {
-                throw new IllegalArgumentException(formatErrorMessage(rev, gitOutput));
-            }
+        String gitOutput = tryGetRevisionsDate(rev);
+        validateDatesFormat(rev, gitOutput);
+        return parseDate(gitOutput.trim());
+    }
 
-            return parseDate(gitOutput.trim());
+    private String tryGetRevisionsDate(String revision) throws RevisionNotFoundException {
+        try {
+           return runner.run("git", "log", "--pretty=%ad", "--date=iso", revision, "-n", "1");
         } catch (GradleException e) {
-            if (isRevisionNotFoundMessage(rev, e)) {
-                throw new RevisionNotFoundException(rev);
+            if (isRevisionNotFoundMessage(revision, e)) {
+                throw new RevisionNotFoundException(e, revision);
             }
 
             throw e;
@@ -44,6 +45,12 @@ class RevisionDateProvider {
 
     private boolean isRevisionNotFoundMessage(String rev, GradleException e) {
         return e.getMessage().contains("ambiguous argument '" + rev + "': unknown revision or path not in the working tree.");
+    }
+
+    private void validateDatesFormat(String rev, String gitOutput) {
+        if (!REVISION_DATE_PATTERN.matcher(gitOutput).matches()) {
+            throw new IllegalArgumentException(formatErrorMessage(rev, gitOutput));
+        }
     }
 
     private String formatErrorMessage(String rev, String gitOutput) {
