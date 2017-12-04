@@ -28,12 +28,17 @@ Also set automatically by Shipkit CI plugins.
 
 #### Reasons why release may not be needed
 
-There is a couple of them:
-- Environment variable **SKIP_RELEASE** is set to any value (eg. 'true')
-- Commit message contains "[ci skip-release]"
-- The build is a pull request, see [Travis Documentation](https://docs.travis-ci.com/user/environment-variables/) for more information
-- Branch is a releasable one, see **releaseBranchRegex** in [Configuration section](#configuration)
-- One of the publications changed, see [section below](#comparing-publications)
+Release is considered not needed when:
+ * 'SKIP_RELEASE' environment variable is present
+ * commit message contains '[ci skip-release]'
+ * we are building a "pull request", see [Travis Documentation](https://docs.travis-ci.com/user/environment-variables/) for more information
+
+Release is needed when all above is false and:
+ * we are building on a branch that matches releaseBranchRegex (e.g. 'master'), see **releaseBranchRegex** in [Configuration section](#configuration)
+ * and one of the following criteria is true:
+   * there are changes in the binaries when compared to previous version
+   * commit message contains '[ci skip-compare-publications]'
+   * 'skipComparePublications' property on task releaseNeeded is true
 
 #### Usage
 
