@@ -22,7 +22,7 @@ public class FetchReleaseNotes {
             performFetchReleaseNotes(task);
         } catch (RevisionNotFoundException e) {
             String message = buildUnknownRevisionMessage(e);
-            throw new GradleException(message);
+            throw new GradleException(message, e);
         }
     }
 
@@ -42,6 +42,7 @@ public class FetchReleaseNotes {
 
     private String buildUnknownRevisionMessage(RevisionNotFoundException exception) {
         return "Version " + exception.getRevision() + " has not been found in VCS. Probably there is no" +
-            " corresponding tag in VCS for \"previousVersion\" from version.properties file.";
+            " corresponding tag in VCS for \"previousVersion\" from version.properties file. " +
+            "Fix \"previousVersion\" value or add missing tag";
     }
 }
