@@ -106,18 +106,6 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
         pr.upstreamRepositoryName == 'my-org/my-repo'
     }
 
-    def "should configure checkoutVersionBranch"() {
-        when:
-        project.extensions.dependency = "org.shipkit:shipkit:0.1.2"
-        project.plugins.apply(UpgradeDependencyPlugin)
-
-        GitCheckOutTask task = project.tasks.checkoutVersionBranch
-
-        then:
-        task.rev == "upgrade-shipkit-to-0.1.2"
-        task.newBranch == true
-    }
-
     def "should configure replaceVersion"() {
         given:
         project.extensions.dependency = "org.shipkit:shipkit:0.1.2"
@@ -147,19 +135,6 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
             ["git", "commit", "--author", "shipkit-org <<shipkit.org@gmail.com>>", "-m", "shipkit version upgraded to 1.2.30", dependencyFile.absolutePath]
     }
 
-    def "should configure pushVersionUpgrade"() {
-        given:
-        project.extensions.dependency = "org.shipkit:shipkit:1.2.30"
-
-        when:
-        project.plugins.apply(UpgradeDependencyPlugin)
-
-        GitPushTask task = project.tasks.pushVersionUpgrade
-
-        then:
-        task.targets == ["upgrade-shipkit-to-1.2.30"]
-    }
-
     def "should configure createPullRequest"() {
         given:
         project.extensions.dependency = "org.shipkit:shipkit:1.2.30"
@@ -175,10 +150,19 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
         task.gitHubApiUrl == "http://api.com"
         task.authToken == "writeToken"
         task.versionUpgrade == versionUpgrade
-        task.versionBranch == "upgrade-shipkit-to-1.2.30"
         task.pullRequestDescription == "This pull request was automatically created by " +
                 "Shipkit's 'org.shipkit.upgrade-downstream' Gradle plugin (http://shipkit.org). " +
                 "Please merge it so that you are using fresh version of 'shipkit' dependency."
         task.pullRequestTitle == "Version of shipkit upgraded to ${versionUpgrade.newVersion}"
+    }
+
+    def "should return open pull request branch if it is not null"() {
+        expect:
+        "openPR" == UpgradeDependencyPlugin.getCurrentVersionBranchName(null, null, "openPR")
+    }
+
+    def "should return new version branch if open pull request branch is null"() {
+        expect:
+        "upgrade-shipkit-to-1.2.3" == UpgradeDependencyPlugin.getCurrentVersionBranchName("shipkit", "1.2.3", null)
     }
 }

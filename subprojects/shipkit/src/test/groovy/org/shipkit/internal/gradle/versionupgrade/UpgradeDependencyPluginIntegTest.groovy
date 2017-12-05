@@ -29,6 +29,7 @@ class UpgradeDependencyPluginIntegTest extends GradleSpecification {
         skippedTaskPathsGradleBugWorkaround(result.output).join("\n") == """:checkoutBaseBranch
 :identifyGitOrigin
 :pullUpstream
+:findOpenPullRequest
 :checkoutVersionBranch
 :replaceVersion
 :setGitUserEmail
