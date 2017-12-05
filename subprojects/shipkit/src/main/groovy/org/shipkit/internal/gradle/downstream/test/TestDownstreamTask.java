@@ -17,7 +17,8 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.shipkit.internal.gradle.util.StringUtil.capitalize;
-import static org.shipkit.internal.util.RepositoryNameUtil.*;
+import static org.shipkit.internal.util.RepositoryNameUtil.extractRepoNameFromGitHubUrl;
+import static org.shipkit.internal.util.RepositoryNameUtil.repositoryNameToCamelCase;
 
 /**
  * Aggregates all downstream-test-related tasks. It can be configured to run e2e tests on provided repositories.

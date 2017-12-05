@@ -8,9 +8,7 @@ import org.shipkit.internal.gradle.git.tasks.GitPullTask
 import org.shipkit.internal.gradle.git.tasks.IdentifyGitOriginRepoTask
 import testutil.PluginSpecification
 
-import static org.shipkit.internal.gradle.versionupgrade.UpgradeDependencyPlugin.CREATE_PULL_REQUEST
-import static org.shipkit.internal.gradle.versionupgrade.UpgradeDependencyPlugin.PULL_UPSTREAM
-import static org.shipkit.internal.gradle.versionupgrade.UpgradeDependencyPlugin.PUSH_VERSION_UPGRADE
+import static org.shipkit.internal.gradle.versionupgrade.UpgradeDependencyPlugin.*
 
 class UpgradeDependencyPluginTest extends PluginSpecification {
 

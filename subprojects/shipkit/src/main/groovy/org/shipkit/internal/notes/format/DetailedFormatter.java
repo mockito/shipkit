@@ -2,9 +2,9 @@ package org.shipkit.internal.notes.format;
 
 import org.shipkit.internal.comparison.artifact.DefaultArtifactUrlResolverFactory;
 import org.shipkit.internal.gradle.util.StringUtil;
+import org.shipkit.internal.notes.model.*;
 import org.shipkit.internal.util.DateUtil;
 import org.shipkit.internal.util.MultiMap;
-import org.shipkit.internal.notes.model.*;
 
 import java.text.MessageFormat;
 import java.util.*;

@@ -1,6 +1,9 @@
 package org.shipkit.internal.gradle.java;
 
-import org.gradle.api.*;
+import org.gradle.api.Action;
+import org.gradle.api.Plugin;
+import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.file.CopySpec;
 import org.gradle.api.tasks.bundling.Jar;
 import org.shipkit.internal.gradle.util.JavaPluginUtil;

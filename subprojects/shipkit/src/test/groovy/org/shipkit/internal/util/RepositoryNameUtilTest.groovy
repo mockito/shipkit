@@ -2,9 +2,7 @@ package org.shipkit.internal.util
 
 import spock.lang.Specification
 
-import static org.shipkit.internal.util.RepositoryNameUtil.repositoryNameToCamelCase
-import static org.shipkit.internal.util.RepositoryNameUtil.repositoryNameToCapitalizedCamelCase
-import static org.shipkit.internal.util.RepositoryNameUtil.extractRepoNameFromGitHubUrl
+import static org.shipkit.internal.util.RepositoryNameUtil.*
 
 class RepositoryNameUtilTest extends Specification {
 

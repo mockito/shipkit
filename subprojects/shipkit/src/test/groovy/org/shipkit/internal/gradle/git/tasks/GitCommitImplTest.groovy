@@ -2,9 +2,7 @@ package org.shipkit.internal.gradle.git.tasks
 
 import spock.lang.Specification
 
-import static org.shipkit.internal.gradle.git.tasks.GitCommitImpl.getAddCommand
-import static org.shipkit.internal.gradle.git.tasks.GitCommitImpl.getAggregatedCommitMessage
-import static org.shipkit.internal.gradle.git.tasks.GitCommitImpl.getCommitCommand
+import static org.shipkit.internal.gradle.git.tasks.GitCommitImpl.*
 
 class GitCommitImplTest extends Specification {
 

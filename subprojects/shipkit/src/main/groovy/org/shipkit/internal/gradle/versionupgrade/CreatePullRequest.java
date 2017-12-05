@@ -1,11 +1,11 @@
 package org.shipkit.internal.gradle.versionupgrade;
 
-import java.io.IOException;
-
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.shipkit.internal.util.GitHubApi;
 import org.shipkit.internal.util.IncubatingWarning;
+
+import java.io.IOException;
 
 class CreatePullRequest {
 
