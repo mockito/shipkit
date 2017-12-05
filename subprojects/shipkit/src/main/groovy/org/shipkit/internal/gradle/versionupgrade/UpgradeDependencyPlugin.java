@@ -254,6 +254,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
             }
         });
 
+        //TODO: WW add validation for the case when 'dependency' property is not provided
         TaskMaker.task(project, PERFORM_VERSION_UPGRADE, new Action<Task>() {
             @Override
             public void execute(Task task) {
