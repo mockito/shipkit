@@ -1,6 +1,8 @@
 package org.shipkit.internal.gradle.java.tasks;
 
-import org.gradle.api.artifacts.*;
+import org.gradle.api.artifacts.Dependency;
+import org.gradle.api.artifacts.DependencyArtifact;
+import org.gradle.api.artifacts.ModuleDependency;
 import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.notes.util.IOUtil;
 

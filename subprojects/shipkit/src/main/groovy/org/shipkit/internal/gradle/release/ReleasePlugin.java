@@ -8,18 +8,18 @@ import org.shipkit.gradle.exec.ShipkitExecTask;
 import org.shipkit.gradle.git.IdentifyGitBranchTask;
 import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
 import org.shipkit.internal.gradle.git.GitBranchPlugin;
+import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.notes.ReleaseNotesPlugin;
 import org.shipkit.internal.gradle.notes.tasks.UpdateReleaseNotes;
-import org.shipkit.internal.gradle.version.VersioningPlugin;
-import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.gradle.util.TaskSuccessfulMessage;
+import org.shipkit.internal.gradle.version.VersioningPlugin;
 import org.shipkit.internal.notes.util.Supplier;
 
 import static java.util.Arrays.asList;
+import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
 import static org.shipkit.internal.gradle.git.GitBranchPlugin.IDENTIFY_GIT_BRANCH;
 import static org.shipkit.internal.gradle.notes.ReleaseNotesPlugin.UPDATE_NOTES_TASK;
-import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
 import static org.shipkit.internal.gradle.release.ReleaseNeededPlugin.RELEASE_NEEDED;
 
 /**
