@@ -71,7 +71,7 @@ public class ReleasePlugin implements Plugin<Project> {
                     public String get() {
                         return "\n" +
                             "Release shipped!\n" +
-                            "    - Publication repository: " + updateReleaseNotesTask.getPublicationRepository() +
+                            "    - Publication repository: " + updateReleaseNotesTask.getPublicationRepository() + "\n" +
                             "    - Release notes:          " + new UpdateReleaseNotes().getReleaseNotesUrl(updateReleaseNotesTask, identifyGitBranchTask.getBranch());
                     }
                 });
