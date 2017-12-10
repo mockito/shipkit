@@ -1,9 +1,6 @@
 package org.shipkit.internal.gradle.versionupgrade;
 
-import org.gradle.api.Action;
-import org.gradle.api.Plugin;
-import org.gradle.api.Project;
-import org.gradle.api.Task;
+import org.gradle.api.*;
 import org.gradle.api.specs.Spec;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.gradle.exec.ShipkitExecTask;
@@ -36,11 +33,12 @@ import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
  * <ul>
  *     <li>checkoutBaseBranch - checkouts base branch - the branch to which version upgrade should be applied through pull request</li>
  *     <li>pullUpstream - syncs the fork on which we perform version upgrade with the upstream repo</li>
- *     <li>checkoutVersionBranch - checkouts version branch - a new branch where version will be upgraded</li>
+ *     <li>findOpenPullRequest - finds an open pull request with version upgrade if it exists</li>
+ *     <li>checkoutVersionBranch - checkouts version branch where version will be upgraded. A new branch or the head branch for open pull request</li>
  *     <li>replaceVersion - replaces version in build file, using dependency pattern</li>
  *     <li>commitVersionUpgrade - commits replaced version</li>
  *     <li>pushVersionUpgrade - pushes the commit to the version branch</li>
- *     <li>createPullRequest - creates a pull request between base and version branches</li>
+ *     <li>createPullRequest - creates a pull request between base and version branches if there is no open pull request for this dependency already</li>
  *     <li>performVersionUpgrade - task aggregating all of the above</li>
  * </ul>
  *
@@ -66,6 +64,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
 
     public static final String CHECKOUT_BASE_BRANCH = "checkoutBaseBranch";
     public static final String PULL_UPSTREAM = "pullUpstream";
+    public static final String FIND_OPEN_PULL_REQUEST = "findOpenPullRequest";
     public static final String CHECKOUT_VERSION_BRANCH = "checkoutVersionBranch";
     public static final String REPLACE_VERSION = "replaceVersion";
     public static final String COMMIT_VERSION_UPGRADE = "commitVersionUpgrade";
@@ -132,12 +131,36 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
             }
         });
 
+        final FindOpenPullRequestTask findOpenPullRequestTask = TaskMaker.task(project,
+            FIND_OPEN_PULL_REQUEST, FindOpenPullRequestTask.class, new Action<FindOpenPullRequestTask>() {
+
+            @Override
+            public void execute(final FindOpenPullRequestTask task) {
+                task.setDescription("Find an open pull request with version upgrade, if such exists.");
+                task.mustRunAfter(PULL_UPSTREAM);
+
+                task.setGitHubApiUrl(conf.getGitHub().getApiUrl());
+                task.setAuthToken(conf.getLenient().getGitHub().getReadOnlyAuthToken());
+                task.setUpstreamRepositoryName(conf.getGitHub().getRepository());
+                task.setVersionBranchRegex(getVersionBranchName(
+                    upgradeDependencyExtension.getDependencyName(), ReplaceVersionTask.VERSION_REGEX));
+            }
+        });
+
         TaskMaker.task(project, CHECKOUT_VERSION_BRANCH, GitCheckOutTask.class, new Action<GitCheckOutTask>() {
             public void execute(final GitCheckOutTask task) {
                 task.setDescription("Creates a new version branch and checks it out.");
-                task.mustRunAfter(PULL_UPSTREAM);
-                task.setRev(getVersionBranchName(upgradeDependencyExtension));
-                task.setNewBranch(true);
+                task.mustRunAfter(FIND_OPEN_PULL_REQUEST);
+
+                findOpenPullRequestTask.provideBranchTo(task, new Action<String>() {
+                    @Override
+                    public void execute(String openPullRequestBranch) {
+                        task.setRev(getCurrentVersionBranchName(upgradeDependencyExtension.getDependencyName(),
+                            upgradeDependencyExtension.getNewVersion(), openPullRequestBranch));
+                        // don't create a new branch if there is already a branch with open pull request with version upgrade
+                        task.setNewBranch(openPullRequestBranch == null);
+                    }
+                });
             }
         });
 
@@ -177,13 +200,20 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.mustRunAfter(COMMIT_VERSION_UPGRADE);
 
                 task.setDryRun(conf.isDryRun());
-                task.getTargets().add(getVersionBranchName(upgradeDependencyExtension));
 
                 gitOriginPlugin.provideOriginRepo(task, new Action<String>() {
                     public void execute(String originRepo) {
                         GitUrlInfo info = new GitUrlInfo(conf);
                         task.setUrl(info.getGitUrl());
                         task.setSecretValue(info.getWriteToken());
+                    }
+                });
+
+                findOpenPullRequestTask.provideBranchTo(task, new Action<String>() {
+                    @Override
+                    public void execute(String openPullRequestBranch) {
+                        task.getTargets().add(getCurrentVersionBranchName(upgradeDependencyExtension.getDependencyName(),
+                            upgradeDependencyExtension.getNewVersion(), openPullRequestBranch));
                     }
                 });
 
@@ -199,7 +229,6 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.setGitHubApiUrl(conf.getGitHub().getApiUrl());
                 task.setDryRun(conf.isDryRun());
                 task.setAuthToken(conf.getLenient().getGitHub().getWriteAuthToken());
-                task.setVersionBranch(getVersionBranchName(upgradeDependencyExtension));
                 task.setVersionUpgrade(upgradeDependencyExtension);
                 task.setPullRequestTitle(getPullRequestTitle(task));
                 task.setPullRequestDescription(getPullRequestDescription(task));
@@ -212,15 +241,26 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                     }
                 });
 
+                findOpenPullRequestTask.provideBranchTo(task, new Action<String>() {
+                    @Override
+                    public void execute(String openPullRequestBranch) {
+                        task.setVersionBranch(getCurrentVersionBranchName(upgradeDependencyExtension.getDependencyName(),
+                            upgradeDependencyExtension.getNewVersion(), openPullRequestBranch));
+                    }
+                });
+
+                task.onlyIf(wasOpenPullRequestNotFound(findOpenPullRequestTask));
                 task.onlyIf(wasBuildFileUpdatedSpec(replaceVersionTask));
             }
         });
 
+        //TODO: WW add validation for the case when 'dependency' property is not provided
         TaskMaker.task(project, PERFORM_VERSION_UPGRADE, new Action<Task>() {
             @Override
             public void execute(Task task) {
                 task.setDescription("Checkouts new version branch, updates Shipkit dependency in config file, commits and pushes.");
                 task.dependsOn(CHECKOUT_BASE_BRANCH);
+                task.dependsOn(FIND_OPEN_PULL_REQUEST);
                 task.dependsOn(PULL_UPSTREAM);
                 task.dependsOn(CHECKOUT_VERSION_BRANCH);
                 task.dependsOn(REPLACE_VERSION);
@@ -229,6 +269,13 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.dependsOn(CREATE_PULL_REQUEST);
             }
         });
+    }
+
+    static String getCurrentVersionBranchName(String dependencyName, String version, String openPullRequestBranch) {
+        if (openPullRequestBranch != null) {
+            return openPullRequestBranch;
+        }
+        return getVersionBranchName(dependencyName, version);
     }
 
     private String getPullRequestDescription(CreatePullRequestTask task) {
@@ -252,8 +299,17 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
         };
     }
 
-    private String getVersionBranchName(UpgradeDependencyExtension versionUpgrade) {
-        return "upgrade-" + versionUpgrade.getDependencyName() + "-to-" + versionUpgrade.getNewVersion();
+    private Spec<Task> wasOpenPullRequestNotFound(final FindOpenPullRequestTask findOpenPullRequestTask) {
+        return new Spec<Task>() {
+            @Override
+            public boolean isSatisfiedBy(Task task) {
+                return findOpenPullRequestTask.getOpenPullRequestBranch() == null;
+            }
+        };
+    }
+
+    private static String getVersionBranchName(String dependencyName, String newVersion) {
+        return "upgrade-" + dependencyName + "-to-" + newVersion;
     }
 
     public UpgradeDependencyExtension getUpgradeDependencyExtension() {
