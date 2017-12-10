@@ -12,7 +12,12 @@ import java.io.IOException;
 /**
  * Looks for an open pull request with a version upgrade by:
  * - querying GitHubAPI of {@link #upstreamRepositoryName} for all open pull requests
- * - checks if any HEAD branch of resulting pull requests matches {@link #versionBranchRegex}
+ * - checking if any HEAD branch of resulting pull requests matches {@link #versionBranchRegex}
+ *
+ * {@link #versionBranchRegex} can be used because all branches created by Shipkit for version upgrade purposes
+ * are named the same way. Eg. "upgrade-mockito-to-1.2.4". The only thing that changes between branches for
+ * specific versions is the version number so it's easy to use a regular expression to find all of them.
+ * For details see {@link UpgradeDependencyPlugin#getVersionBranchName(String, String)}.
  */
 public class FindOpenPullRequestTask extends DefaultTask {
 
@@ -75,6 +80,11 @@ public class FindOpenPullRequestTask extends DefaultTask {
      * It's a combination of:
      * - {@link UpgradeDependencyPlugin#getVersionBranchName}
      * - {@link ReplaceVersionTask#VERSION_REGEX}
+     *
+     * Eg. "upgrade-mockito-to-[0-9.]+".
+     * All branches created by Shipkit for version upgrade purposes are named the same way.
+     * The only thing that changes between branches for specific versions is the version number
+     * so it's easy to use a regular expression to find all of them.
      */
     public String getVersionBranchRegex() {
         return versionBranchRegex;
@@ -95,13 +105,21 @@ public class FindOpenPullRequestTask extends DefaultTask {
     }
 
     /**
-     * Call if you want {@param #openPullRequestBranchCallback} to be executed after this task is finished.
+     * Call if you want {@param #branchAction} to be executed after this task is finished.
+     *
+     * Sometimes a task may need information about open pull request branch but the problem lies in figuring out
+     * the correct time when the task should call {@link #getOpenPullRequestBranch()}, because this value is only available
+     * after {@link FindOpenPullRequestTask} is executed.
+     *
+     * Using this method guarantees that:
+     * - the value will be already available when the callback {@param #branchAction} is executed
+     * - the task {@param #dependant} is executed after {@link FindOpenPullRequestTask}
      */
-    public void provideOpenPullRequestBranch(Task t, final Action<String> openPullRequestBranchCallback) {
-        t.dependsOn(this);
+    public void provideBranchTo(Task dependant, final Action<String> branchAction) {
+        dependant.dependsOn(this);
         this.doLast(new Action<Task>() {
             public void execute(Task task) {
-                openPullRequestBranchCallback.execute(openPullRequestBranch);
+                branchAction.execute(openPullRequestBranch);
             }
         });
     }

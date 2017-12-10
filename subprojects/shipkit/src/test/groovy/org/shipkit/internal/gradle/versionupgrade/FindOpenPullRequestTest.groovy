@@ -10,41 +10,27 @@ class FindOpenPullRequestTest extends Specification {
     def "should return null if response is empty"() {
         given:
         def gitHubApi = Mock(GitHubApi)
-        def findOpenPullRequestTask = Mock(FindOpenPullRequestTask)
-
-        findOpenPullRequestTask.getUpstreamRepositoryName() >> "repo"
-        def url = "/repos/repo/pulls?state=open"
-        gitHubApi.get(url) >> "[ ]"
+        gitHubApi.get("/repos/repo/pulls?state=open") >> "[ ]"
 
         expect:
-        null == findOpenPullRequest.findOpenPullRequest(findOpenPullRequestTask, gitHubApi)
+        null == findOpenPullRequest.findOpenPullRequest("repo", null, gitHubApi)
     }
 
     def "should return null if head->ref does not match versionBranchRegex"() {
         given:
         def gitHubApi = Mock(GitHubApi)
-        def findOpenPullRequestTask = Mock(FindOpenPullRequestTask)
-
-        findOpenPullRequestTask.getUpstreamRepositoryName() >> "repo"
-        findOpenPullRequestTask.getVersionBranchRegex() >> "shipkit-[0-9]*"
-        def url = "/repos/repo/pulls?state=open"
-        gitHubApi.get(url) >> "[{\"head\" : {\"ref\" : \"shipkit-1.2\"}} ]"
+        gitHubApi.get("/repos/repo/pulls?state=open") >> "[{\"head\" : {\"ref\" : \"shipkit-1.2\"}} ]"
 
         expect:
-        null == findOpenPullRequest.findOpenPullRequest(findOpenPullRequestTask, gitHubApi)
+        null == findOpenPullRequest.findOpenPullRequest("repo", "shipkit-[0-9]*", gitHubApi)
     }
 
     def "should return head->ref if it matches versionBranchRegex"() {
         given:
         def gitHubApi = Mock(GitHubApi)
-        def findOpenPullRequestTask = Mock(FindOpenPullRequestTask)
-
-        findOpenPullRequestTask.getUpstreamRepositoryName() >> "repo"
-        findOpenPullRequestTask.getVersionBranchRegex() >> "shipkit-[0-9]*"
-        def url = "/repos/repo/pulls?state=open"
-        gitHubApi.get(url) >> "[{\"head\" : {\"ref\" : \"shipkit-1\"}} ]"
+        gitHubApi.get("/repos/repo/pulls?state=open") >> "[{\"head\" : {\"ref\" : \"shipkit-1\"}} ]"
 
         expect:
-        "shipkit-1" == findOpenPullRequest.findOpenPullRequest(findOpenPullRequestTask, gitHubApi)
+        "shipkit-1" == findOpenPullRequest.findOpenPullRequest("repo", "shipkit-[0-9]*", gitHubApi)
     }
 }

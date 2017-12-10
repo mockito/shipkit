@@ -152,7 +152,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.setDescription("Creates a new version branch and checks it out.");
                 task.mustRunAfter(FIND_OPEN_PULL_REQUEST);
 
-                findOpenPullRequestTask.provideOpenPullRequestBranch(task, new Action<String>() {
+                findOpenPullRequestTask.provideBranchTo(task, new Action<String>() {
                     @Override
                     public void execute(String openPullRequestBranch) {
                         task.setRev(getCurrentVersionBranchName(upgradeDependencyExtension.getDependencyName(),
@@ -209,7 +209,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                     }
                 });
 
-                findOpenPullRequestTask.provideOpenPullRequestBranch(task, new Action<String>() {
+                findOpenPullRequestTask.provideBranchTo(task, new Action<String>() {
                     @Override
                     public void execute(String openPullRequestBranch) {
                         task.getTargets().add(getCurrentVersionBranchName(upgradeDependencyExtension.getDependencyName(),
@@ -241,7 +241,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                     }
                 });
 
-                findOpenPullRequestTask.provideOpenPullRequestBranch(task, new Action<String>() {
+                findOpenPullRequestTask.provideBranchTo(task, new Action<String>() {
                     @Override
                     public void execute(String openPullRequestBranch) {
                         task.setVersionBranch(getCurrentVersionBranchName(upgradeDependencyExtension.getDependencyName(),
