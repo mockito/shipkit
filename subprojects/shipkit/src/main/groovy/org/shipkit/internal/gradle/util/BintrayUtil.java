@@ -21,6 +21,6 @@ public class BintrayUtil {
         if (org == null) {
             org = bintray.getUser();
         }
-        return MessageFormat.format("https://bintray.com/{0}/{1}/{2}", org, repo, pkg);
+        return MessageFormat.format("https://bintray.com/{0}/{1}/{2}/", org, repo, pkg);
     }
 }

@@ -17,7 +17,7 @@ class BintrayUtilTest extends Specification {
         b.pkg.userOrg = "mockito"
 
         expect:
-        getRepoLink(b) == "https://bintray.com/mockito/maven/mockito-core"
+        getRepoLink(b) == "https://bintray.com/mockito/maven/mockito-core/"
     }
 
     def "link without org"() {
@@ -27,7 +27,7 @@ class BintrayUtilTest extends Specification {
         b.user = "szczepiq"
 
         expect:
-        getRepoLink(b) == "https://bintray.com/szczepiq/maven/mockito-core"
+        getRepoLink(b) == "https://bintray.com/szczepiq/maven/mockito-core/"
     }
 
     def "link without unconfigured extension"() {

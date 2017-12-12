@@ -50,6 +50,24 @@ public class GitHubApi {
         }
     }
 
+    public String get(String relativeUrl) throws IOException {
+        URL url = new URL(gitHubApiUrl + relativeUrl + "?access_token=" + authToken);
+
+        HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setDoOutput(true);
+        conn.setRequestProperty("Content-Type", "application/json");
+
+        if (conn.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST) {
+            return IOUtil.readFully(conn.getInputStream());
+        } else {
+            String errorMessage =
+                String.format("GET %s failed, response code = %s, response body:\n%s",
+                    maskUrl(url), conn.getResponseCode(), IOUtil.readFully(conn.getErrorStream()));
+            throw new IOException(errorMessage);
+        }
+    }
+
     private String maskUrl(URL url) {
         return url.toExternalForm().replace(authToken, "[SECRET]");
     }
