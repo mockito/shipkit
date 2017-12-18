@@ -23,11 +23,11 @@ class GitHubUrlBuilder {
      */
     @ExposedForTesting
     static String _getGitHubUrl(String ghUrl, String ghUser, String ghRepo, String writeToken) {
+        String[] parts =  ghUrl.split("://");
         if (writeToken != null) {
-            String[] parts =  ghUrl.split("://");
             return MessageFormat.format("{0}://{1}:{2}@{3}/{4}.git", parts[0], ghUser, writeToken, parts[1], ghRepo);
         } else {
-            return MessageFormat.format("https://github.com/{0}.git", ghRepo);
+            return MessageFormat.format("{0}://{1}/{2}.git", parts[0], parts[1], ghRepo);
         }
     }
 }
