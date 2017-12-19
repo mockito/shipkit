@@ -6,19 +6,18 @@ import spock.lang.Unroll
 
 class GitHubUrlBuilderTest extends Specification {
 
-    public static final String DEFAULT = "USE_DEFAULT"
     def conf = new ShipkitConfiguration()
 
     @Unroll
     def "should return GH url given gHurl '#ghUrl' repo '#repo' user '#user' token '#token'"() {
         when :
-        if (ghUrl.equalsIgnoreCase(DEFAULT) == false) {
+        if (ghUrl) {
             conf.gitHub.url = ghUrl;
         }
-        if (user.equalsIgnoreCase(DEFAULT) == false) {
+        if (user) {
             conf.gitHub.writeAuthUser = user
         }
-        if (token.equalsIgnoreCase(DEFAULT) == false) {
+        if (token) {
             conf.gitHub.writeAuthToken = token
         }
 
@@ -27,9 +26,9 @@ class GitHubUrlBuilderTest extends Specification {
 
         where:
         repo        | token   | user    | ghUrl                     | expected
-        "org/repo"  | DEFAULT | DEFAULT | DEFAULT                   | "https://github.com/org/repo.git"
-        "org/repo"  | "token" | "user"  | DEFAULT                   | "https://user:token@github.com/org/repo.git"
-        "org/repo"  | DEFAULT | DEFAULT | "https://gh.ent.com:8080" | "https://gh.ent.com:8080/org/repo.git"
+        "org/repo"  | null    | null    | null                      | "https://github.com/org/repo.git"
+        "org/repo"  | "token" | "user"  | null                      | "https://user:token@github.com/org/repo.git"
+        "org/repo"  | null    | null    | "https://gh.ent.com:8080" | "https://gh.ent.com:8080/org/repo.git"
         "org/repo"  | "token" | "user"  | "https://gh.ent.com:8080" | "https://user:token@gh.ent.com:8080/org/repo.git"
     }
 }
