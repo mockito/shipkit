@@ -36,6 +36,6 @@ class BintrayReleasePluginTest extends PluginSpecification {
 
         then:
         UpdateReleaseNotesTask updateNotes = project.tasks.getByName(ReleaseNotesPlugin.UPDATE_NOTES_TASK)
-        updateNotes.publicationRepository == "https://bintray.com/some-org/some-repo/some-pkg"
+        updateNotes.publicationRepository == "https://bintray.com/some-org/some-repo/some-pkg/"
     }
 }
