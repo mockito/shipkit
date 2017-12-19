@@ -11,6 +11,7 @@ import org.shipkit.internal.notes.model.ReleaseNotesData;
 import org.shipkit.internal.notes.vcs.ContributionsProvider;
 import org.shipkit.internal.notes.vcs.ReleasedVersion;
 import org.shipkit.internal.notes.vcs.ReleasedVersionsProvider;
+import org.shipkit.internal.notes.vcs.RevisionNotFoundException;
 
 import java.util.Collection;
 import java.util.Date;
@@ -35,7 +36,7 @@ class DefaultReleaseNotesGenerator implements ReleaseNotesGenerator {
     }
 
     public Collection<ReleaseNotesData> generateReleaseNotesData(String headVersion, Collection<String> targetVersions, String tagPrefix,
-                                                                 Collection<String> gitHubLabels, boolean onlyPullRequests) {
+                                                                 Collection<String> gitHubLabels, boolean onlyPullRequests) throws RevisionNotFoundException {
         List<ReleaseNotesData> out = new LinkedList<ReleaseNotesData>();
 
         LOG.lifecycle("Generating release notes data for:" +
