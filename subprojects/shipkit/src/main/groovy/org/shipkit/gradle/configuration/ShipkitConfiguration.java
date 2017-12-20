@@ -108,6 +108,8 @@ public class ShipkitConfiguration {
 
     public class GitHub {
 
+        public static final String GH_WRITE_TOKEN = "GH_WRITE_TOKEN";
+
         /**
          * GitHub URL address, for example: https://github.com.
          * Useful when you are using on-premises GitHub Enterprise
@@ -192,8 +194,8 @@ public class ShipkitConfiguration {
          * if this value is not specified.
          */
         public String getWriteAuthToken() {
-            return (String) store.getValue("gitHub.writeAuthToken", "GH_WRITE_TOKEN", "Please export 'GH_WRITE_TOKEN' variable first!\n" +
-                "It is highly recommended to keep write token secure and store env variable 'GH_WRITE_TOKEN' with your CI configuration." +
+            return (String) store.getValue("gitHub.writeAuthToken", GH_WRITE_TOKEN, "Please export '" + GH_WRITE_TOKEN + "' variable first!\n" +
+                "It is highly recommended to keep write token secure and store env variable '" + GH_WRITE_TOKEN + "' with your CI configuration." +
                 "Alternatively, you can configure GitHub write auth token explicitly (don't check this in to Git!):\n" +
                 "  shipkit.gitHub.writeAuthToken = 'secret'");
         }
