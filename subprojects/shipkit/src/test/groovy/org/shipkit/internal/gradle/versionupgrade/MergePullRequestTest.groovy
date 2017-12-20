@@ -5,9 +5,6 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.shipkit.internal.util.GitHubApi
 import spock.lang.Specification
 
-/**
- * Created by arturskowronski on 20/12/17.
- */
 class MergePullRequestTest extends Specification {
 
     def "should not call github API in dryRun mode"() {

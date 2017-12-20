@@ -1,8 +1,5 @@
 package org.shipkit.internal.gradle.util
 
-/**
- * Created by arturskowronski on 20/12/17.
- */
 class BranchUtils {
 
     public static String getHeadBranch(String forkRepositoryName, String headBranch) {
