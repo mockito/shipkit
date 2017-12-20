@@ -32,6 +32,7 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
         project.tasks.commitVersionUpgrade
         project.tasks.pushVersionUpgrade
         project.tasks.createPullRequest
+        project.tasks.mergePullRequest
         project.tasks.performVersionUpgrade
     }
 
@@ -155,6 +156,24 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
                 "Please merge it so that you are using fresh version of 'shipkit' dependency."
         task.pullRequestTitle == "Version of shipkit upgraded to ${versionUpgrade.newVersion}"
     }
+
+    def "should configure mergePullRequest"() {
+        given:
+        project.extensions.dependency = "org.shipkit:shipkit:1.2.30"
+        conf.gitHub.apiUrl = "http://api.com"
+        conf.gitHub.repository = "mockito/mockito"
+        conf.gitHub.writeAuthToken = "writeToken"
+
+        when:
+        def versionUpgrade = project.plugins.apply(UpgradeDependencyPlugin).upgradeDependencyExtension
+        MergePullRequestTask task = project.tasks.mergePullRequest
+
+        then:
+        task.gitHubApiUrl == "http://api.com"
+        task.authToken == "writeToken"
+        task.versionUpgrade == versionUpgrade
+    }
+
 
     def "should return open pull request branch if it is not null"() {
         expect:

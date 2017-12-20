@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
+import org.shipkit.internal.gradle.util.BranchUtils;
 import org.shipkit.internal.util.GitHubApi;
 import org.shipkit.internal.util.IncubatingWarning;
 
@@ -21,7 +22,7 @@ class CreatePullRequest {
             return;
         }
 
-        String headBranch = getHeadBranch(task.getForkRepositoryName(), task.getVersionBranch());
+        String headBranch = BranchUtils.getHeadBranch(task.getForkRepositoryName(), task.getVersionBranch());
 
         IncubatingWarning.warn("creating pull requests");
         LOG.lifecycle("  Creating a pull request of title '{}' in repository '{}' between base = '{}' and head = '{}'.",
@@ -36,14 +37,5 @@ class CreatePullRequest {
             "}";
 
         gitHubApi.post("/repos/" + task.getUpstreamRepositoryName() + "/pulls", body);
-    }
-
-
-    private String getHeadBranch(String forkRepositoryName, String headBranch) {
-        return getUserOfForkRepo(forkRepositoryName) + ":" + headBranch;
-    }
-
-    private String getUserOfForkRepo(String forkRepositoryName) {
-        return forkRepositoryName.split("/")[0];
     }
 }
