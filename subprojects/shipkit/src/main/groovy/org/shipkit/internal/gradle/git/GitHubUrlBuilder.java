@@ -14,7 +14,7 @@ class GitHubUrlBuilder {
      * Builds GitHub url for the repository
      */
     static String getGitHubUrl(String ghRepo, ShipkitConfiguration conf) {
-        return _getGitHubUrl(conf.getGitHub().getWriteAuthUser(), ghRepo, conf.getLenient().getGitHub().getWriteAuthToken());
+        return _getGitHubUrl(conf.getGitHub().getUrl(), conf.getGitHub().getWriteAuthUser(), ghRepo, conf.getLenient().getGitHub().getWriteAuthToken());
     }
 
     /**
@@ -22,11 +22,12 @@ class GitHubUrlBuilder {
      * This way, we use lenient configuration and don't fail when auth token is not provided in shipkit configuration.
      */
     @ExposedForTesting
-    static String _getGitHubUrl(String ghUser, String ghRepo, String writeToken) {
+    static String _getGitHubUrl(String ghUrl, String ghUser, String ghRepo, String writeToken) {
+        String[] parts =  ghUrl.split("://");
         if (writeToken != null) {
-            return MessageFormat.format("https://{0}:{1}@github.com/{2}.git", ghUser, writeToken, ghRepo);
+            return MessageFormat.format("{0}://{1}:{2}@{3}/{4}.git", parts[0], ghUser, writeToken, parts[1], ghRepo);
         } else {
-            return MessageFormat.format("https://github.com/{0}.git", ghRepo);
+            return MessageFormat.format("{0}://{1}/{2}.git", parts[0], parts[1], ghRepo);
         }
     }
 }
