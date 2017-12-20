@@ -11,22 +11,22 @@ class GitHubUrlBuilderTest extends Specification {
     def conf = new ShipkitConfiguration()
 
     @Unroll
-    def "should return authorized GH url given gHurl '#ghUrl' repo '#repo' user '#user' token '#token'"() {
+    def "should return authorized GH url given gHurl '#ghUrl'"() {
         when :
         if (ghUrl) {
             conf.gitHub.url = ghUrl
         }
 
-            conf.gitHub.writeAuthUser = user
-            conf.gitHub.writeAuthToken = token
+        conf.gitHub.writeAuthUser = "user"
+        conf.gitHub.writeAuthToken = "token"
 
         then:
         GitHubUrlBuilder.getGitHubUrl("org/repo", conf) == expected
 
         where:
-        repo        | token   | user    | ghUrl                     | expected
-        "org/repo"  | "token" | "user"  | null                      | "https://user:token@github.com/org/repo.git"
-        "org/repo"  | "token" | "user"  | "https://gh.ent.com:8080" | "https://user:token@gh.ent.com:8080/org/repo.git"
+        ghUrl                     | expected
+        null                      | "https://user:token@github.com/org/repo.git"
+        "https://gh.ent.com:8080" | "https://user:token@gh.ent.com:8080/org/repo.git"
     }
 
     /**
@@ -35,7 +35,7 @@ class GitHubUrlBuilderTest extends Specification {
      */
     @Unroll
     @IgnoreIf({System.getenv(GitHub.GH_WRITE_TOKEN)})
-    def "should return unauthorized GH url given gHurl '#ghUrl' repo '#repo' user '#user' token '#token'"() {
+    def "should return unauthorized GH url given gHurl '#ghUrl'"() {
         when :
         if (ghUrl) {
             conf.gitHub.url = ghUrl
@@ -45,8 +45,8 @@ class GitHubUrlBuilderTest extends Specification {
         GitHubUrlBuilder.getGitHubUrl("org/repo", conf) == expected
 
         where:
-        repo        | token   | user    | ghUrl                     | expected
-        "org/repo"  | null    | null    | null                      | "https://github.com/org/repo.git"
-        "org/repo"  | null    | null    | "https://gh.ent.com:8080" | "https://gh.ent.com:8080/org/repo.git"
+        ghUrl                     | expected
+        null                      | "https://github.com/org/repo.git"
+        "https://gh.ent.com:8080" | "https://gh.ent.com:8080/org/repo.git"
     }
 }
