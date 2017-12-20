@@ -71,6 +71,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
     public static final String PUSH_VERSION_UPGRADE = "pushVersionUpgrade";
     public static final String CREATE_PULL_REQUEST = "createPullRequest";
     public static final String PERFORM_VERSION_UPGRADE = "performVersionUpgrade";
+    public static final String MERGE_PULL_REQUEST = "mergePullRequest";
 
     public static final String DEPENDENCY_PROJECT_PROPERTY = "dependency";
 
@@ -254,6 +255,33 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
             }
         });
 
+        TaskMaker.task(project, MERGE_PULL_REQUEST, MergePullRequestTask.class, new Action<MergePullRequestTask>() {
+            @Override
+            public void execute(final MergePullRequestTask task) {
+                task.setDescription("Merge pull request when all checks will be passed");
+                task.mustRunAfter(CREATE_PULL_REQUEST);
+                task.setGitHubApiUrl(conf.getGitHub().getApiUrl());
+                task.setDryRun(conf.isDryRun());
+                task.setAuthToken(conf.getLenient().getGitHub().getWriteAuthToken());
+
+                gitOriginPlugin.provideOriginRepo(task, new Action<String>() {
+                    @Override
+                    public void execute(String originRepoName) {
+                        task.setForkRepositoryName(originRepoName);
+                        task.setUpstreamRepositoryName(conf.getGitHub().getRepository());
+                    }
+                });
+
+                findOpenPullRequestTask.provideBranchTo(task, new Action<String>() {
+                    @Override
+                    public void execute(String openPullRequestBranch) {
+                        task.setVersionBranch(getCurrentVersionBranchName(upgradeDependencyExtension.getDependencyName(),
+                            upgradeDependencyExtension.getNewVersion(), openPullRequestBranch));
+                    }
+                });
+            }
+        });
+
         //TODO: WW add validation for the case when 'dependency' property is not provided
         TaskMaker.task(project, PERFORM_VERSION_UPGRADE, new Action<Task>() {
             @Override
@@ -267,6 +295,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.dependsOn(COMMIT_VERSION_UPGRADE);
                 task.dependsOn(PUSH_VERSION_UPGRADE);
                 task.dependsOn(CREATE_PULL_REQUEST);
+                task.dependsOn(MERGE_PULL_REQUEST);
             }
         });
     }
