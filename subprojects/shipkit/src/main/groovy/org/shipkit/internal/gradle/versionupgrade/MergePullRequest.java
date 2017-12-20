@@ -77,7 +77,6 @@ class MergePullRequest {
         return commit.getString("sha");
     }
 
-
     private boolean stateResolver(String state, String description) {
         if (state.equals("success")) {
             return false;
