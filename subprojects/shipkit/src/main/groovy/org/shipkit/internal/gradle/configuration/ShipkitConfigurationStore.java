@@ -13,8 +13,8 @@ public class ShipkitConfigurationStore {
     private final EnvVariables envVariables;
     private final Map<String, Object> configuration;
 
-    public ShipkitConfigurationStore() {
-        this(new HashMap<String, Object>(), new EnvVariables(), false);
+    public ShipkitConfigurationStore(EnvVariables envVariables) {
+        this(new HashMap<String, Object>(), envVariables, false);
     }
 
     ShipkitConfigurationStore(Map<String, Object> configuration, EnvVariables envVariables, boolean lenient) {
@@ -76,6 +76,6 @@ public class ShipkitConfigurationStore {
     }
 
     public ShipkitConfigurationStore getLenient() {
-        return new ShipkitConfigurationStore(this.configuration, new EnvVariables(), true);
+        return new ShipkitConfigurationStore(this.configuration, envVariables, true);
     }
 }
