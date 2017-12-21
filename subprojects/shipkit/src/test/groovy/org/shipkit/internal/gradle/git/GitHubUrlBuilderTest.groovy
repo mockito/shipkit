@@ -1,16 +1,20 @@
 package org.shipkit.internal.gradle.git
 
 import org.shipkit.gradle.configuration.ShipkitConfiguration
+import org.shipkit.internal.util.EnvVariables
 import spock.lang.Specification
 import spock.lang.Unroll
 
 class GitHubUrlBuilderTest extends Specification {
 
-    def conf = new ShipkitConfiguration()
+    def envVariablesMock = Mock(EnvVariables) {
+        getNonEmptyEnv("GH_WRITE_TOKEN") >> null
+    }
+    def conf = new ShipkitConfiguration(envVariablesMock)
 
     @Unroll
     def "should return GH url given gHurl '#ghUrl' repo '#repo' user '#user' token '#token'"() {
-        when :
+        when:
         if (ghUrl) {
             conf.gitHub.url = ghUrl;
         }
