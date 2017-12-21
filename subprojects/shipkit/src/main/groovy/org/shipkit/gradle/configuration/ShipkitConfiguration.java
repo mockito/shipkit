@@ -35,7 +35,7 @@ public class ShipkitConfiguration {
         this(new EnvVariables());
     }
 
-    public ShipkitConfiguration(EnvVariables envVariables) {
+    ShipkitConfiguration(EnvVariables envVariables) {
         this(new ShipkitConfigurationStore(envVariables));
 
         //Configure default values
