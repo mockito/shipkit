@@ -2,7 +2,6 @@ package org.shipkit.internal.notes.generator;
 
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.shipkit.internal.notes.contributors.ContributorsProvider;
 import org.shipkit.internal.notes.improvements.ImprovementsProvider;
 import org.shipkit.internal.notes.internal.DefaultReleaseNotesData;
 import org.shipkit.internal.notes.model.ContributionSet;
@@ -25,14 +24,12 @@ class DefaultReleaseNotesGenerator implements ReleaseNotesGenerator {
     private final ContributionsProvider contributionsProvider;
     private final ImprovementsProvider improvementsProvider;
     private final ReleasedVersionsProvider releasedVersionsProvider;
-    private final ContributorsProvider contributorsProvider;
 
     DefaultReleaseNotesGenerator(ContributionsProvider contributionsProvider, ImprovementsProvider improvementsProvider,
-                                 ReleasedVersionsProvider releasedVersionsProvider, ContributorsProvider contributorsProvider) {
+                                 ReleasedVersionsProvider releasedVersionsProvider) {
         this.contributionsProvider = contributionsProvider;
         this.improvementsProvider = improvementsProvider;
         this.releasedVersionsProvider = releasedVersionsProvider;
-        this.contributorsProvider = contributorsProvider;
     }
 
     public Collection<ReleaseNotesData> generateReleaseNotesData(String headVersion, Collection<String> targetVersions, String tagPrefix,
