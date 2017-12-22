@@ -1,6 +1,5 @@
-package org.shipkit.internal.gradle.configuration
+package org.shipkit.gradle.configuration
 
-import org.shipkit.gradle.configuration.ShipkitConfiguration
 import spock.lang.Shared
 import spock.lang.Specification
 import testutil.ReflectionUtil
