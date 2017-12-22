@@ -1,7 +1,6 @@
-package org.shipkit.internal.gradle.configuration
+package org.shipkit.gradle.configuration
 
 import org.gradle.api.GradleException
-import org.shipkit.gradle.configuration.ShipkitConfiguration
 import org.shipkit.internal.gradle.util.team.TeamParser
 import spock.lang.Specification
 
