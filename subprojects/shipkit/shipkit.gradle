@@ -49,6 +49,10 @@ test {
     }
 }
 
+codenarc {
+    toolVersion = '1.0'
+}
+
 pluginBundle {
     website = 'http://shipkit.org/'
     vcsUrl = 'https://github.com/mockito/shipkit'
