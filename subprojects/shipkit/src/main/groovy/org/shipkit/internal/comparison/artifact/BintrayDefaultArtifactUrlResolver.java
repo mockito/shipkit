@@ -2,6 +2,7 @@ package org.shipkit.internal.comparison.artifact;
 
 
 import com.jfrog.bintray.gradle.BintrayExtension;
+
 import org.gradle.api.Project;
 
 class BintrayDefaultArtifactUrlResolver implements DefaultArtifactUrlResolver {
@@ -24,8 +25,13 @@ class BintrayDefaultArtifactUrlResolver implements DefaultArtifactUrlResolver {
     public String getDefaultUrl(String extension) {
         BintrayExtension bintrayExtension = project.getExtensions().getByType(BintrayExtension.class);
 
+        String userOrgOrName = bintrayExtension.getPkg().getUserOrg();
+        if (userOrgOrName == null) {
+            userOrgOrName = bintrayExtension.getUser();
+        }
+
         return String.format("https://bintray.com/%s/%s/download_file?file_path=%s/%s/%s/%s-%s%s",
-                bintrayExtension.getPkg().getUserOrg(),
+                userOrgOrName,
                 bintrayExtension.getPkg().getRepo(),
                 project.getGroup().toString().replace('.', '/'),
                 artifactBaseName,
