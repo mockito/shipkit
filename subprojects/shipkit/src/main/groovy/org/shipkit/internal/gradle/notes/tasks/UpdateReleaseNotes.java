@@ -22,6 +22,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class UpdateReleaseNotes {
 
@@ -42,25 +43,33 @@ public class UpdateReleaseNotes {
         }
     }
 
-    //TODO SF deduplicate and unit test
     static Map<String, Contributor> contributorsMap(Collection<String> contributorsFromConfiguration,
                                                     ProjectContributorsSet contributorsFromGitHub,
-                                                    Collection<String> developers) {
+                                                    Collection<String> developers,
+                                                    String githubUrl) {
         Map<String, Contributor> out = new HashMap<String, Contributor>();
-        for (String contributor : contributorsFromConfiguration) {
-            TeamMember member = TeamParser.parsePerson(contributor);
-            out.put(member.name, new DefaultContributor(member.name, member.gitHubUser,
-                "http://github.com/" + member.gitHubUser));
-        }
-        for (ProjectContributor projectContributor : contributorsFromGitHub.getAllContributors()) {
-            out.put(projectContributor.getName(), projectContributor);
-        }
-        for (String developer : developers) {
-            TeamMember member = TeamParser.parsePerson(developer);
-            out.put(member.name, new DefaultContributor(member.name, member.gitHubUser,
-                "http://github.com/" + member.gitHubUser));
-        }
+        out.putAll(transform(contributorsFromConfiguration, githubUrl));
+        out.putAll(transform(contributorsFromGitHub.getAllContributors()));
+        out.putAll(transform(developers, githubUrl));
         return out;
+    }
+
+    private static Map<String, Contributor> transform(Collection<String> contributors, String githubUrl) {
+        Map<String, Contributor> contributorMap = new HashMap<String, Contributor>();
+        for (String contributor : contributors) {
+            TeamMember member = TeamParser.parsePerson(contributor);
+            contributorMap.put(member.name, new DefaultContributor(member.name, member.gitHubUser,
+                githubUrl + "/" + member.gitHubUser));
+        }
+        return contributorMap;
+    }
+
+    private static Map<String, Contributor> transform(Set<ProjectContributor> projectContributors) {
+        Map<String, Contributor> contributorMap = new HashMap<String, Contributor>();
+        for (ProjectContributor projectContributor : projectContributors) {
+            contributorMap.put(projectContributor.getName(), projectContributor);
+        }
+        return contributorMap;
     }
 
     public String generateNewContent(UpdateReleaseNotesTask task, HeaderProvider headerProvider) {
@@ -81,7 +90,7 @@ public class UpdateReleaseNotes {
             contributorsFromGitHub = new ProjectContributorsSerializer().deserialize(IOUtil.readFully(task.getContributorsDataFile()));
         }
 
-        Map<String, Contributor> contributorsMap = contributorsMap(task.getContributors(), contributorsFromGitHub, task.getDevelopers());
+        Map<String, Contributor> contributorsMap = contributorsMap(task.getContributors(), contributorsFromGitHub, task.getDevelopers(), task.getGitHubUrl());
         String notes = ReleaseNotesFormatters.detailedFormatter(headerMessage,
             "", task.getGitHubLabelMapping(), vcsCommitTemplate, task.getPublicationRepository(), contributorsMap, task.isEmphasizeVersion())
             .formatReleaseNotes(data);
