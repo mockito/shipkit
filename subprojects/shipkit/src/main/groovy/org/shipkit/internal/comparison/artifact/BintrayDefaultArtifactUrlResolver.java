@@ -31,13 +31,13 @@ class BintrayDefaultArtifactUrlResolver implements DefaultArtifactUrlResolver {
         }
 
         return String.format("https://bintray.com/%s/%s/download_file?file_path=%s/%s/%s/%s-%s%s",
-                userOrgOrName,
-                bintrayExtension.getPkg().getRepo(),
-                project.getGroup().toString().replace('.', '/'),
-                artifactBaseName,
-                previousVersion,
-                artifactBaseName,
-                previousVersion,
-                extension);
+            userOrgOrName,
+            bintrayExtension.getPkg().getRepo(),
+            project.getGroup().toString().replace('.', '/'),
+            artifactBaseName,
+            previousVersion,
+            artifactBaseName,
+            previousVersion,
+            extension);
     }
 }
