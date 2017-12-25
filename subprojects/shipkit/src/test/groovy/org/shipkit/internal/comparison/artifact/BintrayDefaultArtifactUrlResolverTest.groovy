@@ -9,37 +9,38 @@ class BintrayDefaultArtifactUrlResolverTest extends Specification {
 
     BintrayDefaultArtifactUrlResolver underTest
     Project project = Mock(Project)
-    ExtensionContainer extensionContainer = Mock(ExtensionContainer)
-    BintrayExtension extension = Mock(BintrayExtension)
-    BintrayExtension.PackageConfig pkg = Mock(BintrayExtension.PackageConfig)
+    BintrayExtension bintray = Mock(BintrayExtension)
 
     def setup() {
+        ExtensionContainer extensionContainer = Mock(ExtensionContainer)
+        BintrayExtension.PackageConfig pkg = Mock(BintrayExtension.PackageConfig)
+
         project.getExtensions() >> extensionContainer
-        extensionContainer.getByType(BintrayExtension.class) >> extension
-        extension.pkg >> pkg
+        extensionContainer.getByType(BintrayExtension.class) >> bintray
+        bintray.pkg >> pkg
     }
 
     def "concatenates default url with userOrg correctly"() {
         given:
         underTest = new BintrayDefaultArtifactUrlResolver(project, "api", "0.0.1")
         project.getGroup() >> "mockito"
-        pkg.userOrg >> "shipkit"
-        pkg.repo >> "examples"
+        bintray.pkg.userOrg >> "shipkit-org"
+        bintray.pkg.repo >> "examples"
         when:
         def result = underTest.getDefaultUrl("-sources.jar")
         then:
-        result == "https://bintray.com/shipkit/examples/download_file?file_path=mockito/api/0.0.1/api-0.0.1-sources.jar"
+        result == "https://bintray.com/shipkit-org/examples/download_file?file_path=mockito/api/0.0.1/api-0.0.1-sources.jar"
     }
 
-    def "concatenates default url with fallback to user correctly"() {
+    def "concatenates default url with fallback to user when pkg.userOrg is null"() {
         given:
         underTest = new BintrayDefaultArtifactUrlResolver(project, "api", "0.0.1")
         project.getGroup() >> "mockito"
-        extension.user >> "shipkit"
-        pkg.repo >> "examples"
+        bintray.user >> "shipkit-user"
+        bintray.pkg.repo >> "examples"
         when:
         def result = underTest.getDefaultUrl("-sources.jar")
         then:
-        result == "https://bintray.com/shipkit/examples/download_file?file_path=mockito/api/0.0.1/api-0.0.1-sources.jar"
+        result == "https://bintray.com/shipkit-user/examples/download_file?file_path=mockito/api/0.0.1/api-0.0.1-sources.jar"
     }
 }
