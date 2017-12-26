@@ -13,8 +13,7 @@ class GitHubApiTest extends Specification {
 
         then:
         def ex = thrown(Exception)
-        ex.message.startsWith(
-            "POST https://api.github.com/repos/shipkit-example/pulls?access_token=[SECRET] failed")
+        !ex.message.contains("accessToken");
     }
 
     def "should mask access token for get request"() {
@@ -26,7 +25,6 @@ class GitHubApiTest extends Specification {
 
         then:
         def ex = thrown(Exception)
-        ex.message.startsWith(
-            "GET https://api.github.com/repos/shipkit-example/pulls?access_token=[SECRET] failed")
+        !ex.message.contains("accessToken");
     }
 }
