@@ -4,7 +4,7 @@ import spock.lang.Specification
 
 class GitHubApiTest extends Specification {
 
-    def "should mask access token for post request"() {
+    def "should not show accessToken in error message for post request"() {
         given:
         def api = new GitHubApi("https://api.github.com", "accessToken")
 
@@ -16,7 +16,7 @@ class GitHubApiTest extends Specification {
         !ex.message.contains("accessToken");
     }
 
-    def "should mask access token for get request"() {
+    def "should not show accessToken in error message for get request"() {
         given:
         def api = new GitHubApi("https://api.github.com", "accessToken")
 
