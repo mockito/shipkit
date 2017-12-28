@@ -16,7 +16,7 @@ public class FetchContributors {
     public void fetchContributors(FetchGitHubContributorsTask task) {
         LOG.lifecycle("  Fetching all GitHub contributors of {}", task.getRepository());
         ContributorsProvider contributorsProvider = Contributors.getGitHubContributorsProvider(
-            task.getApiUrl(), task.getRepository(), task.getReadOnlyAuthToken());
+            task.getApiUrl(), task.getRepository(), task.getReadOnlyAuthToken(), task.getIgnoredContributors());
 
         ProjectContributorsSet contributors = contributorsProvider.getAllContributorsForProject();
 

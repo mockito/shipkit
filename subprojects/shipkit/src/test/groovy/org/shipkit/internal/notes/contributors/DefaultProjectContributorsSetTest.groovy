@@ -4,7 +4,7 @@ import spock.lang.Specification
 
 class DefaultProjectContributorsSetTest extends Specification {
 
-    def set = new DefaultProjectContributorsSet()
+    def set = new DefaultProjectContributorsSet(["ignoredContributor"])
 
     def "does not replace existing contributor"() {
         set.addContributor(new DefaultProjectContributor("a", "a", "a", 2000))
@@ -77,5 +77,18 @@ class DefaultProjectContributorsSetTest extends Specification {
 
         expect:
         set.toConfigNotation() == ["login:login"]
+    }
+
+    def "ignores contributor"() {
+        set.addAllContributors([
+                new DefaultProjectContributor("name1", "notIgnoredContributor1", "a", 10),
+                new DefaultProjectContributor("ignoredContributor", "ignoredContributor", "a", 10),
+                new DefaultProjectContributor("name2", "notIgnoredContributor2", "a", 5)
+        ])
+
+        expect:
+        set.findByName("ignoredContributor") == null
+        set.size() == 2
+        set.toConfigNotation() == ["notIgnoredContributor1:name1", "notIgnoredContributor2:name2"]
     }
 }

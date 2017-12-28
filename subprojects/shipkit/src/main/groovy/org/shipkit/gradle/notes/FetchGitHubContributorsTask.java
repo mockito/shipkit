@@ -7,6 +7,7 @@ import org.gradle.api.tasks.TaskAction;
 import org.shipkit.internal.gradle.notes.tasks.FetchContributors;
 
 import java.io.File;
+import java.util.Collection;
 
 /**
  * Fetches data about all project contributors and stores it in file.
@@ -23,6 +24,7 @@ public class FetchGitHubContributorsTask extends DefaultTask {
     @Input private String repository;
     @Input private String readOnlyAuthToken;
     @OutputFile private File outputFile;
+    @Input private Collection<String> ignoredContributors;
 
     @TaskAction
     public void fetchContributors() {
@@ -85,4 +87,17 @@ public class FetchGitHubContributorsTask extends DefaultTask {
         this.outputFile = outputFile;
     }
 
+    /**
+     * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.Team#getIgnoredContributors()}
+     */
+    public Collection<String> getIgnoredContributors() {
+        return ignoredContributors;
+    }
+
+    /**
+     * See {@link #getIgnoredContributors()}
+     */
+    public void setIgnoredContributors(Collection<String> ignoredContributors) {
+        this.ignoredContributors = ignoredContributors;
+    }
 }

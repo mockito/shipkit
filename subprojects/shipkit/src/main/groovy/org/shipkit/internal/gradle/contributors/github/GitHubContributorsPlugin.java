@@ -37,6 +37,7 @@ public class GitHubContributorsPlugin implements Plugin<Project> {
                 task.setDescription("Fetch info about all project contributors and store it in file");
                 task.setOutputFile(contributorsFile(project));
                 task.setEnabled(conf.getTeam().getContributors().isEmpty());
+                task.setIgnoredContributors(conf.getTeam().getIgnoredContributors());
 
             }
         });

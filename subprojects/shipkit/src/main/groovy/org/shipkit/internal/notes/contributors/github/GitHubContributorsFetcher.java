@@ -13,6 +13,7 @@ import org.shipkit.internal.notes.util.GitHubListFetcher;
 import org.shipkit.internal.notes.util.GitHubObjectFetcher;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -23,10 +24,15 @@ import java.util.Set;
 class GitHubContributorsFetcher {
 
     private static final Logger LOG = Logging.getLogger(GitHubContributorsFetcher.class);
+    private final Collection<String> ignoredContributors;
+
+    GitHubContributorsFetcher(Collection<String> ignoredContributors) {
+        this.ignoredContributors = ignoredContributors;
+    }
 
     ProjectContributorsSet fetchContributorsForProject(String apiUrl, String repository, String readOnlyAuthToken) {
         LOG.lifecycle("  Querying GitHub API for all contributors for project");
-        ProjectContributorsSet result = new DefaultProjectContributorsSet();
+        ProjectContributorsSet result = new DefaultProjectContributorsSet(ignoredContributors);
 
         try {
             GitHubProjectContributors contributors =
