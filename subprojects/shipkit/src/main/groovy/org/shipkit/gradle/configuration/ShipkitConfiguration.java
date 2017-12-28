@@ -52,6 +52,7 @@ public class ShipkitConfiguration {
 
         team.setContributors(Collections.<String>emptyList());
         team.setDevelopers(Collections.<String>emptyList());
+        team.setIgnoredContributors(Collections.<String>emptyList());
     }
 
     ShipkitConfiguration(ShipkitConfigurationStore store) {
@@ -403,6 +404,21 @@ public class ShipkitConfiguration {
         public void setContributors(Collection<String> contributors) {
             validateTeamMembers(contributors);
             store.put("team.contributors", contributors);
+        }
+
+        /**
+         * Contributors to be ignored in release notes and generated pom file.
+         * It should be VCS login
+         */
+        public Collection<String> getIgnoredContributors(){
+            return store.getCollection("team.ignoredContributors");
+        }
+
+        /**
+         * See {@link #getIgnoredContributors()}
+         */
+        public void setIgnoredContributors(Collection<String> ignoredContributors){
+            store.put("team.ignoredContributors", ignoredContributors);
         }
     }
 
