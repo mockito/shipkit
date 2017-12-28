@@ -17,7 +17,8 @@ class IgnoredContributorTest extends Specification {
         def contributor = new DefaultProjectContributor("name", "notIgnoredContributor", "profileUrl", 1)
 
         expect:
-        ignoredContributor.isTrue(contributor) == false    }
+        ignoredContributor.isTrue(contributor) == false
+    }
 
     def "valid contributor when empty ignored list"() {
         def ignoredContributor = IgnoredContributor.none()
