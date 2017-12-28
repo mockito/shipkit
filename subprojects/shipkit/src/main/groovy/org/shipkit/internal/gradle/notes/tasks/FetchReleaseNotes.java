@@ -29,7 +29,7 @@ public class FetchReleaseNotes {
     private void performFetchReleaseNotes(FetchReleaseNotesTask task) throws RevisionNotFoundException {
         ReleaseNotesGenerator generator = ReleaseNotesGenerators.releaseNotesGenerator(
             task.getGitWorkDir(), task.getGitHubApiUrl(), task.getGitHubRepository(),
-            task.getGitHubReadOnlyAuthToken(), new IgnoredCommit(task.getIgnoreCommitsContaining()));
+            task.getGitHubReadOnlyAuthToken(), new IgnoredCommit(task.getIgnoreCommitsContaining(), task.getIgnoredContributors()));
 
         List<String> targetVersions = task.getPreviousVersion() == null ? new ArrayList<String>() : singletonList(task.getPreviousVersion());
         Collection<ReleaseNotesData> releaseNotes = generator.generateReleaseNotesData(

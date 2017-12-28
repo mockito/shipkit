@@ -8,9 +8,11 @@ import java.util.Collection;
 public class IgnoredCommit implements Predicate<Commit> {
 
     private Collection<String> commitMessagePartsToIgnore;
+    private Collection<String> ignoredContributors;
 
-    public IgnoredCommit(Collection<String> commitMessageParts) {
+    public IgnoredCommit(Collection<String> commitMessageParts, Collection<String> ignoredContributors) {
         this.commitMessagePartsToIgnore = commitMessageParts;
+        this.ignoredContributors = ignoredContributors;
     }
 
     @Override
@@ -20,6 +22,13 @@ public class IgnoredCommit implements Predicate<Commit> {
                 return true;
             }
         }
+
+        for(String ignoredContributor : ignoredContributors){
+            if(commit.getAuthorName().equals(ignoredContributor)){
+                return true;
+            }
+        }
+
         return false;
     }
 }

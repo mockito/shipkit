@@ -27,6 +27,7 @@ public class FetchReleaseNotesTask extends DefaultTask {
     @Input private File gitWorkDir = getProject().getRootDir();
     @Input private Collection<String> gitHubLabels = Collections.emptyList();
     @Input private Collection<String> ignoreCommitsContaining;
+    @Input private Collection<String> ignoredContributors;
     @OutputFile private File outputFile;
 
     @TaskAction
@@ -189,5 +190,19 @@ public class FetchReleaseNotesTask extends DefaultTask {
      */
     public void setIgnoreCommitsContaining(Collection<String> ignoreCommitsContaining) {
         this.ignoreCommitsContaining = ignoreCommitsContaining;
+    }
+
+    /**
+     * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.Team#getIgnoredContributors()}
+     */
+    public Collection<String> getIgnoredContributors() {
+        return ignoredContributors;
+    }
+
+    /**
+     * See {@link #getIgnoredContributors()}
+     */
+    public void setIgnoredContributors(Collection<String> ignoredContributors) {
+        this.ignoredContributors = ignoredContributors;
     }
 }
