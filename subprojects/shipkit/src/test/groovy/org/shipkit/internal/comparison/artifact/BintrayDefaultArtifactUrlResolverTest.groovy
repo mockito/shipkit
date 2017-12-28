@@ -9,27 +9,38 @@ class BintrayDefaultArtifactUrlResolverTest extends Specification {
 
     BintrayDefaultArtifactUrlResolver underTest
     Project project = Mock(Project)
+    BintrayExtension bintray = Mock(BintrayExtension)
 
-    def "concatenates default url correctly"() {
+    def setup() {
+        ExtensionContainer extensionContainer = Mock(ExtensionContainer)
+        BintrayExtension.PackageConfig pkg = Mock(BintrayExtension.PackageConfig)
+
+        project.getExtensions() >> extensionContainer
+        extensionContainer.getByType(BintrayExtension.class) >> bintray
+        bintray.pkg >> pkg
+    }
+
+    def "concatenates default url with userOrg correctly"() {
         given:
         underTest = new BintrayDefaultArtifactUrlResolver(project, "api", "0.0.1")
         project.getGroup() >> "mockito"
-        def pkg = mockBintrayPkg()
-        pkg.userOrg >> "shipkit"
-        pkg.repo >> "examples"
+        bintray.pkg.userOrg >> "shipkit-org"
+        bintray.pkg.repo >> "examples"
         when:
         def result = underTest.getDefaultUrl("-sources.jar")
         then:
-        result == "https://bintray.com/shipkit/examples/download_file?file_path=mockito/api/0.0.1/api-0.0.1-sources.jar"
+        result == "https://bintray.com/shipkit-org/examples/download_file?file_path=mockito/api/0.0.1/api-0.0.1-sources.jar"
     }
 
-    private BintrayExtension.PackageConfig mockBintrayPkg() {
-        def extensionContainer = Mock(ExtensionContainer)
-        project.getExtensions() >> extensionContainer
-        def extension = Mock(BintrayExtension)
-        extensionContainer.getByType(BintrayExtension.class) >> extension
-        def pkg = Mock(BintrayExtension.PackageConfig)
-        extension.pkg >> pkg
-        pkg
+    def "concatenates default url with fallback to user when pkg.userOrg is null"() {
+        given:
+        underTest = new BintrayDefaultArtifactUrlResolver(project, "api", "0.0.1")
+        project.getGroup() >> "mockito"
+        bintray.user >> "shipkit-user"
+        bintray.pkg.repo >> "examples"
+        when:
+        def result = underTest.getDefaultUrl("-sources.jar")
+        then:
+        result == "https://bintray.com/shipkit-user/examples/download_file?file_path=mockito/api/0.0.1/api-0.0.1-sources.jar"
     }
 }

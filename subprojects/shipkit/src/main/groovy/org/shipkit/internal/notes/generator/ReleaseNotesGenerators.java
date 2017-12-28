@@ -21,7 +21,8 @@ public class ReleaseNotesGenerators {
      * @param readOnlyAuthToken read only auth token used to communicate with GitHub
      * @param ignoredCommit     responsible decide if commits should not be included in release notes
      */
-    public static ReleaseNotesGenerator releaseNotesGenerator(File workDir, String gitHubApiUrl, String gitHubRepository, String readOnlyAuthToken, Predicate<Commit> ignoredCommit) {
+    public static ReleaseNotesGenerator releaseNotesGenerator(File workDir, String gitHubApiUrl, String gitHubRepository,
+                                                              String readOnlyAuthToken, Predicate<Commit> ignoredCommit) {
         ProcessRunner processRunner = Exec.getProcessRunner(workDir);
         ContributionsProvider contributionsProvider = Vcs.getContributionsProvider(processRunner, ignoredCommit);
         ImprovementsProvider improvementsProvider = Improvements.getGitHubProvider(gitHubApiUrl, gitHubRepository, readOnlyAuthToken);

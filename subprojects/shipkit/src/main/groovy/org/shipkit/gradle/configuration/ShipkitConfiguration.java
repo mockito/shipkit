@@ -1,6 +1,7 @@
 package org.shipkit.gradle.configuration;
 
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationStore;
+import org.shipkit.internal.util.EnvVariables;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -31,7 +32,11 @@ public class ShipkitConfiguration {
     private String previousReleaseVersion;
 
     public ShipkitConfiguration() {
-        this(new ShipkitConfigurationStore());
+        this(new EnvVariables());
+    }
+
+    ShipkitConfiguration(EnvVariables envVariables) {
+        this(new ShipkitConfigurationStore(envVariables));
 
         //Configure default values
         git.setTagPrefix("v"); //so that tags are "v1.0", "v2.3.4"

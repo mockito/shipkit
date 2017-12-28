@@ -1,7 +1,6 @@
-package org.shipkit.internal.gradle
+package org.shipkit.internal.gradle.bintray
 
 import org.gradle.api.GradleException
-import org.shipkit.internal.gradle.bintray.ShipkitBintrayPlugin
 import org.shipkit.internal.gradle.configuration.LazyConfiguration
 import testutil.PluginSpecification
 
