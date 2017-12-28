@@ -23,8 +23,8 @@ public class IgnoredCommit implements Predicate<Commit> {
             }
         }
 
-        for(String ignoredContributor : ignoredContributors){
-            if(commit.getAuthorName().equals(ignoredContributor)){
+        for (String ignoredContributor : ignoredContributors) {
+            if (commit.getAuthorName().equals(ignoredContributor)) {
                 return true;
             }
         }
