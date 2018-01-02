@@ -17,7 +17,7 @@ public class Contributors {
      * @param apiUrl address of GitHub api endpoint, for example: "https://api.github.com"
      * @param repository name of GitHub repository, for example: "mockito/mockito"
      * @param readOnlyAuthToken the GitHub auth token
-     * @param ignoredContributors contributors to be ignored - VCS logins
+     * @param ignoredContributors contributors to be ignored - VCS logins (e.g. 'shipkit-org')
      */
     public static GitHubContributorsProvider getGitHubContributorsProvider(String apiUrl, String repository, String
         readOnlyAuthToken, Collection<String> ignoredContributors) {
