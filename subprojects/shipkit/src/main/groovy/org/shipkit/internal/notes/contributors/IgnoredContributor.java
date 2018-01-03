@@ -27,12 +27,12 @@ public class IgnoredContributor implements Predicate<Contributor> {
         String contributorLogin = contributor.getLogin();
         String contributorName = contributor.getName();
 
-        return isTrue(contributorLogin) || isTrue(contributorName);
+        return isTrue(contributorName) || isTrue(contributorLogin);
     }
 
-    public boolean isTrue(String contributorLogin) {
+    public boolean isTrue(String contributorName) {
         for (String ignoredContributor : ignoredContributors) {
-            if (ignoredContributor.equals(contributorLogin)) {
+            if (ignoredContributor.equals(contributorName)) {
                 return true;
             }
         }
