@@ -427,6 +427,7 @@ public class ShipkitConfiguration {
         /**
          * Contributors to be ignored in release notes and generated pom file.
          * It should be VCS login (e.g. 'shipkit-org')
+         * Ignored contributors takes precedence over contributors configuration
          */
         public Collection<String> getIgnoredContributors() {
             return store.getCollection("team.ignoredContributors");
