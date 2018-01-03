@@ -1,5 +1,6 @@
 package org.shipkit.internal.notes.vcs;
 
+import org.shipkit.internal.notes.contributors.IgnoredContributor;
 import org.shipkit.internal.notes.model.Commit;
 import org.shipkit.internal.notes.util.Predicate;
 
@@ -8,11 +9,11 @@ import java.util.Collection;
 public class IgnoredCommit implements Predicate<Commit> {
 
     private Collection<String> commitMessagePartsToIgnore;
-    private Collection<String> ignoredContributors;
+    private IgnoredContributor ignoredContributor;
 
-    public IgnoredCommit(Collection<String> commitMessageParts, Collection<String> ignoredContributors) {
+    public IgnoredCommit(Collection<String> commitMessageParts, IgnoredContributor ignoredContributor) {
         this.commitMessagePartsToIgnore = commitMessageParts;
-        this.ignoredContributors = ignoredContributors;
+        this.ignoredContributor = ignoredContributor;
     }
 
     @Override
@@ -22,13 +23,6 @@ public class IgnoredCommit implements Predicate<Commit> {
                 return true;
             }
         }
-
-        for (String ignoredContributor : ignoredContributors) {
-            if (commit.getAuthorName().equals(ignoredContributor)) {
-                return true;
-            }
-        }
-
-        return false;
+        return ignoredContributor.isTrue(commit.getAuthorName());
     }
 }

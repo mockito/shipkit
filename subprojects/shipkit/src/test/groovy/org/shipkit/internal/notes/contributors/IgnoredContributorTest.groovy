@@ -27,4 +27,25 @@ class IgnoredContributorTest extends Specification {
         expect:
         !ignoredContributor.isTrue(contributor)
     }
+
+    def "should ignore login from ignored list"() {
+        def ignoredContributor = IgnoredContributor.of(["ignoredContributor"])
+
+        expect:
+        ignoredContributor.isTrue("ignoredContributor")
+    }
+
+    def "valid login when not on the ignored list"() {
+        def ignoredContributor = IgnoredContributor.of(["ignoredContributor"])
+
+        expect:
+        !ignoredContributor.isTrue("notIgnoredContributor ")
+    }
+
+    def "valid login when empty ignored list "() {
+        def ignoredContributor = IgnoredContributor.none()
+
+        expect:
+        !ignoredContributor.isTrue("notIgnoredContributor")
+    }
 }

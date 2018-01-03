@@ -6,15 +6,15 @@ import org.shipkit.internal.notes.util.Predicate;
 import java.util.Collection;
 import java.util.Collections;
 
-class IgnoredContributor implements Predicate<Contributor> {
+public class IgnoredContributor implements Predicate<Contributor> {
 
     private final Collection<String> ignoredContributors;
 
-    static IgnoredContributor none() {
+    public static IgnoredContributor none() {
         return new IgnoredContributor(Collections.<String>emptyList());
     }
 
-    static IgnoredContributor of(Collection<String> ignoredContributors) {
+    public static IgnoredContributor of(Collection<String> ignoredContributors) {
         return new IgnoredContributor(ignoredContributors);
     }
 
@@ -24,8 +24,14 @@ class IgnoredContributor implements Predicate<Contributor> {
 
     @Override
     public boolean isTrue(Contributor contributor) {
+        String contributorLogin = contributor.getLogin();
+
+        return isTrue(contributorLogin);
+    }
+
+    public boolean isTrue(String contributorLogin) {
         for (String ignoredContributor : ignoredContributors) {
-            if (ignoredContributor.equals(contributor.getLogin())) {
+            if (ignoredContributor.equals(contributorLogin)) {
                 return true;
             }
         }
