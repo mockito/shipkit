@@ -25,8 +25,9 @@ public class IgnoredContributor implements Predicate<Contributor> {
     @Override
     public boolean isTrue(Contributor contributor) {
         String contributorLogin = contributor.getLogin();
+        String contributorName = contributor.getName();
 
-        return isTrue(contributorLogin);
+        return isTrue(contributorLogin) || isTrue(contributorName);
     }
 
     public boolean isTrue(String contributorLogin) {
