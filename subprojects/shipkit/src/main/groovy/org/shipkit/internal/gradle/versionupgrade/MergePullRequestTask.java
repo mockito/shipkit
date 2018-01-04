@@ -21,6 +21,7 @@ public class MergePullRequestTask extends DefaultTask {
     @Input private String forkRepositoryName;
     @Input private String versionBranch;
     @Input private String sha;
+    @Input private String url;
 
     private boolean dryRun;
     private UpgradeDependencyExtension versionUpgrade;
@@ -124,11 +125,28 @@ public class MergePullRequestTask extends DefaultTask {
         this.versionBranch = versionBranch;
     }
 
-    public String getSha() {
+    /**
+     * Sha of pull request
+     */
+    public String getPullRequestSha() {
         return sha;
     }
 
-    public void setSha(String sha) {
+    /**
+     * See {@link #getPullRequestSha()}
+     */
+    public void setPullRequestSha(String sha) {
         this.sha = sha;
+    }
+
+    /**
+     * Url of pull request
+     */
+    public String getPullRequestUrl() {
+        return url;
+    }
+
+    public void setPullRequestUrl(String url) {
+        this.url = url;
     }
 }

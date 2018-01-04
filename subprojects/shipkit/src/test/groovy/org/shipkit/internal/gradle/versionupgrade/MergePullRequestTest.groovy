@@ -33,7 +33,7 @@ class MergePullRequestTest extends Specification {
         mergePullRequestTask.setUpstreamRepositoryName("mockito/shipkit-example")
         mergePullRequestTask.setForkRepositoryName("wwilk/shipkit-example")
         mergePullRequestTask.setVersionUpgrade(versionUpgrade)
-        mergePullRequestTask.setSha('testSha')
+        mergePullRequestTask.setPullRequestSha('testSha')
 
         def gitHubApi = Mock(GitHubApi)
         def githubStatusCheck = Mock(GitHubStatusCheck)
@@ -56,7 +56,8 @@ class MergePullRequestTest extends Specification {
         mergePullRequestTask.setUpstreamRepositoryName("mockito/shipkit-example")
         mergePullRequestTask.setForkRepositoryName("wwilk/shipkit-example")
         mergePullRequestTask.setVersionUpgrade(versionUpgrade)
-        mergePullRequestTask.setSha('testSha')
+        mergePullRequestTask.setPullRequestSha('testSha')
+        mergePullRequestTask.setPullRequestUrl('url-1')
 
         def gitHubApi = Mock(GitHubApi)
         def githubStatusCheck = Mock(GitHubStatusCheck)
@@ -68,7 +69,7 @@ class MergePullRequestTest extends Specification {
         1 * githubStatusCheck.checkStatusWithTimeout(mergePullRequestTask, gitHubApi, 'testSha') >> false
 
         def e = thrown(GradleException)
-        e.message == "Exception happen while trying to merge pull request. Merge aborted. Original issue: Too many retries while trying to merge #pullRequestNumber. Merge aborted"
+        e.message == "Exception happen while trying to merge pull request. Merge aborted. Original issue: Too many retries while trying to merge url-1. Merge aborted"
     }
 
     def "should throw exception in case of error"() {
@@ -81,7 +82,8 @@ class MergePullRequestTest extends Specification {
         mergePullRequestTask.setUpstreamRepositoryName("mockito/shipkit-example")
         mergePullRequestTask.setForkRepositoryName("wwilk/shipkit-example")
         mergePullRequestTask.setVersionUpgrade(versionUpgrade)
-        mergePullRequestTask.setSha('testSha')
+        mergePullRequestTask.setPullRequestSha('testSha')
+        mergePullRequestTask.setPullRequestUrl('url-1')
         def gitHubApi = Mock(GitHubApi)
         def githubStatusCheck = Mock(GitHubStatusCheck)
 
@@ -92,6 +94,6 @@ class MergePullRequestTest extends Specification {
         1 * githubStatusCheck.checkStatusWithTimeout(mergePullRequestTask, gitHubApi, 'testSha')
 
         def e = thrown(GradleException)
-        e.message == "Exception happen while trying to merge pull request. Merge aborted. Original issue: Too many retries while trying to merge #pullRequestNumber. Merge aborted"
+        e.message == "Exception happen while trying to merge pull request. Merge aborted. Original issue: Too many retries while trying to merge url-1. Merge aborted"
     }
 }

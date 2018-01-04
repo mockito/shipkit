@@ -6,6 +6,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 public class OpenPullRequest {
     private String sha;
     private String ref;
+    private String url;
 
     public String getSha() {
         return sha;
@@ -23,17 +24,26 @@ public class OpenPullRequest {
         this.ref = ref;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) {
+            return true;
+        }
 
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         OpenPullRequest that = (OpenPullRequest) o;
 
         return new EqualsBuilder()
             .append(sha, that.sha)
             .append(ref, that.ref)
+            .append(url, that.url)
             .isEquals();
     }
 
@@ -42,6 +52,11 @@ public class OpenPullRequest {
         return new HashCodeBuilder(17, 37)
             .append(sha)
             .append(ref)
+            .append(url)
             .toHashCode();
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

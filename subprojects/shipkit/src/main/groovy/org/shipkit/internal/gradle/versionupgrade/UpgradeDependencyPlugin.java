@@ -279,7 +279,8 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                     public void execute(OpenPullRequest openPullRequest) {
                         task.setVersionBranch(getCurrentVersionBranchName(upgradeDependencyExtension.getDependencyName(),
                             upgradeDependencyExtension.getNewVersion(), openPullRequest.getRef()));
-                        task.setSha(openPullRequest.getSha());
+                        task.setPullRequestSha(openPullRequest.getSha());
+                        task.setPullRequestUrl(openPullRequest.getUrl());
                     }
                 });
 

@@ -31,7 +31,8 @@ class MergePullRequest {
         IncubatingWarning.warn("merge pull requests");
         LOG.lifecycle("Waiting for status of a pull request in repository '{}' between base = '{}' and head = '{}'.", task.getUpstreamRepositoryName(), task.getVersionUpgrade().getBaseBranch(), headBranch);
 
-        String sha = task.getSha();
+        String sha = task.getPullRequestSha();
+        String url = task.getPullRequestUrl();
         String body = "{" +
             "  \"head\": \"" + headBranch + "\"," +
             "  \"base\": \"" + task.getVersionUpgrade().getBaseBranch() + "\"" +
@@ -41,7 +42,7 @@ class MergePullRequest {
             boolean allChecksOk = gitHubStatusCheck.checkStatusWithTimeout(task, gitHubApi, sha);
 
             if (!allChecksOk) {
-                throw new RuntimeException("Too many retries while trying to merge #pullRequestNumber. Merge aborted");
+                throw new RuntimeException("Too many retries while trying to merge " + url + ". Merge aborted");
             }
 
             LOG.lifecycle("All checks passed! Merging pull request in repository '{}' between base = '{}' and head = '{}'.", task.getUpstreamRepositoryName(), task.getVersionUpgrade().getBaseBranch(), headBranch);

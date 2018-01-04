@@ -27,12 +27,14 @@ class FindOpenPullRequest {
 
         for (Object pullRequest : pullRequests) {
             JsonObject head = (JsonObject) ((JsonObject) pullRequest).get("head");
+            String url = ((JsonObject) pullRequest).getString("url");
             String branchName = head.getString("ref");
             if (branchName.matches(versionBranchRegex)) {
                 LOG.lifecycle("  Found an open pull request with version upgrade on branch {}", branchName);
                 OpenPullRequest openPullRequest = new OpenPullRequest();
                 openPullRequest.setRef(head.getString("ref"));
                 openPullRequest.setSha(head.getString("sha"));
+                openPullRequest.setUrl(url);
                 return openPullRequest;
             }
         }
