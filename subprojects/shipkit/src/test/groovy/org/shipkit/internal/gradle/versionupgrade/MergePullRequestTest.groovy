@@ -42,7 +42,7 @@ class MergePullRequestTest extends Specification {
         new MergePullRequest().mergePullRequest(mergePullRequestTask, gitHubApi, githubStatusCheck)
 
         then:
-        1 * githubStatusCheck.checkStatusWithTimeout(mergePullRequestTask, gitHubApi, "testSha") >> true
+        1 * githubStatusCheck.checkStatusWithTimeout() >> true
         1 * gitHubApi.post("/repos/mockito/shipkit-example/merges", '{  "head": "wwilk:shipkit-version-upgraded-0.1.5",  "base": "master"}')
     }
 
@@ -66,7 +66,7 @@ class MergePullRequestTest extends Specification {
         new MergePullRequest().mergePullRequest(mergePullRequestTask, gitHubApi, githubStatusCheck)
 
         then:
-        1 * githubStatusCheck.checkStatusWithTimeout(mergePullRequestTask, gitHubApi, 'testSha') >> false
+        1 * githubStatusCheck.checkStatusWithTimeout() >> false
 
         def e = thrown(GradleException)
         e.message == "Exception happen while trying to merge pull request. Merge aborted. Original issue: Too many retries while trying to merge url-1. Merge aborted"
@@ -91,7 +91,7 @@ class MergePullRequestTest extends Specification {
         new MergePullRequest().mergePullRequest(mergePullRequestTask, gitHubApi, githubStatusCheck)
 
         then:
-        1 * githubStatusCheck.checkStatusWithTimeout(mergePullRequestTask, gitHubApi, 'testSha')
+        1 * githubStatusCheck.checkStatusWithTimeout()
 
         def e = thrown(GradleException)
         e.message == "Exception happen while trying to merge pull request. Merge aborted. Original issue: Too many retries while trying to merge url-1. Merge aborted"

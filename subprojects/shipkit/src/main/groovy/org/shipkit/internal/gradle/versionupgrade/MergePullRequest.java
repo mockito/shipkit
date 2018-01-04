@@ -17,7 +17,8 @@ class MergePullRequest {
     private static final Logger LOG = Logging.getLogger(MergePullRequest.class);
 
     public void mergePullRequest(MergePullRequestTask task) throws IOException {
-        mergePullRequest(task, new GitHubApi(task.getGitHubApiUrl(), task.getAuthToken()), new GitHubStatusCheck());
+        GitHubApi gitHubApi = new GitHubApi(task.getGitHubApiUrl(), task.getAuthToken());
+        mergePullRequest(task, gitHubApi, new GitHubStatusCheck(task, gitHubApi));
     }
 
     public void mergePullRequest(MergePullRequestTask task, GitHubApi gitHubApi, GitHubStatusCheck gitHubStatusCheck) throws IOException {
@@ -39,7 +40,7 @@ class MergePullRequest {
             "}";
 
         try {
-            boolean allChecksOk = gitHubStatusCheck.checkStatusWithTimeout(task, gitHubApi, sha);
+            boolean allChecksOk = gitHubStatusCheck.checkStatusWithTimeout();
 
             if (!allChecksOk) {
                 throw new RuntimeException("Too many retries while trying to merge " + url + ". Merge aborted");
