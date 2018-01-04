@@ -1,5 +1,6 @@
 package org.shipkit.internal.gradle.versionupgrade
 
+import org.shipkit.internal.gradle.git.OpenPullRequest
 import org.shipkit.internal.util.GitHubApi
 import spock.lang.Specification
 
@@ -28,9 +29,9 @@ class FindOpenPullRequestTest extends Specification {
     def "should return head->ref if it matches versionBranchRegex"() {
         given:
         def gitHubApi = Mock(GitHubApi)
-        gitHubApi.get("/repos/repo/pulls?state=open") >> "[{\"head\" : {\"ref\" : \"shipkit-1\"}} ]"
+        gitHubApi.get("/repos/repo/pulls?state=open") >> "[{\"head\" : {\"ref\" : \"shipkit-1\", \"sha\" : \"sha-1\"}} ]"
 
         expect:
-        "shipkit-1" == findOpenPullRequest.findOpenPullRequest("repo", "shipkit-[0-9]*", gitHubApi)
+        new OpenPullRequest(ref: "shipkit-1", sha: "sha-1") == findOpenPullRequest.findOpenPullRequest("repo", "shipkit-[0-9]*", gitHubApi)
     }
 }

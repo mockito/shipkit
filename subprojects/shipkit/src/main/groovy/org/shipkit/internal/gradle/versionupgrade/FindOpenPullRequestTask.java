@@ -6,6 +6,7 @@ import org.gradle.api.Task;
 import org.gradle.api.tasks.TaskAction;
 import org.json.simple.DeserializationException;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
+import org.shipkit.internal.gradle.git.OpenPullRequest;
 
 import java.io.IOException;
 
@@ -25,12 +26,11 @@ public class FindOpenPullRequestTask extends DefaultTask {
     private String gitHubApiUrl;
     private String authToken;
     private String versionBranchRegex;
-
-    private String openPullRequestBranch;
+    private OpenPullRequest openPullRequest;
 
     @TaskAction
     public void findOpenPullRequest() throws IOException, DeserializationException {
-        openPullRequestBranch = new FindOpenPullRequest().findOpenPullRequest(this);
+        openPullRequest = new FindOpenPullRequest().findOpenPullRequest(this);
     }
 
     /**
@@ -101,7 +101,7 @@ public class FindOpenPullRequestTask extends DefaultTask {
      * Returns branch of the current open pull request with version upgrade or null if it doesn't exist.
      */
     public String getOpenPullRequestBranch() {
-        return openPullRequestBranch;
+        return openPullRequest.getRef();
     }
 
     /**
@@ -119,7 +119,16 @@ public class FindOpenPullRequestTask extends DefaultTask {
         dependant.dependsOn(this);
         this.doLast(new Action<Task>() {
             public void execute(Task task) {
-                branchAction.execute(openPullRequestBranch);
+                branchAction.execute(openPullRequest.getRef());
+            }
+        });
+    }
+
+    public void provideOpenPullRequest(Task dependant, final Action<OpenPullRequest> branchAction) {
+        dependant.dependsOn(this);
+        this.doLast(new Action<Task>() {
+            public void execute(Task task) {
+                branchAction.execute(openPullRequest);
             }
         });
     }

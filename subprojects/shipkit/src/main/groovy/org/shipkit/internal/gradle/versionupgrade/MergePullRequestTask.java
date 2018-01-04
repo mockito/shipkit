@@ -20,6 +20,7 @@ public class MergePullRequestTask extends DefaultTask {
     @Input private String authToken;
     @Input private String forkRepositoryName;
     @Input private String versionBranch;
+    @Input private String sha;
 
     private boolean dryRun;
     private UpgradeDependencyExtension versionUpgrade;
@@ -123,4 +124,11 @@ public class MergePullRequestTask extends DefaultTask {
         this.versionBranch = versionBranch;
     }
 
+    public String getSha() {
+        return sha;
+    }
+
+    public void setSha(String sha) {
+        this.sha = sha;
+    }
 }

@@ -31,7 +31,7 @@ class MergePullRequest {
         IncubatingWarning.warn("merge pull requests");
         LOG.lifecycle("Waiting for status of a pull request in repository '{}' between base = '{}' and head = '{}'.", task.getUpstreamRepositoryName(), task.getVersionUpgrade().getBaseBranch(), headBranch);
 
-        String sha = retrievePullRequestSha(task, gitHubApi, headBranch);
+        String sha = task.getSha();
         String body = "{" +
             "  \"head\": \"" + headBranch + "\"," +
             "  \"base\": \"" + task.getVersionUpgrade().getBaseBranch() + "\"" +
@@ -49,12 +49,5 @@ class MergePullRequest {
         } catch (Exception e) {
             throw new GradleException(String.format("Exception happen while trying to merge pull request. Merge aborted. Original issue: %s", e.getMessage()), e);
         }
-    }
-
-    private String retrievePullRequestSha(MergePullRequestTask task, GitHubApi gitHubApi, String headBranch) throws IOException {
-        String branchResponse = gitHubApi.get("/repos/" + task.getUpstreamRepositoryName() + "/branches/" + headBranch);
-        JsonObject branch = Jsoner.deserialize(branchResponse, new JsonObject());
-        JsonObject commit = (JsonObject) branch.get("commit");
-        return commit.getString("sha");
     }
 }

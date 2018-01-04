@@ -6,6 +6,7 @@ import org.json.simple.DeserializationException;
 import org.json.simple.JsonArray;
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
+import org.shipkit.internal.gradle.git.OpenPullRequest;
 import org.shipkit.internal.util.GitHubApi;
 
 import java.io.IOException;
@@ -14,12 +15,12 @@ class FindOpenPullRequest {
 
     private static final Logger LOG = Logging.getLogger(FindOpenPullRequest.class);
 
-    public String findOpenPullRequest(FindOpenPullRequestTask task) throws IOException, DeserializationException {
+    public OpenPullRequest findOpenPullRequest(FindOpenPullRequestTask task) throws IOException, DeserializationException {
         return findOpenPullRequest(task.getUpstreamRepositoryName(), task.getVersionBranchRegex(),
             new GitHubApi(task.getGitHubApiUrl(), task.getAuthToken()));
     }
 
-    public String findOpenPullRequest(String upstreamRepositoryName, String versionBranchRegex, GitHubApi gitHubApi) throws IOException, DeserializationException {
+    public OpenPullRequest findOpenPullRequest(String upstreamRepositoryName, String versionBranchRegex, GitHubApi gitHubApi) throws IOException, DeserializationException {
         String response = gitHubApi.get("/repos/" + upstreamRepositoryName + "/pulls?state=open");
 
         JsonArray pullRequests = Jsoner.deserialize(response, new JsonArray());
@@ -29,7 +30,10 @@ class FindOpenPullRequest {
             String branchName = head.getString("ref");
             if (branchName.matches(versionBranchRegex)) {
                 LOG.lifecycle("  Found an open pull request with version upgrade on branch {}", branchName);
-                return head.getString("ref");
+                OpenPullRequest openPullRequest = new OpenPullRequest();
+                openPullRequest.setRef(head.getString("ref"));
+                openPullRequest.setSha(head.getString("sha"));
+                return openPullRequest;
             }
         }
 

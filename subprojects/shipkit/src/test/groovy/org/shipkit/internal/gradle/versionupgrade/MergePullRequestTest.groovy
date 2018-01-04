@@ -33,6 +33,8 @@ class MergePullRequestTest extends Specification {
         mergePullRequestTask.setUpstreamRepositoryName("mockito/shipkit-example")
         mergePullRequestTask.setForkRepositoryName("wwilk/shipkit-example")
         mergePullRequestTask.setVersionUpgrade(versionUpgrade)
+        mergePullRequestTask.setSha('testSha')
+
         def gitHubApi = Mock(GitHubApi)
         def githubStatusCheck = Mock(GitHubStatusCheck)
 
@@ -41,7 +43,6 @@ class MergePullRequestTest extends Specification {
 
         then:
         1 * githubStatusCheck.checkStatusWithTimeout(mergePullRequestTask, gitHubApi, "testSha") >> true
-        1 * gitHubApi.get("/repos/mockito/shipkit-example/branches/wwilk:shipkit-version-upgraded-0.1.5") >> "{\"commit\":{\"sha\": \"testSha\"}}"
         1 * gitHubApi.post("/repos/mockito/shipkit-example/merges", '{  "head": "wwilk:shipkit-version-upgraded-0.1.5",  "base": "master"}')
     }
 
@@ -55,6 +56,8 @@ class MergePullRequestTest extends Specification {
         mergePullRequestTask.setUpstreamRepositoryName("mockito/shipkit-example")
         mergePullRequestTask.setForkRepositoryName("wwilk/shipkit-example")
         mergePullRequestTask.setVersionUpgrade(versionUpgrade)
+        mergePullRequestTask.setSha('testSha')
+
         def gitHubApi = Mock(GitHubApi)
         def githubStatusCheck = Mock(GitHubStatusCheck)
 
@@ -62,7 +65,6 @@ class MergePullRequestTest extends Specification {
         new MergePullRequest().mergePullRequest(mergePullRequestTask, gitHubApi, githubStatusCheck)
 
         then:
-        1 * gitHubApi.get("/repos/mockito/shipkit-example/branches/wwilk:shipkit-version-upgraded-0.1.5") >> "{\"commit\":{\"sha\": \"testSha\"}}"
         1 * githubStatusCheck.checkStatusWithTimeout(mergePullRequestTask, gitHubApi, 'testSha') >> false
 
         def e = thrown(GradleException)
@@ -79,6 +81,7 @@ class MergePullRequestTest extends Specification {
         mergePullRequestTask.setUpstreamRepositoryName("mockito/shipkit-example")
         mergePullRequestTask.setForkRepositoryName("wwilk/shipkit-example")
         mergePullRequestTask.setVersionUpgrade(versionUpgrade)
+        mergePullRequestTask.setSha('testSha')
         def gitHubApi = Mock(GitHubApi)
         def githubStatusCheck = Mock(GitHubStatusCheck)
 
@@ -86,7 +89,6 @@ class MergePullRequestTest extends Specification {
         new MergePullRequest().mergePullRequest(mergePullRequestTask, gitHubApi, githubStatusCheck)
 
         then:
-        1 * gitHubApi.get("/repos/mockito/shipkit-example/branches/wwilk:shipkit-version-upgraded-0.1.5") >> "{\"commit\":{\"sha\": \"testSha\"}}"
         1 * githubStatusCheck.checkStatusWithTimeout(mergePullRequestTask, gitHubApi, 'testSha')
 
         def e = thrown(GradleException)

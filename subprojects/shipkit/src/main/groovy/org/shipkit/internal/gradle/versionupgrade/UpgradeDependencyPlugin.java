@@ -10,6 +10,7 @@ import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitConfigPlugin;
 import org.shipkit.internal.gradle.git.GitOriginPlugin;
 import org.shipkit.internal.gradle.git.GitUrlInfo;
+import org.shipkit.internal.gradle.git.OpenPullRequest;
 import org.shipkit.internal.gradle.git.tasks.GitCheckOutTask;
 import org.shipkit.internal.gradle.git.tasks.GitPullTask;
 import org.shipkit.internal.gradle.util.GitUtil;
@@ -273,13 +274,15 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                     }
                 });
 
-                findOpenPullRequestTask.provideBranchTo(task, new Action<String>() {
+                findOpenPullRequestTask.provideOpenPullRequest(task, new Action<OpenPullRequest>() {
                     @Override
-                    public void execute(String openPullRequestBranch) {
+                    public void execute(OpenPullRequest openPullRequest) {
                         task.setVersionBranch(getCurrentVersionBranchName(upgradeDependencyExtension.getDependencyName(),
-                            upgradeDependencyExtension.getNewVersion(), openPullRequestBranch));
+                            upgradeDependencyExtension.getNewVersion(), openPullRequest.getRef()));
+                        task.setSha(openPullRequest.getSha());
                     }
                 });
+
             }
         });
 
