@@ -36,13 +36,13 @@ public class GitHubStatusCheck {
 
     private boolean stateResolver(JsonObject status) {
         Collection<JsonObject> statuses = status.getCollection("statuses");
-        if(status.getString("state").equals("success")){
+        if (status.getString("state").equals("success")) {
             return true;
         }
 
-        if(hasErrorStates(status)) {
+        if (hasErrorStates(status)) {
             JsonObject firstError = findFirstError(statuses);
-            if(firstError != null) {
+            if (firstError != null) {
                 throw new RuntimeException(String.format(
                     "Pull request %s cannot be merged. %s. You can check details here: %s",
                     "",
