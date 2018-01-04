@@ -174,7 +174,6 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
         task.versionUpgrade == versionUpgrade
     }
 
-
     def "should return open pull request branch if it is not null"() {
         expect:
         "openPR" == UpgradeDependencyPlugin.getCurrentVersionBranchName(null, null, "openPR")

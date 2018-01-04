@@ -63,7 +63,7 @@ class MergePullRequestTest extends Specification {
 
         then:
         1 * gitHubApi.get("/repos/mockito/shipkit-example/branches/wwilk:shipkit-version-upgraded-0.1.5") >> "{\"commit\":{\"sha\": \"testSha\"}}"
-        1 * githubStatusCheck.checkStatusWithTimeout(mergePullRequestTask,gitHubApi, 'testSha') >> false
+        1 * githubStatusCheck.checkStatusWithTimeout(mergePullRequestTask, gitHubApi, 'testSha') >> false
 
         def e = thrown(GradleException)
         e.message == "Exception happen while trying to merge pull request. Merge aborted. Original issue: Too many retries while trying to merge #pullRequestNumber. Merge aborted"
