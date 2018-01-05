@@ -30,6 +30,7 @@ public class ShipkitConfiguration {
     private final Team team = new Team();
 
     private String previousReleaseVersion;
+    private boolean dryRun;
 
     public ShipkitConfiguration() {
         this(new EnvVariables());
@@ -57,19 +58,11 @@ public class ShipkitConfiguration {
 
         team.setContributors(Collections.<String>emptyList());
         team.setDevelopers(Collections.<String>emptyList());
+        team.setIgnoredContributors(Collections.<String>emptyList());
     }
 
     ShipkitConfiguration(ShipkitConfigurationStore store) {
         this.store = store;
-    }
-
-    private boolean dryRun;
-
-    /**
-     * See {@link #isDryRun()}
-     */
-    public void setDryRun(boolean dryRun) {
-        this.dryRun = dryRun;
     }
 
     /**
@@ -79,6 +72,13 @@ public class ShipkitConfiguration {
      */
     public boolean isDryRun() {
         return dryRun;
+    }
+
+    /**
+     * See {@link #isDryRun()}
+     */
+    public void setDryRun(boolean dryRun) {
+        this.dryRun = dryRun;
     }
 
     public GitHub getGitHub() {
@@ -98,6 +98,13 @@ public class ShipkitConfiguration {
     }
 
     /**
+     * Return last previously released version number.
+     */
+    public String getPreviousReleaseVersion() {
+        return previousReleaseVersion;
+    }
+
+    /**
      * See {@link #getPreviousReleaseVersion()}
      */
     public void setPreviousReleaseVersion(String previousReleaseVersion) {
@@ -105,10 +112,17 @@ public class ShipkitConfiguration {
     }
 
     /**
-     * Return last previously released version number.
+     * Provides 'lenient' copy of this configuration instance,
+     * that does not fail fast when one accesses a property that is not configured (e.g. is null).
+     * <p>
+     * By default, release configuration object fails fast in this scenario.
+     * This is a good default because it helps us identify missing configuration early.
+     * However sometimes we want to check if the user has configured a property (like for GitHub write token) without failing.
+     *
+     * @return lenient copy of this configuration instance
      */
-    public String getPreviousReleaseVersion() {
-        return previousReleaseVersion;
+    public ShipkitConfiguration getLenient() {
+        return new ShipkitConfiguration(store.getLenient());
     }
 
     public class GitHub {
@@ -259,6 +273,15 @@ public class ShipkitConfiguration {
         }
 
         /**
+         * Get the Publication Repository
+         *
+         * @see #setPublicationRepository(String)
+         */
+        public String getPublicationRepository() {
+            return store.getString("releaseNotes.publicationRepository");
+        }
+
+        /**
          * Set the Publication Repository where we look for your published binary. Version will be concatenated to it.
          * It is currently used to configure repository Badge URL when generating release notes.
          * E.g.
@@ -273,15 +296,6 @@ public class ShipkitConfiguration {
          */
         public void setPublicationRepository(String publicationRepository) {
             store.put("releaseNotes.publicationRepository", publicationRepository);
-        }
-
-        /**
-         * Get the Publication Repository
-         *
-         * @see #setPublicationRepository(String)
-         */
-        public String getPublicationRepository() {
-            return store.getString("releaseNotes.publicationRepository");
         }
     }
 
@@ -409,19 +423,21 @@ public class ShipkitConfiguration {
             validateTeamMembers(contributors);
             store.put("team.contributors", contributors);
         }
-    }
 
-    /**
-     * Provides 'lenient' copy of this configuration instance,
-     * that does not fail fast when one accesses a property that is not configured (e.g. is null).
-     * <p>
-     * By default, release configuration object fails fast in this scenario.
-     * This is a good default because it helps us identify missing configuration early.
-     * However sometimes we want to check if the user has configured a property (like for GitHub write token) without failing.
-     *
-     * @return lenient copy of this configuration instance
-     */
-    public ShipkitConfiguration getLenient() {
-        return new ShipkitConfiguration(store.getLenient());
+        /**
+         * Contributors to be ignored in release notes and generated pom file.
+         * It should be VCS name (e.g. 'Szczepan Faber', 'shipkit-org', 'Marcin Stachniuk')
+         * Ignored contributors takes precedence over contributors configuration
+         */
+        public Collection<String> getIgnoredContributors() {
+            return store.getCollection("team.ignoredContributors");
+        }
+
+        /**
+         * See {@link #getIgnoredContributors()}
+         */
+        public void setIgnoredContributors(Collection<String> ignoredContributors) {
+            store.put("team.ignoredContributors", ignoredContributors);
+        }
     }
 }

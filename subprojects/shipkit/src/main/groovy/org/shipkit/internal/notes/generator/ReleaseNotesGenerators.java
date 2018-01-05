@@ -15,11 +15,11 @@ import java.io.File;
 public class ReleaseNotesGenerators {
 
     /**
-     * @param workDir the working directory where 'git' operations will be executed
-     * @param gitHubApiUrl GitHub API endpoint address, for example: https://api.github.com
-     * @param gitHubRepository GitHub gitHubRepository in format USER|COMPANY/REPO_NAME, for example: mockito/mockito
+     * @param workDir           the working directory where 'git' operations will be executed
+     * @param gitHubApiUrl      GitHub API endpoint address, for example: https://api.github.com
+     * @param gitHubRepository  GitHub gitHubRepository in format USER|COMPANY/REPO_NAME, for example: mockito/mockito
      * @param readOnlyAuthToken read only auth token used to communicate with GitHub
-     * @param ignoredCommit responsible decide if commits should not be included in release notes
+     * @param ignoredCommit     responsible for deciding if commits should not be included in release notes
      */
     public static ReleaseNotesGenerator releaseNotesGenerator(File workDir, String gitHubApiUrl, String gitHubRepository,
                                                               String readOnlyAuthToken, Predicate<Commit> ignoredCommit) {

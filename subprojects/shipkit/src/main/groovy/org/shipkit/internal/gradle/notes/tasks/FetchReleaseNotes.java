@@ -3,6 +3,7 @@ package org.shipkit.internal.gradle.notes.tasks;
 import org.gradle.api.GradleException;
 import org.shipkit.gradle.notes.FetchReleaseNotesTask;
 import org.shipkit.internal.gradle.util.ReleaseNotesSerializer;
+import org.shipkit.internal.notes.contributors.IgnoredContributor;
 import org.shipkit.internal.notes.generator.ReleaseNotesGenerator;
 import org.shipkit.internal.notes.generator.ReleaseNotesGenerators;
 import org.shipkit.internal.notes.model.ReleaseNotesData;
@@ -27,9 +28,11 @@ public class FetchReleaseNotes {
     }
 
     private void performFetchReleaseNotes(FetchReleaseNotesTask task) throws RevisionNotFoundException {
+        IgnoredContributor ignoredContributor = IgnoredContributor.of(task.getIgnoredContributors());
+        IgnoredCommit ignoredCommit = new IgnoredCommit(task.getIgnoreCommitsContaining(), ignoredContributor);
         ReleaseNotesGenerator generator = ReleaseNotesGenerators.releaseNotesGenerator(
             task.getGitWorkDir(), task.getGitHubApiUrl(), task.getGitHubRepository(),
-            task.getGitHubReadOnlyAuthToken(), new IgnoredCommit(task.getIgnoreCommitsContaining()));
+            task.getGitHubReadOnlyAuthToken(), ignoredCommit);
 
         List<String> targetVersions = task.getPreviousVersion() == null ? new ArrayList<String>() : singletonList(task.getPreviousVersion());
         Collection<ReleaseNotesData> releaseNotes = generator.generateReleaseNotesData(

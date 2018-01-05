@@ -1,12 +1,15 @@
 package org.shipkit.internal.notes.contributors;
 
+import org.shipkit.internal.notes.model.Contributor;
 import org.shipkit.internal.notes.model.ProjectContributor;
+import org.shipkit.internal.notes.util.Predicate;
 
 import java.io.Serializable;
 import java.util.*;
 
 public class DefaultProjectContributorsSet implements ProjectContributorsSet, Serializable {
 
+    private final Predicate<Contributor> ignoredContributor;
     //This set is used to manage uniqueness of contributors:
     private final Set<ProjectContributor> contributors = new HashSet<ProjectContributor>();
     //To keep sorted contributors ready to be used:
@@ -14,9 +17,17 @@ public class DefaultProjectContributorsSet implements ProjectContributorsSet, Se
     //For fast lookups:
     private final Map<String, ProjectContributor> map = new HashMap<String, ProjectContributor>();
 
+    public DefaultProjectContributorsSet() {
+        this.ignoredContributor = IgnoredContributor.none();
+    }
+
+    public DefaultProjectContributorsSet(Collection<String> ignoredContributors) {
+        this.ignoredContributor = IgnoredContributor.of(ignoredContributors);
+    }
+
     @Override
     public void addContributor(ProjectContributor contributor) {
-        if (contributors.add(contributor)) {
+        if (!ignoredContributor.isTrue(contributor) && contributors.add(contributor)) {
             //avoiding duplicates in the sorted collection, see unit tests
             sorted.add(contributor);
             map.put(contributor.getName(), contributor);

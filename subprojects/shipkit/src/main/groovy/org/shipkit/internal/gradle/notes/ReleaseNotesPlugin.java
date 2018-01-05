@@ -61,6 +61,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
                 t.setPreviousVersion(conf.getPreviousReleaseVersion());
                 t.setTagPrefix(conf.getGit().getTagPrefix());
                 t.setIgnoreCommitsContaining(conf.getReleaseNotes().getIgnoreCommitsContaining());
+                t.setIgnoredContributors(conf.getTeam().getIgnoredContributors());
             }
         });
 
