@@ -72,7 +72,7 @@ class MergePullRequestTest extends Specification {
         e.message == "Exception happen while trying to merge pull request. Merge aborted. Original issue: Too many retries while trying to merge url-1. Merge aborted"
     }
 
-    def "should throw exception in case of error"() {
+    def "should throw proper exception in case of error"() {
         given:
         def tasksContainer = new ProjectBuilder().build().tasks
         def mergePullRequestTask = tasksContainer.create("mergePullRequestTask", MergePullRequestTask)
