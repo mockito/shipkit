@@ -5,24 +5,18 @@ import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
 import org.shipkit.internal.gradle.util.FileUtil;
 import org.shipkit.internal.gradle.util.ReleaseNotesSerializer;
-import org.shipkit.internal.gradle.util.team.TeamMember;
-import org.shipkit.internal.gradle.util.team.TeamParser;
-import org.shipkit.internal.notes.contributors.DefaultContributor;
 import org.shipkit.internal.notes.contributors.DefaultProjectContributorsSet;
 import org.shipkit.internal.notes.contributors.ProjectContributorsSerializer;
 import org.shipkit.internal.notes.contributors.ProjectContributorsSet;
 import org.shipkit.internal.notes.format.ReleaseNotesFormatters;
 import org.shipkit.internal.notes.header.HeaderProvider;
 import org.shipkit.internal.notes.model.Contributor;
-import org.shipkit.internal.notes.model.ProjectContributor;
 import org.shipkit.internal.notes.model.ReleaseNotesData;
 import org.shipkit.internal.notes.util.IOUtil;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class UpdateReleaseNotes {
 
@@ -43,34 +37,16 @@ public class UpdateReleaseNotes {
         }
     }
 
-    static Map<String, Contributor> contributorsMap(Collection<String> contributorsFromConfiguration,
+    Map<String, Contributor> contributorsMap(Collection<String> contributorsFromConfiguration,
                                                     ProjectContributorsSet contributorsFromGitHub,
                                                     Collection<String> developers,
                                                     String githubUrl) {
-        Map<String, Contributor> out = new HashMap<String, Contributor>();
-        out.putAll(transform(contributorsFromConfiguration, githubUrl));
-        out.putAll(transform(contributorsFromGitHub.getAllContributors()));
-        out.putAll(transform(developers, githubUrl));
-        return out;
+        return new ContributorsMapBuilder(githubUrl)
+            .withContributorsFromConfiguration(contributorsFromConfiguration)
+            .withContributorsFromGitHub(contributorsFromGitHub)
+            .withDevelopers(developers).build();
     }
 
-    private static Map<String, Contributor> transform(Collection<String> contributors, String githubUrl) {
-        Map<String, Contributor> contributorMap = new HashMap<String, Contributor>();
-        for (String contributor : contributors) {
-            TeamMember member = TeamParser.parsePerson(contributor);
-            contributorMap.put(member.name, new DefaultContributor(member.name, member.gitHubUser,
-                githubUrl + "/" + member.gitHubUser));
-        }
-        return contributorMap;
-    }
-
-    private static Map<String, Contributor> transform(Set<ProjectContributor> projectContributors) {
-        Map<String, Contributor> contributorMap = new HashMap<String, Contributor>();
-        for (ProjectContributor projectContributor : projectContributors) {
-            contributorMap.put(projectContributor.getName(), projectContributor);
-        }
-        return contributorMap;
-    }
 
     public String generateNewContent(UpdateReleaseNotesTask task, HeaderProvider headerProvider) {
         LOG.lifecycle("  Building new release notes based on {}", task.getReleaseNotesFile());

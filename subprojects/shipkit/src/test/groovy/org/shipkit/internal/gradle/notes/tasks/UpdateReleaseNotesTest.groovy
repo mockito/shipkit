@@ -37,7 +37,7 @@ class UpdateReleaseNotesTest extends Specification {
 
     def "check contributorsMap"() {
         when:
-        def map = UpdateReleaseNotes.contributorsMap(contributorsFromConfig , new DefaultProjectContributorsSet(), developers, githubUrl)
+        def map = update.contributorsMap(contributorsFromConfig , new DefaultProjectContributorsSet(), developers, githubUrl)
 
         then:
         map.size() == expected.size()
