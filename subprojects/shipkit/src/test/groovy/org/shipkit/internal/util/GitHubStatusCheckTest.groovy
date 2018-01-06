@@ -8,7 +8,6 @@ class GitHubStatusCheckTest extends Specification {
     MergePullRequestTask task = Mock(MergePullRequestTask)
     GitHubApi gitHubApi = Mock(GitHubApi)
 
-
     def "should return true if status true before timeout"() {
         given:
         GitHubStatusCheck gitHubStatusCheck = new GitHubStatusCheck(task, gitHubApi)
