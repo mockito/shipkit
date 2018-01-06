@@ -285,7 +285,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                     }
                 });
 
-                findOpenPullRequestTask.provideOpenPullRequest(task, new Action<OpenPullRequest>() {
+                createPullRequestTask.provideCreatedPullRequest(task, new Action<OpenPullRequest>() {
                     @Override
                     public void execute(OpenPullRequest openPullRequest) {
                         if (openPullRequest != null) {
@@ -294,18 +294,8 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                     }
                 });
 
-                if (task.getPullRequestSha() != null) {
-                    createPullRequestTask.provideCreatedPullRequest(task, new Action<OpenPullRequest>() {
-                        @Override
-                        public void execute(OpenPullRequest openPullRequest) {
-                            if (openPullRequest != null) {
-                                setPullRequestDataToTask(openPullRequest, task);
-                            }
-                        }
-                    });
-                }
-
                 task.onlyIf(isPullRequestOpen(task));
+                task.onlyIf(wasOpenPullRequestNotFound(findOpenPullRequestTask));
                 task.onlyIf(wasBuildFileUpdatedSpec(replaceVersionTask));
             }
         });
