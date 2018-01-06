@@ -1,6 +1,5 @@
 package org.shipkit.internal.gradle.versionupgrade
 
-import org.shipkit.internal.gradle.git.OpenPullRequest
 import org.shipkit.internal.util.GitHubApi
 import spock.lang.Specification
 
@@ -32,6 +31,9 @@ class FindOpenPullRequestTest extends Specification {
         gitHubApi.get("/repos/repo/pulls?state=open") >> "[{\"url\": \"url-1\", \"head\" : {\"ref\" : \"shipkit-1\", \"sha\" : \"sha-1\"}} ]"
 
         expect:
-        new OpenPullRequest(ref: "shipkit-1", sha: "sha-1", "url": "url-1") == findOpenPullRequest.findOpenPullRequest("repo", "shipkit-[0-9]*", gitHubApi)
+        def openPullRequest = findOpenPullRequest.findOpenPullRequest("repo", "shipkit-[0-9]*", gitHubApi)
+        openPullRequest.ref == "shipkit-1"
+        openPullRequest.sha == "sha-1"
+        openPullRequest.url == "url-1"
     }
 }
