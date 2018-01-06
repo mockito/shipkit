@@ -15,15 +15,25 @@ public class GitHubStatusCheck {
 
     private MergePullRequestTask task;
     private GitHubApi gitHubApi;
+    private final int amountOfRetries;
+
+
+
+    public GitHubStatusCheck(MergePullRequestTask task, GitHubApi gitHubApi, int amountOfRetries) {
+        this.task = task;
+        this.gitHubApi = gitHubApi;
+        this.amountOfRetries = amountOfRetries;
+    }
 
     public GitHubStatusCheck(MergePullRequestTask task, GitHubApi gitHubApi) {
         this.task = task;
         this.gitHubApi = gitHubApi;
+        this.amountOfRetries = 20;
     }
 
-    public boolean checkStatusWithTimeout() throws IOException, InterruptedException {
+    public boolean checkStatusWithRetries() throws IOException, InterruptedException {
         int timeouts = 0;
-        while (timeouts < 20) {
+        while (timeouts < amountOfRetries) {
             if (statusCheck(task, gitHubApi)) {
                 return true;
             } else {

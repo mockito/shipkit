@@ -5,8 +5,6 @@ import java.io.IOException;
 import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.json.simple.JsonObject;
-import org.json.simple.Jsoner;
 import org.shipkit.internal.gradle.util.BranchUtils;
 import org.shipkit.internal.util.GitHubApi;
 import org.shipkit.internal.util.GitHubStatusCheck;
@@ -32,7 +30,6 @@ class MergePullRequest {
         IncubatingWarning.warn("merge pull requests");
         LOG.lifecycle("Waiting for status of a pull request in repository '{}' between base = '{}' and head = '{}'.", task.getUpstreamRepositoryName(), task.getVersionUpgrade().getBaseBranch(), headBranch);
 
-        String sha = task.getPullRequestSha();
         String url = task.getPullRequestUrl();
         String body = "{" +
             "  \"head\": \"" + headBranch + "\"," +
@@ -40,7 +37,7 @@ class MergePullRequest {
             "}";
 
         try {
-            boolean allChecksOk = gitHubStatusCheck.checkStatusWithTimeout();
+            boolean allChecksOk = gitHubStatusCheck.checkStatusWithRetries();
 
             if (!allChecksOk) {
                 throw new RuntimeException("Too many retries while trying to merge " + url + ". Merge aborted");

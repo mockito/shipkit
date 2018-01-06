@@ -8,31 +8,49 @@ class GitHubStatusCheckTest extends Specification {
     MergePullRequestTask task = Mock(MergePullRequestTask)
     GitHubApi gitHubApi = Mock(GitHubApi)
 
-    GitHubStatusCheck gitHubStatusCheck = new GitHubStatusCheck(task, gitHubApi)
 
     def "should return true if status true before timeout"() {
         given:
+        GitHubStatusCheck gitHubStatusCheck = new GitHubStatusCheck(task, gitHubApi)
+
         task.getPullRequestSha() >> "sha"
         task.getUpstreamRepositoryName() >> "upstreamRepo"
         1 * gitHubApi.get("/repos/upstreamRepo/commits/sha/status") >> "{\"state\": \"pending\"}"
         1 * gitHubApi.get("/repos/upstreamRepo/commits/sha/status") >> "{\"state\": \"success\"}"
         when:
-        def result = gitHubStatusCheck.checkStatusWithTimeout()
+        def result = gitHubStatusCheck.checkStatusWithRetries()
         then:
         result == true
     }
 
-    def "should return true if has error status"() {
+    def "should throw exception if has error status"() {
         given:
+        GitHubStatusCheck gitHubStatusCheck = new GitHubStatusCheck(task, gitHubApi)
+
         task.getPullRequestSha() >> "sha"
         task.getPullRequestUrl() >> "prURL"
         task.getUpstreamRepositoryName() >> "upstreamRepo"
 
         1 * gitHubApi.get("/repos/upstreamRepo/commits/sha/status") >> "{\"state\": \"error\", \"statuses\":[{\"state\":\"error\", \"description\": \"fail\", \"targetUrl\":\"tURL\"}]}"
         when:
-        gitHubStatusCheck.checkStatusWithTimeout()
+        gitHubStatusCheck.checkStatusWithRetries()
         then:
         def e = thrown(RuntimeException)
         e.message == "Pull request prURL cannot be merged. fail. You can check details here: tURL"
+    }
+
+    def "should return true if has error status"() {
+        given:
+        GitHubStatusCheck gitHubStatusCheck = new GitHubStatusCheck(task, gitHubApi, 1)
+
+        task.getPullRequestSha() >> "sha"
+        task.getPullRequestUrl() >> "prURL"
+        task.getUpstreamRepositoryName() >> "upstreamRepo"
+
+        1 * gitHubApi.get("/repos/upstreamRepo/commits/sha/status") >> "{\"state\": \"error\", \"statuses\":[{\"state\":\"pending\"}]}"
+        when:
+        def result = gitHubStatusCheck.checkStatusWithRetries()
+        then:
+        !result
     }
 }
