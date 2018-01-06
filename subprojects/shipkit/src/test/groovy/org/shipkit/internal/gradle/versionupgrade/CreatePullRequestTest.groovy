@@ -10,12 +10,10 @@ class CreatePullRequestTest extends Specification {
         given:
         def tasksContainer = new ProjectBuilder().build().tasks
         def createPullRequestTask = tasksContainer.create("createPullRequest", CreatePullRequestTask)
-        def versionUpgrade = new UpgradeDependencyExtension(
-            baseBranch: "master", dependencyName: "shipkit", newVersion: "0.1.5")
         createPullRequestTask.setVersionBranch("shipkit-version-upgraded-0.1.5")
         createPullRequestTask.setUpstreamRepositoryName("mockito/shipkit-example")
         createPullRequestTask.setForkRepositoryName("wwilk/shipkit-example")
-        createPullRequestTask.setVersionUpgrade(versionUpgrade)
+        createPullRequestTask.setBaseBranch("master")
         createPullRequestTask.setPullRequestDescription("Description of this PR")
         createPullRequestTask.setPullRequestTitle("Title of this PR")
         def gitHubApi = Mock(GitHubApi)

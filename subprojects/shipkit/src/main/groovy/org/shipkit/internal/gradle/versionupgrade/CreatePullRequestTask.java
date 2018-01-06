@@ -24,9 +24,9 @@ public class CreatePullRequestTask extends DefaultTask {
     @Input private String forkRepositoryName;
     @Input private String pullRequestDescription;
     @Input private String pullRequestTitle;
+    @Input private String baseBranch;
 
     private boolean dryRun;
-    private UpgradeDependencyExtension versionUpgrade;
 
     @TaskAction
     public void createPullRequest() throws IOException {
@@ -104,14 +104,6 @@ public class CreatePullRequestTask extends DefaultTask {
         this.versionBranch = versionBranch;
     }
 
-    public UpgradeDependencyExtension getVersionUpgrade() {
-        return versionUpgrade;
-    }
-
-    public void setVersionUpgrade(UpgradeDependencyExtension versionUpgrade) {
-        this.versionUpgrade = versionUpgrade;
-    }
-
     /**
      * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.GitHub#dryRun}
      */
@@ -154,5 +146,17 @@ public class CreatePullRequestTask extends DefaultTask {
         this.pullRequestTitle = pullRequestTitle;
     }
 
+    /**
+     * See {@link UpgradeDependencyExtension#baseBranch}
+     */
+    public String getBaseBranch() {
+        return baseBranch;
+    }
 
+    /**
+     * See {@link UpgradeDependencyExtension#baseBranch}
+     */
+    public void setBaseBranch(String baseBranch) {
+        this.baseBranch = baseBranch;
+    }
 }

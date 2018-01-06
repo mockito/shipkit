@@ -25,13 +25,13 @@ class CreatePullRequest {
 
         IncubatingWarning.warn("creating pull requests");
         LOG.lifecycle("  Creating a pull request of title '{}' in repository '{}' between base = '{}' and head = '{}'.",
-            task.getPullRequestTitle(), task.getUpstreamRepositoryName(), task.getVersionUpgrade().getBaseBranch(), headBranch);
+            task.getPullRequestTitle(), task.getUpstreamRepositoryName(), task.getBaseBranch(), headBranch);
 
         String body = "{" +
             "  \"title\": \"" + task.getPullRequestTitle() + "\"," +
             "  \"body\": \"" + task.getPullRequestDescription() + "\"," +
             "  \"head\": \"" + headBranch + "\"," +
-            "  \"base\": \"" + task.getVersionUpgrade().getBaseBranch() + "\"," +
+            "  \"base\": \"" + task.getBaseBranch() + "\"," +
             "  \"maintainer_can_modify\": true" +
             "}";
 
