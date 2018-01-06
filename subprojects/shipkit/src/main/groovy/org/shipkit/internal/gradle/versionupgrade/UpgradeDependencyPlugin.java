@@ -305,6 +305,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                     });
                 }
 
+                task.onlyIf(isPullRequestOpen(task));
                 task.onlyIf(wasBuildFileUpdatedSpec(replaceVersionTask));
             }
         });
@@ -358,6 +359,15 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
             @Override
             public boolean isSatisfiedBy(Task element) {
                 return replaceVersionTask.isBuildFileUpdated();
+            }
+        };
+    }
+
+    private Spec<Task> isPullRequestOpen(final MergePullRequestTask mergePullRequestTask) {
+        return new Spec<Task>() {
+            @Override
+            public boolean isSatisfiedBy(Task element) {
+                return mergePullRequestTask.getPullRequestSha() != null && mergePullRequestTask.getPullRequestUrl() != null;
             }
         };
     }
