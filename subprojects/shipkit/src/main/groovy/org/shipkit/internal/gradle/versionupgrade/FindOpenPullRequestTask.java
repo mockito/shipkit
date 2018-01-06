@@ -100,6 +100,7 @@ public class FindOpenPullRequestTask extends DefaultTask {
     /**
      * Returns branch of the current open pull request with version upgrade or null if it doesn't exist.
      */
+    //TODO Refactor this method to replace provideBranchTo method
     public String getOpenPullRequestBranch() {
         return openPullRequest.getRef();
     }
