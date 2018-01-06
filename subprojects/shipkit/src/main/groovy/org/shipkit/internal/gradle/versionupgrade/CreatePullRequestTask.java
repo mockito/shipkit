@@ -1,8 +1,11 @@
 package org.shipkit.internal.gradle.versionupgrade;
 
+import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.Task;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
+import org.shipkit.internal.gradle.git.OpenPullRequest;
 
 import java.io.IOException;
 
@@ -28,9 +31,12 @@ public class CreatePullRequestTask extends DefaultTask {
     private boolean dryRun;
     private UpgradeDependencyExtension versionUpgrade;
 
+
+    private OpenPullRequest pullRequest;
+
     @TaskAction
     public void createPullRequest() throws IOException {
-        new CreatePullRequest().createPullRequest(this);
+        pullRequest = new CreatePullRequest().createPullRequest(this);
     }
 
     /**
@@ -154,5 +160,32 @@ public class CreatePullRequestTask extends DefaultTask {
         this.pullRequestTitle = pullRequestTitle;
     }
 
+    public OpenPullRequest getPullRequest() {
+        return pullRequest;
+    }
 
+    public void setPullRequest(OpenPullRequest pullRequest) {
+        this.pullRequest = pullRequest;
+    }
+
+    /**
+     * Call if you want {@param #branchAction} to be executed after this task is finished.
+     *
+     * Sometimes a task may need information about open pull request branch but the problem lies in figuring out
+     * the correct time when the task should call {@link #getPullRequest()}, because this value is only available
+     * after {@link CreatePullRequestTask} is executed.
+     *
+     * Using this method guarantees that:
+     * - the value will be already available when the callback {@param #branchAction} is executed
+     * - the task {@param #dependant} is executed after {@link CreatePullRequestTask}
+     */
+
+    public void provideCreatedPullRequest(Task dependant, final Action<OpenPullRequest> branchAction) {
+        dependant.dependsOn(this);
+        this.doLast(new Action<Task>() {
+            public void execute(Task task) {
+                branchAction.execute(pullRequest);
+            }
+        });
+    }
 }

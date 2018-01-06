@@ -4,6 +4,10 @@ import java.io.IOException;
 
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
+import org.json.simple.JsonArray;
+import org.json.simple.JsonObject;
+import org.json.simple.Jsoner;
+import org.shipkit.internal.gradle.git.OpenPullRequest;
 import org.shipkit.internal.gradle.util.BranchUtils;
 import org.shipkit.internal.util.GitHubApi;
 import org.shipkit.internal.util.IncubatingWarning;
@@ -12,14 +16,14 @@ class CreatePullRequest {
 
     private static final Logger LOG = Logging.getLogger(CreatePullRequest.class);
 
-    public void createPullRequest(CreatePullRequestTask task) throws IOException {
-        createPullRequest(task, new GitHubApi(task.getGitHubApiUrl(), task.getAuthToken()));
+    public OpenPullRequest createPullRequest(CreatePullRequestTask task) throws IOException {
+        return createPullRequest(task, new GitHubApi(task.getGitHubApiUrl(), task.getAuthToken()));
     }
 
-    public void createPullRequest(CreatePullRequestTask task, GitHubApi gitHubApi) throws IOException {
+    public OpenPullRequest createPullRequest(CreatePullRequestTask task, GitHubApi gitHubApi) throws IOException {
         if (task.isDryRun()) {
             LOG.lifecycle("  Skipping pull request creation due to dryRun = true");
-            return;
+            return null;
         }
 
         String headBranch = BranchUtils.getHeadBranch(task.getForkRepositoryName(), task.getVersionBranch());
@@ -36,6 +40,8 @@ class CreatePullRequest {
             "  \"maintainer_can_modify\": true" +
             "}";
 
-        gitHubApi.post("/repos/" + task.getUpstreamRepositoryName() + "/pulls", body);
+        String response = gitHubApi.post("/repos/" + task.getUpstreamRepositoryName() + "/pulls", body);
+        JsonObject pullRequest = Jsoner.deserialize(response, new JsonObject());
+        return BranchUtils.getOpenPullRequest(pullRequest, null);
     }
 }

@@ -101,29 +101,25 @@ public class FindOpenPullRequestTask extends DefaultTask {
      * Returns branch of the current open pull request with version upgrade or null if it doesn't exist.
      */
     //TODO Refactor this method to replace provideBranchTo method
-    public String getOpenPullRequestBranch() {
-        return openPullRequest.getRef();
+    public OpenPullRequest getOpenPullRequest() {
+        return openPullRequest;
+    }
+
+    public void setOpenPullRequest(OpenPullRequest openPullRequest) {
+        this.openPullRequest = openPullRequest;
     }
 
     /**
      * Call if you want {@param #branchAction} to be executed after this task is finished.
      *
      * Sometimes a task may need information about open pull request branch but the problem lies in figuring out
-     * the correct time when the task should call {@link #getOpenPullRequestBranch()}, because this value is only available
+     * the correct time when the task should call {@link #getOpenPullRequest()}, because this value is only available
      * after {@link FindOpenPullRequestTask} is executed.
      *
      * Using this method guarantees that:
      * - the value will be already available when the callback {@param #branchAction} is executed
      * - the task {@param #dependant} is executed after {@link FindOpenPullRequestTask}
      */
-    public void provideBranchTo(Task dependant, final Action<String> branchAction) {
-        dependant.dependsOn(this);
-        this.doLast(new Action<Task>() {
-            public void execute(Task task) {
-                branchAction.execute(openPullRequest.getRef());
-            }
-        });
-    }
 
     public void provideOpenPullRequest(Task dependant, final Action<OpenPullRequest> branchAction) {
         dependant.dependsOn(this);
