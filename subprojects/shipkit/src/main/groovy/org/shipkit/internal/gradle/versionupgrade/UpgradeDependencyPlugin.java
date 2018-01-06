@@ -245,12 +245,12 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.setVersionUpgrade(upgradeDependencyExtension);
                 task.setPullRequestTitle(getPullRequestTitle(task));
                 task.setPullRequestDescription(getPullRequestDescription(task));
+                task.setUpstreamRepositoryName(conf.getGitHub().getRepository());
 
                 gitOriginPlugin.provideOriginRepo(task, new Action<String>() {
                     @Override
                     public void execute(String originRepoName) {
                         task.setForkRepositoryName(originRepoName);
-                        task.setUpstreamRepositoryName(conf.getGitHub().getRepository());
                     }
                 });
 
@@ -276,12 +276,12 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.setDryRun(conf.isDryRun());
                 task.setAuthToken(conf.getLenient().getGitHub().getWriteAuthToken());
                 task.setVersionUpgrade(upgradeDependencyExtension);
+                task.setUpstreamRepositoryName(conf.getGitHub().getRepository());
 
                 gitOriginPlugin.provideOriginRepo(task, new Action<String>() {
                     @Override
                     public void execute(String originRepoName) {
                         task.setForkRepositoryName(originRepoName);
-                        task.setUpstreamRepositoryName(conf.getGitHub().getRepository());
                     }
                 });
 
