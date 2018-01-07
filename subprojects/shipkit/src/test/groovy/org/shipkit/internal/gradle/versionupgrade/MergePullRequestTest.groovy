@@ -27,12 +27,10 @@ class MergePullRequestTest extends Specification {
         given:
         def tasksContainer = new ProjectBuilder().build().tasks
         def mergePullRequestTask = tasksContainer.create("mergePullRequestTask", MergePullRequestTask)
-        def versionUpgrade = new UpgradeDependencyExtension(
-                baseBranch: "master", dependencyName: "shipkit", newVersion: "0.1.5")
         mergePullRequestTask.setVersionBranch("shipkit-version-upgraded-0.1.5")
         mergePullRequestTask.setUpstreamRepositoryName("mockito/shipkit-example")
         mergePullRequestTask.setForkRepositoryName("wwilk/shipkit-example")
-        mergePullRequestTask.setVersionUpgrade(versionUpgrade)
+        mergePullRequestTask.setBaseBranch("master")
         mergePullRequestTask.setPullRequestSha('testSha')
 
         def gitHubApi = Mock(GitHubApi)
@@ -50,12 +48,10 @@ class MergePullRequestTest extends Specification {
         given:
         def tasksContainer = new ProjectBuilder().build().tasks
         def mergePullRequestTask = tasksContainer.create("mergePullRequestTask", MergePullRequestTask)
-        def versionUpgrade = new UpgradeDependencyExtension(
-                baseBranch: "master", dependencyName: "shipkit", newVersion: "0.1.5")
         mergePullRequestTask.setVersionBranch("shipkit-version-upgraded-0.1.5")
         mergePullRequestTask.setUpstreamRepositoryName("mockito/shipkit-example")
         mergePullRequestTask.setForkRepositoryName("wwilk/shipkit-example")
-        mergePullRequestTask.setVersionUpgrade(versionUpgrade)
+        mergePullRequestTask.setBaseBranch("master")
         mergePullRequestTask.setPullRequestSha('testSha')
         mergePullRequestTask.setPullRequestUrl('url-1')
 
@@ -76,12 +72,10 @@ class MergePullRequestTest extends Specification {
         given:
         def tasksContainer = new ProjectBuilder().build().tasks
         def mergePullRequestTask = tasksContainer.create("mergePullRequestTask", MergePullRequestTask)
-        def versionUpgrade = new UpgradeDependencyExtension(
-                baseBranch: "master", dependencyName: "shipkit", newVersion: "0.1.5")
         mergePullRequestTask.setVersionBranch("shipkit-version-upgraded-0.1.5")
         mergePullRequestTask.setUpstreamRepositoryName("mockito/shipkit-example")
         mergePullRequestTask.setForkRepositoryName("wwilk/shipkit-example")
-        mergePullRequestTask.setVersionUpgrade(versionUpgrade)
+        mergePullRequestTask.setBaseBranch("master")
         mergePullRequestTask.setPullRequestSha('testSha')
         mergePullRequestTask.setPullRequestUrl('url-1')
         def gitHubApi = Mock(GitHubApi)

@@ -242,9 +242,9 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.setGitHubApiUrl(conf.getGitHub().getApiUrl());
                 task.setDryRun(conf.isDryRun());
                 task.setAuthToken(conf.getLenient().getGitHub().getWriteAuthToken());
-                task.setVersionUpgrade(upgradeDependencyExtension);
-                task.setPullRequestTitle(getPullRequestTitle(task));
-                task.setPullRequestDescription(getPullRequestDescription(task));
+                task.setBaseBranch(upgradeDependencyExtension.getBaseBranch());
+                task.setPullRequestTitle(getPullRequestTitle(upgradeDependencyExtension));
+                task.setPullRequestDescription(getPullRequestDescription(upgradeDependencyExtension));
                 task.setUpstreamRepositoryName(conf.getGitHub().getRepository());
 
                 gitOriginPlugin.provideOriginRepo(task, new Action<String>() {
@@ -275,7 +275,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.setGitHubApiUrl(conf.getGitHub().getApiUrl());
                 task.setDryRun(conf.isDryRun());
                 task.setAuthToken(conf.getLenient().getGitHub().getWriteAuthToken());
-                task.setVersionUpgrade(upgradeDependencyExtension);
+                task.setBaseBranch(upgradeDependencyExtension.getBaseBranch());
                 task.setUpstreamRepositoryName(conf.getGitHub().getRepository());
 
                 gitOriginPlugin.provideOriginRepo(task, new Action<String>() {
@@ -332,15 +332,14 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
         return getVersionBranchName(dependencyName, version);
     }
 
-    private String getPullRequestDescription(CreatePullRequestTask task) {
+    private String getPullRequestDescription(UpgradeDependencyExtension versionUpgrade) {
         return String.format("This pull request was automatically created by Shipkit's" +
             " 'org.shipkit.upgrade-downstream' Gradle plugin (http://shipkit.org)." +
             " Please merge it so that you are using fresh version of '%s' dependency.",
-            task.getVersionUpgrade().getDependencyName());
+            versionUpgrade.getDependencyName());
     }
 
-    private String getPullRequestTitle(CreatePullRequestTask task) {
-        UpgradeDependencyExtension versionUpgrade = task.getVersionUpgrade();
+    private String getPullRequestTitle(UpgradeDependencyExtension versionUpgrade) {
         return String.format("Version of %s upgraded to %s", versionUpgrade.getDependencyName(), versionUpgrade.getNewVersion());
     }
 

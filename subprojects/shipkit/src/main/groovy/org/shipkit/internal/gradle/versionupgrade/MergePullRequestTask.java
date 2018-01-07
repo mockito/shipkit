@@ -23,8 +23,8 @@ public class MergePullRequestTask extends DefaultTask {
     @Input private String sha;
     @Input private String url;
 
+    private String baseBranch;
     private boolean dryRun;
-    private UpgradeDependencyExtension versionUpgrade;
 
     @TaskAction
     public void mergePullRequest() throws IOException {
@@ -88,15 +88,6 @@ public class MergePullRequestTask extends DefaultTask {
         this.authToken = authToken;
     }
 
-
-    public UpgradeDependencyExtension getVersionUpgrade() {
-        return versionUpgrade;
-    }
-
-    public void setVersionUpgrade(UpgradeDependencyExtension versionUpgrade) {
-        this.versionUpgrade = versionUpgrade;
-    }
-
     /**
      * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.GitHub#dryRun}
      */
@@ -146,7 +137,24 @@ public class MergePullRequestTask extends DefaultTask {
         return url;
     }
 
+    /**
+     * See {@link #getPullRequestUrl()}
+     */
     public void setPullRequestUrl(String url) {
         this.url = url;
+    }
+
+    /**
+     * Original branch we want merge PullRequest to
+     */
+    public String getBaseBranch() {
+        return baseBranch;
+    }
+
+    /**
+     * See {@link #getBaseBranch()}
+     */
+    public void setBaseBranch(String baseBranch) {
+        this.baseBranch = baseBranch;
     }
 }

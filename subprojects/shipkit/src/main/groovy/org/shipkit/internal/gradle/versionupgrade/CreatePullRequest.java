@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.json.simple.JsonArray;
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
 import org.shipkit.internal.gradle.git.OpenPullRequest;
@@ -30,13 +29,13 @@ class CreatePullRequest {
 
         IncubatingWarning.warn("creating pull requests");
         LOG.lifecycle("  Creating a pull request of title '{}' in repository '{}' between base = '{}' and head = '{}'.",
-            task.getPullRequestTitle(), task.getUpstreamRepositoryName(), task.getVersionUpgrade().getBaseBranch(), headBranch);
+            task.getPullRequestTitle(), task.getUpstreamRepositoryName(), task.getBaseBranch(), headBranch);
 
         String body = "{" +
             "  \"title\": \"" + task.getPullRequestTitle() + "\"," +
             "  \"body\": \"" + task.getPullRequestDescription() + "\"," +
             "  \"head\": \"" + headBranch + "\"," +
-            "  \"base\": \"" + task.getVersionUpgrade().getBaseBranch() + "\"," +
+            "  \"base\": \"" + task.getBaseBranch() + "\"," +
             "  \"maintainer_can_modify\": true" +
             "}";
 

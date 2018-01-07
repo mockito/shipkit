@@ -150,7 +150,7 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
         then:
         task.gitHubApiUrl == "http://api.com"
         task.authToken == "writeToken"
-        task.versionUpgrade == versionUpgrade
+        task.baseBranch == "master"
         task.pullRequestDescription == "This pull request was automatically created by " +
                 "Shipkit's 'org.shipkit.upgrade-downstream' Gradle plugin (http://shipkit.org). " +
                 "Please merge it so that you are using fresh version of 'shipkit' dependency."
@@ -165,13 +165,13 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
         conf.gitHub.writeAuthToken = "writeToken"
 
         when:
-        def versionUpgrade = project.plugins.apply(UpgradeDependencyPlugin).upgradeDependencyExtension
+        project.plugins.apply(UpgradeDependencyPlugin).upgradeDependencyExtension
         MergePullRequestTask task = project.tasks.mergePullRequest
 
         then:
         task.gitHubApiUrl == "http://api.com"
         task.authToken == "writeToken"
-        task.versionUpgrade == versionUpgrade
+        task.baseBranch == "master"
     }
 
     def "should return open pull request branch if it is not null"() {

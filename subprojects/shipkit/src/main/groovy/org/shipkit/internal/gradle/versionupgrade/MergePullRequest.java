@@ -28,12 +28,12 @@ class MergePullRequest {
         String headBranch = BranchUtils.getHeadBranch(task.getForkRepositoryName(), task.getVersionBranch());
 
         IncubatingWarning.warn("merge pull requests");
-        LOG.lifecycle("Waiting for status of a pull request in repository '{}' between base = '{}' and head = '{}'.", task.getUpstreamRepositoryName(), task.getVersionUpgrade().getBaseBranch(), headBranch);
+        LOG.lifecycle("Waiting for status of a pull request in repository '{}' between base = '{}' and head = '{}'.", task.getUpstreamRepositoryName(), task.getBaseBranch(), headBranch);
 
         String url = task.getPullRequestUrl();
         String body = "{" +
             "  \"head\": \"" + headBranch + "\"," +
-            "  \"base\": \"" + task.getVersionUpgrade().getBaseBranch() + "\"" +
+            "  \"base\": \"" + task.getBaseBranch() + "\"" +
             "}";
 
         try {
@@ -43,7 +43,7 @@ class MergePullRequest {
                 throw new RuntimeException("Too many retries while trying to merge " + url + ". Merge aborted");
             }
 
-            LOG.lifecycle("All checks passed! Merging pull request in repository '{}' between base = '{}' and head = '{}'.", task.getUpstreamRepositoryName(), task.getVersionUpgrade().getBaseBranch(), headBranch);
+            LOG.lifecycle("All checks passed! Merging pull request in repository '{}' between base = '{}' and head = '{}'.", task.getUpstreamRepositoryName(), task.getBaseBranch(), headBranch);
             gitHubApi.post("/repos/" + task.getUpstreamRepositoryName() + "/merges", body);
         } catch (Exception e) {
             throw new GradleException(String.format("Exception happen while trying to merge pull request. Merge aborted. Original issue: %s", e.getMessage()), e);

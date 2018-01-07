@@ -29,10 +29,8 @@ public class CreatePullRequestTask extends DefaultTask {
     @Input private String pullRequestTitle;
 
     private boolean dryRun;
-    private UpgradeDependencyExtension versionUpgrade;
-
-
     private OpenPullRequest pullRequest;
+    private String baseBranch;
 
     @TaskAction
     public void createPullRequest() throws IOException {
@@ -110,14 +108,6 @@ public class CreatePullRequestTask extends DefaultTask {
         this.versionBranch = versionBranch;
     }
 
-    public UpgradeDependencyExtension getVersionUpgrade() {
-        return versionUpgrade;
-    }
-
-    public void setVersionUpgrade(UpgradeDependencyExtension versionUpgrade) {
-        this.versionUpgrade = versionUpgrade;
-    }
-
     /**
      * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.GitHub#dryRun}
      */
@@ -160,10 +150,16 @@ public class CreatePullRequestTask extends DefaultTask {
         this.pullRequestTitle = pullRequestTitle;
     }
 
+    /**
+     * Data of created PullRequest
+     */
     public OpenPullRequest getPullRequest() {
         return pullRequest;
     }
 
+    /**
+     * See {@link #getPullRequest()}
+     */
     public void setPullRequest(OpenPullRequest pullRequest) {
         this.pullRequest = pullRequest;
     }
@@ -187,5 +183,19 @@ public class CreatePullRequestTask extends DefaultTask {
                 branchAction.execute(pullRequest);
             }
         });
+    }
+
+    /**
+     * Original branch we want merge PullRequest to
+     */
+    public String getBaseBranch() {
+        return baseBranch;
+    }
+
+    /**
+     * See {@link #getBaseBranch()}
+     */
+    public void setBaseBranch(String baseBranch) {
+        this.baseBranch = baseBranch;
     }
 }
