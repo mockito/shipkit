@@ -40,6 +40,7 @@ import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
  *     <li>commitVersionUpgrade - commits replaced version</li>
  *     <li>pushVersionUpgrade - pushes the commit to the version branch</li>
  *     <li>createPullRequest - creates a pull request between base and version branches if there is no open pull request for this dependency already</li>
+ *     <li>mergePullRequest - wait for status checks defined for pull request and in case of success merge it to base branch. Task is executed only if there was no previously opened pull request. If createPullRequest task is skipped, mergePullRequest is also skipped and pull request needs to be merged manually. If no checks defined, pull request also needs to be merged manually</li>
  *     <li>performVersionUpgrade - task aggregating all of the above</li>
  * </ul>
  *

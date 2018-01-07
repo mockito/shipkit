@@ -4,6 +4,7 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
+import org.shipkit.internal.gradle.git.PullRequestStatusCheck;
 import org.shipkit.internal.gradle.versionupgrade.MergePullRequestTask;
 
 import java.io.IOException;
@@ -31,11 +32,16 @@ public class GitHubStatusCheck {
         this.amountOfRetries = 20;
     }
 
-    public boolean checkStatusWithRetries() throws IOException, InterruptedException {
+    public PullRequestStatusCheck checkStatusWithRetries() throws IOException, InterruptedException {
         int timeouts = 0;
         while (timeouts < amountOfRetries) {
-            if (statusCheck(task, gitHubApi)) {
-                return true;
+            JsonObject status = getStatusCheck(task, gitHubApi);
+            if (status.getCollection("statuses") == null || status.getCollection("statuses").size() == 0) {
+                return PullRequestStatusCheck.STATUS_NO_CHECK_DEFINED;
+            }
+
+            if (allStatusesPassed(status)) {
+                return PullRequestStatusCheck.STATUS_SUCCESS;
             } else {
                 int waitTime = 10000 * timeouts;
                 Thread.sleep(waitTime);
@@ -43,16 +49,15 @@ public class GitHubStatusCheck {
                 LOG.lifecycle("Pull Request checks still in pending state. Waiting %d seconds...", waitTime / 1000);
             }
         }
-        return false;
+        return PullRequestStatusCheck.STATUS_TIMEOUT;
     }
 
-    private boolean statusCheck(MergePullRequestTask task, GitHubApi gitHubApi) throws IOException {
+    private JsonObject getStatusCheck(MergePullRequestTask task, GitHubApi gitHubApi) throws IOException {
         String statusesResponse = gitHubApi.get("/repos/" + task.getUpstreamRepositoryName() + "/commits/" + task.getPullRequestSha() + "/status");
-        JsonObject status = Jsoner.deserialize(statusesResponse, new JsonObject());
-        return stateResolver(status);
+        return Jsoner.deserialize(statusesResponse, new JsonObject());
     }
 
-    private boolean stateResolver(JsonObject status) {
+    private boolean allStatusesPassed(JsonObject status) {
         if (status.getString("state").equals("success")) {
             return true;
         }

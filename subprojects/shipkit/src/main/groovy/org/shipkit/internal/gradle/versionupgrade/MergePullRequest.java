@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
+import org.shipkit.internal.gradle.git.PullRequestStatusCheck;
 import org.shipkit.internal.gradle.util.BranchUtils;
 import org.shipkit.internal.util.GitHubApi;
 import org.shipkit.internal.util.GitHubStatusCheck;
@@ -37,10 +38,15 @@ class MergePullRequest {
             "}";
 
         try {
-            boolean allChecksOk = gitHubStatusCheck.checkStatusWithRetries();
+            PullRequestStatusCheck checkStatus = gitHubStatusCheck.checkStatusWithRetries();
 
-            if (!allChecksOk) {
+            if (checkStatus == PullRequestStatusCheck.STATUS_TIMEOUT) {
                 throw new RuntimeException("Too many retries while trying to merge " + url + ". Merge aborted");
+            }
+
+            if (checkStatus == PullRequestStatusCheck.STATUS_NO_CHECK_DEFINED) {
+                LOG.error("No checks defined in pull request " + url + "! Merge aborted.");
+                return;
             }
 
             LOG.lifecycle("All checks passed! Merging pull request in repository '{}' between base = '{}' and head = '{}'.", task.getUpstreamRepositoryName(), task.getBaseBranch(), headBranch);
