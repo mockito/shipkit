@@ -165,22 +165,22 @@ public class CreatePullRequestTask extends DefaultTask {
     }
 
     /**
-     * Call if you want {@param #branchAction} to be executed after this task is finished.
+     * Call if you want {@param #action} to be executed after this task is finished.
      *
      * Sometimes a task may need information about open pull request branch but the problem lies in figuring out
      * the correct time when the task should call {@link #getPullRequest()}, because this value is only available
      * after {@link CreatePullRequestTask} is executed.
      *
      * Using this method guarantees that:
-     * - the value will be already available when the callback {@param #branchAction} is executed
+     * - the value will be already available when the callback {@param #action} is executed
      * - the task {@param #dependant} is executed after {@link CreatePullRequestTask}
      */
 
-    public void provideCreatedPullRequest(Task dependant, final Action<OpenPullRequest> branchAction) {
+    public void provideCreatedPullRequest(Task dependant, final Action<OpenPullRequest> action) {
         dependant.dependsOn(this);
         this.doLast(new Action<Task>() {
             public void execute(Task task) {
-                branchAction.execute(pullRequest);
+                action.execute(pullRequest);
             }
         });
     }
