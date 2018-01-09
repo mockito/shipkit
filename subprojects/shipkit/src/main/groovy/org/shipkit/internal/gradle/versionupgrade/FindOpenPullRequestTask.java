@@ -6,7 +6,7 @@ import org.gradle.api.Task;
 import org.gradle.api.tasks.TaskAction;
 import org.json.simple.DeserializationException;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
-import org.shipkit.internal.gradle.git.OpenPullRequest;
+import org.shipkit.internal.gradle.git.domain.PullRequest;
 
 import java.io.IOException;
 
@@ -26,11 +26,11 @@ public class FindOpenPullRequestTask extends DefaultTask {
     private String gitHubApiUrl;
     private String authToken;
     private String versionBranchRegex;
-    private OpenPullRequest openPullRequest;
+    private PullRequest pullRequest;
 
     @TaskAction
     public void findOpenPullRequest() throws IOException, DeserializationException {
-        openPullRequest = new FindOpenPullRequest().findOpenPullRequest(this);
+        pullRequest = new FindOpenPullRequest().findOpenPullRequest(this);
     }
 
     /**
@@ -101,19 +101,19 @@ public class FindOpenPullRequestTask extends DefaultTask {
      * Returns branch of the current open pull request with version upgrade or null if it doesn't exist.
      */
     //TODO Refactor this method to replace provideBranchTo method
-    public OpenPullRequest getOpenPullRequest() {
-        return openPullRequest;
+    public PullRequest getPullRequest() {
+        return pullRequest;
     }
 
-    public void setOpenPullRequest(OpenPullRequest openPullRequest) {
-        this.openPullRequest = openPullRequest;
+    public void setPullRequest(PullRequest pullRequest) {
+        this.pullRequest = pullRequest;
     }
 
     /**
      * Call if you want {@param #branchAction} to be executed after this task is finished.
      *
      * Sometimes a task may need information about open pull request branch but the problem lies in figuring out
-     * the correct time when the task should call {@link #getOpenPullRequest()}, because this value is only available
+     * the correct time when the task should call {@link #getPullRequest()}, because this value is only available
      * after {@link FindOpenPullRequestTask} is executed.
      *
      * Using this method guarantees that:
@@ -121,11 +121,11 @@ public class FindOpenPullRequestTask extends DefaultTask {
      * - the task {@param #dependant} is executed after {@link FindOpenPullRequestTask}
      */
 
-    public void provideOpenPullRequest(Task dependant, final Action<OpenPullRequest> branchAction) {
+    public void provideOpenPullRequest(Task dependant, final Action<PullRequest> action) {
         dependant.dependsOn(this);
         this.doLast(new Action<Task>() {
             public void execute(Task task) {
-                branchAction.execute(openPullRequest);
+                action.execute(pullRequest);
             }
         });
     }

@@ -5,7 +5,7 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.internal.gradle.git.OpenPullRequest;
+import org.shipkit.internal.gradle.git.domain.PullRequest;
 
 import java.io.IOException;
 
@@ -29,7 +29,7 @@ public class CreatePullRequestTask extends DefaultTask {
     @Input private String pullRequestTitle;
 
     private boolean dryRun;
-    private OpenPullRequest pullRequest;
+    private PullRequest pullRequest;
     private String baseBranch;
 
     @TaskAction
@@ -153,14 +153,14 @@ public class CreatePullRequestTask extends DefaultTask {
     /**
      * Data of created PullRequest
      */
-    public OpenPullRequest getPullRequest() {
+    public PullRequest getPullRequest() {
         return pullRequest;
     }
 
     /**
      * See {@link #getPullRequest()}
      */
-    public void setPullRequest(OpenPullRequest pullRequest) {
+    public void setPullRequest(PullRequest pullRequest) {
         this.pullRequest = pullRequest;
     }
 
@@ -176,7 +176,7 @@ public class CreatePullRequestTask extends DefaultTask {
      * - the task {@param #dependant} is executed after {@link CreatePullRequestTask}
      */
 
-    public void provideCreatedPullRequest(Task dependant, final Action<OpenPullRequest> action) {
+    public void provideCreatedPullRequest(Task dependant, final Action<PullRequest> action) {
         dependant.dependsOn(this);
         this.doLast(new Action<Task>() {
             public void execute(Task task) {

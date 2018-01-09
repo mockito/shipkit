@@ -2,7 +2,7 @@ package org.shipkit.internal.gradle.versionupgrade
 
 import org.gradle.api.GradleException
 import org.gradle.testfixtures.ProjectBuilder
-import org.shipkit.internal.gradle.git.PullRequestStatusCheck
+import org.shipkit.internal.gradle.git.domain.PullRequestStatus
 import org.shipkit.internal.util.GitHubApi
 import org.shipkit.internal.util.GitHubStatusCheck
 import spock.lang.Specification
@@ -41,7 +41,7 @@ class MergePullRequestTest extends Specification {
         new MergePullRequest().mergePullRequest(mergePullRequestTask, gitHubApi, githubStatusCheck)
 
         then:
-        1 * githubStatusCheck.checkStatusWithRetries() >> PullRequestStatusCheck.STATUS_SUCCESS
+        1 * githubStatusCheck.checkStatusWithRetries() >> PullRequestStatus.SUCCESS
         1 * gitHubApi.post("/repos/mockito/shipkit-example/merges", '{  "head": "wwilk:shipkit-version-upgraded-0.1.5",  "base": "master"}')
     }
 
@@ -63,7 +63,7 @@ class MergePullRequestTest extends Specification {
         new MergePullRequest().mergePullRequest(mergePullRequestTask, gitHubApi, githubStatusCheck)
 
         then:
-        1 * githubStatusCheck.checkStatusWithRetries() >> PullRequestStatusCheck.STATUS_NO_CHECK_DEFINED
+        1 * githubStatusCheck.checkStatusWithRetries() >> PullRequestStatus.NO_CHECK_DEFINED
         noExceptionThrown()
     }
 
@@ -85,7 +85,7 @@ class MergePullRequestTest extends Specification {
         new MergePullRequest().mergePullRequest(mergePullRequestTask, gitHubApi, githubStatusCheck)
 
         then:
-        1 * githubStatusCheck.checkStatusWithRetries() >> PullRequestStatusCheck.STATUS_TIMEOUT
+        1 * githubStatusCheck.checkStatusWithRetries() >> PullRequestStatus.TIMEOUT
         def e = thrown(GradleException)
         e.message == "Exception happen while trying to merge pull request. Merge aborted. Original issue: Too many retries while trying to merge url-1. Merge aborted"
     }

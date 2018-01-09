@@ -1,6 +1,6 @@
 package org.shipkit.internal.util
 
-import org.shipkit.internal.gradle.git.PullRequestStatusCheck
+import org.shipkit.internal.gradle.git.domain.PullRequestStatus
 import org.shipkit.internal.gradle.versionupgrade.MergePullRequestTask
 import spock.lang.Specification
 
@@ -51,6 +51,6 @@ class GitHubStatusCheckTest extends Specification {
         when:
         def result = gitHubStatusCheck.checkStatusWithRetries()
         then:
-        result == PullRequestStatusCheck.STATUS_NO_CHECK_DEFINED
+        result == PullRequestStatus.NO_CHECK_DEFINED
     }
 }

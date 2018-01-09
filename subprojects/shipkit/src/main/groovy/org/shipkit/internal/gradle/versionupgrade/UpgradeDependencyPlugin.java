@@ -10,7 +10,7 @@ import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitConfigPlugin;
 import org.shipkit.internal.gradle.git.GitOriginPlugin;
 import org.shipkit.internal.gradle.git.GitUrlInfo;
-import org.shipkit.internal.gradle.git.OpenPullRequest;
+import org.shipkit.internal.gradle.git.domain.PullRequest;
 import org.shipkit.internal.gradle.git.tasks.GitCheckOutTask;
 import org.shipkit.internal.gradle.git.tasks.GitPullTask;
 import org.shipkit.internal.gradle.util.GitUtil;
@@ -155,12 +155,12 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.setDescription("Creates a new version branch and checks it out.");
                 task.mustRunAfter(FIND_OPEN_PULL_REQUEST);
 
-                findOpenPullRequestTask.provideOpenPullRequest(task, new Action<OpenPullRequest>() {
+                findOpenPullRequestTask.provideOpenPullRequest(task, new Action<PullRequest>() {
                     @Override
-                    public void execute(OpenPullRequest openPullRequest) {
+                    public void execute(PullRequest pullRequest) {
                         String ref = null;
-                        if (openPullRequest != null) {
-                            ref = openPullRequest.getRef();
+                        if (pullRequest != null) {
+                            ref = pullRequest.getRef();
                             // don't create a new branch if there is already a branch with open pull request with version upgrade
                             task.setNewBranch(false);
                         } else {
@@ -219,12 +219,12 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                     }
                 });
 
-                findOpenPullRequestTask.provideOpenPullRequest(task, new Action<OpenPullRequest>() {
+                findOpenPullRequestTask.provideOpenPullRequest(task, new Action<PullRequest>() {
                     @Override
-                    public void execute(OpenPullRequest openPullRequest) {
+                    public void execute(PullRequest pullRequest) {
                         String ref = null;
-                        if (openPullRequest != null) {
-                            ref =  openPullRequest.getRef();
+                        if (pullRequest != null) {
+                            ref =  pullRequest.getRef();
                         }
                         task.getTargets().add(getCurrentVersionBranchName(upgradeDependencyExtension.getDependencyName(),
                             upgradeDependencyExtension.getNewVersion(), ref));
@@ -255,9 +255,9 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                     }
                 });
 
-                findOpenPullRequestTask.provideOpenPullRequest(task, new Action<OpenPullRequest>() {
+                findOpenPullRequestTask.provideOpenPullRequest(task, new Action<PullRequest>() {
                     @Override
-                    public void execute(OpenPullRequest openPullRequestBranch) {
+                    public void execute(PullRequest openPullRequestBranch) {
                         task.setVersionBranch(getCurrentVersionBranchName(upgradeDependencyExtension.getDependencyName(),
                             upgradeDependencyExtension.getNewVersion(), openPullRequestBranch.getRef()));
                     }
@@ -286,11 +286,11 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                     }
                 });
 
-                createPullRequestTask.provideCreatedPullRequest(task, new Action<OpenPullRequest>() {
+                createPullRequestTask.provideCreatedPullRequest(task, new Action<PullRequest>() {
                     @Override
-                    public void execute(OpenPullRequest openPullRequest) {
-                        if (openPullRequest != null) {
-                            setPullRequestDataToTask(openPullRequest, task);
+                    public void execute(PullRequest pullRequest) {
+                        if (pullRequest != null) {
+                            setPullRequestDataToTask(pullRequest, task);
                         }
                     }
                 });
@@ -319,11 +319,11 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
         });
     }
 
-    private void setPullRequestDataToTask(OpenPullRequest openPullRequest, MergePullRequestTask task) {
+    private void setPullRequestDataToTask(PullRequest pullRequest, MergePullRequestTask task) {
         task.setVersionBranch(getCurrentVersionBranchName(upgradeDependencyExtension.getDependencyName(),
-            upgradeDependencyExtension.getNewVersion(), openPullRequest.getRef()));
-        task.setPullRequestSha(openPullRequest.getSha());
-        task.setPullRequestUrl(openPullRequest.getUrl());
+            upgradeDependencyExtension.getNewVersion(), pullRequest.getRef()));
+        task.setPullRequestSha(pullRequest.getSha());
+        task.setPullRequestUrl(pullRequest.getUrl());
     }
 
     static String getCurrentVersionBranchName(String dependencyName, String version, String openPullRequestBranch) {
@@ -366,7 +366,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
         return new Spec<Task>() {
             @Override
             public boolean isSatisfiedBy(Task task) {
-                return findOpenPullRequestTask.getOpenPullRequest() == null;
+                return findOpenPullRequestTask.getPullRequest() == null;
             }
         };
     }

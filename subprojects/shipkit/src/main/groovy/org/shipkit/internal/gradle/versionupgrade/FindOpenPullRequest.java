@@ -6,7 +6,7 @@ import org.json.simple.DeserializationException;
 import org.json.simple.JsonArray;
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
-import org.shipkit.internal.gradle.git.OpenPullRequest;
+import org.shipkit.internal.gradle.git.domain.PullRequest;
 import org.shipkit.internal.gradle.util.BranchUtils;
 import org.shipkit.internal.util.GitHubApi;
 
@@ -16,18 +16,18 @@ class FindOpenPullRequest {
 
     private static final Logger LOG = Logging.getLogger(FindOpenPullRequest.class);
 
-    public OpenPullRequest findOpenPullRequest(FindOpenPullRequestTask task) throws IOException, DeserializationException {
+    public PullRequest findOpenPullRequest(FindOpenPullRequestTask task) throws IOException, DeserializationException {
         return findOpenPullRequest(task.getUpstreamRepositoryName(), task.getVersionBranchRegex(),
             new GitHubApi(task.getGitHubApiUrl(), task.getAuthToken()));
     }
 
-    public OpenPullRequest findOpenPullRequest(String upstreamRepositoryName, String versionBranchRegex, GitHubApi gitHubApi) throws IOException, DeserializationException {
+    public PullRequest findOpenPullRequest(String upstreamRepositoryName, String versionBranchRegex, GitHubApi gitHubApi) throws IOException, DeserializationException {
         String response = gitHubApi.get("/repos/" + upstreamRepositoryName + "/pulls?state=open");
 
         JsonArray pullRequests = Jsoner.deserialize(response, new JsonArray());
 
         for (Object pullRequest : pullRequests) {
-            OpenPullRequest openPullRequest = BranchUtils.getOpenPullRequest((JsonObject) pullRequest, versionBranchRegex);
+            PullRequest openPullRequest = BranchUtils.getOpenPullRequest((JsonObject) pullRequest, versionBranchRegex);
             if (openPullRequest != null) {
                 return openPullRequest;
             }

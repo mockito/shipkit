@@ -6,7 +6,7 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
-import org.shipkit.internal.gradle.git.OpenPullRequest;
+import org.shipkit.internal.gradle.git.domain.PullRequest;
 import org.shipkit.internal.gradle.util.BranchUtils;
 import org.shipkit.internal.util.GitHubApi;
 import org.shipkit.internal.util.IncubatingWarning;
@@ -15,11 +15,11 @@ class CreatePullRequest {
 
     private static final Logger LOG = Logging.getLogger(CreatePullRequest.class);
 
-    public OpenPullRequest createPullRequest(CreatePullRequestTask task) throws IOException {
+    public PullRequest createPullRequest(CreatePullRequestTask task) throws IOException {
         return createPullRequest(task, new GitHubApi(task.getGitHubApiUrl(), task.getAuthToken()));
     }
 
-    public OpenPullRequest createPullRequest(CreatePullRequestTask task, GitHubApi gitHubApi) throws IOException {
+    public PullRequest createPullRequest(CreatePullRequestTask task, GitHubApi gitHubApi) throws IOException {
         if (task.isDryRun()) {
             LOG.lifecycle("  Skipping pull request creation due to dryRun = true");
             return null;

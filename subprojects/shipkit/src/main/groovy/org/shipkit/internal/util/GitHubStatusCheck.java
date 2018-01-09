@@ -4,7 +4,7 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
-import org.shipkit.internal.gradle.git.PullRequestStatusCheck;
+import org.shipkit.internal.gradle.git.domain.PullRequestStatus;
 import org.shipkit.internal.gradle.versionupgrade.MergePullRequestTask;
 
 import java.io.IOException;
@@ -32,16 +32,16 @@ public class GitHubStatusCheck {
         this.amountOfRetries = 20;
     }
 
-    public PullRequestStatusCheck checkStatusWithRetries() throws IOException, InterruptedException {
+    public PullRequestStatus checkStatusWithRetries() throws IOException, InterruptedException {
         int timeouts = 0;
         while (timeouts < amountOfRetries) {
             JsonObject status = getStatusCheck(task, gitHubApi);
             if (status.getCollection("statuses") == null || status.getCollection("statuses").size() == 0) {
-                return PullRequestStatusCheck.STATUS_NO_CHECK_DEFINED;
+                return PullRequestStatus.NO_CHECK_DEFINED;
             }
 
             if (allStatusesPassed(status)) {
-                return PullRequestStatusCheck.STATUS_SUCCESS;
+                return PullRequestStatus.SUCCESS;
             } else {
                 int waitTime = 10000 * timeouts;
                 Thread.sleep(waitTime);
@@ -49,7 +49,7 @@ public class GitHubStatusCheck {
                 LOG.lifecycle("Pull Request checks still in pending state. Waiting %d seconds...", waitTime / 1000);
             }
         }
-        return PullRequestStatusCheck.STATUS_TIMEOUT;
+        return PullRequestStatus.TIMEOUT;
     }
 
     private JsonObject getStatusCheck(MergePullRequestTask task, GitHubApi gitHubApi) throws IOException {
