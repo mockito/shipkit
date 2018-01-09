@@ -1,15 +1,18 @@
 package org.shipkit.internal.gradle.versionupgrade;
 
-import java.io.IOException;
-
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
 import org.shipkit.internal.gradle.git.domain.PullRequest;
 import org.shipkit.internal.gradle.util.BranchUtils;
+import org.shipkit.internal.gradle.util.PullRequestUtils;
 import org.shipkit.internal.util.GitHubApi;
 import org.shipkit.internal.util.IncubatingWarning;
+
+import java.io.IOException;
+
+import static org.shipkit.internal.gradle.util.PullRequestUtils.toPullRequest;
 
 class CreatePullRequest {
 
@@ -41,6 +44,6 @@ class CreatePullRequest {
 
         String response = gitHubApi.post("/repos/" + task.getUpstreamRepositoryName() + "/pulls", body);
         JsonObject pullRequest = Jsoner.deserialize(response, new JsonObject());
-        return BranchUtils.getOpenPullRequest(pullRequest, null);
+        return toPullRequest(pullRequest);
     }
 }
