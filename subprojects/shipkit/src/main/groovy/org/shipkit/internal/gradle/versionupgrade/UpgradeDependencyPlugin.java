@@ -282,20 +282,19 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 gitOriginPlugin.provideOriginRepo(task, new Action<String>() {
                     @Override
                     public void execute(String originRepoName) {
-                        task.setForkRepositoryName(originRepoName);
+                    task.setForkRepositoryName(originRepoName);
                     }
                 });
 
                 createPullRequestTask.provideCreatedPullRequest(task, new Action<PullRequest>() {
                     @Override
                     public void execute(PullRequest pullRequest) {
-                        if (pullRequest != null) {
-                            setPullRequestDataToTask(pullRequest, task);
-                        }
+                    if (pullRequest != null) {
+                        setPullRequestDataToTask(pullRequest, task);
+                    }
                     }
                 });
 
-                task.onlyIf(isPullRequestOpen(task));
                 task.onlyIf(wasOpenPullRequestNotFound(findOpenPullRequestTask));
                 task.onlyIf(wasBuildFileUpdatedSpec(replaceVersionTask));
             }
@@ -349,15 +348,6 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
             @Override
             public boolean isSatisfiedBy(Task element) {
                 return replaceVersionTask.isBuildFileUpdated();
-            }
-        };
-    }
-
-    private Spec<Task> isPullRequestOpen(final MergePullRequestTask mergePullRequestTask) {
-        return new Spec<Task>() {
-            @Override
-            public boolean isSatisfiedBy(Task element) {
-                return mergePullRequestTask.getPullRequestSha() != null && mergePullRequestTask.getPullRequestUrl() != null;
             }
         };
     }
