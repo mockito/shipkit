@@ -3,10 +3,13 @@ package org.shipkit.gradle.exec
 import org.gradle.api.tasks.TaskExecutionException
 import org.gradle.testfixtures.ProjectBuilder
 import org.shipkit.internal.gradle.exec.ExecCommandFactory
+import spock.lang.IgnoreIf
 import spock.lang.Specification
+import spock.util.environment.OperatingSystem
 
 import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand
 
+@IgnoreIf({ OperatingSystem.current.isWindows() })
 class ShipkitExecTaskTest extends Specification {
 
     def project = new ProjectBuilder().build()
