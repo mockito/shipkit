@@ -84,7 +84,7 @@ public class PluginValidator {
     }
 
     private boolean ensureImplementationClassExists(String implementationClass) {
-        String pathToClass = implementationClass.replaceAll("\\.", File.separator);
+        String pathToClass = implementationClass.replace('.', File.separatorChar);
 
         for (File sourceDir : sourceDirs) {
             File[] files = getFileCandidates(sourceDir.getAbsolutePath() + File.separator + pathToClass);

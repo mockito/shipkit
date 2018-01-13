@@ -21,13 +21,13 @@ bb
 cc
 dd
 ee
-""",
+""".denormalize(),
 """
 ee
 bb
 cc
 ff
-""")
+""".denormalize())
 
         then:
         result ==
@@ -37,7 +37,7 @@ ff
     @@ -5,2 +5,1 @@
     -dd
     -ee
-    +ff"""
+    +ff""".denormalize()
     }
 
     def "handles same files"() {
