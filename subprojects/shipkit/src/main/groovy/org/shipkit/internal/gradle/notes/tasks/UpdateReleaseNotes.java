@@ -108,6 +108,6 @@ public class UpdateReleaseNotes {
     }
 
     public String getReleaseNotesUrl(UpdateReleaseNotesTask task, String branch) {
-        return  task.getGitHubUrl() + "/" + task.getGitHubRepository() + "/blob/" + branch + "/" + task.getProject().relativePath(task.getReleaseNotesFile());
+        return task.getGitHubUrl() + "/" + task.getGitHubRepository() + "/blob/" + branch + "/" + task.getProject().relativePath(task.getReleaseNotesFile()).replace('\\', '/');
     }
 }

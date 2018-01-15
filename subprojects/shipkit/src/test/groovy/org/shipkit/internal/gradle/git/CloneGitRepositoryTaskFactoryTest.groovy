@@ -3,6 +3,8 @@ package org.shipkit.internal.gradle.git
 import org.gradle.testfixtures.ProjectBuilder
 import testutil.PluginSpecification
 
+import static java.io.File.separatorChar
+
 class CloneGitRepositoryTaskFactoryTest extends PluginSpecification {
 
     def "returns correct consumerRepoCloneDir"() {
@@ -13,7 +15,7 @@ class CloneGitRepositoryTaskFactoryTest extends PluginSpecification {
         def result = CloneGitRepositoryTaskFactory.getConsumerRepoCloneDir(project, "mockito/shipkit-example")
 
         then:
-        result.absolutePath == buildDir.absolutePath + "/downstream/mockitoShipkitExample"
+        result.absolutePath == buildDir.absolutePath + "${separatorChar}downstream${separatorChar}mockitoShipkitExample"
     }
 
     def "configures cloneRepoName task"() {
@@ -26,7 +28,7 @@ class CloneGitRepositoryTaskFactoryTest extends PluginSpecification {
 
         then:
         cloneTask.repositoryUrl == "gitHubUrl/mockito/mockito"
-        cloneTask.targetDir.absolutePath == buildDir.absolutePath + "/downstream/mockitoMockito"
+        cloneTask.targetDir.absolutePath == buildDir.absolutePath + "${separatorChar}downstream${separatorChar}mockitoMockito"
         cloneTask.name == "cloneMockitoMockito"
     }
 
