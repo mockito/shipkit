@@ -37,6 +37,7 @@ class UpgradeDependencyPluginIntegTest extends GradleSpecification {
 :commitVersionUpgrade
 :pushVersionUpgrade
 :createPullRequest
+:mergePullRequest
 :performVersionUpgrade"""
 
         where:
