@@ -28,9 +28,12 @@ class FindOpenPullRequestTest extends Specification {
     def "should return head->ref if it matches versionBranchRegex"() {
         given:
         def gitHubApi = Mock(GitHubApi)
-        gitHubApi.get("/repos/repo/pulls?state=open") >> "[{\"head\" : {\"ref\" : \"shipkit-1\"}} ]"
+        gitHubApi.get("/repos/repo/pulls?state=open") >> "[{\"url\": \"url-1\", \"head\" : {\"ref\" : \"shipkit-1\", \"sha\" : \"sha-1\"}} ]"
 
         expect:
-        "shipkit-1" == findOpenPullRequest.findOpenPullRequest("repo", "shipkit-[0-9]*", gitHubApi)
+        def openPullRequest = findOpenPullRequest.findOpenPullRequest("repo", "shipkit-[0-9]*", gitHubApi)
+        openPullRequest.ref == "shipkit-1"
+        openPullRequest.sha == "sha-1"
+        openPullRequest.url == "url-1"
     }
 }

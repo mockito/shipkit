@@ -6,6 +6,8 @@ import org.json.simple.DeserializationException;
 import org.json.simple.JsonArray;
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
+import org.shipkit.internal.gradle.git.domain.PullRequest;
+import org.shipkit.internal.gradle.util.PullRequestUtils;
 import org.shipkit.internal.util.GitHubApi;
 
 import java.io.IOException;
@@ -14,22 +16,21 @@ class FindOpenPullRequest {
 
     private static final Logger LOG = Logging.getLogger(FindOpenPullRequest.class);
 
-    public String findOpenPullRequest(FindOpenPullRequestTask task) throws IOException, DeserializationException {
+    public PullRequest findOpenPullRequest(FindOpenPullRequestTask task) throws IOException {
         return findOpenPullRequest(task.getUpstreamRepositoryName(), task.getVersionBranchRegex(),
             new GitHubApi(task.getGitHubApiUrl(), task.getAuthToken()));
     }
 
-    public String findOpenPullRequest(String upstreamRepositoryName, String versionBranchRegex, GitHubApi gitHubApi) throws IOException, DeserializationException {
+    public PullRequest findOpenPullRequest(String upstreamRepositoryName, String versionBranchRegex, GitHubApi gitHubApi) throws IOException {
         String response = gitHubApi.get("/repos/" + upstreamRepositoryName + "/pulls?state=open");
 
         JsonArray pullRequests = Jsoner.deserialize(response, new JsonArray());
 
         for (Object pullRequest : pullRequests) {
-            JsonObject head = (JsonObject) ((JsonObject) pullRequest).get("head");
-            String branchName = head.getString("ref");
-            if (branchName.matches(versionBranchRegex)) {
-                LOG.lifecycle("  Found an open pull request with version upgrade on branch {}", branchName);
-                return head.getString("ref");
+            PullRequest openPullRequest = PullRequestUtils.toPullRequest((JsonObject) pullRequest);
+            if (openPullRequest != null && openPullRequest.getRef().matches(versionBranchRegex)) {
+                LOG.lifecycle("  Found an open pull request with version upgrade on branch {}", openPullRequest.getRef());
+                return openPullRequest;
             }
         }
 
@@ -37,5 +38,4 @@ class FindOpenPullRequest {
 
         return null;
     }
-
 }

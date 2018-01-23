@@ -1,8 +1,11 @@
 package org.shipkit.internal.gradle.versionupgrade;
 
+import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.Task;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
+import org.shipkit.internal.gradle.git.domain.PullRequest;
 
 import java.io.IOException;
 
@@ -26,11 +29,12 @@ public class CreatePullRequestTask extends DefaultTask {
     @Input private String pullRequestTitle;
 
     private boolean dryRun;
-    private UpgradeDependencyExtension versionUpgrade;
+    private PullRequest pullRequest;
+    private String baseBranch;
 
     @TaskAction
     public void createPullRequest() throws IOException {
-        new CreatePullRequest().createPullRequest(this);
+        pullRequest = new CreatePullRequest().createPullRequest(this);
     }
 
     /**
@@ -104,14 +108,6 @@ public class CreatePullRequestTask extends DefaultTask {
         this.versionBranch = versionBranch;
     }
 
-    public UpgradeDependencyExtension getVersionUpgrade() {
-        return versionUpgrade;
-    }
-
-    public void setVersionUpgrade(UpgradeDependencyExtension versionUpgrade) {
-        this.versionUpgrade = versionUpgrade;
-    }
-
     /**
      * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.GitHub#dryRun}
      */
@@ -154,5 +150,52 @@ public class CreatePullRequestTask extends DefaultTask {
         this.pullRequestTitle = pullRequestTitle;
     }
 
+    /**
+     * Data of created PullRequest
+     */
+    public PullRequest getPullRequest() {
+        return pullRequest;
+    }
 
+    /**
+     * See {@link #getPullRequest()}
+     */
+    public void setPullRequest(PullRequest pullRequest) {
+        this.pullRequest = pullRequest;
+    }
+
+    /**
+     * Call if you want {@param #action} to be executed after this task is finished.
+     *
+     * Sometimes a task may need information about open pull request branch but the problem lies in figuring out
+     * the correct time when the task should call {@link #getPullRequest()}, because this value is only available
+     * after {@link CreatePullRequestTask} is executed.
+     *
+     * Using this method guarantees that:
+     * - the value will be already available when the callback {@param #action} is executed
+     * - the task {@param #dependant} is executed after {@link CreatePullRequestTask}
+     */
+
+    public void provideCreatedPullRequest(Task dependant, final Action<PullRequest> action) {
+        dependant.dependsOn(this);
+        this.doLast(new Action<Task>() {
+            public void execute(Task task) {
+                action.execute(pullRequest);
+            }
+        });
+    }
+
+    /**
+     * Original branch we want merge PullRequest to
+     */
+    public String getBaseBranch() {
+        return baseBranch;
+    }
+
+    /**
+     * See {@link #getBaseBranch()}
+     */
+    public void setBaseBranch(String baseBranch) {
+        this.baseBranch = baseBranch;
+    }
 }
