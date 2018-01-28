@@ -32,6 +32,7 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
         project.tasks.commitVersionUpgrade
         project.tasks.pushVersionUpgrade
         project.tasks.createPullRequest
+        project.tasks.mergePullRequest
         project.tasks.performVersionUpgrade
     }
 
@@ -113,6 +114,7 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
         when:
         project.plugins.apply(UpgradeDependencyPlugin)
         ReplaceVersionTask task = project.tasks.replaceVersion
+        project.evaluate()
 
         then:
         with(task) {
@@ -150,6 +152,7 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
         when:
         project.plugins.apply(UpgradeDependencyPlugin)
         CreatePullRequestTask task = project.tasks.createPullRequest
+        project.evaluate()
 
         then:
         task.gitHubApiUrl == "http://api.com"
@@ -159,6 +162,23 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
                 "Shipkit's 'org.shipkit.upgrade-downstream' Gradle plugin (http://shipkit.org). " +
                 "Please merge it so that you are using fresh version of 'shipkit' dependency."
         task.pullRequestTitle == "Version of shipkit upgraded to 1.2.30"
+    }
+
+    def "should configure mergePullRequest"() {
+        given:
+        project.extensions.dependency = "org.shipkit:shipkit:1.2.30"
+        conf.gitHub.apiUrl = "http://api.com"
+        conf.gitHub.repository = "mockito/mockito"
+        conf.gitHub.writeAuthToken = "writeToken"
+
+        when:
+        project.plugins.apply(UpgradeDependencyPlugin).upgradeDependencyExtension
+        MergePullRequestTask task = project.tasks.mergePullRequest
+
+        then:
+        task.gitHubApiUrl == "http://api.com"
+        task.authToken == "writeToken"
+        task.baseBranch == "master"
     }
 
     def "should return open pull request branch if it is not null"() {

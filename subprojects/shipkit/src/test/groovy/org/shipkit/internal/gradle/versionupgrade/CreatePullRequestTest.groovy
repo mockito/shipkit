@@ -19,15 +19,18 @@ class CreatePullRequestTest extends Specification {
         def gitHubApi = Mock(GitHubApi)
 
         when:
-        new CreatePullRequest().createPullRequest(createPullRequestTask, gitHubApi)
+        def result = new CreatePullRequest().createPullRequest(createPullRequestTask, gitHubApi)
 
         then:
+        result.ref == "shipkit-1"
+        result.url == "url-1"
+        result.sha == "sha-1"
         1 * gitHubApi.post("/repos/mockito/shipkit-example/pulls",
             '{  "title": "Title of this PR",' +
                 '  "body": "Description of this PR",' +
                 '  "head": "wwilk:shipkit-version-upgraded-0.1.5",' +
                 '  "base": "master",' +
-                '  "maintainer_can_modify": true}')
+                '  "maintainer_can_modify": true}') >> "{\"url\": \"url-1\", \"head\" : {\"ref\" : \"shipkit-1\", \"sha\" : \"sha-1\"}}"
     }
 
     def "should not call github API in dryRun mode"() {

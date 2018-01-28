@@ -26,6 +26,7 @@ public class CreateDependencyInfoFile {
         //without depending on Gradle implementation
         SortedSet<String> dependencies = new TreeSet<String>();
         for (Dependency dependency: task.getConfiguration().getAllDependencies()) {
+            System.out.println("dep = " + dependency);
             if (dependency instanceof ModuleDependency) {
                 String dep = getDependencyWithArtifacts(task, (ModuleDependency) dependency);
                 dependencies.add(dep);

@@ -5,17 +5,18 @@ import org.gradle.api.specs.Spec;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.gradle.exec.ShipkitExecTask;
 import org.shipkit.gradle.git.GitPushTask;
-import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitConfigPlugin;
 import org.shipkit.internal.gradle.git.GitOriginPlugin;
 import org.shipkit.internal.gradle.git.GitUrlInfo;
+import org.shipkit.internal.gradle.git.domain.PullRequest;
 import org.shipkit.internal.gradle.git.tasks.GitCheckOutTask;
 import org.shipkit.internal.gradle.git.tasks.GitPullTask;
 import org.shipkit.internal.gradle.util.GitUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.util.IncubatingWarning;
 
+import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
 import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
 
 /**
@@ -39,6 +40,7 @@ import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
  *     <li>commitVersionUpgrade - commits replaced version</li>
  *     <li>pushVersionUpgrade - pushes the commit to the version branch</li>
  *     <li>createPullRequest - creates a pull request between base and version branches if there is no open pull request for this dependency already</li>
+ *     <li>mergePullRequest - wait for status checks defined for pull request and in case of success merge it to base branch. Task is executed only if there was no previously opened pull request. If createPullRequest task is skipped, mergePullRequest is also skipped and pull request needs to be merged manually. If no checks defined, pull request also needs to be merged manually</li>
  *     <li>performVersionUpgrade - task aggregating all of the above</li>
  * </ul>
  *
@@ -71,6 +73,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
     public static final String PUSH_VERSION_UPGRADE = "pushVersionUpgrade";
     public static final String CREATE_PULL_REQUEST = "createPullRequest";
     public static final String PERFORM_VERSION_UPGRADE = "performVersionUpgrade";
+    public static final String MERGE_PULL_REQUEST = "mergePullRequest";
 
     public static final String DEPENDENCY_PROJECT_PROPERTY = "dependency";
 
@@ -98,7 +101,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
             public void execute(final GitCheckOutTask task) {
                 task.setDescription("Checks out the base branch.");
 
-                DeferredConfiguration.deferredConfiguration(project, new Runnable() {
+                deferredConfiguration(project, new Runnable() {
                     @Override
                     public void run() {
                         task.setRev(upgradeDependencyExtension.getBaseBranch());
@@ -114,7 +117,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.mustRunAfter(CHECKOUT_BASE_BRANCH);
                 task.setDryRun(conf.isDryRun());
 
-                DeferredConfiguration.deferredConfiguration(project, new Runnable() {
+                deferredConfiguration(project, new Runnable() {
                     @Override
                     public void run() {
                         task.setRev(upgradeDependencyExtension.getBaseBranch());
@@ -152,13 +155,20 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.setDescription("Creates a new version branch and checks it out.");
                 task.mustRunAfter(FIND_OPEN_PULL_REQUEST);
 
-                findOpenPullRequestTask.provideBranchTo(task, new Action<String>() {
+                findOpenPullRequestTask.provideOpenPullRequest(task, new Action<PullRequest>() {
                     @Override
-                    public void execute(String openPullRequestBranch) {
+                    public void execute(PullRequest pullRequest) {
+                        String ref = null;
+                        if (pullRequest != null) {
+                            ref = pullRequest.getRef();
+                            // don't create a new branch if there is already a branch with open pull request with version upgrade
+                            task.setNewBranch(false);
+                        } else {
+                            task.setNewBranch(true);
+                        }
                         task.setRev(getCurrentVersionBranchName(upgradeDependencyExtension.getDependencyName(),
-                            upgradeDependencyExtension.getNewVersion(), openPullRequestBranch));
-                        // don't create a new branch if there is already a branch with open pull request with version upgrade
-                        task.setNewBranch(openPullRequestBranch == null);
+                            upgradeDependencyExtension.getNewVersion(), ref));
+
                     }
                 });
             }
@@ -171,8 +181,14 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.mustRunAfter(CHECKOUT_VERSION_BRANCH);
                 task.setDependencyGroup(upgradeDependencyExtension.getDependencyGroup());
                 task.setNewVersion(upgradeDependencyExtension.getNewVersion());
-                task.setBuildFile(upgradeDependencyExtension.getBuildFile());
                 task.setDependencyName(upgradeDependencyExtension.getDependencyName());
+
+                deferredConfiguration(project, new Runnable() {
+                    @Override
+                    public void run() {
+                        task.setBuildFile(upgradeDependencyExtension.getBuildFile());
+                    }
+                });
             }
         });
 
@@ -183,7 +199,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 exec.mustRunAfter(REPLACE_VERSION);
                 exec.dependsOn(GitConfigPlugin.SET_EMAIL_TASK, GitConfigPlugin.SET_USER_TASK);
 
-                DeferredConfiguration.deferredConfiguration(project, new Runnable() {
+                deferredConfiguration(project, new Runnable() {
                     @Override
                     public void run() {
                         String message = String.format("%s version upgraded to %s", upgradeDependencyExtension.getDependencyName(), upgradeDependencyExtension.getNewVersion());
@@ -212,11 +228,15 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                     }
                 });
 
-                findOpenPullRequestTask.provideBranchTo(task, new Action<String>() {
+                findOpenPullRequestTask.provideOpenPullRequest(task, new Action<PullRequest>() {
                     @Override
-                    public void execute(String openPullRequestBranch) {
+                    public void execute(PullRequest pullRequest) {
+                        String ref = null;
+                        if (pullRequest != null) {
+                            ref =  pullRequest.getRef();
+                        }
                         task.getTargets().add(getCurrentVersionBranchName(upgradeDependencyExtension.getDependencyName(),
-                            upgradeDependencyExtension.getNewVersion(), openPullRequestBranch));
+                            upgradeDependencyExtension.getNewVersion(), ref));
                     }
                 });
 
@@ -224,7 +244,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
             }
         });
 
-        TaskMaker.task(project, CREATE_PULL_REQUEST, CreatePullRequestTask.class, new Action<CreatePullRequestTask>() {
+        final CreatePullRequestTask createPullRequestTask =  TaskMaker.task(project, CREATE_PULL_REQUEST, CreatePullRequestTask.class, new Action<CreatePullRequestTask>() {
             @Override
             public void execute(final CreatePullRequestTask task) {
                 task.setDescription("Creates a pull request from branch with version upgraded to master");
@@ -232,23 +252,68 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.setGitHubApiUrl(conf.getGitHub().getApiUrl());
                 task.setDryRun(conf.isDryRun());
                 task.setAuthToken(conf.getLenient().getGitHub().getWriteAuthToken());
-                task.setBaseBranch(upgradeDependencyExtension.getBaseBranch());
                 task.setPullRequestTitle(getPullRequestTitle(upgradeDependencyExtension));
                 task.setPullRequestDescription(getPullRequestDescription(upgradeDependencyExtension));
+                task.setUpstreamRepositoryName(conf.getGitHub().getRepository());
 
                 gitOriginPlugin.provideOriginRepo(task, new Action<String>() {
                     @Override
                     public void execute(String originRepoName) {
                         task.setForkRepositoryName(originRepoName);
-                        task.setUpstreamRepositoryName(conf.getGitHub().getRepository());
                     }
                 });
 
-                findOpenPullRequestTask.provideBranchTo(task, new Action<String>() {
+                findOpenPullRequestTask.provideOpenPullRequest(task, new Action<PullRequest>() {
                     @Override
-                    public void execute(String openPullRequestBranch) {
+                    public void execute(PullRequest openPullRequestBranch) {
                         task.setVersionBranch(getCurrentVersionBranchName(upgradeDependencyExtension.getDependencyName(),
-                            upgradeDependencyExtension.getNewVersion(), openPullRequestBranch));
+                            upgradeDependencyExtension.getNewVersion(), openPullRequestBranch.getRef()));
+                    }
+                });
+
+                deferredConfiguration(project, new Runnable() {
+                    @Override
+                    public void run() {
+                        task.setBaseBranch(upgradeDependencyExtension.getBaseBranch());
+                    }
+                });
+
+                task.onlyIf(wasOpenPullRequestNotFound(findOpenPullRequestTask));
+                task.onlyIf(wasBuildFileUpdatedSpec(replaceVersionTask));
+            }
+        });
+
+        TaskMaker.task(project, MERGE_PULL_REQUEST, MergePullRequestTask.class, new Action<MergePullRequestTask>() {
+            @Override
+            public void execute(final MergePullRequestTask task) {
+                task.setDescription("Merge pull request when all checks will be passed");
+                task.mustRunAfter(CREATE_PULL_REQUEST);
+                task.setGitHubApiUrl(conf.getGitHub().getApiUrl());
+                task.setDryRun(conf.isDryRun());
+                task.setAuthToken(conf.getLenient().getGitHub().getWriteAuthToken());
+                task.setBaseBranch(upgradeDependencyExtension.getBaseBranch());
+                task.setUpstreamRepositoryName(conf.getGitHub().getRepository());
+
+                gitOriginPlugin.provideOriginRepo(task, new Action<String>() {
+                    @Override
+                    public void execute(String originRepoName) {
+                    task.setForkRepositoryName(originRepoName);
+                    }
+                });
+
+                createPullRequestTask.provideCreatedPullRequest(task, new Action<PullRequest>() {
+                    @Override
+                    public void execute(PullRequest pullRequest) {
+                    if (pullRequest != null) {
+                        setPullRequestDataToTask(pullRequest, task);
+                    }
+                    }
+                });
+
+                deferredConfiguration(project, new Runnable() {
+                    @Override
+                    public void run() {
+                        task.setBaseBranch(upgradeDependencyExtension.getBaseBranch());
                     }
                 });
 
@@ -270,8 +335,16 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.dependsOn(COMMIT_VERSION_UPGRADE);
                 task.dependsOn(PUSH_VERSION_UPGRADE);
                 task.dependsOn(CREATE_PULL_REQUEST);
+                task.dependsOn(MERGE_PULL_REQUEST);
             }
         });
+    }
+
+    private void setPullRequestDataToTask(PullRequest pullRequest, MergePullRequestTask task) {
+        task.setVersionBranch(getCurrentVersionBranchName(upgradeDependencyExtension.getDependencyName(),
+            upgradeDependencyExtension.getNewVersion(), pullRequest.getRef()));
+        task.setPullRequestSha(pullRequest.getSha());
+        task.setPullRequestUrl(pullRequest.getUrl());
     }
 
     static String getCurrentVersionBranchName(String dependencyName, String version, String openPullRequestBranch) {
@@ -305,7 +378,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
         return new Spec<Task>() {
             @Override
             public boolean isSatisfiedBy(Task task) {
-                return findOpenPullRequestTask.getOpenPullRequestBranch() == null;
+                return findOpenPullRequestTask.getPullRequest() == null;
             }
         };
     }

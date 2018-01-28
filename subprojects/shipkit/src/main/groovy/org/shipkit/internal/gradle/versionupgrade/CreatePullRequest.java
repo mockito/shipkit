@@ -1,27 +1,34 @@
 package org.shipkit.internal.gradle.versionupgrade;
 
-import java.io.IOException;
-
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
+import org.json.simple.JsonObject;
+import org.json.simple.Jsoner;
+import org.shipkit.internal.gradle.git.domain.PullRequest;
+import org.shipkit.internal.gradle.util.BranchUtils;
+import org.shipkit.internal.gradle.util.PullRequestUtils;
 import org.shipkit.internal.util.GitHubApi;
 import org.shipkit.internal.util.IncubatingWarning;
+
+import java.io.IOException;
+
+import static org.shipkit.internal.gradle.util.PullRequestUtils.toPullRequest;
 
 class CreatePullRequest {
 
     private static final Logger LOG = Logging.getLogger(CreatePullRequest.class);
 
-    public void createPullRequest(CreatePullRequestTask task) throws IOException {
-        createPullRequest(task, new GitHubApi(task.getGitHubApiUrl(), task.getAuthToken()));
+    public PullRequest createPullRequest(CreatePullRequestTask task) throws IOException {
+        return createPullRequest(task, new GitHubApi(task.getGitHubApiUrl(), task.getAuthToken()));
     }
 
-    public void createPullRequest(CreatePullRequestTask task, GitHubApi gitHubApi) throws IOException {
+    public PullRequest createPullRequest(CreatePullRequestTask task, GitHubApi gitHubApi) throws IOException {
         if (task.isDryRun()) {
             LOG.lifecycle("  Skipping pull request creation due to dryRun = true");
-            return;
+            return null;
         }
 
-        String headBranch = getHeadBranch(task.getForkRepositoryName(), task.getVersionBranch());
+        String headBranch = BranchUtils.getHeadBranch(task.getForkRepositoryName(), task.getVersionBranch());
 
         IncubatingWarning.warn("creating pull requests");
         LOG.lifecycle("  Creating a pull request of title '{}' in repository '{}' between base = '{}' and head = '{}'.",
@@ -35,15 +42,8 @@ class CreatePullRequest {
             "  \"maintainer_can_modify\": true" +
             "}";
 
-        gitHubApi.post("/repos/" + task.getUpstreamRepositoryName() + "/pulls", body);
-    }
-
-
-    private String getHeadBranch(String forkRepositoryName, String headBranch) {
-        return getUserOfForkRepo(forkRepositoryName) + ":" + headBranch;
-    }
-
-    private String getUserOfForkRepo(String forkRepositoryName) {
-        return forkRepositoryName.split("/")[0];
+        String response = gitHubApi.post("/repos/" + task.getUpstreamRepositoryName() + "/pulls", body);
+        JsonObject pullRequest = Jsoner.deserialize(response, new JsonObject());
+        return toPullRequest(pullRequest);
     }
 }
