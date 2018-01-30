@@ -381,7 +381,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
             public void run() {
                 if (dependency == null) {
                     throw new GradleException("Dependency property not set. You need to add 'dependency' parameter in" +
-                        " order to run this task.");
+                        " order to run this task. E.g.: -Pdependency=\"org.shipkit:shipkit:1.2.3\"");
                 }
             }
         });
