@@ -20,6 +20,7 @@ import org.shipkit.internal.util.IncubatingWarning;
 
 import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
 
+
 /**
  * BEWARE! This plugin is in incubating state, so its API may change in the future!
  * The plugin applies following plugins:
@@ -79,17 +80,6 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
     public static final String DEPENDENCY_PROJECT_PROPERTY = "dependency";
 
     private UpgradeDependencyExtension upgradeDependencyExtension;
-
-    static String getCurrentVersionBranchName(String dependencyName, String version, String openPullRequestBranch) {
-        if (openPullRequestBranch != null) {
-            return openPullRequestBranch;
-        }
-        return getVersionBranchName(dependencyName, version);
-    }
-
-    private static String getVersionBranchName(String dependencyName, String newVersion) {
-        return "upgrade-" + dependencyName + "-to-" + newVersion;
-    }
 
     @Override
     public void apply(final Project project) {
@@ -161,7 +151,6 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                         upgradeDependencyExtension.getDependencyName(), ReplaceVersionTask.VERSION_REGEX));
                 }
             });
-        addLazyDependencyValidation(dependency, findOpenPullRequestTask);
 
         TaskMaker.task(project, CHECKOUT_VERSION_BRANCH, GitCheckOutTask.class, new Action<GitCheckOutTask>() {
             public void execute(final GitCheckOutTask task) {
@@ -195,7 +184,6 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.setVersionUpgrade(upgradeDependencyExtension);
             }
         });
-        addLazyDependencyValidation(dependency, replaceVersionTask);
 
         final ShipkitExecTask shipkitExecTask = TaskMaker.task(project, COMMIT_VERSION_UPGRADE, ShipkitExecTask.class,
             new Action<ShipkitExecTask>() {
@@ -217,7 +205,6 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                     exec.onlyIf(wasBuildFileUpdatedSpec(replaceVersionTask));
                 }
             });
-        addLazyDependencyValidation(dependency, shipkitExecTask);
 
         final GitPushTask gitPushTask = TaskMaker.task(project, PUSH_VERSION_UPGRADE, GitPushTask.class, new Action<GitPushTask>() {
             @Override
@@ -250,7 +237,6 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.onlyIf(wasBuildFileUpdatedSpec(replaceVersionTask));
             }
         });
-        addLazyDependencyValidation(dependency, gitPushTask);
 
         final CreatePullRequestTask createPullRequestTask = TaskMaker.task(project, CREATE_PULL_REQUEST, CreatePullRequestTask.class, new Action<CreatePullRequestTask>() {
             @Override
@@ -284,7 +270,6 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.onlyIf(wasBuildFileUpdatedSpec(replaceVersionTask));
             }
         });
-        addLazyDependencyValidation(dependency, createPullRequestTask);
 
         TaskMaker.task(project, MERGE_PULL_REQUEST, MergePullRequestTask.class, new Action<MergePullRequestTask>() {
             @Override
@@ -333,6 +318,9 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.dependsOn(MERGE_PULL_REQUEST);
             }
         });
+
+        addLazyDependencyValidation(dependency, createPullRequestTask, gitPushTask, findOpenPullRequestTask,
+            replaceVersionTask, shipkitExecTask);
     }
 
     private void setPullRequestDataToTask(PullRequest pullRequest, MergePullRequestTask task) {
@@ -340,6 +328,13 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
             upgradeDependencyExtension.getNewVersion(), pullRequest.getRef()));
         task.setPullRequestSha(pullRequest.getSha());
         task.setPullRequestUrl(pullRequest.getUrl());
+    }
+
+    static String getCurrentVersionBranchName(String dependencyName, String version, String openPullRequestBranch) {
+        if (openPullRequestBranch != null) {
+            return openPullRequestBranch;
+        }
+        return getVersionBranchName(dependencyName, version);
     }
 
     private String getPullRequestDescription(UpgradeDependencyExtension versionUpgrade) {
@@ -371,19 +366,25 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
         };
     }
 
+    private static String getVersionBranchName(String dependencyName, String newVersion) {
+        return "upgrade-" + dependencyName + "-to-" + newVersion;
+    }
+
     public UpgradeDependencyExtension getUpgradeDependencyExtension() {
         return upgradeDependencyExtension;
     }
 
-    private void addLazyDependencyValidation(final String dependency, Task task) {
+    private void addLazyDependencyValidation(final String dependency, Task... tasks) {
         if (dependency == null) {
-            LazyConfiguration.lazyConfiguration(task, new Runnable() {
-                @Override
-                public void run() {
-                    throw new GradleException("Dependency property not set. You need to add 'dependency' parameter in" +
-                        " order to run this task. E.g.: -Pdependency=\"org.shipkit:shipkit:1.2.3\"");
-                }
-            });
+            for (Task task : tasks) {
+                LazyConfiguration.lazyConfiguration(task, new Runnable() {
+                    @Override
+                    public void run() {
+                        throw new GradleException("Dependency property not set. You need to add 'dependency' parameter in" +
+                            " order to run this task. E.g.: -Pdependency=\"org.shipkit:shipkit:1.2.3\"");
+                    }
+                });
+            }
         }
     }
 }
