@@ -6,6 +6,7 @@ import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.gradle.exec.ShipkitExecTask;
 import org.shipkit.gradle.git.GitPushTask;
 import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
+import org.shipkit.internal.gradle.configuration.LazyConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitConfigPlugin;
 import org.shipkit.internal.gradle.git.GitOriginPlugin;
@@ -18,6 +19,7 @@ import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.util.IncubatingWarning;
 
 import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
+
 
 /**
  * BEWARE! This plugin is in incubating state, so its API may change in the future!
@@ -92,7 +94,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
         upgradeDependencyExtension.setBuildFile(project.file("build.gradle"));
         upgradeDependencyExtension.setBaseBranch("master");
 
-        String dependency = (String) project.findProperty(DEPENDENCY_PROJECT_PROPERTY);
+        final String dependency = (String) project.findProperty(DEPENDENCY_PROJECT_PROPERTY);
 
         new DependencyNewVersionParser(dependency).fillVersionUpgradeExtension(upgradeDependencyExtension);
 
@@ -137,18 +139,18 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
         final FindOpenPullRequestTask findOpenPullRequestTask = TaskMaker.task(project,
             FIND_OPEN_PULL_REQUEST, FindOpenPullRequestTask.class, new Action<FindOpenPullRequestTask>() {
 
-            @Override
-            public void execute(final FindOpenPullRequestTask task) {
-                task.setDescription("Find an open pull request with version upgrade, if such exists.");
-                task.mustRunAfter(PULL_UPSTREAM);
+                @Override
+                public void execute(final FindOpenPullRequestTask task) {
+                    task.setDescription("Find an open pull request with version upgrade, if such exists.");
+                    task.mustRunAfter(PULL_UPSTREAM);
 
-                task.setGitHubApiUrl(conf.getGitHub().getApiUrl());
-                task.setAuthToken(conf.getLenient().getGitHub().getReadOnlyAuthToken());
-                task.setUpstreamRepositoryName(conf.getGitHub().getRepository());
-                task.setVersionBranchRegex(getVersionBranchName(
-                    upgradeDependencyExtension.getDependencyName(), ReplaceVersionTask.VERSION_REGEX));
-            }
-        });
+                    task.setGitHubApiUrl(conf.getGitHub().getApiUrl());
+                    task.setAuthToken(conf.getLenient().getGitHub().getReadOnlyAuthToken());
+                    task.setUpstreamRepositoryName(conf.getGitHub().getRepository());
+                    task.setVersionBranchRegex(getVersionBranchName(
+                        upgradeDependencyExtension.getDependencyName(), ReplaceVersionTask.VERSION_REGEX));
+                }
+            });
 
         TaskMaker.task(project, CHECKOUT_VERSION_BRANCH, GitCheckOutTask.class, new Action<GitCheckOutTask>() {
             public void execute(final GitCheckOutTask task) {
@@ -183,27 +185,28 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
             }
         });
 
-        TaskMaker.task(project, COMMIT_VERSION_UPGRADE, ShipkitExecTask.class, new Action<ShipkitExecTask>() {
-            @Override
-            public void execute(final ShipkitExecTask exec) {
-                exec.setDescription("Commits updated build file.");
-                exec.mustRunAfter(REPLACE_VERSION);
-                exec.dependsOn(GitConfigPlugin.SET_EMAIL_TASK, GitConfigPlugin.SET_USER_TASK);
+        final ShipkitExecTask shipkitExecTask = TaskMaker.task(project, COMMIT_VERSION_UPGRADE, ShipkitExecTask.class,
+            new Action<ShipkitExecTask>() {
+                @Override
+                public void execute(final ShipkitExecTask exec) {
+                    exec.setDescription("Commits updated build file.");
+                    exec.mustRunAfter(REPLACE_VERSION);
+                    exec.dependsOn(GitConfigPlugin.SET_EMAIL_TASK, GitConfigPlugin.SET_USER_TASK);
 
-                DeferredConfiguration.deferredConfiguration(project, new Runnable() {
-                    @Override
-                    public void run() {
-                        String message = String.format("%s version upgraded to %s", upgradeDependencyExtension.getDependencyName(), upgradeDependencyExtension.getNewVersion());
-                        exec.execCommand(execCommand("Committing build file",
-                            "git", "commit", "--author", GitUtil.getGitGenericUserNotation(conf.getGit().getUser(), conf.getGit().getEmail()),
-                            "-m", message, upgradeDependencyExtension.getBuildFile().getAbsolutePath()));
-                    }
-                });
-                exec.onlyIf(wasBuildFileUpdatedSpec(replaceVersionTask));
-            }
-        });
+                    DeferredConfiguration.deferredConfiguration(project, new Runnable() {
+                        @Override
+                        public void run() {
+                            String message = String.format("%s version upgraded to %s", upgradeDependencyExtension.getDependencyName(), upgradeDependencyExtension.getNewVersion());
+                            exec.execCommand(execCommand("Committing build file",
+                                "git", "commit", "--author", GitUtil.getGitGenericUserNotation(conf.getGit().getUser(), conf.getGit().getEmail()),
+                                "-m", message, upgradeDependencyExtension.getBuildFile().getAbsolutePath()));
+                        }
+                    });
+                    exec.onlyIf(wasBuildFileUpdatedSpec(replaceVersionTask));
+                }
+            });
 
-        TaskMaker.task(project, PUSH_VERSION_UPGRADE, GitPushTask.class, new Action<GitPushTask>() {
+        final GitPushTask gitPushTask = TaskMaker.task(project, PUSH_VERSION_UPGRADE, GitPushTask.class, new Action<GitPushTask>() {
             @Override
             public void execute(final GitPushTask task) {
                 task.setDescription("Pushes updated config file to an update branch.");
@@ -224,7 +227,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                     public void execute(PullRequest pullRequest) {
                         String ref = null;
                         if (pullRequest != null) {
-                            ref =  pullRequest.getRef();
+                            ref = pullRequest.getRef();
                         }
                         task.getTargets().add(getCurrentVersionBranchName(upgradeDependencyExtension.getDependencyName(),
                             upgradeDependencyExtension.getNewVersion(), ref));
@@ -235,7 +238,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
             }
         });
 
-        final CreatePullRequestTask createPullRequestTask =  TaskMaker.task(project, CREATE_PULL_REQUEST, CreatePullRequestTask.class, new Action<CreatePullRequestTask>() {
+        final CreatePullRequestTask createPullRequestTask = TaskMaker.task(project, CREATE_PULL_REQUEST, CreatePullRequestTask.class, new Action<CreatePullRequestTask>() {
             @Override
             public void execute(final CreatePullRequestTask task) {
                 task.setDescription("Creates a pull request from branch with version upgraded to master");
@@ -282,16 +285,16 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 gitOriginPlugin.provideOriginRepo(task, new Action<String>() {
                     @Override
                     public void execute(String originRepoName) {
-                    task.setForkRepositoryName(originRepoName);
+                        task.setForkRepositoryName(originRepoName);
                     }
                 });
 
                 createPullRequestTask.provideCreatedPullRequest(task, new Action<PullRequest>() {
                     @Override
                     public void execute(PullRequest pullRequest) {
-                    if (pullRequest != null) {
-                        setPullRequestDataToTask(pullRequest, task);
-                    }
+                        if (pullRequest != null) {
+                            setPullRequestDataToTask(pullRequest, task);
+                        }
                     }
                 });
 
@@ -300,7 +303,6 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
             }
         });
 
-        //TODO: WW add validation for the case when 'dependency' property is not provided
         TaskMaker.task(project, PERFORM_VERSION_UPGRADE, new Action<Task>() {
             @Override
             public void execute(Task task) {
@@ -316,6 +318,9 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.dependsOn(MERGE_PULL_REQUEST);
             }
         });
+
+        addLazyDependencyValidation(dependency, createPullRequestTask, gitPushTask, findOpenPullRequestTask,
+            replaceVersionTask, shipkitExecTask);
     }
 
     private void setPullRequestDataToTask(PullRequest pullRequest, MergePullRequestTask task) {
@@ -334,8 +339,8 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
 
     private String getPullRequestDescription(UpgradeDependencyExtension versionUpgrade) {
         return String.format("This pull request was automatically created by Shipkit's" +
-            " 'org.shipkit.upgrade-downstream' Gradle plugin (http://shipkit.org)." +
-            " Please merge it so that you are using fresh version of '%s' dependency.",
+                " 'org.shipkit.upgrade-downstream' Gradle plugin (http://shipkit.org)." +
+                " Please merge it so that you are using fresh version of '%s' dependency.",
             versionUpgrade.getDependencyName());
     }
 
@@ -369,4 +374,17 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
         return upgradeDependencyExtension;
     }
 
+    private void addLazyDependencyValidation(final String dependency, Task... tasks) {
+        if (dependency == null) {
+            for (Task task : tasks) {
+                LazyConfiguration.lazyConfiguration(task, new Runnable() {
+                    @Override
+                    public void run() {
+                        throw new GradleException("Dependency property not set. You need to add 'dependency' parameter in" +
+                            " order to run this task. E.g.: -Pdependency=\"org.shipkit:shipkit:1.2.3\"");
+                    }
+                });
+            }
+        }
+    }
 }
