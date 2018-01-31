@@ -11,10 +11,11 @@ import org.shipkit.internal.gradle.git.tasks.GitPullTask
 import org.shipkit.internal.gradle.git.tasks.IdentifyGitOriginRepoTask
 import testutil.PluginSpecification
 
-import static org.shipkit.internal.gradle.versionupgrade.UpgradeDependencyPlugin.*
+import static org.shipkit.internal.gradle.versionupgrade.UpgradeDependencyPlugin.CREATE_PULL_REQUEST;
+import static org.shipkit.internal.gradle.versionupgrade.UpgradeDependencyPlugin.PUSH_VERSION_UPGRADE;
+import static org.shipkit.internal.gradle.versionupgrade.UpgradeDependencyPlugin.PULL_UPSTREAM;
 
 class UpgradeDependencyPluginTest extends PluginSpecification {
-
 
     public static final String DEPENDENCY_NOT_SET_EXCEPTION_MESSAGE = "Dependency property not set. You need to add 'dependency' " +
         "parameter in order to run this task. E.g.: -Pdependency=\"org.shipkit:shipkit:1.2.3\""
