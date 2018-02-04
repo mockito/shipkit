@@ -1,6 +1,9 @@
 package org.shipkit.internal.gradle.versionupgrade;
 
-import org.gradle.api.*;
+import org.gradle.api.Action;
+import org.gradle.api.Plugin;
+import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.specs.Spec;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.gradle.exec.ShipkitExecTask;
@@ -179,13 +182,12 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
             public void execute(final ReplaceVersionTask task) {
                 task.setDescription("Replaces dependency version in build file.");
                 task.mustRunAfter(CHECKOUT_VERSION_BRANCH);
-                task.setDependencyGroup(upgradeDependencyExtension.getDependencyGroup());
-                task.setNewVersion(upgradeDependencyExtension.getNewVersion());
-                task.setDependencyName(upgradeDependencyExtension.getDependencyName());
-
                 deferredConfiguration(project, new Runnable() {
                     @Override
                     public void run() {
+                        task.setDependencyGroup(upgradeDependencyExtension.getDependencyGroup());
+                        task.setNewVersion(upgradeDependencyExtension.getNewVersion());
+                        task.setDependencyName(upgradeDependencyExtension.getDependencyName());
                         task.setBuildFile(upgradeDependencyExtension.getBuildFile());
                     }
                 });
