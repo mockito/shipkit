@@ -112,11 +112,17 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
         project.extensions.dependency = "org.shipkit:shipkit:0.1.2"
 
         when:
-        UpgradeDependencyExtension versionUpgrade = project.plugins.apply(UpgradeDependencyPlugin).upgradeDependencyExtension
+        project.plugins.apply(UpgradeDependencyPlugin)
         ReplaceVersionTask task = project.tasks.replaceVersion
+        project.evaluate()
 
         then:
-        task.versionUpgrade == versionUpgrade
+        with(task) {
+            buildFile == project.file("build.gradle")
+            dependencyName == "shipkit"
+            dependencyGroup == "org.shipkit"
+            newVersion == "0.1.2"
+        }
     }
 
     def "should configure gitCommitVersionUpgrade"() {
@@ -144,8 +150,9 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
         conf.gitHub.writeAuthToken = "writeToken"
 
         when:
-        def versionUpgrade = project.plugins.apply(UpgradeDependencyPlugin).upgradeDependencyExtension
+        project.plugins.apply(UpgradeDependencyPlugin)
         CreatePullRequestTask task = project.tasks.createPullRequest
+        project.evaluate()
 
         then:
         task.gitHubApiUrl == "http://api.com"
@@ -154,7 +161,7 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
         task.pullRequestDescription == "This pull request was automatically created by " +
                 "Shipkit's 'org.shipkit.upgrade-downstream' Gradle plugin (http://shipkit.org). " +
                 "Please merge it so that you are using fresh version of 'shipkit' dependency."
-        task.pullRequestTitle == "Version of shipkit upgraded to ${versionUpgrade.newVersion}"
+        task.pullRequestTitle == "Version of shipkit upgraded to 1.2.30"
     }
 
     def "should configure mergePullRequest"() {

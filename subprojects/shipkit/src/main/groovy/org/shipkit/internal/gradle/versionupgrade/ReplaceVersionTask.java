@@ -6,11 +6,13 @@ import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.internal.notes.util.IOUtil;
 
+import java.io.File;
+
 /**
- * Replaces version of given dependency with {@link UpgradeDependencyExtension#newVersion}
- * in the given {@link UpgradeDependencyExtension#buildFile}
+ * Replaces version of given dependency with {@link #getNewVersion()}
+ * in the given {@link #getBuildFile()}
  * To replace the dependency this task uses following regex pattern:
- * "{@link UpgradeDependencyExtension#dependencyGroup}:{@link UpgradeDependencyExtension#dependencyName}:{@value VERSION_REGEX}
+ * "{@link #getDependencyGroup()}:{@link #getDependencyName()}:{@value VERSION_REGEX}
  */
 public class ReplaceVersionTask extends DefaultTask {
 
@@ -18,33 +20,85 @@ public class ReplaceVersionTask extends DefaultTask {
 
     public static final String VERSION_REGEX = "[0-9.]+";
 
-    private UpgradeDependencyExtension versionUpgrade;
+    private String dependencyGroup;
+    private String dependencyName;
+    private String newVersion;
+    private File buildFile;
+
     private Boolean buildFileUpdated;
 
     @TaskAction
     public void replaceVersion() {
-        String groupAndProject = versionUpgrade.getDependencyGroup() + ":" + versionUpgrade.getDependencyName() + ":";
+        String groupAndProject = dependencyGroup + ":" + dependencyName + ":";
         String versionPattern = groupAndProject + VERSION_REGEX;
-        String replacement = groupAndProject + versionUpgrade.getNewVersion();
+        String replacement = groupAndProject + newVersion;
 
-        LOG.lifecycle("  Replacing version in '{}' using pattern '{}' and version '{}'.", versionUpgrade.getBuildFile(), versionPattern, versionUpgrade.getNewVersion());
+        LOG.lifecycle("  Replacing version in '{}' using pattern '{}' and version '{}'.", buildFile, versionPattern, newVersion);
 
-        String content = IOUtil.readFully(versionUpgrade.getBuildFile());
+        String content = IOUtil.readFully(buildFile);
         String updatedContent = content.replaceAll(versionPattern, replacement);
 
         buildFileUpdated = !content.equals(updatedContent);
 
         if (buildFileUpdated) {
-            IOUtil.writeFile(versionUpgrade.getBuildFile().getAbsoluteFile(), updatedContent);
+            IOUtil.writeFile(buildFile.getAbsoluteFile(), updatedContent);
         }
     }
 
-    public UpgradeDependencyExtension getVersionUpgrade() {
-        return versionUpgrade;
+    /**
+     * See {@link UpgradeDependencyExtension#getDependencyGroup()}
+     */
+    public String getDependencyGroup() {
+        return dependencyGroup;
     }
 
-    public void setVersionUpgrade(UpgradeDependencyExtension versionUpgrade) {
-        this.versionUpgrade = versionUpgrade;
+    /**
+     * See {@link UpgradeDependencyExtension#getDependencyGroup()}
+     */
+    public void setDependencyGroup(String dependencyGroup) {
+        this.dependencyGroup = dependencyGroup;
+    }
+
+    /**
+     * See {@link UpgradeDependencyExtension#getDependencyName()}
+     */
+    public String getDependencyName() {
+        return dependencyName;
+    }
+
+    /**
+     * See {@link UpgradeDependencyExtension#getDependencyName()}
+     */
+    public void setDependencyName(String dependencyName) {
+        this.dependencyName = dependencyName;
+    }
+
+    /**
+     * See {@link UpgradeDependencyExtension#getNewVersion()}
+     */
+    public String getNewVersion() {
+        return newVersion;
+    }
+
+    /**
+     * See {@link UpgradeDependencyExtension#getNewVersion()}
+     */
+    public void setNewVersion(String newVersion) {
+        this.newVersion = newVersion;
+    }
+
+    /**
+     * See {@link UpgradeDependencyExtension#getBuildFile()}
+     */
+    public File getBuildFile() {
+        return buildFile;
+    }
+
+    /**
+     * See {@link UpgradeDependencyExtension#getBuildFile()}
+     */
+    public void setBuildFile(File buildFile) {
+        this.buildFile = buildFile;
     }
 
     /**

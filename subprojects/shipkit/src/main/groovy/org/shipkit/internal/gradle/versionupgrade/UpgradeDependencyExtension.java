@@ -4,6 +4,9 @@ import java.io.File;
 
 /**
  * Configuration of {@link UpgradeDependencyPlugin}
+ *
+ * TODO: ww divide it into two files, one would contain only fields dependent on "dependency" project property
+ * and the other the remaining ones.
  */
 public class UpgradeDependencyExtension {
     private String baseBranch;

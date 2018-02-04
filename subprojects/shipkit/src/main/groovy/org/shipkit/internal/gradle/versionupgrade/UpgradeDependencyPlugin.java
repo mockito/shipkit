@@ -1,11 +1,13 @@
 package org.shipkit.internal.gradle.versionupgrade;
 
-import org.gradle.api.*;
+import org.gradle.api.Action;
+import org.gradle.api.Plugin;
+import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.specs.Spec;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.gradle.exec.ShipkitExecTask;
 import org.shipkit.gradle.git.GitPushTask;
-import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitConfigPlugin;
 import org.shipkit.internal.gradle.git.GitOriginPlugin;
@@ -17,6 +19,7 @@ import org.shipkit.internal.gradle.util.GitUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.util.IncubatingWarning;
 
+import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
 import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
 
 /**
@@ -101,7 +104,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
             public void execute(final GitCheckOutTask task) {
                 task.setDescription("Checks out the base branch.");
 
-                DeferredConfiguration.deferredConfiguration(project, new Runnable() {
+                deferredConfiguration(project, new Runnable() {
                     @Override
                     public void run() {
                         task.setRev(upgradeDependencyExtension.getBaseBranch());
@@ -117,7 +120,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.mustRunAfter(CHECKOUT_BASE_BRANCH);
                 task.setDryRun(conf.isDryRun());
 
-                DeferredConfiguration.deferredConfiguration(project, new Runnable() {
+                deferredConfiguration(project, new Runnable() {
                     @Override
                     public void run() {
                         task.setRev(upgradeDependencyExtension.getBaseBranch());
@@ -179,7 +182,15 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
             public void execute(final ReplaceVersionTask task) {
                 task.setDescription("Replaces dependency version in build file.");
                 task.mustRunAfter(CHECKOUT_VERSION_BRANCH);
-                task.setVersionUpgrade(upgradeDependencyExtension);
+                deferredConfiguration(project, new Runnable() {
+                    @Override
+                    public void run() {
+                        task.setDependencyGroup(upgradeDependencyExtension.getDependencyGroup());
+                        task.setNewVersion(upgradeDependencyExtension.getNewVersion());
+                        task.setDependencyName(upgradeDependencyExtension.getDependencyName());
+                        task.setBuildFile(upgradeDependencyExtension.getBuildFile());
+                    }
+                });
             }
         });
 
@@ -190,7 +201,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 exec.mustRunAfter(REPLACE_VERSION);
                 exec.dependsOn(GitConfigPlugin.SET_EMAIL_TASK, GitConfigPlugin.SET_USER_TASK);
 
-                DeferredConfiguration.deferredConfiguration(project, new Runnable() {
+                deferredConfiguration(project, new Runnable() {
                     @Override
                     public void run() {
                         String message = String.format("%s version upgraded to %s", upgradeDependencyExtension.getDependencyName(), upgradeDependencyExtension.getNewVersion());
@@ -243,7 +254,6 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.setGitHubApiUrl(conf.getGitHub().getApiUrl());
                 task.setDryRun(conf.isDryRun());
                 task.setAuthToken(conf.getLenient().getGitHub().getWriteAuthToken());
-                task.setBaseBranch(upgradeDependencyExtension.getBaseBranch());
                 task.setPullRequestTitle(getPullRequestTitle(upgradeDependencyExtension));
                 task.setPullRequestDescription(getPullRequestDescription(upgradeDependencyExtension));
                 task.setUpstreamRepositoryName(conf.getGitHub().getRepository());
@@ -260,6 +270,13 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                     public void execute(PullRequest openPullRequestBranch) {
                         task.setVersionBranch(getCurrentVersionBranchName(upgradeDependencyExtension.getDependencyName(),
                             upgradeDependencyExtension.getNewVersion(), openPullRequestBranch.getRef()));
+                    }
+                });
+
+                deferredConfiguration(project, new Runnable() {
+                    @Override
+                    public void run() {
+                        task.setBaseBranch(upgradeDependencyExtension.getBaseBranch());
                     }
                 });
 
@@ -292,6 +309,13 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                     if (pullRequest != null) {
                         setPullRequestDataToTask(pullRequest, task);
                     }
+                    }
+                });
+
+                deferredConfiguration(project, new Runnable() {
+                    @Override
+                    public void run() {
+                        task.setBaseBranch(upgradeDependencyExtension.getBaseBranch());
                     }
                 });
 

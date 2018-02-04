@@ -27,14 +27,14 @@ public class CreatePullRequestTask extends DefaultTask {
     @Input private String forkRepositoryName;
     @Input private String pullRequestDescription;
     @Input private String pullRequestTitle;
+    @Input private String baseBranch;
 
-    private boolean dryRun;
     private PullRequest pullRequest;
-    private String baseBranch;
+    private boolean dryRun;
 
     @TaskAction
     public void createPullRequest() throws IOException {
-        pullRequest = new CreatePullRequest().createPullRequest(this);
+        new CreatePullRequest().createPullRequest(this);
     }
 
     /**

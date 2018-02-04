@@ -16,16 +16,13 @@ class ReplaceVersionTaskTest extends Specification {
 
         configFile << "dependencies{ compile org.shipkit:shipkit:0.1.2 }"
 
-        def versionUpgrade = new UpgradeDependencyExtension(
-            dependencyGroup: "org.shipkit",
-            dependencyName: "shipkit",
-            newVersion: "0.2.3",
-            buildFile: configFile
-        )
         def tasksContainer = new ProjectBuilder().build().tasks
         def replaceVersionTask = tasksContainer.create("replaceVersion", ReplaceVersionTask)
 
-        replaceVersionTask.versionUpgrade = versionUpgrade
+        replaceVersionTask.dependencyGroup = "org.shipkit"
+        replaceVersionTask.dependencyName = "shipkit"
+        replaceVersionTask.newVersion = "0.2.3"
+        replaceVersionTask.buildFile = configFile
 
         when:
         replaceVersionTask.replaceVersion()
@@ -41,16 +38,13 @@ class ReplaceVersionTaskTest extends Specification {
 
         configFile << "dependencies{ compile org.shipkit:shipkit:0.1.2 }"
 
-        def versionUpgrade = new UpgradeDependencyExtension(
-            dependencyGroup: "org.shipkit",
-            dependencyName: "shipkit",
-            newVersion: "0.1.2",
-            buildFile: configFile
-        )
         def tasksContainer = new ProjectBuilder().build().tasks
         def replaceVersionTask = tasksContainer.create("replaceVersion", ReplaceVersionTask)
 
-        replaceVersionTask.versionUpgrade = versionUpgrade
+        replaceVersionTask.dependencyGroup = "org.shipkit"
+        replaceVersionTask.dependencyName = "shipkit"
+        replaceVersionTask.newVersion = "0.1.2"
+        replaceVersionTask.buildFile = configFile
 
         when:
         replaceVersionTask.replaceVersion()
