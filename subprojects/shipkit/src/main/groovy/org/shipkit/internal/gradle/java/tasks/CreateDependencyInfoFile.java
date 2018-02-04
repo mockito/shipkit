@@ -1,6 +1,8 @@
 package org.shipkit.internal.gradle.java.tasks;
 
-import org.gradle.api.artifacts.*;
+import org.gradle.api.artifacts.Dependency;
+import org.gradle.api.artifacts.DependencyArtifact;
+import org.gradle.api.artifacts.ModuleDependency;
 import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.notes.util.IOUtil;
 
@@ -26,7 +28,6 @@ public class CreateDependencyInfoFile {
         //without depending on Gradle implementation
         SortedSet<String> dependencies = new TreeSet<String>();
         for (Dependency dependency: task.getConfiguration().getAllDependencies()) {
-            System.out.println("dep = " + dependency);
             if (dependency instanceof ModuleDependency) {
                 String dep = getDependencyWithArtifacts(task, (ModuleDependency) dependency);
                 dependencies.add(dep);
