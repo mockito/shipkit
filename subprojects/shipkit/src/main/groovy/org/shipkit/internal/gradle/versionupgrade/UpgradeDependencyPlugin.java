@@ -268,8 +268,10 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 findOpenPullRequestTask.provideOpenPullRequest(task, new Action<PullRequest>() {
                     @Override
                     public void execute(PullRequest openPullRequestBranch) {
+                        //TODO consider using Optional. This null check is duplicated
+                        String ref = openPullRequestBranch == null? null : openPullRequestBranch.getRef();
                         task.setVersionBranch(getCurrentVersionBranchName(upgradeDependencyExtension.getDependencyName(),
-                            upgradeDependencyExtension.getNewVersion(), openPullRequestBranch.getRef()));
+                            upgradeDependencyExtension.getNewVersion(), ref));
                     }
                 });
 
