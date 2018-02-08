@@ -14,9 +14,7 @@ buildscript {
 apply plugin: 'com.gradle.build-scan'
 
 buildScan {
-    if (System.getenv('CI')) {
-        publishAlways()
-    }
+    publishAlways()
     licenseAgreementUrl = 'https://gradle.com/terms-of-service'
     licenseAgree = 'yes'
 }
