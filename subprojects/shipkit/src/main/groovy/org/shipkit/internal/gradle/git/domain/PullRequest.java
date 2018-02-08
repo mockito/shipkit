@@ -32,8 +32,9 @@ public class PullRequest {
     /**
      * See {@link #getRef()}
      */
-    public void setRef(String ref) {
+    public PullRequest setRef(String ref) {
         this.ref = ref;
+        return this;
     }
 
     /**

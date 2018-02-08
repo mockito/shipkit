@@ -4,6 +4,8 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.gradle.api.specs.Spec;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.gradle.exec.ShipkitExecTask;
@@ -16,6 +18,7 @@ import org.shipkit.internal.gradle.git.domain.PullRequest;
 import org.shipkit.internal.gradle.git.tasks.GitCheckOutTask;
 import org.shipkit.internal.gradle.git.tasks.GitPullTask;
 import org.shipkit.internal.gradle.util.GitUtil;
+import org.shipkit.internal.gradle.util.Optional;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.util.IncubatingWarning;
 
@@ -66,6 +69,8 @@ import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
  * ./gradlew performVersionUpgrade -Pdependency=org.shipkit:shipkit:1.2.3
  */
 public class UpgradeDependencyPlugin implements Plugin<Project> {
+
+    private final static Logger LOG = Logging.getLogger(UpgradeDependencyPlugin.class);
 
     public static final String CHECKOUT_BASE_BRANCH = "checkoutBaseBranch";
     public static final String PULL_UPSTREAM = "pullUpstream";
@@ -158,19 +163,17 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.setDescription("Creates a new version branch and checks it out.");
                 task.mustRunAfter(FIND_OPEN_PULL_REQUEST);
 
-                findOpenPullRequestTask.provideOpenPullRequest(task, new Action<PullRequest>() {
+                findOpenPullRequestTask.provideOpenPullRequest(task, new Action<Optional<PullRequest>>() {
                     @Override
-                    public void execute(PullRequest pullRequest) {
-                        String ref = null;
-                        if (pullRequest != null) {
-                            ref = pullRequest.getRef();
+                    public void execute(Optional<PullRequest> pullRequest) {
+                        if (pullRequest.isPresent()) {
                             // don't create a new branch if there is already a branch with open pull request with version upgrade
                             task.setNewBranch(false);
                         } else {
                             task.setNewBranch(true);
                         }
                         task.setRev(getCurrentVersionBranchName(upgradeDependencyExtension.getDependencyName(),
-                            upgradeDependencyExtension.getNewVersion(), ref));
+                            upgradeDependencyExtension.getNewVersion(), pullRequest));
 
                     }
                 });
@@ -230,15 +233,11 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                     }
                 });
 
-                findOpenPullRequestTask.provideOpenPullRequest(task, new Action<PullRequest>() {
+                findOpenPullRequestTask.provideOpenPullRequest(task, new Action<Optional<PullRequest>>() {
                     @Override
-                    public void execute(PullRequest pullRequest) {
-                        String ref = null;
-                        if (pullRequest != null) {
-                            ref =  pullRequest.getRef();
-                        }
+                    public void execute(Optional<PullRequest> pullRequest) {
                         task.getTargets().add(getCurrentVersionBranchName(upgradeDependencyExtension.getDependencyName(),
-                            upgradeDependencyExtension.getNewVersion(), ref));
+                            upgradeDependencyExtension.getNewVersion(), pullRequest));
                     }
                 });
 
@@ -265,13 +264,11 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                     }
                 });
 
-                findOpenPullRequestTask.provideOpenPullRequest(task, new Action<PullRequest>() {
+                findOpenPullRequestTask.provideOpenPullRequest(task, new Action<Optional<PullRequest>>() {
                     @Override
-                    public void execute(PullRequest openPullRequestBranch) {
-                        //TODO consider using Optional. This null check is duplicated
-                        String ref = openPullRequestBranch == null? null : openPullRequestBranch.getRef();
+                    public void execute(Optional<PullRequest> pullRequest) {
                         task.setVersionBranch(getCurrentVersionBranchName(upgradeDependencyExtension.getDependencyName(),
-                            upgradeDependencyExtension.getNewVersion(), ref));
+                            upgradeDependencyExtension.getNewVersion(), pullRequest));
                     }
                 });
 
@@ -309,7 +306,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                     @Override
                     public void execute(PullRequest pullRequest) {
                     if (pullRequest != null) {
-                        setPullRequestDataToTask(pullRequest, task);
+                        setPullRequestDataToTask(Optional.of(pullRequest), task);
                     }
                     }
                 });
@@ -344,16 +341,21 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
         });
     }
 
-    private void setPullRequestDataToTask(PullRequest pullRequest, MergePullRequestTask task) {
-        task.setVersionBranch(getCurrentVersionBranchName(upgradeDependencyExtension.getDependencyName(),
-            upgradeDependencyExtension.getNewVersion(), pullRequest.getRef()));
-        task.setPullRequestSha(pullRequest.getSha());
-        task.setPullRequestUrl(pullRequest.getUrl());
+    private void setPullRequestDataToTask(Optional<PullRequest> pullRequest, MergePullRequestTask task) {
+        if (pullRequest.isPresent()) {
+            String branch = getCurrentVersionBranchName(upgradeDependencyExtension.getDependencyName(),
+                upgradeDependencyExtension.getNewVersion(), pullRequest);
+            task.setVersionBranch(branch);
+            task.setPullRequestSha(pullRequest.get().getSha());
+            task.setPullRequestUrl(pullRequest.get().getUrl());
+        } else {
+            LOG.info("Because pull request was not created, we were not able to fully configure task {}.", task.getPath());
+        }
     }
 
-    static String getCurrentVersionBranchName(String dependencyName, String version, String openPullRequestBranch) {
-        if (openPullRequestBranch != null) {
-            return openPullRequestBranch;
+    static String getCurrentVersionBranchName(String dependencyName, String version, Optional<PullRequest> pr) {
+        if (pr.isPresent()) {
+            return pr.get().getRef();
         }
         return getVersionBranchName(dependencyName, version);
     }
