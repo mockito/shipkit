@@ -305,9 +305,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 createPullRequestTask.provideCreatedPullRequest(task, new Action<PullRequest>() {
                     @Override
                     public void execute(PullRequest pullRequest) {
-                    if (pullRequest != null) {
-                        setPullRequestDataToTask(Optional.of(pullRequest), task);
-                    }
+                        setPullRequestDataToTask(Optional.ofNullable(pullRequest), task);
                     }
                 });
 

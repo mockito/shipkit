@@ -126,7 +126,7 @@ public class FindOpenPullRequestTask extends DefaultTask {
         dependant.dependsOn(this);
         this.doLast(new Action<Task>() {
             public void execute(Task task) {
-                action.execute(Optional.of(pullRequest));
+                action.execute(Optional.ofNullable(pullRequest));
             }
         });
     }
