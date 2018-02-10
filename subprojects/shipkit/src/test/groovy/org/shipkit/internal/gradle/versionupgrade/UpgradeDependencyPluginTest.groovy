@@ -3,9 +3,11 @@ package org.shipkit.internal.gradle.versionupgrade
 import org.shipkit.gradle.exec.ShipkitExecTask
 import org.shipkit.gradle.git.GitPushTask
 import org.shipkit.internal.gradle.git.GitOriginPlugin
+import org.shipkit.internal.gradle.git.domain.PullRequest
 import org.shipkit.internal.gradle.git.tasks.GitCheckOutTask
 import org.shipkit.internal.gradle.git.tasks.GitPullTask
 import org.shipkit.internal.gradle.git.tasks.IdentifyGitOriginRepoTask
+import org.shipkit.internal.gradle.util.Optional
 import testutil.PluginSpecification
 
 import static org.shipkit.internal.gradle.versionupgrade.UpgradeDependencyPlugin.CREATE_PULL_REQUEST
@@ -182,12 +184,14 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
     }
 
     def "should return open pull request branch if it is not null"() {
+        def pr = Optional.of(new PullRequest().setRef("openPR"))
+
         expect:
-        "openPR" == UpgradeDependencyPlugin.getCurrentVersionBranchName(null, null, "openPR")
+        "openPR" == UpgradeDependencyPlugin.getCurrentVersionBranchName(null, null, pr)
     }
 
     def "should return new version branch if open pull request branch is null"() {
         expect:
-        "upgrade-shipkit-to-1.2.3" == UpgradeDependencyPlugin.getCurrentVersionBranchName("shipkit", "1.2.3", null)
+        "upgrade-shipkit-to-1.2.3" == UpgradeDependencyPlugin.getCurrentVersionBranchName("shipkit", "1.2.3", Optional.ofNullable(null))
     }
 }

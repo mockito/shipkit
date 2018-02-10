@@ -7,6 +7,7 @@ import org.gradle.api.tasks.TaskAction;
 import org.json.simple.DeserializationException;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.gradle.git.domain.PullRequest;
+import org.shipkit.internal.gradle.util.Optional;
 
 import java.io.IOException;
 
@@ -121,11 +122,11 @@ public class FindOpenPullRequestTask extends DefaultTask {
      * - the task {@param #dependant} is executed after {@link FindOpenPullRequestTask}
      */
 
-    public void provideOpenPullRequest(Task dependant, final Action<PullRequest> action) {
+    public void provideOpenPullRequest(Task dependant, final Action<Optional<PullRequest>> action) {
         dependant.dependsOn(this);
         this.doLast(new Action<Task>() {
             public void execute(Task task) {
-                action.execute(pullRequest);
+                action.execute(Optional.ofNullable(pullRequest));
             }
         });
     }
