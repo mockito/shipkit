@@ -22,9 +22,9 @@ public class Optional<T> {
         return value;
     }
 
-    public static <T> Optional<T> of(T object) {
-        ArgumentValidation.notNull();
-        return new Optional<T>(object);
+    public static <T> Optional<T> of(T value) {
+        ArgumentValidation.notNull(value, "optional value");
+        return new Optional<T>(value);
     }
 
     public static <T> Optional<T> ofNullable(T value) {

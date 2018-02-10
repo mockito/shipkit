@@ -192,6 +192,6 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
 
     def "should return new version branch if open pull request branch is null"() {
         expect:
-        "upgrade-shipkit-to-1.2.3" == UpgradeDependencyPlugin.getCurrentVersionBranchName("shipkit", "1.2.3", Optional.of(null))
+        "upgrade-shipkit-to-1.2.3" == UpgradeDependencyPlugin.getCurrentVersionBranchName("shipkit", "1.2.3", Optional.ofNullable(null))
     }
 }
