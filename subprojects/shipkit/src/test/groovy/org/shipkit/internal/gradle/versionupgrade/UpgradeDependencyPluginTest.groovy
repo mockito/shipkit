@@ -1,7 +1,6 @@
 package org.shipkit.internal.gradle.versionupgrade
 
 import org.gradle.api.GradleException
-import org.gradle.api.Task
 import org.shipkit.gradle.exec.ShipkitExecTask
 import org.shipkit.gradle.git.GitPushTask
 import org.shipkit.internal.gradle.configuration.LazyConfiguration
@@ -215,68 +214,13 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
         task << ['commitVersionUpgrade', 'findOpenPullRequest', 'replaceVersion', 'pushVersionUpgrade', 'createPullRequest']
     }
 
-    def "should not register commitVersionUpgrade task in lazy configuration when dependency set"() {
-        given:
-        project.extensions.dependency = "org.shipkit:shipkit:1.2.30"
-
+    def "dependency project property is not needed during Gradle's configuration"() {
         when:
         project.plugins.apply(UpgradeDependencyPlugin)
-        Task task = project.tasks.commitVersionUpgrade
-        LazyConfiguration.forceConfiguration(task)
 
         then:
-        thrown NullPointerException
-    }
-
-    def "should not register findOpenPullRequest task in lazy configuration when dependency set"() {
-        given:
-        project.extensions.dependency = "org.shipkit:shipkit:1.2.30"
-
-        when:
-        project.plugins.apply(UpgradeDependencyPlugin)
-        Task task = project.tasks.findOpenPullRequest
-        LazyConfiguration.forceConfiguration(task)
-
-        then:
-        thrown NullPointerException
-    }
-
-    def "should not register replaceVersion task in lazy configuration when dependency set"() {
-        given:
-        project.extensions.dependency = "org.shipkit:shipkit:1.2.30"
-
-        when:
-        project.plugins.apply(UpgradeDependencyPlugin)
-        Task task = project.tasks.replaceVersion
-        LazyConfiguration.forceConfiguration(task)
-
-        then:
-        thrown NullPointerException
-    }
-
-    def "should not register pushVersionUpgrade task in lazy configuration when dependency set"() {
-        given:
-        project.extensions.dependency = "org.shipkit:shipkit:1.2.30"
-
-        when:
-        project.plugins.apply(UpgradeDependencyPlugin)
-        Task task = project.tasks.pushVersionUpgrade
-        LazyConfiguration.forceConfiguration(task)
-
-        then:
-        thrown NullPointerException
-    }
-
-    def "should not register createPullRequest task in lazy configuration when dependency set"() {
-        given:
-        project.extensions.dependency = "org.shipkit:shipkit:1.2.30"
-
-        when:
-        project.plugins.apply(UpgradeDependencyPlugin)
-        Task task = project.tasks.createPullRequest
-        LazyConfiguration.forceConfiguration(task)
-
-        then:
-        thrown NullPointerException
+        //safe to evaluate despite there is no 'dependency' project property
+        //we only want to validate when user runs task that needs the 'dependency' project property
+        project.evaluate()
     }
 }
