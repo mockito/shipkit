@@ -11,6 +11,7 @@ import org.shipkit.internal.gradle.git.tasks.GitCheckOutTask
 import org.shipkit.internal.gradle.git.tasks.GitPullTask
 import org.shipkit.internal.gradle.git.tasks.IdentifyGitOriginRepoTask
 import org.shipkit.internal.gradle.util.Optional
+import spock.lang.Unroll
 import testutil.PluginSpecification
 
 import static org.shipkit.internal.gradle.versionupgrade.UpgradeDependencyPlugin.CREATE_PULL_REQUEST
@@ -18,9 +19,6 @@ import static org.shipkit.internal.gradle.versionupgrade.UpgradeDependencyPlugin
 import static org.shipkit.internal.gradle.versionupgrade.UpgradeDependencyPlugin.PUSH_VERSION_UPGRADE
 
 class UpgradeDependencyPluginTest extends PluginSpecification {
-
-    public static final String DEPENDENCY_NOT_SET_EXCEPTION_MESSAGE = "Dependency property not set. You need to add 'dependency' " +
-        "parameter in order to run this task. E.g.: -Pdependency=\"org.shipkit:shipkit:1.2.3\""
 
     def setup() {
         conf.gitHub.writeAuthToken = "secret"
@@ -201,59 +199,20 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
         "upgrade-shipkit-to-1.2.3" == UpgradeDependencyPlugin.getCurrentVersionBranchName("shipkit", "1.2.3", Optional.ofNullable(null))
     }
 
-    def "should throw exception when executing commitVersionUpgrade and dependency not set"() {
+    @Unroll
+    def "should throw exception when executing specific tasks and dependency not set"() {
         when:
         project.plugins.apply(UpgradeDependencyPlugin)
-        Task task = project.tasks.commitVersionUpgrade
-        LazyConfiguration.forceConfiguration(task)
+        def t = project.tasks.getByName(task)
+        LazyConfiguration.forceConfiguration(t)
 
         then:
         def ex = thrown GradleException
-        ex.message == DEPENDENCY_NOT_SET_EXCEPTION_MESSAGE
-    }
+        ex.message == "Dependency project property not set. It is required for task '$t.path'.\n" +
+            "You can pass project property via command line: -Pdependency=\"org.shipkit:shipkit:1.2.3\""
 
-    def "should throw exception when executing findOpenPullRequest and dependency not set"() {
-        when:
-        project.plugins.apply(UpgradeDependencyPlugin)
-        Task task = project.tasks.findOpenPullRequest
-        LazyConfiguration.forceConfiguration(task)
-
-        then:
-        def ex = thrown GradleException
-        ex.message == DEPENDENCY_NOT_SET_EXCEPTION_MESSAGE
-    }
-
-    def "should throw exception when executing replaceVersion and dependency not set"() {
-        when:
-        project.plugins.apply(UpgradeDependencyPlugin)
-        Task task = project.tasks.replaceVersion
-        LazyConfiguration.forceConfiguration(task)
-
-        then:
-        def ex = thrown GradleException
-        ex.message == DEPENDENCY_NOT_SET_EXCEPTION_MESSAGE
-    }
-
-    def "should throw exception when executing pushVersionUpgrade and dependency not set"() {
-        when:
-        project.plugins.apply(UpgradeDependencyPlugin)
-        Task task = project.tasks.pushVersionUpgrade
-        LazyConfiguration.forceConfiguration(task)
-
-        then:
-        def ex = thrown GradleException
-        ex.message == DEPENDENCY_NOT_SET_EXCEPTION_MESSAGE
-    }
-
-    def "should throw exception when executing createPullRequest and dependency not set"() {
-        when:
-        project.plugins.apply(UpgradeDependencyPlugin)
-        Task task = project.tasks.createPullRequest
-        LazyConfiguration.forceConfiguration(task)
-
-        then:
-        def ex = thrown GradleException
-        ex.message == DEPENDENCY_NOT_SET_EXCEPTION_MESSAGE
+        where:
+        task << ['commitVersionUpgrade', 'findOpenPullRequest', 'replaceVersion', 'pushVersionUpgrade', 'createPullRequest']
     }
 
     def "should not register commitVersionUpgrade task in lazy configuration when dependency set"() {

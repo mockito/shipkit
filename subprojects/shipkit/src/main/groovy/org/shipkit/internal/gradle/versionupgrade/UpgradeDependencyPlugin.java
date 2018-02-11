@@ -401,12 +401,12 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
 
     private void addLazyDependencyValidation(final String dependency, Task... tasks) {
         if (dependency == null) {
-            for (Task task : tasks) {
+            for (final Task task : tasks) {
                 LazyConfiguration.lazyConfiguration(task, new Runnable() {
                     @Override
                     public void run() {
-                        throw new GradleException("Dependency property not set. You need to add 'dependency' parameter in" +
-                            " order to run this task. E.g.: -Pdependency=\"org.shipkit:shipkit:1.2.3\"");
+                        throw new GradleException("Dependency project property not set. It is required for task '" + task.getPath() + "'.\n" +
+                            "You can pass project property via command line: -Pdependency=\"org.shipkit:shipkit:1.2.3\"");
                     }
                 });
             }
