@@ -1,6 +1,7 @@
 package org.shipkit.internal.gradle.versionupgrade;
 
 import org.gradle.api.Action;
+import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -10,6 +11,7 @@ import org.gradle.api.specs.Spec;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.gradle.exec.ShipkitExecTask;
 import org.shipkit.gradle.git.GitPushTask;
+import org.shipkit.internal.gradle.configuration.LazyConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitConfigPlugin;
 import org.shipkit.internal.gradle.git.GitOriginPlugin;
@@ -197,7 +199,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
             }
         });
 
-        TaskMaker.task(project, COMMIT_VERSION_UPGRADE, ShipkitExecTask.class, new Action<ShipkitExecTask>() {
+        final ShipkitExecTask shipkitExecTask = TaskMaker.task(project, COMMIT_VERSION_UPGRADE, ShipkitExecTask.class, new Action<ShipkitExecTask>() {
             @Override
             public void execute(final ShipkitExecTask exec) {
                 exec.setDescription("Commits updated build file.");
@@ -217,7 +219,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
             }
         });
 
-        TaskMaker.task(project, PUSH_VERSION_UPGRADE, GitPushTask.class, new Action<GitPushTask>() {
+        final GitPushTask gitPushTask = TaskMaker.task(project, PUSH_VERSION_UPGRADE, GitPushTask.class, new Action<GitPushTask>() {
             @Override
             public void execute(final GitPushTask task) {
                 task.setDescription("Pushes updated config file to an update branch.");
@@ -245,7 +247,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
             }
         });
 
-        final CreatePullRequestTask createPullRequestTask =  TaskMaker.task(project, CREATE_PULL_REQUEST, CreatePullRequestTask.class, new Action<CreatePullRequestTask>() {
+        final CreatePullRequestTask createPullRequestTask = TaskMaker.task(project, CREATE_PULL_REQUEST, CreatePullRequestTask.class, new Action<CreatePullRequestTask>() {
             @Override
             public void execute(final CreatePullRequestTask task) {
                 task.setDescription("Creates a pull request from branch with version upgraded to master");
@@ -298,7 +300,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 gitOriginPlugin.provideOriginRepo(task, new Action<String>() {
                     @Override
                     public void execute(String originRepoName) {
-                    task.setForkRepositoryName(originRepoName);
+                        task.setForkRepositoryName(originRepoName);
                     }
                 });
 
@@ -321,7 +323,6 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
             }
         });
 
-        //TODO: WW add validation for the case when 'dependency' property is not provided
         TaskMaker.task(project, PERFORM_VERSION_UPGRADE, new Action<Task>() {
             @Override
             public void execute(Task task) {
@@ -337,6 +338,9 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
                 task.dependsOn(MERGE_PULL_REQUEST);
             }
         });
+
+        addLazyDependencyValidation(dependency, createPullRequestTask, gitPushTask, findOpenPullRequestTask,
+            replaceVersionTask, shipkitExecTask);
     }
 
     private void setPullRequestDataToTask(Optional<PullRequest> pullRequest, MergePullRequestTask task) {
@@ -360,8 +364,8 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
 
     private String getPullRequestDescription(UpgradeDependencyExtension versionUpgrade) {
         return String.format("This pull request was automatically created by Shipkit's" +
-            " 'org.shipkit.upgrade-downstream' Gradle plugin (http://shipkit.org)." +
-            " Please merge it so that you are using fresh version of '%s' dependency.",
+                " 'org.shipkit.upgrade-downstream' Gradle plugin (http://shipkit.org)." +
+                " Please merge it so that you are using fresh version of '%s' dependency.",
             versionUpgrade.getDependencyName());
     }
 
@@ -395,4 +399,17 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
         return upgradeDependencyExtension;
     }
 
+    private void addLazyDependencyValidation(final String dependency, Task... tasks) {
+        if (dependency == null) {
+            for (Task task : tasks) {
+                LazyConfiguration.lazyConfiguration(task, new Runnable() {
+                    @Override
+                    public void run() {
+                        throw new GradleException("Dependency property not set. You need to add 'dependency' parameter in" +
+                            " order to run this task. E.g.: -Pdependency=\"org.shipkit:shipkit:1.2.3\"");
+                    }
+                });
+            }
+        }
+    }
 }
