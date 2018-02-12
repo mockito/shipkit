@@ -1,13 +1,16 @@
 package org.shipkit.internal.gradle.versionupgrade
 
+import org.gradle.api.GradleException
 import org.shipkit.gradle.exec.ShipkitExecTask
 import org.shipkit.gradle.git.GitPushTask
+import org.shipkit.internal.gradle.configuration.LazyConfiguration
 import org.shipkit.internal.gradle.git.GitOriginPlugin
 import org.shipkit.internal.gradle.git.domain.PullRequest
 import org.shipkit.internal.gradle.git.tasks.GitCheckOutTask
 import org.shipkit.internal.gradle.git.tasks.GitPullTask
 import org.shipkit.internal.gradle.git.tasks.IdentifyGitOriginRepoTask
 import org.shipkit.internal.gradle.util.Optional
+import spock.lang.Unroll
 import testutil.PluginSpecification
 
 import static org.shipkit.internal.gradle.versionupgrade.UpgradeDependencyPlugin.CREATE_PULL_REQUEST
@@ -193,5 +196,31 @@ class UpgradeDependencyPluginTest extends PluginSpecification {
     def "should return new version branch if open pull request branch is null"() {
         expect:
         "upgrade-shipkit-to-1.2.3" == UpgradeDependencyPlugin.getCurrentVersionBranchName("shipkit", "1.2.3", Optional.ofNullable(null))
+    }
+
+    @Unroll
+    def "should throw exception when executing specific tasks and dependency not set"() {
+        when:
+        project.plugins.apply(UpgradeDependencyPlugin)
+        def t = project.tasks.getByName(task)
+        LazyConfiguration.forceConfiguration(t)
+
+        then:
+        def ex = thrown GradleException
+        ex.message == "Dependency project property not set. It is required for task '$t.path'.\n" +
+            "You can pass project property via command line: -Pdependency=\"org.shipkit:shipkit:1.2.3\""
+
+        where:
+        task << ['commitVersionUpgrade', 'findOpenPullRequest', 'replaceVersion', 'pushVersionUpgrade', 'createPullRequest']
+    }
+
+    def "dependency project property is not needed during Gradle's configuration"() {
+        when:
+        project.plugins.apply(UpgradeDependencyPlugin)
+
+        then:
+        //safe to evaluate despite there is no 'dependency' project property
+        //we only want to validate when user runs task that needs the 'dependency' project property
+        project.evaluate()
     }
 }
