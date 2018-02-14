@@ -34,7 +34,7 @@ public class CreatePullRequestTask extends DefaultTask {
 
     @TaskAction
     public void createPullRequest() throws IOException {
-        new CreatePullRequest().createPullRequest(this);
+        pullRequest = new CreatePullRequest().createPullRequest(this);
     }
 
     /**
