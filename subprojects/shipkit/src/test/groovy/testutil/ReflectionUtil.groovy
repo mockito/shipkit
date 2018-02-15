@@ -14,7 +14,7 @@ class ReflectionUtil {
         def parentList = []
         parentList << obj.class
         doReflectionRec(obj, gettersAndSettersList, parentList)
-        return gettersAndSettersList;
+        return gettersAndSettersList
     }
 
     static def doReflectionRec(obj, myList, parents) {
@@ -42,33 +42,33 @@ class ReflectionUtil {
         for (it in methods) {
             def fieldName = it.name.substring(SET_LENGTH)
             if (isSetter(it) && (getter.name.equals(GET + fieldName) || getter.name.equals(IS + fieldName))) {
-                return it;
+                return it
             }
         }
-        return null;
+        return null
     }
 
     static boolean isSetter(Method method) {
         if (method.name.startsWith(SET) && method.parameterCount == 1) {
-            return true;
+            return true
         }
-        return false;
+        return false
     }
 
     static boolean isGetter(Method method) {
         if (!(method.name.startsWith(IS) || method.name.startsWith(GET))) {
-            return false;
+            return false
         }
         if (method.parameterCount != 0) {
-            return false;
+            return false
         }
-        return true;
+        return true
     }
 
     static class ObjectWithProperties {
-        Method getter;
-        Method setter;
-        Object object;
+        Method getter
+        Method setter
+        Object object
 
         ObjectWithProperties(Method getter, Method setter, Object object) {
             this.getter = getter

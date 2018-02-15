@@ -20,7 +20,7 @@ class ShipkitConfigurationStoreTest extends Specification {
     def "should override env variable value set explicitly"() {
         given:
         envVariables.getNonEmptyEnv("ENV") >> "some value"
-        store.put("foo", "other value");
+        store.put("foo", "other value")
 
         expect:
         store.getValue("foo", "ENV", "Error!") == "other value"

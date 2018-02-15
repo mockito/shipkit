@@ -16,7 +16,7 @@ class GitHubUrlBuilderTest extends Specification {
     def "should return GH url given gHurl '#ghUrl' repo '#repo' user '#user' token '#token'"() {
         when:
         if (ghUrl) {
-            conf.gitHub.url = ghUrl;
+            conf.gitHub.url = ghUrl
         }
         if (user) {
             conf.gitHub.writeAuthUser = user

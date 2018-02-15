@@ -13,7 +13,7 @@ class MultiMapTest extends Specification {
     }
 
     def "contains multiple values per key"() {
-        def map = new MultiMap<String, String>();
+        def map = new MultiMap<String, String>()
         map.put("1", "x")
         map.put("1", "y")
         map.put("2", "z")

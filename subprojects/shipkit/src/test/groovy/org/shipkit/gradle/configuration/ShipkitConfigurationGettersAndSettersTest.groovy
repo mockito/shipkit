@@ -35,13 +35,13 @@ class ShipkitConfigurationGettersAndSettersTest extends Specification {
     }
 
     def getValueForSetter(Method setter) {
-        counter++;
+        counter++
         if (setter.parameters[0].type == String.class) {
             return 'some string' + counter
         }
 
         if (setter.parameters[0].type.name == "boolean") {
-            return (counter % 2 == 0);
+            return (counter % 2 == 0)
         }
 
         if (setter.parameters[0].type == Map.class) {

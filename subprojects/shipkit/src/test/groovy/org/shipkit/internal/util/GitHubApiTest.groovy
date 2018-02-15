@@ -13,7 +13,7 @@ class GitHubApiTest extends Specification {
 
         then:
         def ex = thrown(Exception)
-        !ex.message.contains("accessToken");
+        !ex.message.contains("accessToken")
     }
 
     def "should not show accessToken in error message for get request"() {
@@ -25,6 +25,6 @@ class GitHubApiTest extends Specification {
 
         then:
         def ex = thrown(Exception)
-        !ex.message.contains("accessToken");
+        !ex.message.contains("accessToken")
     }
 }

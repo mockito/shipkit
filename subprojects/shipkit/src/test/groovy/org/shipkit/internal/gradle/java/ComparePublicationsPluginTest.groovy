@@ -23,7 +23,7 @@ class ComparePublicationsPluginTest extends PluginSpecification {
         def child = new ProjectBuilder().withName("child").withParent(project).build()
 
         child.plugins.apply(ShipkitBintrayPlugin)
-        child.getExtensions().getByType(BintrayExtension).user = "test";
+        child.getExtensions().getByType(BintrayExtension).user = "test"
 
         when:
         child.plugins.apply(ComparePublicationsPlugin)
@@ -31,7 +31,7 @@ class ComparePublicationsPluginTest extends PluginSpecification {
 
         then:
         DownloadPreviousPublicationsTask task = child.getTasks()
-                .getByName(ComparePublicationsPlugin.DOWNLOAD_PUBLICATIONS_TASK);
+                .getByName(ComparePublicationsPlugin.DOWNLOAD_PUBLICATIONS_TASK)
 
         task.previousSourcesJarUrl.contains("bintray.com")
     }
@@ -47,7 +47,7 @@ class ComparePublicationsPluginTest extends PluginSpecification {
 
         then:
         DownloadPreviousPublicationsTask task = child.getTasks()
-                .getByName(ComparePublicationsPlugin.DOWNLOAD_PUBLICATIONS_TASK);
+                .getByName(ComparePublicationsPlugin.DOWNLOAD_PUBLICATIONS_TASK)
 
         task.previousSourcesJarUrl == null
     }
@@ -71,7 +71,7 @@ class ComparePublicationsPluginTest extends PluginSpecification {
         ComparePublicationsTask comparisonTask = child.getTasks()
                 .getByName(ComparePublicationsPlugin.COMPARE_PUBLICATIONS_TASK)
 
-        def basePath = child.getBuildDir().absolutePath + "/previous-release-artifacts/child-1.0.0";
+        def basePath = child.getBuildDir().absolutePath + "/previous-release-artifacts/child-1.0.0"
         def expectedSourcesJar = new File(basePath + "-sources.jar")
 
         downloadTask.previousSourcesJarFile == expectedSourcesJar

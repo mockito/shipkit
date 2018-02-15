@@ -21,20 +21,20 @@ class StringUtil {
      * Capitalizes string
      */
     static String capitalize(String input) {
-        return input.capitalize();
+        return input.capitalize()
     }
 
     /**
      * Checks if input is empty, if input is not null its 'toString()' value will be used.
      */
     static boolean isEmpty(Object input) {
-        return input == null || isEmpty(input.toString());
+        return input == null || isEmpty(input.toString())
     }
 
     /**
      * Checks if input is empty
      */
     static boolean isEmpty(String input) {
-        return input == null || input.isEmpty();
+        return input == null || input.isEmpty()
     }
 }

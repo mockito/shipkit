@@ -9,7 +9,7 @@ class HeaderRemoverTest extends Specification {
         String content = new HeaderProvider().getHeader('some header with some text and numbers') + 'old content'
 
         when:
-        String result = HeaderRemover.removeHeaderIfExist(content);
+        String result = HeaderRemover.removeHeaderIfExist(content)
 
         then:
         result == "old content"
@@ -20,7 +20,7 @@ class HeaderRemoverTest extends Specification {
         String content = "old content\n\nold content second line"
 
         when:
-        String result = HeaderRemover.removeHeaderIfExist(content);
+        String result = HeaderRemover.removeHeaderIfExist(content)
 
         then:
         result == "old content\n\nold content second line"
