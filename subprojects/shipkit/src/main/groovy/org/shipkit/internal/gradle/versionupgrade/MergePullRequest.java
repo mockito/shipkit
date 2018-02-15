@@ -20,7 +20,7 @@ class MergePullRequest {
         mergePullRequest(task, gitHubApi, new GitHubStatusCheck(task, gitHubApi));
     }
 
-    public void mergePullRequest(MergePullRequestTask task, GitHubApi gitHubApi, GitHubStatusCheck gitHubStatusCheck) throws IOException {
+    public void mergePullRequest(MergePullRequestTask task, GitHubApi gitHubApi, GitHubStatusCheck gitHubStatusCheck) {
         if (task.isDryRun()) {
             LOG.lifecycle(" Skipping pull request merging due to dryRun = true");
             return;

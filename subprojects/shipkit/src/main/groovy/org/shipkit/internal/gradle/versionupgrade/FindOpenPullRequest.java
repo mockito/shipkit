@@ -2,7 +2,6 @@ package org.shipkit.internal.gradle.versionupgrade;
 
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.json.simple.DeserializationException;
 import org.json.simple.JsonArray;
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
