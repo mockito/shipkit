@@ -77,7 +77,7 @@ Add Gradle plugin:
 ```groovy
 plugins {
   // TODO: Use latest version from https://plugins.gradle.org/plugin/org.shipkit.java
-  id "org.shipkit.java" version "0.9.79"
+  id "org.shipkit.java" version "1.0.12"
 }
 ```
 
@@ -109,19 +109,18 @@ As much as useful the toolkit was to drive Mockito releases, we needed to make i
 - 2017, June - Szczepan includes information about Shipkit in his presentation at Gradle Summit conference in Palo Alto, CA. ([abstract](https://summit.gradle.com/conference/palo_alto/2017/06/session?id=39273), [slides](http://prezi.com/ok5z9lflwejm/?utm_campaign=share&utm_medium=copy), [video](https://www.youtube.com/watch?v=7N2sg2X_HrA&feature=youtu.be&t=43m12s))
 - 2017, July - Shipkit presented at Confitura '17 conference in Warsaw ([abstract](https://2017.confitura.pl/presentations#531c0ef5-5bb9-4c6c-9822-d5757918e8b4), [slides](https://docs.google.com/presentation/d/1ocBAg4Jq07TP7rpROMJGR5I-qeNza9E1pwZ6elko4w8/edit?usp=sharing), [video](https://youtu.be/EQNZWCkwnAI?t=5h52m8s))
 - 2017, July/August - Shipkit presentations at JUG meetups in Poland: [all abstracts](https://docs.google.com/document/d/15V4EReNQcDNUqPKhVa6N8Vyi87sKAG65RWyRCoBHLcU/edit#), Krakow ([slides](https://docs.google.com/presentation/d/1MLxVd_4YtPS00hOK8zBVSaoHs-EsdMvTJse8lE45W2o/edit?usp=sharing)), Wroclaw ([slides](https://docs.google.com/presentation/d/1OH2L5Okplqa_sfteSycBVCFdLPgpUmSTR9IYNVCm4Zo/edit?usp=sharing)), and Bielsko-Biala ([slides](https://docs.google.com/presentation/d/1LuDC78iQ-404INYF62bWNUMllqyZEFKfQBu_nRliFxo/edit?usp=sharing)).
-- 2017, October - Shipkit mentioned in JavaOne '17 conference in San Francisco in 2 talks:
+- 2017, October - Shipkit mentioned at JavaOne '17 conference in San Francisco in 2 talks:
   - "You Deserve Great Tools: Commit-to-Production Automation at LinkedIn" ([summary](https://www.linkedin.com/pulse/javaone-talk-commit-to-production-pipeline-linkedin-szczepan-faber), [video](https://youtu.be/qqbLOIVJp9U), [slides](https://www.slideshare.net/SzczepanFaber/committoproduction-pipeline-at-linkedin-javaone-2017-talk))
   - "You Deserve Great Tools: Mockito 2 for Cleaner Tests and Enhanced Productivity" ([summary](https://www.linkedin.com/pulse/mockito-talk-javaone-2017-clean-tests-szczepan-faber), [slides](https://www.slideshare.net/SzczepanFaber/javaone17-talk-mockito-2-for-cleaner-tests-and-enhanced-productivity)). There was no video taken at JavaOne but this talk was recorded at DevoxxUS'17 conference ([video](https://youtu.be/Rl7g0duuDkU)).
-- 2017, November - Shipkit mentioned in QCon '17 conference in San Francisco, "CI/CD at scale: lessons from LinkedIn and Mockito" talk ([slide clip](https://www.slideshare.net/SzczepanFaber/clipboards/shipkit-clips)).
+- 2017, November - Shipkit mentioned at QCon '17 conference in San Francisco:
+  - "CI/CD at scale: lessons from LinkedIn and Mockito" talk ([slide clip](https://www.slideshare.net/SzczepanFaber/clipboards/shipkit-clips)), [video](https://www.infoq.com/presentations/ci-cd-linkedin-mockito))
+- 2017, December - 1.0 release! See the [release notes](docs/release-notes.md).
 
 Want to include your event? Submit a pull request!
 
 ### Plans
 
-- 2017, October - Szczepan has 3 talks at JavaOne (San Francisco).
-Mockito productivity talk will mention Shipkit.
-Other talks: Engineering at scale with [Gradle and Play Framework at LinkedIn](https://www.linkedin.com/pulse/javaone-talk-play-framework-gradle-productivity-linkedin-faber/), Commit-to-production pipeline at LinkedIn (TODO link).
-- 2017, October - we plan to release [1.0-milestone-1 of Shipkit](https://github.com/mockito/shipkit/issues/116).
-- 2017, November - Szczepan's [continous delivery talk at QCon](https://qconsf.com/sf2017/presentation/lessons-linkedin-and-mockito) (San Franciso), will include Mockito use of Shipkit.
-- 2017, Q4 - 1.0 release.
-- 2018, helping community adopt Shipkit while adding writing great features on the way!
+- 2018, Q1 - Shipkit 2.0, upgrade to Java8 and Gradle4 ([#624](https://github.com/mockito/shipkit/issues/624))
+- 2018, Q2 - Make Shipkit the standard tool for Gradle plugin CI/CD ([#255](https://github.com/mockito/shipkit/issues/255))
+- 2018, Q1-Q4 - work on getting the community adopt Shipkit while adding CI/CD features
+- 2019, push OSS and enterprise code to CI/CD
