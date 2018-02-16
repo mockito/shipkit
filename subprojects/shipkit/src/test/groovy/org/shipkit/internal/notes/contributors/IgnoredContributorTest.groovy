@@ -9,7 +9,7 @@ class IgnoredContributorTest extends Specification {
         def contributor = new DefaultProjectContributor("name", "ignoredContributor", "profileUrl", 1)
 
         expect:
-        ignoredContributor.isTrue(contributor)
+        ignoredContributor.test(contributor)
     }
 
     def "should ignore contributor from ignored list by name"() {
@@ -18,7 +18,7 @@ class IgnoredContributorTest extends Specification {
             1)
 
         expect:
-        ignoredContributor.isTrue(contributor)
+        ignoredContributor.test(contributor)
     }
 
     def "valid contributor when not on the ignored list"() {
@@ -26,7 +26,7 @@ class IgnoredContributorTest extends Specification {
         def contributor = new DefaultProjectContributor("notIgnoredName", "notIgnoredContributor", "profileUrl", 1)
 
         expect:
-        !ignoredContributor.isTrue(contributor)
+        !ignoredContributor.test(contributor)
     }
 
     def "valid contributor when empty ignored list"() {
@@ -34,27 +34,27 @@ class IgnoredContributorTest extends Specification {
         def contributor = new DefaultProjectContributor("name", "notIgnoredContributor", "profileUrl", 1)
 
         expect:
-        !ignoredContributor.isTrue(contributor)
+        !ignoredContributor.test(contributor)
     }
 
     def "should ignore name from ignored list"() {
         def ignoredContributor = IgnoredContributor.of(["ignoredContributor"])
 
         expect:
-        ignoredContributor.isTrue("ignoredContributor")
+        ignoredContributor.test("ignoredContributor")
     }
 
     def "valid name when not on the ignored list"() {
         def ignoredContributor = IgnoredContributor.of(["ignoredContributor"])
 
         expect:
-        !ignoredContributor.isTrue("notIgnoredContributor ")
+        !ignoredContributor.test("notIgnoredContributor ")
     }
 
     def "valid name when empty ignored list "() {
         def ignoredContributor = IgnoredContributor.none()
 
         expect:
-        !ignoredContributor.isTrue("notIgnoredContributor")
+        !ignoredContributor.test("notIgnoredContributor")
     }
 }

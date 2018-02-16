@@ -2,12 +2,12 @@ package org.shipkit.internal.notes.vcs;
 
 import org.shipkit.internal.notes.model.Commit;
 import org.shipkit.internal.notes.model.ContributionSet;
-import org.shipkit.internal.notes.util.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.function.Predicate;
 
 class GitContributionsProvider implements ContributionsProvider {
 
@@ -27,7 +27,7 @@ class GitContributionsProvider implements ContributionsProvider {
 
         DefaultContributionSet contributions = new DefaultContributionSet();
         for (Commit commit : commits) {
-            if (!ignoredCommit.isTrue(commit)) {
+            if (!ignoredCommit.test(commit)) {
                 contributions.add(commit);
             }
         }

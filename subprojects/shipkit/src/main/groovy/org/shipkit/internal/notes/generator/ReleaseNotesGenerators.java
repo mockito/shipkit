@@ -5,12 +5,12 @@ import org.shipkit.internal.exec.ProcessRunner;
 import org.shipkit.internal.notes.improvements.Improvements;
 import org.shipkit.internal.notes.improvements.ImprovementsProvider;
 import org.shipkit.internal.notes.model.Commit;
-import org.shipkit.internal.notes.util.Predicate;
 import org.shipkit.internal.notes.vcs.ContributionsProvider;
 import org.shipkit.internal.notes.vcs.ReleasedVersionsProvider;
 import org.shipkit.internal.notes.vcs.Vcs;
 
 import java.io.File;
+import java.util.function.Predicate;
 
 public class ReleaseNotesGenerators {
 

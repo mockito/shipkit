@@ -1,10 +1,10 @@
 package org.shipkit.internal.notes.contributors;
 
 import org.shipkit.internal.notes.model.Contributor;
-import org.shipkit.internal.notes.util.Predicate;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.function.Predicate;
 
 public class IgnoredContributor implements Predicate<Contributor> {
 
@@ -23,14 +23,14 @@ public class IgnoredContributor implements Predicate<Contributor> {
     }
 
     @Override
-    public boolean isTrue(Contributor contributor) {
+    public boolean test(Contributor contributor) {
         String contributorLogin = contributor.getLogin();
         String contributorName = contributor.getName();
 
-        return isTrue(contributorName) || isTrue(contributorLogin);
+        return test(contributorName) || test(contributorLogin);
     }
 
-    public boolean isTrue(String contributorName) {
+    public boolean test(String contributorName) {
         for (String ignoredContributor : ignoredContributors) {
             if (ignoredContributor.equals(contributorName)) {
                 return true;
