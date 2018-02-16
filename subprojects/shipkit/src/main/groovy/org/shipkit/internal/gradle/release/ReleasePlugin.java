@@ -14,7 +14,8 @@ import org.shipkit.internal.gradle.version.VersioningPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.gradle.util.TaskSuccessfulMessage;
-import org.shipkit.internal.notes.util.Supplier;
+
+import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
 import static org.shipkit.internal.gradle.git.GitBranchPlugin.IDENTIFY_GIT_BRANCH;

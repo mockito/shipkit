@@ -4,7 +4,8 @@ import org.gradle.api.Action;
 import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.shipkit.internal.notes.util.Supplier;
+
+import java.util.function.Supplier;
 
 public class TaskSuccessfulMessage {
 
