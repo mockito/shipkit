@@ -6,7 +6,6 @@ import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
 import org.shipkit.internal.gradle.git.domain.PullRequest;
 import org.shipkit.internal.gradle.util.BranchUtils;
-import org.shipkit.internal.gradle.util.PullRequestUtils;
 import org.shipkit.internal.util.GitHubApi;
 import org.shipkit.internal.util.IncubatingWarning;
 

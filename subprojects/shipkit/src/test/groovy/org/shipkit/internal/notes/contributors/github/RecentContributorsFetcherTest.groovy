@@ -10,7 +10,7 @@ class RecentContributorsFetcherTest extends Specification {
     @Subject fetcher = new RecentContributorsFetcher()
 
     def readOnlyToken = "a0a4c0f41c200f7c653323014d6a72a127764e17"
-    def defaultGitHubApiEndpoint = "https://api.github.com";
+    def defaultGitHubApiEndpoint = "https://api.github.com"
 
     def "fetches contributors from GitHub"() {
         when:

@@ -9,7 +9,7 @@ class UploadGistsTest extends PluginSpecification {
         tmp.newFile("test.log") << "content"
         tmp.newFile("test2.log") << "content2"
 
-        def task = project.tasks.create("uploadGists", UploadGistsTask.class);
+        def task = project.tasks.create("uploadGists", UploadGistsTask.class)
         task.filesToUpload = project.files("test.log", "test2.log")
 
         def gistsApi = Mock(GistsApi)
@@ -28,7 +28,7 @@ class UploadGistsTest extends PluginSpecification {
         tmp.newFile("test2.log") << "content2"
         tmp.newFile("test3.log") << "content3"
 
-        def task = project.tasks.create("uploadGists", UploadGistsTask.class);
+        def task = project.tasks.create("uploadGists", UploadGistsTask.class)
         task.filesToUpload = project.files("test.log", "test2.log", "test3.log")
 
         def gistsApi = Mock(GistsApi)

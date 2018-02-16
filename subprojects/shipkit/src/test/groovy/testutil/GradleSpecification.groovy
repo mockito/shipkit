@@ -23,8 +23,8 @@ abstract class GradleSpecification extends Specification implements GradleVersio
     boolean debug
     String gradleVersion = GradleVersion.current().version
 
-    private static final String CLASSES_DIR = findClassesDir();
-    private static final String RESOURCES_DIR = findResourcesDir();
+    private static final String CLASSES_DIR = findClassesDir()
+    private static final String RESOURCES_DIR = findResourcesDir()
 
     void setup() {
         buildFile = projectDir.newFile('build.gradle')

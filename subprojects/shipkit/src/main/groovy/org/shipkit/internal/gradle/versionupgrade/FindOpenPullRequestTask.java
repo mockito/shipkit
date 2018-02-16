@@ -30,7 +30,7 @@ public class FindOpenPullRequestTask extends DefaultTask {
     private PullRequest pullRequest;
 
     @TaskAction
-    public void findOpenPullRequest() throws IOException, DeserializationException {
+    public void findOpenPullRequest() throws IOException {
         pullRequest = new FindOpenPullRequest().findOpenPullRequest(this);
     }
 

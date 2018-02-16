@@ -46,7 +46,7 @@ Authors: [1](http://release-notes), commits: [61](https://github.com/mockito/shi
         def rootDir = new File(".")
         while (!new File(rootDir, ".git").isDirectory()) {
             rootDir = rootDir.parentFile
-            assert rootDir != null;
+            assert rootDir != null
         }
         rootDir
     }

@@ -2,9 +2,9 @@ package org.shipkit.internal.comparison
 
 class PomFilter {
 
-    String projectGroup;
-    String previousVersion;
-    String currentVersion;
+    String projectGroup
+    String previousVersion
+    String currentVersion
 
     PomFilter() {
 

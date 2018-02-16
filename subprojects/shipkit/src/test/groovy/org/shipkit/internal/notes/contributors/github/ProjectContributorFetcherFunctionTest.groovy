@@ -11,7 +11,7 @@ class ProjectContributorFetcherFunctionTest extends Specification {
         given:
         def jsonObject = Mock(JsonObject)
         def authToken = "a0a4c0f41c200f7c653323014d6a72a127764e17"
-        def contributorFetcherFunction = new ProjectContributorFetcherFunction(new GitHubObjectFetcher(authToken));
+        def contributorFetcherFunction = new ProjectContributorFetcherFunction(new GitHubObjectFetcher(authToken))
 
         jsonObject.get('url') >> "https://api.github.com/users/epeee"
 

@@ -8,7 +8,7 @@ class HeaderProviderTest extends Specification {
 
     def "should return formatted header"() {
         when:
-        String result = testObj.getHeader("some header");
+        String result = testObj.getHeader("some header")
 
         then:
         result == "<sup><sup>*some header*</sup></sup>\n\n"

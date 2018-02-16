@@ -10,7 +10,7 @@ import org.gradle.util.GradleVersion
 @Slf4j
 trait GradleVersionsDeterminer {
 
-    private final static Logger log = Logging.getLogger(GradleVersionsDeterminer);
+    private final static Logger log = Logging.getLogger(GradleVersionsDeterminer)
 
     private static final String REGRESSION_TESTS_ENV_NAME = "SHIPKIT_REGRESSION_TESTS"
     private static final String CURRENT_GRADLE_VERSION_ONLY_VALUE = "currentOnly"
