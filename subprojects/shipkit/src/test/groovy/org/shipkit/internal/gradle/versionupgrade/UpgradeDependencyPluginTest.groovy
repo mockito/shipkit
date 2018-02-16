@@ -9,7 +9,6 @@ import org.shipkit.internal.gradle.git.domain.PullRequest
 import org.shipkit.internal.gradle.git.tasks.GitCheckOutTask
 import org.shipkit.internal.gradle.git.tasks.GitPullTask
 import org.shipkit.internal.gradle.git.tasks.IdentifyGitOriginRepoTask
-import org.shipkit.internal.gradle.util.Optional
 import spock.lang.Unroll
 import testutil.PluginSpecification
 

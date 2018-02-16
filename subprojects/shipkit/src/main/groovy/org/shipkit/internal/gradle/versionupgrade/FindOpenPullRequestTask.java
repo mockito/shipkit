@@ -7,9 +7,9 @@ import org.gradle.api.tasks.TaskAction;
 import org.json.simple.DeserializationException;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.gradle.git.domain.PullRequest;
-import org.shipkit.internal.gradle.util.Optional;
 
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * Looks for an open pull request with a version upgrade by:
