@@ -1,7 +1,8 @@
 package org.shipkit.internal.notes.contributors
 
-import org.shipkit.internal.notes.util.Function
 import spock.lang.Specification
+
+import java.util.function.Function
 
 class FetcherCallableTest extends Specification {
 

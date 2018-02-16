@@ -8,7 +8,6 @@ import org.shipkit.internal.notes.contributors.ConcurrentDispatcher;
 import org.shipkit.internal.notes.contributors.DefaultProjectContributorsSet;
 import org.shipkit.internal.notes.contributors.ProjectContributorsSet;
 import org.shipkit.internal.notes.model.ProjectContributor;
-import org.shipkit.internal.notes.util.Function;
 import org.shipkit.internal.notes.util.GitHubListFetcher;
 import org.shipkit.internal.notes.util.GitHubObjectFetcher;
 
@@ -16,6 +15,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * Gets all contributors from the repository
