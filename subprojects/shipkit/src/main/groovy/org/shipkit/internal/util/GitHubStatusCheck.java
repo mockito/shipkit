@@ -9,6 +9,7 @@ import org.shipkit.internal.gradle.versionupgrade.MergePullRequestTask;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 public class GitHubStatusCheck {
 
@@ -17,8 +18,6 @@ public class GitHubStatusCheck {
     private MergePullRequestTask task;
     private GitHubApi gitHubApi;
     private final int amountOfRetries;
-
-
 
     public GitHubStatusCheck(MergePullRequestTask task, GitHubApi gitHubApi, int amountOfRetries) {
         this.task = task;
@@ -43,10 +42,10 @@ public class GitHubStatusCheck {
             if (allStatusesPassed(status)) {
                 return PullRequestStatus.SUCCESS;
             } else {
-                int waitTime = 10000 * timeouts;
-                Thread.sleep(waitTime);
                 timeouts++;
-                LOG.lifecycle("Pull Request checks still in pending state. Waiting %d seconds...", waitTime / 1000);
+                long waitTimeInMillis = TimeUnit.SECONDS.toMillis(10) * timeouts;
+                LOG.lifecycle("Pull Request checks still in pending state. Waiting {} seconds...", TimeUnit.MILLISECONDS.toSeconds(waitTimeInMillis));
+                Thread.sleep(waitTimeInMillis);
             }
         }
         return PullRequestStatus.TIMEOUT;
