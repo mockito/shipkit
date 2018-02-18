@@ -18,32 +18,33 @@ public class GitHubStatusCheck {
     private MergePullRequestTask task;
     private GitHubApi gitHubApi;
     private final int amountOfRetries;
+    private final long defaultInitialTimeout;
 
-    public GitHubStatusCheck(MergePullRequestTask task, GitHubApi gitHubApi, int amountOfRetries) {
+    public GitHubStatusCheck(MergePullRequestTask task, GitHubApi gitHubApi, int amountOfRetries, long defaultInitialTimeout) {
         this.task = task;
         this.gitHubApi = gitHubApi;
         this.amountOfRetries = amountOfRetries;
+        this.defaultInitialTimeout = defaultInitialTimeout;
     }
 
     public GitHubStatusCheck(MergePullRequestTask task, GitHubApi gitHubApi) {
         this.task = task;
         this.gitHubApi = gitHubApi;
         this.amountOfRetries = 20;
+        this.defaultInitialTimeout = TimeUnit.SECONDS.toMillis(10);
     }
 
     public PullRequestStatus checkStatusWithRetries() throws IOException, InterruptedException {
         int timeouts = 0;
         while (timeouts < amountOfRetries) {
             JsonObject status = getStatusCheck(task, gitHubApi);
-            if (status.getCollection("statuses") == null || status.getCollection("statuses").size() == 0) {
+            if (timeouts > 0 && isNullOrEmpty(status, "statuses")) {
                 return PullRequestStatus.NO_CHECK_DEFINED;
-            }
-
-            if (allStatusesPassed(status)) {
+            } else if (!isNullOrEmpty(status, "statuses") && allStatusesPassed(status)) {
                 return PullRequestStatus.SUCCESS;
             } else {
                 timeouts++;
-                long waitTimeInMillis = TimeUnit.SECONDS.toMillis(10) * timeouts;
+                long waitTimeInMillis = defaultInitialTimeout * timeouts;
                 LOG.lifecycle("Pull Request checks still in pending state. Waiting {} seconds...", TimeUnit.MILLISECONDS.toSeconds(waitTimeInMillis));
                 Thread.sleep(waitTimeInMillis);
             }
@@ -51,8 +52,14 @@ public class GitHubStatusCheck {
         return PullRequestStatus.TIMEOUT;
     }
 
+    private boolean isNullOrEmpty(JsonObject status, String key) {
+        return status.getCollection(key) == null || status.getCollection(key).size() == 0;
+    }
+
     private JsonObject getStatusCheck(MergePullRequestTask task, GitHubApi gitHubApi) throws IOException {
-        String statusesResponse = gitHubApi.get("/repos/" + task.getUpstreamRepositoryName() + "/commits/" + task.getPullRequestSha() + "/status");
+        String relativeUrl = "/repos/" + task.getUpstreamRepositoryName() + "/commits/" + task.getPullRequestSha() + "/status";
+        LOG.lifecycle("Using {} for status check", relativeUrl);
+        String statusesResponse = gitHubApi.get(relativeUrl);
         return Jsoner.deserialize(statusesResponse, new JsonObject());
     }
 
