@@ -20,9 +20,10 @@ import org.shipkit.internal.gradle.git.domain.PullRequest;
 import org.shipkit.internal.gradle.git.tasks.GitCheckOutTask;
 import org.shipkit.internal.gradle.git.tasks.GitPullTask;
 import org.shipkit.internal.gradle.util.GitUtil;
-import org.shipkit.internal.gradle.util.Optional;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.util.IncubatingWarning;
+
+import java.util.Optional;
 
 import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
 import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;

@@ -1,9 +1,9 @@
-if (project.hasProperty('checkJava6Compatibility')) {
+if (project.hasProperty('checkJava8Compatibility')) {
     allprojects { p ->
         plugins.withId('java') {
             p.apply plugin: 'ru.vyarus.animalsniffer'
             p.dependencies {
-                signature 'org.codehaus.mojo.signature:java16:1.1@signature'
+                signature 'org.codehaus.mojo.signature:java18:1.0@signature'
             }
         }
     }

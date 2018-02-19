@@ -2,8 +2,9 @@ package org.shipkit.internal.notes.contributors.github;
 
 import org.json.simple.JsonObject;
 import org.shipkit.internal.notes.model.ProjectContributor;
-import org.shipkit.internal.notes.util.Function;
 import org.shipkit.internal.notes.util.GitHubObjectFetcher;
+
+import java.util.function.Function;
 
 /**
  * Extracts the url form a given {@link JsonObject} and fetches the {@link ProjectContributor} info using the extracted

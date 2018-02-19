@@ -1,11 +1,10 @@
 package org.shipkit.internal.notes.contributors;
 
-import org.shipkit.internal.notes.util.Function;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.function.Function;
 
 /**
  * Basic function which applies values from a {@link List} of {@link V} to a given {@link Function}.

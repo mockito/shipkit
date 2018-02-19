@@ -19,7 +19,7 @@ buildScan {
     licenseAgree = 'yes'
 }
 
-apply from: "$rootDir/gradle/java6-compatibility.gradle"
+apply from: "$rootDir/gradle/java8-compatibility.gradle"
 apply from: "$rootDir/gradle/precommit.gradle"
 
 apply plugin: 'base'

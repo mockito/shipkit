@@ -2,10 +2,10 @@ package org.shipkit.internal.notes.contributors;
 
 import org.shipkit.internal.notes.model.Contributor;
 import org.shipkit.internal.notes.model.ProjectContributor;
-import org.shipkit.internal.notes.util.Predicate;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.function.Predicate;
 
 public class DefaultProjectContributorsSet implements ProjectContributorsSet, Serializable {
 
@@ -27,7 +27,7 @@ public class DefaultProjectContributorsSet implements ProjectContributorsSet, Se
 
     @Override
     public void addContributor(ProjectContributor contributor) {
-        if (!ignoredContributor.isTrue(contributor) && contributors.add(contributor)) {
+        if (!ignoredContributor.test(contributor) && contributors.add(contributor)) {
             //avoiding duplicates in the sorted collection, see unit tests
             sorted.add(contributor);
             map.put(contributor.getName(), contributor);

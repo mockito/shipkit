@@ -2,7 +2,8 @@ package org.shipkit.internal.notes.vcs;
 
 import org.shipkit.internal.exec.ProcessRunner;
 import org.shipkit.internal.notes.model.Commit;
-import org.shipkit.internal.notes.util.Predicate;
+
+import java.util.function.Predicate;
 
 /**
  * Vcs services
