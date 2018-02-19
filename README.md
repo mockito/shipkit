@@ -113,7 +113,7 @@ As much as useful the toolkit was to drive Mockito releases, we needed to make i
   - "You Deserve Great Tools: Commit-to-Production Automation at LinkedIn" ([summary](https://www.linkedin.com/pulse/javaone-talk-commit-to-production-pipeline-linkedin-szczepan-faber), [video](https://youtu.be/qqbLOIVJp9U), [slides](https://www.slideshare.net/SzczepanFaber/committoproduction-pipeline-at-linkedin-javaone-2017-talk))
   - "You Deserve Great Tools: Mockito 2 for Cleaner Tests and Enhanced Productivity" ([summary](https://www.linkedin.com/pulse/mockito-talk-javaone-2017-clean-tests-szczepan-faber), [slides](https://www.slideshare.net/SzczepanFaber/javaone17-talk-mockito-2-for-cleaner-tests-and-enhanced-productivity)). There was no video taken at JavaOne but this talk was recorded at DevoxxUS'17 conference ([video](https://youtu.be/Rl7g0duuDkU)).
 - 2017, November - Shipkit mentioned at QCon '17 conference in San Francisco:
-  - "CI/CD at scale: lessons from LinkedIn and Mockito" talk ([slide clip](https://www.slideshare.net/SzczepanFaber/clipboards/shipkit-clips)), [video](https://www.infoq.com/presentations/ci-cd-linkedin-mockito))
+  - "CI/CD at scale: lessons from LinkedIn and Mockito" talk ([slide clip](https://www.slideshare.net/SzczepanFaber/clipboards/shipkit-clips), [video](https://www.infoq.com/presentations/ci-cd-linkedin-mockito))
 - 2017, December - 1.0 release! See the [release notes](docs/release-notes.md).
 
 Want to include your event? Submit a pull request!
