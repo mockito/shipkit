@@ -11,6 +11,7 @@ apply from: "$rootDir/gradle/upgrade-downstream.gradle"
 apply plugin: 'org.shipkit.compare-publications'
 
 checkstyle {
+    toolVersion = '8.8'
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
 }
 
