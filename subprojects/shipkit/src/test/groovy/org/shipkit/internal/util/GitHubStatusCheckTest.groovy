@@ -9,9 +9,9 @@ class GitHubStatusCheckTest extends Specification {
     MergePullRequestTask task = Mock(MergePullRequestTask)
     GitHubApi gitHubApi = Mock(GitHubApi)
 
-    def "should return true if status true before timeout"() {
+    def "should return SUCCESS if status true before timeout"() {
         given:
-        GitHubStatusCheck gitHubStatusCheck = new GitHubStatusCheck(task, gitHubApi)
+        GitHubStatusCheck gitHubStatusCheck = new GitHubStatusCheck(task, gitHubApi, 20, 10)
 
         task.getPullRequestSha() >> "sha"
         task.getUpstreamRepositoryName() >> "upstreamRepo"
@@ -20,7 +20,7 @@ class GitHubStatusCheckTest extends Specification {
         when:
         def result = gitHubStatusCheck.checkStatusWithRetries()
         then:
-        result
+        result == PullRequestStatus.SUCCESS
     }
 
     def "should throw exception if has error status"() {
@@ -39,18 +39,33 @@ class GitHubStatusCheckTest extends Specification {
         e.message == "Pull request prURL cannot be merged. fail. You can check details here: tURL"
     }
 
-    def "should return false if no status defined"() {
+    def "should return NO_CHECK_DEFINED if no status defined"() {
         given:
-        GitHubStatusCheck gitHubStatusCheck = new GitHubStatusCheck(task, gitHubApi, 1)
+        GitHubStatusCheck gitHubStatusCheck = new GitHubStatusCheck(task, gitHubApi, 2, 10)
 
         task.getPullRequestSha() >> "sha"
         task.getPullRequestUrl() >> "prURL"
         task.getUpstreamRepositoryName() >> "upstreamRepo"
 
-        1 * gitHubApi.get("/repos/upstreamRepo/commits/sha/status") >> "{\"state\": \"pending\", \"statuses\":[]}"
+        2 * gitHubApi.get("/repos/upstreamRepo/commits/sha/status") >> "{\"state\": \"pending\", \"statuses\":[]}"
         when:
         def result = gitHubStatusCheck.checkStatusWithRetries()
         then:
         result == PullRequestStatus.NO_CHECK_DEFINED
+    }
+
+    def "should return TIMEOUT if state is still pending after retries"() {
+        given:
+        GitHubStatusCheck gitHubStatusCheck = new GitHubStatusCheck(task, gitHubApi, 2, 10)
+
+        task.getPullRequestSha() >> "sha"
+        task.getPullRequestUrl() >> "prURL"
+        task.getUpstreamRepositoryName() >> "upstreamRepo"
+
+        2 * gitHubApi.get("/repos/upstreamRepo/commits/sha/status") >> "{\"state\": \"pending\", \"statuses\":[{\"state\":\"pending\"}]}"
+        when:
+        def result = gitHubStatusCheck.checkStatusWithRetries()
+        then:
+        result == PullRequestStatus.TIMEOUT
     }
 }
