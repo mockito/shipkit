@@ -5,7 +5,7 @@ import testutil.GradleSpecification
 
 class CiUpgradeDownstreamPluginIntegTest extends GradleSpecification {
 
-    def "all tasks in dry run"() {
+    def "all tasks in dry run (using gradle version #gradleVersionToTest)"() {
         given:
         gradleVersion = gradleVersionToTest
 
@@ -22,7 +22,7 @@ class CiUpgradeDownstreamPluginIntegTest extends GradleSpecification {
         buildFile << """
             apply plugin: "org.shipkit.ci-upgrade-downstream"
 
-            upgradeDownstream{
+            upgradeDownstream {
                 repositories = ['wwilk/mockito']
             }
         """

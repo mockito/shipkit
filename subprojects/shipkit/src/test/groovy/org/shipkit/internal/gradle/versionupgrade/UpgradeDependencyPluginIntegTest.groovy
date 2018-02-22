@@ -5,7 +5,7 @@ import testutil.GradleSpecification
 
 class UpgradeDependencyPluginIntegTest extends GradleSpecification {
 
-    def "all tasks in dry run"() {
+    def "all tasks in dry run (using gradle version #gradleVersionToTest)"() {
         given:
         gradleVersion = gradleVersionToTest
 
