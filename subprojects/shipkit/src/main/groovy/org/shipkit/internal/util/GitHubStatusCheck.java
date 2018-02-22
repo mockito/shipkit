@@ -38,6 +38,8 @@ public class GitHubStatusCheck {
         int timeouts = 0;
         while (timeouts < amountOfRetries) {
             JsonObject status = getStatusCheck(task, gitHubApi);
+            // it might be the case that we are too fast and statuses are not available yet -> let's do at least
+            // one retry in this case.
             if (timeouts > 0 && isNullOrEmpty(status, "statuses")) {
                 return PullRequestStatus.NO_CHECK_DEFINED;
             } else if (!isNullOrEmpty(status, "statuses") && allStatusesPassed(status)) {
