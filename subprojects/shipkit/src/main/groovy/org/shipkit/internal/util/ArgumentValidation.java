@@ -9,7 +9,7 @@ public abstract class ArgumentValidation {
      * None of the input targets can not be null otherwise IllegalArgumentException is thrown.
      * Every second argument must a String describing the previous element.
      */
-    public static void notNull(Object ... targets) {
+    public static void notNull(Object... targets) {
         if (targets.length % 2 != 0) {
             throw new IllegalArgumentException("notNull method requires pairs of argument + message");
         }

@@ -13,7 +13,7 @@ public interface ProcessRunner {
      * @param commandLine to execute
      * @return combined error and standard output.
      */
-    String run(String ... commandLine);
+    String run(String... commandLine);
 
     /**
      * Executes given command line and returns result.

@@ -74,14 +74,14 @@ public class ExecCommandFactory {
     /**
      * See {@link #execCommand(String, List)}
      */
-    public static ExecCommand execCommand(String description, String ... commandLine) {
+    public static ExecCommand execCommand(String description, String... commandLine) {
         return execCommand(description, asList(commandLine));
     }
 
     /**
      * See {@link #execCommand(String, List)}
      */
-    public static ExecCommand execCommand(String description, File workingDir, String ... commandLine) {
+    public static ExecCommand execCommand(String description, File workingDir, String... commandLine) {
         List<String> cmd = asList(commandLine);
         String prefix = defaultPrefix(cmd);
         return new ExecCommand(prefix, description, cmd, ignoreResult(workingDir), ensureSucceeded(prefix));
