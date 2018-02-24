@@ -7,6 +7,7 @@ public class PullRequest {
     private String sha;
     private String ref;
     private String url;
+    private int number;
 
     /**
      * Sha of the most recent commit in pull request
@@ -49,5 +50,13 @@ public class PullRequest {
      */
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 }

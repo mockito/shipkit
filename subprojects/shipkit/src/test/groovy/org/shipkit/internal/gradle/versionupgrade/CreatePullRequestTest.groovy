@@ -30,7 +30,7 @@ class CreatePullRequestTest extends Specification {
                 '  "body": "Description of this PR",' +
                 '  "head": "wwilk:shipkit-version-upgraded-0.1.5",' +
                 '  "base": "master",' +
-                '  "maintainer_can_modify": true}') >> "{\"url\": \"url-1\", \"head\" : {\"ref\" : \"shipkit-1\", \"sha\" : \"sha-1\"}}"
+                '  "maintainer_can_modify": true}') >> "{\"number\": 123, \"url\": \"url-1\", \"head\" : {\"ref\" : \"shipkit-1\", \"sha\" : \"sha-1\"}}"
     }
 
     def "should not call github API in dryRun mode"() {
