@@ -25,7 +25,7 @@ public class MergePullRequestTask extends DefaultTask {
 
     private String baseBranch;
     private boolean dryRun;
-    private int pullrequestNumber;
+    private int pullRequestNumber;
 
     @TaskAction
     public void mergePullRequest() throws IOException {
@@ -118,11 +118,11 @@ public class MergePullRequestTask extends DefaultTask {
     }
 
     public void setPullRequestNumber(int pullRequestNumber) {
-        this.pullrequestNumber = pullRequestNumber;
+        this.pullRequestNumber = pullRequestNumber;
     }
 
-    public int getPullrequestNumber() {
-        return pullrequestNumber;
+    public int getPullRequestNumber() {
+        return pullRequestNumber;
     }
 
     /**

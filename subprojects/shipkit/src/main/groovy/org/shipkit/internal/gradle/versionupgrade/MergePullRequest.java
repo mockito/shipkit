@@ -50,7 +50,7 @@ class MergePullRequest {
             }
 
             LOG.lifecycle("All checks passed! Merging pull request in repository '{}' between base = '{}' and head = '{}'.", task.getUpstreamRepositoryName(), task.getBaseBranch(), headBranch);
-            gitHubApi.post("/repos/" + task.getUpstreamRepositoryName() + "/pulls/" + task.getPullrequestNumber() + "/merge", body);
+            gitHubApi.post("/repos/" + task.getUpstreamRepositoryName() + "/pulls/" + task.getPullRequestNumber() + "/merge", body);
         } catch (Exception e) {
             throw new GradleException(String.format("Exception happen while trying to merge pull request. Merge aborted. Original issue: %s", e.getMessage()), e);
         }
