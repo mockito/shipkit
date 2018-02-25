@@ -28,12 +28,14 @@ class ArgumentValidationTest extends Specification {
     }
 
     def "warns when incorrect input supplied"() {
-        when: notNull("x")
+        when:
+        notNull("x")
         then:
         def ex = thrown(IllegalArgumentException)
         ex.message == "notNull method requires pairs of argument + message"
 
-        when: notNull(null, new Integer(1234))
+        when:
+        notNull(null, new Integer(1234))
         then:
         ex = thrown(IllegalArgumentException)
         ex.message == "notNull method requires pairs of argument + message"

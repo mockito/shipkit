@@ -10,8 +10,10 @@ class DefaultVersionInfoTest extends Specification {
 
     def "does not support files without 'version' property"() {
         def f = dir.newFile() << "asdf"
-        when: DefaultVersionInfo.fromFile(f)
-        then: thrown(IllegalArgumentException)
+        when:
+        DefaultVersionInfo.fromFile(f)
+        then:
+        thrown(IllegalArgumentException)
     }
 
     def "knows version stored in the file"() {

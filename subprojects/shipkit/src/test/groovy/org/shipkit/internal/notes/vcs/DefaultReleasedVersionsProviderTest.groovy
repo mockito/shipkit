@@ -10,6 +10,7 @@ class DefaultReleasedVersionsProviderTest extends Specification {
     def provider = new DefaultReleasedVersionsProvider(dateProvider)
     def someDate = new Date(1491100000000)
 
+    @SuppressWarnings("ClosureStatementOnOpeningLineOfMultipleLineClosure")
     def "illegal arguments"() {
         when:
         notEnoughVersions.call()
@@ -19,15 +20,12 @@ class DefaultReleasedVersionsProviderTest extends Specification {
 
         where:
         notEnoughVersions << [
-            {
-                new DefaultReleasedVersionsProvider(Stub(ProcessRunner))
-                    .getReleasedVersions(null, new Date(), [], "v") },
-            {
-                new DefaultReleasedVersionsProvider(Stub(ProcessRunner))
-                    .getReleasedVersions(null, new Date(), ['1.0'], "v") },
-            {
-                new DefaultReleasedVersionsProvider(Stub(ProcessRunner))
-                    .getReleasedVersions('1.0', null, ['1.1'], "v") }
+            { new DefaultReleasedVersionsProvider(Stub(ProcessRunner))
+                .getReleasedVersions(null, new Date(), [], "v") },
+            { new DefaultReleasedVersionsProvider(Stub(ProcessRunner))
+                .getReleasedVersions(null, new Date(), ['1.0'], "v") },
+            { new DefaultReleasedVersionsProvider(Stub(ProcessRunner))
+                .getReleasedVersions('1.0', null, ['1.1'], "v") }
         ]
     }
 
