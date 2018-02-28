@@ -43,7 +43,7 @@ class MergePullRequestTest extends Specification {
 
         then:
         1 * githubStatusCheck.checkStatusWithRetries() >> PullRequestStatus.SUCCESS
-        1 * gitHubApi.post("/repos/mockito/shipkit-example/pulls/123/merge", '{  "merge_method": "merge",  "base": "master"}')
+        1 * gitHubApi.put("/repos/mockito/shipkit-example/pulls/123/merge", '{  "merge_method": "merge",  "base": "master"}')
     }
 
     def "should return in case of no status checks defined"() {
