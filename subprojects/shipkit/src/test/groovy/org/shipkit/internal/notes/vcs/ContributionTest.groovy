@@ -12,10 +12,8 @@ class ContributionTest extends Specification {
         c.authorEmail == "a@b"
         c.commits.size() == 1
 
-        when:
-        c.add(new GitCommit("", "a@b", "lad", "m2"))
-        then:
-        c.commits.size() == 2
+        when: c.add(new GitCommit("", "a@b", "lad", "m2"))
+        then: c.commits.size() == 2
     }
 
     def "can be sorted by number of commits"() {

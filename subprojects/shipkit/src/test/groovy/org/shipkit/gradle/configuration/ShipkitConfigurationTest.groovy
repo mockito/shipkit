@@ -30,15 +30,11 @@ class ShipkitConfigurationTest extends Specification {
     }
 
     def "fails when team members have wrong format"() {
-        when:
-        conf.team.developers = [""]
-        then:
-        thrown(TeamParser.InvalidInput.class)
+        when: conf.team.developers = [""]
+        then: thrown(TeamParser.InvalidInput.class)
 
-        when:
-        conf.team.contributors = ["ala:"]
-        then:
-        thrown(TeamParser.InvalidInput.class)
+        when: conf.team.contributors = ["ala:"]
+        then: thrown(TeamParser.InvalidInput.class)
     }
 
     def "configures GitHub URL without ending slash when #url used"() {

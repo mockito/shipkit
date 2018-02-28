@@ -38,8 +38,7 @@ class ZipComparatorTest extends Specification {
     }
 
     def "fails early when any of the zips cannot be opened"() {
-        when:
-        new ZipComparator().areEqual(new File("foox"), new File("bar"))
+        when: new ZipComparator().areEqual(new File("foox"), new File("bar"))
         then:
         def ex = thrown(RuntimeException)
         ex.message.contains("foox")

@@ -21,6 +21,7 @@
         </rule-config>
         <exclude name="ClassJavadoc"/>
         <exclude name="LineLength"/>
+        <exclude name="Indentation"/>
     </ruleset-ref>
 
 </ruleset>
