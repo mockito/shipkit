@@ -7,7 +7,6 @@ class PomFilter {
     String currentVersion
 
     PomFilter() {
-
     }
 
     PomFilter(String projectGroup, String previousVersion, String currentVersion) {

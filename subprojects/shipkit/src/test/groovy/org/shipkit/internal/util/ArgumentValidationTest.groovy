@@ -14,14 +14,12 @@ class ArgumentValidationTest extends Specification {
     }
 
     def "throws exception when null found"() {
-        when:
-        notNull(null, "foo arg")
+        when: notNull(null, "foo arg")
         then:
         def ex = thrown(IllegalArgumentException)
         ex.message == "foo arg cannot be null."
 
-        when:
-        notNull("foo", "foo arg", null, "Integer arg")
+        when: notNull("foo", "foo arg", null, "Integer arg")
         then:
         ex = thrown(IllegalArgumentException)
         ex.message == "Integer arg cannot be null."

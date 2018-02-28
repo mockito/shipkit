@@ -34,6 +34,6 @@ class UpgradeDownstreamPluginIntegTest extends GradleSpecification {
 :upgradeDownstream"""
 
         where:
-            gradleVersionToTest << determineGradleVersionsToTest()
+        gradleVersionToTest << determineGradleVersionsToTest()
     }
 }

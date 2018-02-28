@@ -6,7 +6,6 @@ import testutil.GradleSpecification
 class ShipkitJavaIntegTest extends GradleSpecification {
 
     def "all tasks in dry run (gradle #gradleVersionToTest)"() {
-
         /**
          * TODO this test is just a starting point we will make it better and create more integration tests
          * Stuff that we should do:
@@ -92,6 +91,6 @@ class ShipkitJavaIntegTest extends GradleSpecification {
 :performRelease"""
 
         where:
-            gradleVersionToTest << determineGradleVersionsToTest()
+        gradleVersionToTest << determineGradleVersionsToTest()
     }
 }

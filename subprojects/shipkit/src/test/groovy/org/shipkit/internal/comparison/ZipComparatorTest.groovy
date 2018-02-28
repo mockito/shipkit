@@ -65,7 +65,6 @@ class ZipComparatorTest extends Specification {
 
         then:
         1 * directoryDiffGenerator.generateDiffOutput(["6.txt"], ["1.txt", "5.txt"], ["2.txt"])
-
     }
 
     private static boolean eq(File z1, File z2) {
