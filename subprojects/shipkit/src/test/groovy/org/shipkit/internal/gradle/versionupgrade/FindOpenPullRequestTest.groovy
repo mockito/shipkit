@@ -19,7 +19,7 @@ class FindOpenPullRequestTest extends Specification {
     def "should return null if head->ref does not match versionBranchRegex"() {
         given:
         def gitHubApi = Mock(GitHubApi)
-        gitHubApi.get("/repos/repo/pulls?state=open") >> "[{\"head\" : {\"ref\" : \"shipkit-1.2\"}} ]"
+        gitHubApi.get("/repos/repo/pulls?state=open") >> "[{\"number\": 123, \"head\" : {\"ref\" : \"shipkit-1.2\"}} ]"
 
         expect:
         null == findOpenPullRequest.findOpenPullRequest("repo", "shipkit-[0-9]*", gitHubApi)
@@ -28,12 +28,13 @@ class FindOpenPullRequestTest extends Specification {
     def "should return head->ref if it matches versionBranchRegex"() {
         given:
         def gitHubApi = Mock(GitHubApi)
-        gitHubApi.get("/repos/repo/pulls?state=open") >> "[{\"url\": \"url-1\", \"head\" : {\"ref\" : \"shipkit-1\", \"sha\" : \"sha-1\"}} ]"
+        gitHubApi.get("/repos/repo/pulls?state=open") >> "[{\"number\": 123, \"url\": \"url-1\", \"head\" : {\"ref\" : \"shipkit-1\", \"sha\" : \"sha-1\"}} ]"
 
         expect:
         def openPullRequest = findOpenPullRequest.findOpenPullRequest("repo", "shipkit-[0-9]*", gitHubApi)
         openPullRequest.ref == "shipkit-1"
         openPullRequest.sha == "sha-1"
         openPullRequest.url == "url-1"
+        openPullRequest.number == 123
     }
 }

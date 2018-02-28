@@ -33,6 +33,7 @@ class MergePullRequestTest extends Specification {
         mergePullRequestTask.setForkRepositoryName("wwilk/shipkit-example")
         mergePullRequestTask.setBaseBranch("master")
         mergePullRequestTask.setPullRequestSha('testSha')
+        mergePullRequestTask.setPullRequestNumber(123)
 
         def gitHubApi = Mock(GitHubApi)
         def githubStatusCheck = Mock(GitHubStatusCheck)
@@ -42,7 +43,7 @@ class MergePullRequestTest extends Specification {
 
         then:
         1 * githubStatusCheck.checkStatusWithRetries() >> PullRequestStatus.SUCCESS
-        1 * gitHubApi.post("/repos/mockito/shipkit-example/merges", '{  "head": "wwilk:shipkit-version-upgraded-0.1.5",  "base": "master"}')
+        1 * gitHubApi.post("/repos/mockito/shipkit-example/pulls/123/merge", '{  "merge_method": "merge",  "base": "master"}')
     }
 
     def "should return in case of no status checks defined"() {

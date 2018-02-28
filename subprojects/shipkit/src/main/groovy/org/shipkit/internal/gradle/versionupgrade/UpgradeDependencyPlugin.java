@@ -351,6 +351,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
             task.setVersionBranch(branch);
             task.setPullRequestSha(pullRequest.get().getSha());
             task.setPullRequestUrl(pullRequest.get().getUrl());
+            task.setPullRequestNumber(pullRequest.get().getNumber());
         } else {
             LOG.info("Because pull request was not created, we were not able to fully configure task {}.", task.getPath());
         }
