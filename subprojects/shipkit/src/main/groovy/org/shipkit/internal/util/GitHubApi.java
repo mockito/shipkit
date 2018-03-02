@@ -9,6 +9,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Optional;
 
 /**
  * Wrapper for making REST requests to GitHub API
@@ -26,38 +27,40 @@ public class GitHubApi {
     }
 
     public String post(String relativeUrl, String body) throws IOException {
-        URL url = new URL(gitHubApiUrl + relativeUrl);
+        return doRequest(relativeUrl, "POST", Optional.of(body));
+    }
 
-        HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-        conn.setRequestMethod("POST");
-        conn.setDoOutput(true);
-        conn.setRequestProperty("Content-Type", "application/json");
-        conn.setRequestProperty("Authorization", "token " + authToken);
-
-        DataOutputStream wr = null;
-        try {
-            wr = new DataOutputStream(conn.getOutputStream());
-            wr.writeBytes(body);
-            wr.flush();
-        } finally {
-            if (wr != null) {
-                wr.close();
-            }
-        }
-
-        return call("POST", conn);
+    public String put(String relativeUrl, String body) throws IOException {
+        return doRequest(relativeUrl, "PUT", Optional.of(body));
     }
 
     public String get(String relativeUrl) throws IOException {
+        return doRequest(relativeUrl, "GET", Optional.empty());
+    }
+
+    private String doRequest(String relativeUrl, String method, Optional<String> body) throws IOException {
         URL url = new URL(gitHubApiUrl + relativeUrl);
 
         HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
+        conn.setRequestMethod(method);
         conn.setDoOutput(true);
         conn.setRequestProperty("Content-Type", "application/json");
         conn.setRequestProperty("Authorization", "token " + authToken);
 
-        return call("GET", conn);
+        if (body.isPresent()) {
+            DataOutputStream wr = null;
+            try {
+                wr = new DataOutputStream(conn.getOutputStream());
+                wr.writeBytes(body.get());
+                wr.flush();
+            } finally {
+                if (wr != null) {
+                    wr.close();
+                }
+            }
+        }
+
+        return call(method, conn);
     }
 
     private String call(String method, HttpsURLConnection conn) throws IOException {
