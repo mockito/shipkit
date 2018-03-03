@@ -151,6 +151,6 @@ class ComparePublicationsPluginTest extends PluginSpecification {
         plugin          | libraries
         'java'          | ['compile': 'org.mockito:mockito-core:2.15.0']
         'java-library'  | ['api': 'org.mockito:mockito-core:2.13.0']
-        'java-library'  | ['api': 'org.mockito:mockito-core:2.13.0', 'implementation': 'com.google.guava:guava:21.0' ]
+        'java-library'  | ['api': 'org.mockito:mockito-core:2.13.0', 'implementation': 'org.opentest4j:opentest4j:1.0.0' ]
     }
 }
