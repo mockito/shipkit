@@ -20,7 +20,7 @@ import org.shipkit.internal.util.MultiMap;
  */
 public class LazyConfiguration {
 
-    private final MultiMap<Task, Runnable> actions = new MultiMap<Task, Runnable>();
+    private final MultiMap<Task, Runnable> actions = new MultiMap<>();
 
     @ExposedForTesting
     final TaskExecutionGraphListener listener = new TaskExecutionGraphListener() {

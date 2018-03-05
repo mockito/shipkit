@@ -57,9 +57,9 @@ public class ZipComparator {
 
         int differences = 0;
 
-        List<String> addedFiles = new ArrayList<String>();
-        List<String> removedFiles = new ArrayList<String>();
-        List<String> changedFiles = new ArrayList<String>();
+        List<String> addedFiles = new ArrayList<>();
+        List<String> removedFiles = new ArrayList<>();
+        List<String> changedFiles = new ArrayList<>();
 
         for (String name : previous) {
             if (!current.contains(name)) {

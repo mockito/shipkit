@@ -34,7 +34,7 @@ class DefaultReleaseNotesGenerator implements ReleaseNotesGenerator {
 
     public Collection<ReleaseNotesData> generateReleaseNotesData(String headVersion, Collection<String> targetVersions, String tagPrefix,
                                                                  Collection<String> gitHubLabels, boolean onlyPullRequests) throws RevisionNotFoundException {
-        List<ReleaseNotesData> out = new LinkedList<ReleaseNotesData>();
+        List<ReleaseNotesData> out = new LinkedList<>();
 
         LOG.lifecycle("Generating release notes data for:" +
             "\n  - target versions: " + targetVersions +

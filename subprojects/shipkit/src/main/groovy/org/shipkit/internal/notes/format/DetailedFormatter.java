@@ -124,8 +124,8 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
     }
 
     private static MultiMap<String, Improvement> sortImprovements(Collection<Improvement> improvements, Map<String, String> labelMapping) {
-        MultiMap<String, Improvement> byLabel = new MultiMap<String, Improvement>();
-        Set<Improvement> remainingImprovements = new LinkedHashSet<Improvement>(improvements);
+        MultiMap<String, Improvement> byLabel = new MultiMap<>();
+        Set<Improvement> remainingImprovements = new LinkedHashSet<>(improvements);
 
         //Step 1, find improvements that match input labels
         //Iterate label first because the input labels determine the order

@@ -18,7 +18,7 @@ class GitHubTicketFetcher {
 
     Collection<Improvement> fetchTickets(String apiUrl, String repository, String readOnlyAuthToken, Collection<String> ticketIds, Collection<String> labels,
                                          boolean onlyPullRequests) {
-        List<Improvement> out = new LinkedList<Improvement>();
+        List<Improvement> out = new LinkedList<>();
         if (ticketIds.isEmpty()) {
             return out;
         }
@@ -59,12 +59,12 @@ class GitHubTicketFetcher {
     }
 
     private Queue<Long> queuedTicketNumbers(Collection<String> ticketIds) {
-        List<Long> tickets = new ArrayList<Long>();
+        List<Long> tickets = new ArrayList<>();
         for (String id : ticketIds) {
             tickets.add(Long.parseLong(id));
         }
         Collections.sort(tickets);
-        PriorityQueue<Long> longs = new PriorityQueue<Long>(tickets.size(), Collections.reverseOrder());
+        PriorityQueue<Long> longs = new PriorityQueue<>(tickets.size(), Collections.reverseOrder());
         longs.addAll(tickets);
         return longs;
     }
@@ -75,7 +75,7 @@ class GitHubTicketFetcher {
             return Collections.emptyList();
         }
 
-        ArrayList<Improvement> pagedImprovements = new ArrayList<Improvement>();
+        List<Improvement> pagedImprovements = new ArrayList<>();
         for (JsonObject issue : issues) {
             Improvement i = GitHubImprovementsJSON.toImprovement(issue);
             if (tickets.remove(i.getId())) {
@@ -121,7 +121,7 @@ class GitHubTicketFetcher {
                 this.apiUrl = apiUrl;
                 this.repository = repository;
 
-                parameters = new HashMap<String, String>();
+                parameters = new HashMap<>();
                 parameters.put("access_token", readOnlyAuthToken);
             }
 

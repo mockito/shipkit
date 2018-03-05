@@ -36,7 +36,7 @@ class DefaultVersionInfo implements VersionInfo {
     }
 
     private static LinkedList<String> parseNotableVersions(Properties properties) {
-        LinkedList<String> result = new LinkedList<String>();
+        LinkedList<String> result = new LinkedList<>();
         String value = properties.getProperty("notableVersions");
         if (value != null) {
             String[] versions = value.split(",");

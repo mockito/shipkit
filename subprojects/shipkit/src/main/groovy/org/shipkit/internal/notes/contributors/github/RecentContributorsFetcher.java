@@ -38,7 +38,7 @@ class RecentContributorsFetcher {
      */
     public Collection<Contributor> fetchContributors(String apiUrl, String repository, String readOnlyAuthToken, Date dateSince, Date dateUntil) {
         LOG.info("Querying GitHub API for commits (for contributors)");
-        Set<Contributor> contributors = new LinkedHashSet<Contributor>();
+        Set<Contributor> contributors = new LinkedHashSet<>();
 
         try {
             GitHubCommits commits = GitHubCommits
@@ -57,7 +57,7 @@ class RecentContributorsFetcher {
     }
 
     private Set<Contributor> extractContributors(List<JsonObject> commits) {
-        Set<Contributor> result = new HashSet<Contributor>();
+        Set<Contributor> result = new HashSet<>();
         for (JsonObject commit : commits) {
             Contributor contributor = GitHubCommitsJSON.toContributor(commit);
             if (contributor != null) {

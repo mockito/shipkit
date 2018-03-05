@@ -17,7 +17,7 @@ public class GitPush {
      * Constructs git push arguments based of the url, targets and dry run
      */
     static List<String> gitPushArgs(String url, List<String> targets, boolean dryRun) {
-        List<String> args = new LinkedList<String>();
+        List<String> args = new LinkedList<>();
         args.add("git");
         args.add("push");
         args.add(url);

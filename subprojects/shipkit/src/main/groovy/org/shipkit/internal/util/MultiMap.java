@@ -7,7 +7,7 @@ import java.util.*;
  */
 public class MultiMap<K, V> {
 
-    private final Map<K, Collection<V>> data = new LinkedHashMap<K, Collection<V>>();
+    private final Map<K, Collection<V>> data = new LinkedHashMap<>();
 
     /**
      * If the key does not exist, null is returned
@@ -19,7 +19,7 @@ public class MultiMap<K, V> {
     public void put(K key, V value) {
         Collection<V> elements = get(key);
         if (elements == null) {
-            elements = new LinkedHashSet<V>();
+            elements = new LinkedHashSet<>();
         }
         elements.add(value);
         data.put(key, elements);

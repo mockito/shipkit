@@ -17,7 +17,7 @@ class DefaultContribution implements Contribution, Comparable<DefaultContributio
     //email identifies the contributor, author alias not necessarily
     final String authorEmail;
     final String authorName;
-    final List<Commit> commits = new LinkedList<Commit>();
+    final List<Commit> commits = new LinkedList<>();
 
     DefaultContribution(Commit commit) {
         authorEmail = commit.getAuthorEmail();

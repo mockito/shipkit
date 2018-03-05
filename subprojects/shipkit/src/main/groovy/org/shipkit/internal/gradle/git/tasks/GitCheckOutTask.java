@@ -56,7 +56,7 @@ public class GitCheckOutTask extends DefaultTask {
     }
 
     private List<String> getCommandLine() {
-        List<String> commandLine = new ArrayList<String>();
+        List<String> commandLine = new ArrayList<>();
         commandLine.add("git");
         commandLine.add("checkout");
         if (newBranch) {

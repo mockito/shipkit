@@ -53,7 +53,7 @@ public class ReleaseNotesSerializer {
     }
 
     public Collection<ReleaseNotesData> deserialize(JsonArray jsonArray) {
-        Collection<ReleaseNotesData> result = new LinkedList<ReleaseNotesData>();
+        Collection<ReleaseNotesData> result = new LinkedList<>();
         final Iterator<Object> iterator = jsonArray.iterator();
         while (iterator.hasNext()) {
             final JsonObject jsonObject = (JsonObject) iterator.next();
@@ -62,7 +62,7 @@ public class ReleaseNotesSerializer {
             ContributionSet contributionSet = defaultContributionSetSerializer.deserialize((JsonObject) jsonObject.get("contributions"));
             final Collection<JsonObject> improvementsJsonObjectCollection = jsonObject.getCollection("improvements");
             final Iterator<JsonObject> improvementsIterator = improvementsJsonObjectCollection.iterator();
-            Collection<Improvement> improvements = new LinkedList<Improvement>();
+            Collection<Improvement> improvements = new LinkedList<>();
             while (improvementsIterator.hasNext()) {
                 final JsonObject next = improvementsIterator.next();
                 improvements.add(defaultImprovementSerializer.deserialize(next));

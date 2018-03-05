@@ -23,7 +23,7 @@ public class ReleaseNeededTask extends DefaultTask {
     private boolean pullRequest;
     private boolean skipComparePublications;
     private boolean explosive;
-    private List<File> comparisonResults = new LinkedList<File>();
+    private List<File> comparisonResults = new LinkedList<>();
 
     /**
      * The branch we currently operate on

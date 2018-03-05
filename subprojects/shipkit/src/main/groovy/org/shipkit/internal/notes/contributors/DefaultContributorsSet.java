@@ -13,7 +13,7 @@ class DefaultContributorsSet implements ContributorsSet, Serializable {
     private final Map<String, Contributor> map;
 
     DefaultContributorsSet() {
-        map = new HashMap<String, Contributor>();
+        map = new HashMap<>();
     }
 
     @Override

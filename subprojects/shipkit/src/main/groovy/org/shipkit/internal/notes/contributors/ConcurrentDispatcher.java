@@ -13,14 +13,14 @@ public class ConcurrentDispatcher {
     private static final int N_THREADS = 4;
 
     public <R, T> Set<R> dispatch(Function<T, R> function, List<T> page) {
-        Set<R> result = new HashSet<R>();
+        Set<R> result = new HashSet<>();
         ExecutorService executor = Executors.newFixedThreadPool(N_THREADS);
         List<T> synchronizedPageList = Collections.synchronizedList(page);
 
-        List<Future<Set<R>>> futures = new ArrayList<Future<Set<R>>>();
+        List<Future<Set<R>>> futures = new ArrayList<>();
         if (page.size() > 0) {
             for (int i = 0; i < N_THREADS; i++) {
-                Callable<Set<R>> callable = new FetcherCallable<T, R>(synchronizedPageList, function);
+                Callable<Set<R>> callable = new FetcherCallable<>(synchronizedPageList, function);
 
                 futures.add(executor.submit(callable));
             }

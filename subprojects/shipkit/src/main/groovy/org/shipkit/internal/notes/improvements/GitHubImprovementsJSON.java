@@ -29,7 +29,7 @@ class GitHubImprovementsJSON {
     }
 
     private static Collection<String> extractLabels(JsonObject issue) {
-        Set<String> out = new LinkedHashSet<String>();
+        Set<String> out = new LinkedHashSet<>();
         JsonArray labels = (JsonArray) issue.get("labels");
         for (Object o : labels.toArray()) {
             JsonObject label = (JsonObject) o;
