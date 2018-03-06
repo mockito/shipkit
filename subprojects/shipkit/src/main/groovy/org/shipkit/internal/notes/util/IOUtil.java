@@ -2,6 +2,7 @@ package org.shipkit.internal.notes.util;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 /**
@@ -119,11 +120,8 @@ public class IOUtil {
     }
 
     private static String readNow(InputStream is) {
-        Scanner s = new Scanner(is, "UTF-8").useDelimiter("\\A");
-        try {
+        try (Scanner s = new Scanner(is, StandardCharsets.UTF_8.name()).useDelimiter("\\A")) {
             return s.hasNext() ? s.next() : "";
-        } finally {
-            s.close();
         }
     }
 
@@ -131,7 +129,7 @@ public class IOUtil {
         PrintWriter p = null;
         try {
             target.getParentFile().mkdirs();
-            p = new PrintWriter(new OutputStreamWriter(new FileOutputStream(target), "UTF-8"));
+            p = new PrintWriter(new OutputStreamWriter(new FileOutputStream(target), StandardCharsets.UTF_8));
             p.write(content);
         } catch (Exception e) {
             throw new RuntimeException("Problems writing text to file: " + target, e);

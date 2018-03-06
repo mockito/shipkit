@@ -48,15 +48,9 @@ public class GitHubApi {
         conn.setRequestProperty("Authorization", "token " + authToken);
 
         if (body.isPresent()) {
-            DataOutputStream wr = null;
-            try {
-                wr = new DataOutputStream(conn.getOutputStream());
+            try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
                 wr.writeBytes(body.get());
                 wr.flush();
-            } finally {
-                if (wr != null) {
-                    wr.close();
-                }
             }
         }
 

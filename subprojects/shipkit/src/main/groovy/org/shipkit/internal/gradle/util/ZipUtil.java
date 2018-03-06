@@ -21,18 +21,10 @@ public class ZipUtil {
     }
 
     public static boolean fileContainsEntry(File file, String entry) {
-        ZipFile zip = null;
-        try {
-            zip = openZipFile(file);
+        try (ZipFile zip = openZipFile(file)) {
             return zip.getEntry(entry) != null;
-        } finally {
-            if (zip != null) {
-                try {
-                    zip.close();
-                } catch (IOException e) {
-                    throw new RuntimeException("Could not close zip file " + file, e);
-                }
-            }
+        } catch (IOException e) {
+            throw new RuntimeException("Could not close zip file " + file, e);
         }
     }
 
@@ -47,7 +39,7 @@ public class ZipUtil {
     }
 
     public static Set<String> extractEntries(ZipFile file) {
-        Set<String> set = new LinkedHashSet<String>();
+        Set<String> set = new LinkedHashSet<>();
         for (Enumeration e = file.entries(); e.hasMoreElements();) {
             set.add(((ZipEntry) e.nextElement()).getName());
         }
