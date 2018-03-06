@@ -68,7 +68,7 @@ public class ComparePublicationsPlugin implements Plugin<Project> {
             public void execute(final CreateDependencyInfoFileTask task) {
                 task.setDescription("Creates a file with all declared runtime dependencies.");
                 task.setOutputFile(new File(project.getBuildDir(), DEPENDENCY_INFO_FILENAME));
-                task.setConfiguration(project.getConfigurations().getByName("runtime"));
+                task.setConfiguration(project.getConfigurations().getByName("runtimeClasspath"));
                 task.setProjectVersion(project.getVersion().toString());
 
                 DeferredConfiguration.deferredConfiguration(project, new Runnable() {

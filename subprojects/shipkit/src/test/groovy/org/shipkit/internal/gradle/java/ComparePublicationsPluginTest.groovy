@@ -116,9 +116,41 @@ class ComparePublicationsPluginTest extends PluginSpecification {
 
         then:
         CreateDependencyInfoFileTask task = project.tasks.createDependencyInfoFile
-        task.configuration == project.configurations.getByName("runtime")
+        task.configuration == project.configurations.getByName("runtimeClasspath")
         task.outputFile == new File(project.buildDir, "dependency-info.md")
         task.projectGroup == "projectGroup"
         task.projectVersion == "1.2.3"
+    }
+
+    def "verify content of dependency-info.md file (using '#plugin' plugin and #libraries)"() {
+        given:
+        project.group = "projectGroup"
+        project.version = "1.2.3"
+        project.plugins.apply(plugin)
+        project.repositories.add(project.repositories.jcenter())
+        libraries.each { config, lib ->
+            project.dependencies.add(config, lib)
+        }
+
+        when:
+        project.plugins.apply(ComparePublicationsPlugin)
+        project.evaluate()
+        project.tasks["createDependencyInfoFile"].execute()
+
+        then:
+        CreateDependencyInfoFileTask task = project.tasks.createDependencyInfoFile
+        def dependencyInfoFile = task.outputFile
+
+        dependencyInfoFile.exists()
+        dependencyInfoFile.text
+        libraries.each { config, lib ->
+            assert dependencyInfoFile.text.contains(lib)
+        }
+
+        where:
+        plugin          | libraries
+        'java'          | ['compile': 'org.mockito:mockito-core:2.15.0']
+        'java-library'  | ['api': 'org.mockito:mockito-core:2.13.0']
+        'java-library'  | ['api': 'org.mockito:mockito-core:2.13.0', 'implementation': 'org.opentest4j:opentest4j:1.0.0' ]
     }
 }
