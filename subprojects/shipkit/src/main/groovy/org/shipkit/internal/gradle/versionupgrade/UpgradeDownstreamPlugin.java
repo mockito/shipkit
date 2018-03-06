@@ -40,7 +40,7 @@ import static org.shipkit.internal.util.RepositoryNameUtil.repositoryNameToCapit
  *
  *      apply plugin: 'org.shipkit.upgrade-downstream'
  *
- *      upgradeDownstream{
+ *      upgradeDownstream {
  *          repositories = ['wwilk/shipkit', 'wwilk/mockito']
  *      }
  *
