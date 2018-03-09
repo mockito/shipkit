@@ -8,6 +8,7 @@ import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
+import org.shipkit.internal.gradle.java.ComparePublicationsPlugin;
 import org.shipkit.internal.gradle.notes.ReleaseNotesPlugin;
 import org.shipkit.internal.gradle.plugin.GradlePortalPublishPlugin;
 import org.shipkit.internal.gradle.plugin.PluginDiscoveryPlugin;
@@ -53,6 +54,7 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
                         subproject.getPlugins().apply(PluginDiscoveryPlugin.class);
                         subproject.getPlugins().apply(PluginValidationPlugin.class);
                         subproject.getPlugins().apply(GradlePortalPublishPlugin.class);
+                        subproject.getPlugins().apply(ComparePublicationsPlugin.class);
 
                         Task publishPlugins = subproject.getTasks().getByName(GradlePortalPublishPlugin.PUBLISH_PLUGINS_TASK);
 
