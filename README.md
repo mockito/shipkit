@@ -42,6 +42,7 @@ Using Shipkit? Submit a pull request and add your project to the list!
 - Mockito: https://github.com/mockito/mockito
 - Powermock: https://github.com/powermock/powermock
 - Shipkit: https://github.com/mockito/shipkit
+- rx-tasks: https://github.com/ashdavies/rx-tasks/
 - Shipkit example: https://github.com/mockito/shipkit-example
 
 ### Help us!
