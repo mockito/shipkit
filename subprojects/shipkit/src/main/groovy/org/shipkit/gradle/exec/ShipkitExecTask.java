@@ -14,7 +14,7 @@ import java.util.LinkedList;
  */
 public class ShipkitExecTask extends DefaultTask {
 
-    private Collection<ExecCommand> execCommands = new LinkedList<ExecCommand>();
+    private Collection<ExecCommand> execCommands = new LinkedList<>();
 
     /**
      * Executes all commands

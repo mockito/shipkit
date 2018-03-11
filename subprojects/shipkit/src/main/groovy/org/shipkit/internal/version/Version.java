@@ -18,6 +18,6 @@ public class Version {
     }
 
     public static VersionInfo defaultVersionInfo(File versionFile, String projectVersion) {
-        return new DefaultVersionInfo(versionFile, projectVersion, new LinkedList<String>(), null);
+        return new DefaultVersionInfo(versionFile, projectVersion, new LinkedList<>(), null);
     }
 }

@@ -16,7 +16,7 @@ import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
 public class GitCommitImpl {
 
     public void commit(GitCommitTask task) {
-        Collection<ExecCommand> commands = new LinkedList<ExecCommand>();
+        Collection<ExecCommand> commands = new LinkedList<>();
         commands.add(execCommand("Adding files to git",
             getAddCommand(task.getFilesToCommit())));
         commands.add(execCommand("Performing git commit",
@@ -36,7 +36,7 @@ public class GitCommitImpl {
     }
 
     static List<String> getAddCommand(List<File> files) {
-        List<String> args = new ArrayList<String>();
+        List<String> args = new ArrayList<>();
         args.add("git");
         args.add("add");
         for (File file : files) {
@@ -47,7 +47,7 @@ public class GitCommitImpl {
 
     static List<String> getCommitCommand(String gitUserName, String gitUserEmail,
                                          List<String> descriptions, String commitMessagePostfix) {
-        List<String> args = new ArrayList<String>();
+        List<String> args = new ArrayList<>();
         args.add("git");
         args.add("commit");
         args.add("--author");

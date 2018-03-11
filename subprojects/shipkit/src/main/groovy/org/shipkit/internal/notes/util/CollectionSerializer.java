@@ -21,7 +21,7 @@ public class CollectionSerializer<T extends Jsonable> {
     }
 
     public Collection<T> deserialize(Collection<JsonObject> collection) {
-        Collection<T> result = new LinkedList<T>();
+        Collection<T> result = new LinkedList<>();
         final Iterator<JsonObject> commitsIterator = collection.iterator();
         while (commitsIterator.hasNext()) {
             commitsIterator.next();

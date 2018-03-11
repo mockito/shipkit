@@ -37,7 +37,7 @@ class GitContributionsProvider implements ContributionsProvider {
     private Collection<Commit> getCommits(String fromRev, String toRev) {
         LOG.info("Loading all commits between {} and {}", fromRev, toRev);
 
-        LinkedList<Commit> commits = new LinkedList<Commit>();
+        LinkedList<Commit> commits = new LinkedList<>();
         String commitToken = "@@commit@@";
         String infoToken = "@@info@@";
         // %H: commit hash

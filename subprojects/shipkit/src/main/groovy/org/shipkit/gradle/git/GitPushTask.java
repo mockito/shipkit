@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class GitPushTask extends DefaultTask {
 
-    @Input private List<String> targets = new LinkedList<String>();
+    @Input private List<String> targets = new LinkedList<>();
     @Input private String url;
     @Input private boolean dryRun;
     private String secretValue;

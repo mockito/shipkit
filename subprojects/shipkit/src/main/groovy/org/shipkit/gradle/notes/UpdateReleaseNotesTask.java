@@ -28,11 +28,11 @@ public class UpdateReleaseNotesTask extends DefaultTask {
     @Input @Optional private String previousVersion;
     @Input private String gitHubUrl;
     @Input private String gitHubRepository;
-    @Input private Map<String, String> gitHubLabelMapping = new LinkedHashMap<String, String>();
+    @Input private Map<String, String> gitHubLabelMapping = new LinkedHashMap<>();
     @Input private String publicationRepository;
     @InputFile private File releaseNotesData;
-    @Input private Collection<String> developers = new LinkedList<String>();
-    @Input private Collection<String> contributors = new LinkedList<String>();
+    @Input private Collection<String> developers = new LinkedList<>();
+    @Input private Collection<String> contributors = new LinkedList<>();
     @InputFile @Optional private File contributorsDataFile;
 
     @Input private boolean emphasizeVersion;

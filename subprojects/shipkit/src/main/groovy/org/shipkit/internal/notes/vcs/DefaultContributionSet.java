@@ -13,10 +13,10 @@ class DefaultContributionSet implements ContributionSet {
 
     private static final String JSON_FORMAT = "{ \"commits\": %s }";
 
-    private final List<DefaultContribution> contributions = new LinkedList<DefaultContribution>();
+    private final List<DefaultContribution> contributions = new LinkedList<>();
 
-    private final Collection<Commit> commits = new LinkedList<Commit>();
-    private final Set<String> tickets = new LinkedHashSet<String>();
+    private final Collection<Commit> commits = new LinkedList<>();
+    private final Set<String> tickets = new LinkedHashSet<>();
 
     public DefaultContributionSet add(Commit commit) {
         commits.add(commit);
@@ -59,7 +59,7 @@ class DefaultContributionSet implements ContributionSet {
         //sort the contributions by commits count
         //we need to do it at the end instead of keeping tree set field
         // because Contribution object is mutable and the tree will not reindex when an already-added element changes
-        return new TreeSet<Contribution>(contributions);
+        return new TreeSet<>(contributions);
     }
 
     public int getAuthorCount() {

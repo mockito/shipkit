@@ -17,8 +17,8 @@ import java.util.List;
  */
 public class GitCommitTask extends DefaultTask {
 
-    @Input @SkipWhenEmpty private List<File> filesToCommit = new ArrayList<File>();
-    private List<String> descriptions = new ArrayList<String>();
+    @Input @SkipWhenEmpty private List<File> filesToCommit = new ArrayList<>();
+    private List<String> descriptions = new ArrayList<>();
 
     @Input String gitUserName;
     @Input String gitUserEmail;

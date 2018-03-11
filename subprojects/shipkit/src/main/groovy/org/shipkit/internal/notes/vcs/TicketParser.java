@@ -11,7 +11,7 @@ class TicketParser {
      * Collects all ticked ids found in message, ticket format is #123
      */
     static Set<String> parseTickets(String message) {
-        Set<String> tickets = new LinkedHashSet<String>();
+        Set<String> tickets = new LinkedHashSet<>();
         Pattern ticket = Pattern.compile("#\\d+");
         Matcher m = ticket.matcher(message);
         while (m.find()) {

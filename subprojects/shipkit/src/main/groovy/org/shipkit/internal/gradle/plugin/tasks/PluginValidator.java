@@ -27,7 +27,7 @@ public class PluginValidator {
     }
 
     private void ensureNamingConvention(Set<File> gradlePropertiesFiles) {
-        Map<String, String> errors = new HashMap<String, String>();
+        Map<String, String> errors = new HashMap<>();
         for (File gradlePropertiesFile: gradlePropertiesFiles) {
             String pluginId = gradlePropertiesFile.getName().substring(0, gradlePropertiesFile.getName().lastIndexOf(DOT_PROPERTIES));
             List<String> candidates = getClassCandidates(pluginId);
@@ -59,7 +59,7 @@ public class PluginValidator {
     }
 
     static List<String> getClassCandidates(String pluginId) {
-        List<String> candidates = new ArrayList<String>();
+        List<String> candidates = new ArrayList<>();
 
         String[] pluginIdParts = pluginId.split("\\.");
         String previousCandidate = "Plugin";

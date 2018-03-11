@@ -103,9 +103,9 @@ public class PomCustomizer {
         }
 
         if (!conf.getTeam().getContributors().isEmpty() || contributorsFromGitHub.size() != 0) {
-            Set<String> devs = new HashSet<String>(conf.getTeam().getDevelopers());
+            Set<String> devs = new HashSet<>(conf.getTeam().getDevelopers());
             Node contributors = root.appendNode("contributors");
-            Collection<String> allContributors = new ArrayList<String>();
+            Collection<String> allContributors = new ArrayList<>();
             allContributors.addAll(conf.getTeam().getContributors());
             allContributors.addAll(contributorsFromGitHub.toConfigNotation());
             for (String notation : allContributors) {

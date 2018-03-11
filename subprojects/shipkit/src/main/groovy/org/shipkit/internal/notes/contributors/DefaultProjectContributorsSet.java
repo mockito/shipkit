@@ -11,11 +11,11 @@ public class DefaultProjectContributorsSet implements ProjectContributorsSet, Se
 
     private final Predicate<Contributor> ignoredContributor;
     //This set is used to manage uniqueness of contributors:
-    private final Set<ProjectContributor> contributors = new HashSet<ProjectContributor>();
+    private final Set<ProjectContributor> contributors = new HashSet<>();
     //To keep sorted contributors ready to be used:
-    private final Set<ProjectContributor> sorted = new TreeSet<ProjectContributor>(Collections.<ProjectContributor>reverseOrder());
+    private final Set<ProjectContributor> sorted = new TreeSet<>(Collections.<ProjectContributor>reverseOrder());
     //For fast lookups:
-    private final Map<String, ProjectContributor> map = new HashMap<String, ProjectContributor>();
+    private final Map<String, ProjectContributor> map = new HashMap<>();
 
     public DefaultProjectContributorsSet() {
         this.ignoredContributor = IgnoredContributor.none();
@@ -58,7 +58,7 @@ public class DefaultProjectContributorsSet implements ProjectContributorsSet, Se
 
     @Override
     public Collection<String> toConfigNotation() {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         for (ProjectContributor contributor : sorted) {
             // if someone doesn't set a name on GitHub, lets put login
             String name = contributor.getName().isEmpty() ? contributor.getLogin() : contributor.getName();

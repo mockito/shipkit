@@ -36,7 +36,7 @@ public class TestDownstreamTask extends DefaultTask {
 
     private static final Logger LOG = Logging.getLogger(TestDownstreamTask.class);
 
-    private List<String> repositories = new ArrayList<String>();
+    private List<String> repositories = new ArrayList<>();
     private File logsDirectory;
     private UploadGistsTask uploadGistsTask;
     private String gitHubUrl;

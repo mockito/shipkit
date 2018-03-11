@@ -14,7 +14,7 @@ public class ShipkitConfigurationStore {
     private final Map<String, Object> configuration;
 
     public ShipkitConfigurationStore(EnvVariables envVariables) {
-        this(new HashMap<String, Object>(), envVariables, false);
+        this(new HashMap<>(), envVariables, false);
     }
 
     ShipkitConfigurationStore(Map<String, Object> configuration, EnvVariables envVariables, boolean lenient) {

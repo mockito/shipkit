@@ -21,7 +21,7 @@ public class GitPull {
      * Constructs git pull arguments basing on the url, rev and dry run
      */
     static List<String> gitPullArgs(String url, String rev, boolean dryRun) {
-        List<String> args = new LinkedList<String>();
+        List<String> args = new LinkedList<>();
         args.add("git");
         args.add("pull");
         args.add(url);

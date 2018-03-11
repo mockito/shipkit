@@ -1,7 +1,5 @@
 package org.shipkit.internal.gradle.versionupgrade;
 
-import java.io.IOException;
-
 import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
@@ -15,7 +13,7 @@ class MergePullRequest {
 
     private static final Logger LOG = Logging.getLogger(MergePullRequest.class);
 
-    public void mergePullRequest(MergePullRequestTask task) throws IOException {
+    public void mergePullRequest(MergePullRequestTask task) {
         GitHubApi gitHubApi = new GitHubApi(task.getGitHubApiUrl(), task.getAuthToken());
         mergePullRequest(task, gitHubApi, new GitHubStatusCheck(task, gitHubApi));
     }

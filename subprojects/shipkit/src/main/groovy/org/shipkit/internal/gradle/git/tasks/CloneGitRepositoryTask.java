@@ -55,7 +55,7 @@ public class CloneGitRepositoryTask extends DefaultTask {
     //TODO: WW investigate if this method can be removed from public API
     @ExposedForTesting
     List<String> getCloneCommand() {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         result.add("git");
         result.add("clone");
         if (depth != 0) {

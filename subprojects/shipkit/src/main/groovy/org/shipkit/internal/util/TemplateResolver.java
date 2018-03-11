@@ -15,7 +15,7 @@ public class TemplateResolver {
 
     public TemplateResolver(String text) {
         this.text = text;
-        this.properties = new HashMap<String, String>();
+        this.properties = new HashMap<>();
     }
 
     public TemplateResolver withProperty(String key, String value) {

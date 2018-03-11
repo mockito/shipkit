@@ -29,8 +29,8 @@ class DefaultReleasedVersionsProvider implements ReleasedVersionsProvider {
         if (headVersion != null && headDate == null) {
             throw new IllegalArgumentException("headDate cannot be null if headVersion is provided");
         }
-        List<String> theVersions = new ArrayList<String>(versions);
-        LinkedList<ReleasedVersion> result = new LinkedList<ReleasedVersion>();
+        List<String> theVersions = new ArrayList<>(versions);
+        LinkedList<ReleasedVersion> result = new LinkedList<>();
 
         for (int i = 0; i < theVersions.size(); i++) {
             String v = theVersions.get(i);

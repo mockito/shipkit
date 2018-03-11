@@ -47,7 +47,7 @@ public class UpdateReleaseNotes {
                                                     ProjectContributorsSet contributorsFromGitHub,
                                                     Collection<String> developers,
                                                     String githubUrl) {
-        Map<String, Contributor> out = new HashMap<String, Contributor>();
+        Map<String, Contributor> out = new HashMap<>();
         out.putAll(transform(contributorsFromConfiguration, githubUrl));
         out.putAll(transform(contributorsFromGitHub.getAllContributors()));
         out.putAll(transform(developers, githubUrl));
@@ -55,7 +55,7 @@ public class UpdateReleaseNotes {
     }
 
     private static Map<String, Contributor> transform(Collection<String> contributors, String githubUrl) {
-        Map<String, Contributor> contributorMap = new HashMap<String, Contributor>();
+        Map<String, Contributor> contributorMap = new HashMap<>();
         for (String contributor : contributors) {
             TeamMember member = TeamParser.parsePerson(contributor);
             contributorMap.put(member.name, new DefaultContributor(member.name, member.gitHubUser,
@@ -65,7 +65,7 @@ public class UpdateReleaseNotes {
     }
 
     private static Map<String, Contributor> transform(Set<ProjectContributor> projectContributors) {
-        Map<String, Contributor> contributorMap = new HashMap<String, Contributor>();
+        Map<String, Contributor> contributorMap = new HashMap<>();
         for (ProjectContributor projectContributor : projectContributors) {
             contributorMap.put(projectContributor.getName(), projectContributor);
         }

@@ -26,7 +26,7 @@ public class CreateDependencyInfoFile {
 
         //sorting dependencies to assure that they are always in the same order
         //without depending on Gradle implementation
-        SortedSet<String> dependencies = new TreeSet<String>();
+        SortedSet<String> dependencies = new TreeSet<>();
         for (Dependency dependency: task.getConfiguration().getAllDependencies()) {
             if (dependency instanceof ModuleDependency) {
                 String dep = getDependencyWithArtifacts(task, (ModuleDependency) dependency);
@@ -44,7 +44,7 @@ public class CreateDependencyInfoFile {
         if (!dependency.getArtifacts().isEmpty()) {
             //sorting artifacts to assure that they are always in the same order
             //without depending on Gradle implementation
-            SortedSet<String> artifacts = new TreeSet<String>();
+            SortedSet<String> artifacts = new TreeSet<>();
             for (DependencyArtifact artifact : dependency.getArtifacts()) {
                 artifacts.add(getArtifact(artifact));
             }

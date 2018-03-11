@@ -34,7 +34,7 @@ public class FetchReleaseNotes {
             task.getGitWorkDir(), task.getGitHubApiUrl(), task.getGitHubRepository(),
             task.getGitHubReadOnlyAuthToken(), ignoredCommit);
 
-        List<String> targetVersions = task.getPreviousVersion() == null ? new ArrayList<String>() : singletonList(task.getPreviousVersion());
+        List<String> targetVersions = task.getPreviousVersion() == null ? new ArrayList<>() : singletonList(task.getPreviousVersion());
         Collection<ReleaseNotesData> releaseNotes = generator.generateReleaseNotesData(
             task.getVersion(), targetVersions, task.getTagPrefix(), task.getGitHubLabels(), task.isOnlyPullRequests());
 
