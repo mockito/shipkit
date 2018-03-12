@@ -32,5 +32,13 @@ allprojects {
         jcenter()
         maven { url "https://plugins.gradle.org/m2/" }
     }
+
+    tasks.withType(Test) {
+        testLogging {
+            //This way Spock/Groovy power asserts will be visible in the build log
+            //Very useful - you don't have to look at the test results to debug a test failure
+            exceptionFormat "full"
+        }
+    }
 }
 
