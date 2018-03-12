@@ -40,9 +40,10 @@ class ShipkitGradlePluginIntegTest extends GradleSpecification {
 :processResources
 :classes
 :jar
-:publishPluginJar
 :javadoc
-:publishPluginJavaDocsJar
+:javadocJar
+:createDependencyInfoFile
+:sourcesJar
 :buildArchives
 :gitTag
 :gitPush
