@@ -20,17 +20,3 @@ install:
 
 script:
   - ./gradlew build testDownstream -PcheckJava8Compatibility --daemon -s && ./gradlew ciPerformRelease -s
-
-# Remove often changing files to prevent cache re-upload on no changes in dependencies
-before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-  - rm -fr $HOME/.gradle/caches/*/scripts/
-  - rm -fr $HOME/.gradle/caches/*/scripts-remapped/
-  - rm -fr $HOME/.gradle/caches/*/fileHashes/
-  - rm -fr $HOME/.gradle/caches/transforms-1/transforms-1.lock
-  - rm -fr $HOME/.gradle/caches/jars-*/*/shipkit-*.jar
-cache:
-  directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
