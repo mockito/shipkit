@@ -4,13 +4,14 @@
 
 ## Documentation
 
-- Project information: [README.md](README.md)
+- Project information: [README.md](/README.md)
     - Help us! How to contribute: [CONTRIBUTING.md](CONTRIBUTING.md)
-    - Work with us! How we work: [docs/how-we-work.md](docs/how-we-work.md)
-    - Shipkit release notes: [docs/release-notes.md](docs/release-notes.md)
+    - Work with us! How we work: [docs/how-we-work.md](/docs/how-we-work.md)
+    - Shipkit release notes: [docs/release-notes.md](/docs/release-notes.md)
 - User guides
-    - Getting started: [docs/getting-started.md](docs/getting-started.md)
-    - How Shipkit works: [docs/how-shipkit-works.md](docs/how-shipkit-works.md)
+    - Getting started: [docs/getting-started.md](/docs/getting-started.md)
+    - How Shipkit works: [docs/how-shipkit-works.md](/docs/how-shipkit-works.md)
+    - FAQ: [docs/faq.md](/docs/faq.md)
 
 ## Imagine
 
