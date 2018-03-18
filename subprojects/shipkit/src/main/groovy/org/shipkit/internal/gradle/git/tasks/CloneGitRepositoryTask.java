@@ -41,7 +41,7 @@ public class CloneGitRepositoryTask extends DefaultTask {
     @TaskAction
     public void cloneRepository() {
         if (!isTargetEmpty()) {
-            LOG.lifecycle("{} -  Target dir {} already exists and is not empty. Skipping execution of the task.");
+            LOG.lifecycle("{} - target directory already exists and is not empty. Skipping execution of the task. Exists: {}", getPath(), targetDir);
             return;
         }
 
