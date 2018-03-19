@@ -1,6 +1,5 @@
 package org.shipkit.internal.gradle.java;
 
-import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.shipkit.internal.gradle.GitHubPlugin;
@@ -33,15 +32,8 @@ public class ShipkitJavaPlugin implements Plugin<Project> {
         project.getPlugins().apply(BintrayReleasePlugin.class);
         project.getPlugins().apply(TravisPlugin.class);
 
-        project.allprojects(new Action<Project>() {
-            public void execute(final Project subproject) {
-                subproject.getPlugins().withId("java", new Action<Plugin>() {
-                    @Override
-                    public void execute(Plugin plugin) {
-                        subproject.getPlugins().apply(JavaBintrayPlugin.class);
-                    }
-                });
-            }
-        });
+        project.allprojects(subproject -> subproject.getPlugins().withId("java", plugin -> {
+            subproject.getPlugins().apply(JavaBintrayPlugin.class);
+        }));
     }
 }
