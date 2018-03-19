@@ -118,11 +118,12 @@ As much as useful the toolkit was to drive Mockito releases, we needed to make i
   - "CI/CD at scale: lessons from LinkedIn and Mockito" talk ([slide clip](https://www.slideshare.net/SzczepanFaber/clipboards/shipkit-clips), [video](https://www.infoq.com/presentations/ci-cd-linkedin-mockito))
 - 2017, December - 1.0 release! See the [release notes](docs/release-notes.md).
 - 2018, February - Shipkit 2.0, upgrade to Java8 and Gradle4. 2.0.0 is 100% compatible with 1.0.12 feature-wise, the only change is minimum Java+Gradle version requirement ([#624](https://github.com/mockito/shipkit/issues/624))
+- 2018, March - we started working on our [Q2 milestone](https://github.com/mockito/shipkit/milestone/1), a set of improvements that make Shipkit more compelling for new projects.
 
 Want to include your event? Submit a pull request!
 
 ### Plans
 
-- 2018, Q2 - Make Shipkit the standard tool for Gradle plugin CI/CD ([#255](https://github.com/mockito/shipkit/issues/255))
+- 2018, Q3 - Make Shipkit the standard tool for Gradle plugin CI/CD ([#255](https://github.com/mockito/shipkit/issues/255))
 - 2018, Q1-Q4 - work on getting the community adopt Shipkit while adding CI/CD features
-- 2019, push OSS and enterprise code to CI/CD
+- 2019, support OSS and enterprise in transition into CI/CD model
