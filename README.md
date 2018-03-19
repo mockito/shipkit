@@ -51,7 +51,7 @@ Using Shipkit? Submit a pull request and add your project to the list!
 If the vision of the project connects with you help us!!!
 
 - Open a [new GitHub ticket](https://github.com/mockito/shipkit/issues/new) to start the conversation. We love feedback, brainstorming and discussions.
-- Drop a comment to one of the existing "[please contribute](https://github.com/mockito/shipkit/issues?q=is%3Aissue+is%3Aopen+label%3A%22please+contribute%21%22)" tickets, and tell us that you are interesting in implementing it.
+- Drop a comment to one of the existing "[help wanted](https://github.com/mockito/shipkit/issues?q=is%3Aissue+is%3Aopen+label%3A%22please+contribute%21%22)" tickets, and tell us that you are interesting in implementing it.
 - Try out Shipkit in your project and give feedback
 - If you like emails, join the [mailing list](https://groups.google.com/forum/#!forum/shipkit), but be warned that we rarely use emails, and prefer GitHub tickets.
 - Spread the word about Shipkit, let us know about other projects with similar goals.
