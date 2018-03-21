@@ -32,7 +32,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "org.shipkit:shipkit:0.9.73"
+        classpath "org.shipkit:shipkit:TODO"
     }
 }
 

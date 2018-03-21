@@ -51,7 +51,7 @@ Using Shipkit? Submit a pull request and add your project to the list!
 If the vision of the project connects with you help us!!!
 
 - Open a [new GitHub ticket](https://github.com/mockito/shipkit/issues/new) to start the conversation. We love feedback, brainstorming and discussions.
-- Drop a comment to one of the existing "[please contribute](https://github.com/mockito/shipkit/issues?q=is%3Aissue+is%3Aopen+label%3A%22please+contribute%21%22)" tickets, and tell us that you are interesting in implementing it.
+- Drop a comment to one of the existing "[help wanted](https://github.com/mockito/shipkit/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)" tickets, and tell us that you are interesting in implementing it.
 - Try out Shipkit in your project and give feedback
 - If you like emails, join the [mailing list](https://groups.google.com/forum/#!forum/shipkit), but be warned that we rarely use emails, and prefer GitHub tickets.
 - Spread the word about Shipkit, let us know about other projects with similar goals.
@@ -118,11 +118,12 @@ As much as useful the toolkit was to drive Mockito releases, we needed to make i
   - "CI/CD at scale: lessons from LinkedIn and Mockito" talk ([slide clip](https://www.slideshare.net/SzczepanFaber/clipboards/shipkit-clips), [video](https://www.infoq.com/presentations/ci-cd-linkedin-mockito))
 - 2017, December - 1.0 release! See the [release notes](docs/release-notes.md).
 - 2018, February - Shipkit 2.0, upgrade to Java8 and Gradle4. 2.0.0 is 100% compatible with 1.0.12 feature-wise, the only change is minimum Java+Gradle version requirement ([#624](https://github.com/mockito/shipkit/issues/624))
+- 2018, March - we started working on our [Q2 milestone](https://github.com/mockito/shipkit/milestone/1), a set of improvements that make Shipkit more compelling for new projects.
 
 Want to include your event? Submit a pull request!
 
 ### Plans
 
-- 2018, Q2 - Make Shipkit the standard tool for Gradle plugin CI/CD ([#255](https://github.com/mockito/shipkit/issues/255))
+- 2018, Q3 - Make Shipkit the standard tool for Gradle plugin CI/CD ([#255](https://github.com/mockito/shipkit/issues/255))
 - 2018, Q1-Q4 - work on getting the community adopt Shipkit while adding CI/CD features
-- 2019, push OSS and enterprise code to CI/CD
+- 2019, support OSS and enterprise in transition into CI/CD model

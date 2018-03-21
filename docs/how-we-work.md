@@ -6,8 +6,10 @@ We are a community project and we work as a team.
 
 ### Getting contributions
 
-Contributions are super important to build lively community and excite other engineers around the project vision. In "shipkit" we use ["please contribute!"](https://github.com/mockito/shipkit/issues?q=is%3Aissue+is%3Aopen+label%3A%22please+contribute%21%22) label on tickets to attract contributors. Before the ticket can be labeled with "please contribute!" it should:
- - sell the feature. If the value of the ticket is not clear, why would a contributor bother to invest his free time?
+We love contributions.
+See ["help wanted"](https://github.com/mockito/shipkit/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) or ["good first issue"](https://github.com/mockito/shipkit/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) tickets if you want to contribute.
+When you create a new ticket please:
+ - describe the 'why' of the feature. If the value is not clear, why would a contributor bother to invest his free time?
  - describe high level design. Otherwise it's hard to come up with the implementation. More over, lack of guiding high level design leads to more rework and ping-pong pull requests, with multiple pr->feedback->fixes cycles.
  - give a starting point, point to classes in question, suggest implementation, or even point to the branch that has some scaffolding prototype code. Example ["starting point" PR](https://github.com/mockito/shipkit/pull/100).
  - be like [#101](https://github.com/mockito/shipkit/issues/101), [#84](https://github.com/mockito/shipkit/issues/84), or [epic #85](https://github.com/mockito/shipkit/issues/85)
