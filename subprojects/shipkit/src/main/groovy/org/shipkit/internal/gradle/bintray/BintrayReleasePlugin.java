@@ -14,7 +14,6 @@ import org.shipkit.internal.gradle.release.ReleasePlugin;
 import org.shipkit.internal.gradle.util.BintrayUtil;
 
 import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
-import static org.shipkit.internal.gradle.java.JavaPublishPlugin.MAVEN_LOCAL_TASK;
 
 /**
  * Configures Java project for automated releases with Bintray.
@@ -38,7 +37,7 @@ public class BintrayReleasePlugin implements Plugin<Project> {
         project.getPlugins().apply(ReleasePlugin.class);
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
-        project.allprojects(subproject -> subproject.getPlugins().withType(JavaBintrayPlugin.class, plugin -> {
+        project.allprojects(subproject -> subproject.getPlugins().withType(ShipkitBintrayPlugin.class, plugin -> {
             Task bintrayUpload = subproject.getTasks().getByName(ShipkitBintrayPlugin.BINTRAY_UPLOAD_TASK);
             Task performRelease = project.getTasks().getByName(ReleasePlugin.PERFORM_RELEASE_TASK);
             performRelease.dependsOn(bintrayUpload);
@@ -46,11 +45,9 @@ public class BintrayReleasePlugin implements Plugin<Project> {
             //Making git push run as late as possible because it is an operation that is hard to reverse.
             //Git push will be executed after all tasks needed by bintrayUpload
             // but before bintrayUpload.
-            //Using task path as String because the task comes from maven-publish new configuration model
-            // and we cannot refer to it in a normal way, by task instance.
-            String mavenLocalTask = subproject.getPath() + ":" + MAVEN_LOCAL_TASK;
             Task gitPush = project.getTasks().getByName(GitPlugin.GIT_PUSH_TASK);
-            gitPush.mustRunAfter(mavenLocalTask);
+            gitPush.mustRunAfter(bintrayUpload.getTaskDependencies());
+
             //bintray upload after git push so that when git push fails we don't publish jars to bintray
             //git push is easier to undo than deleting published jars (not possible with Central)
             bintrayUpload.mustRunAfter(gitPush);
