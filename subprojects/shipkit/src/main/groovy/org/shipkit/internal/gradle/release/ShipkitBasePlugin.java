@@ -1,9 +1,8 @@
-package org.shipkit.internal.gradle.java;
+package org.shipkit.internal.gradle.release;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.shipkit.internal.gradle.bintray.BintrayReleasePlugin;
-import org.shipkit.internal.gradle.release.TravisPlugin;
 
 /**
  * Continuous delivery for any project that wants to publish to Bintray with Travis.
