@@ -18,8 +18,14 @@ Get the latest version of "org.shipkit.java" plugin from [Gradle Plugin Portal](
 plugins {
     id "org.shipkit.java" version "TODO"
 }
+```
 
-apply plugin: "org.shipkit.java"
+or, if you're not releasing a java project:
+
+```Gradle
+plugins {
+    id "org.shipkit.init" version "TODO"
+}
 ```
 
 <details>
@@ -38,6 +44,13 @@ buildscript {
 
 apply plugin: "org.shipkit.java"
 ```
+
+If you don't want to release traditional Gradle Java project, you can apply "org.shipkit.init" instead:
+
+```
+apply plugin: "org.shipkit.init"
+```
+
 </details>
 
 ### Initializing Shipkit
@@ -158,12 +171,6 @@ Here is how generated (by running initShipkit task) ".travis.yml" file looks li
 ```yml
 # More details on how to configure the Travis build
 # https://docs.travis-ci.com/user/customizing-the-build/
-
-# Speed up build with travis caches
-cache:
-  directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
 
 language: java
 
