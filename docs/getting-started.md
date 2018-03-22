@@ -20,11 +20,11 @@ plugins {
 }
 ```
 
-or, if you're not releasing a java project:
+or, if you're not releasing a typical java project:
 
 ```Gradle
 plugins {
-    id "org.shipkit.init" version "TODO"
+    id "org.shipkit.base" version "TODO"
 }
 ```
 
@@ -45,10 +45,10 @@ buildscript {
 apply plugin: "org.shipkit.java"
 ```
 
-If you don't want to release traditional Gradle Java project, you can apply "org.shipkit.init" instead:
+If you don't work with traditional Gradle Java project apply:
 
 ```
-apply plugin: "org.shipkit.init"
+apply plugin: "org.shipkit.base"
 ```
 
 </details>
