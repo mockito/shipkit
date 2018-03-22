@@ -2,9 +2,7 @@ package org.shipkit.internal.gradle.java;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.shipkit.internal.gradle.GitHubPlugin;
-import org.shipkit.internal.gradle.bintray.BintrayReleasePlugin;
-import org.shipkit.internal.gradle.release.TravisPlugin;
+import org.shipkit.internal.gradle.release.ShipkitBasePlugin;
 
 /**
  * Continuous delivery for Java with Travis and Bintray.
@@ -14,9 +12,8 @@ import org.shipkit.internal.gradle.release.TravisPlugin;
  * Applies following plugins:
  *
  * <ul>
- *     <li>{@link GitHubPlugin}</li>
- *     <li>{@link BintrayReleasePlugin}</li>
- *     <li>{@link TravisPlugin}</li>
+ *     <li>{@link ShipkitBasePlugin}</li>
+ *     <li>{@link PomContributorsPlugin}</li>
  * </ul>
  *
  * Adds behavior:
@@ -28,9 +25,8 @@ import org.shipkit.internal.gradle.release.TravisPlugin;
 public class ShipkitJavaPlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
-        project.getPlugins().apply(GitHubPlugin.class);
-        project.getPlugins().apply(BintrayReleasePlugin.class);
-        project.getPlugins().apply(TravisPlugin.class);
+        project.getPlugins().apply(ShipkitBasePlugin.class);
+        project.getPlugins().apply(PomContributorsPlugin.class);
 
         project.allprojects(subproject -> subproject.getPlugins().withId("java", plugin -> {
             subproject.getPlugins().apply(JavaBintrayPlugin.class);
