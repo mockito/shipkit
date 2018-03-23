@@ -62,7 +62,7 @@ public class InitShipkitFile {
             "}\n" +
             "\n" +
             "allprojects {\n" +
-            "   plugins.withId(\"com.jfrog.bintray\") {\n" +
+            "   plugins.withId(\"org.shipkit.bintray\") {\n" +
             "\n" +
             "       //Bintray configuration is handled by JFrog Bintray Gradle Plugin\n" +
             "       //For reference see the official documentation: https://github.com/bintray/gradle-bintray-plugin\n" +

@@ -47,7 +47,7 @@ shipkit {
 }
 
 allprojects {
-   plugins.withId("com.jfrog.bintray") {
+   plugins.withId("org.shipkit.bintray") {
 
        //Bintray configuration is handled by JFrog Bintray Gradle Plugin
        //For reference see the official documentation: https://github.com/bintray/gradle-bintray-plugin

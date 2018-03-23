@@ -2,10 +2,8 @@ package org.shipkit.internal.gradle.bintray;
 
 import com.jfrog.bintray.gradle.BintrayExtension;
 import com.jfrog.bintray.gradle.BintrayUploadTask;
-import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
@@ -52,11 +50,9 @@ public class ShipkitBintrayPlugin implements Plugin<Project> {
 
         final BintrayUploadTask bintrayUpload = (BintrayUploadTask) project.getTasks().getByName(BINTRAY_UPLOAD_TASK);
 
-        bintrayUpload.doFirst(new Action<Task>() {
-            public void execute(Task task) {
-                String welcomeMessage = uploadWelcomeMessage((BintrayUploadTask) task);
-                LOG.lifecycle(welcomeMessage);
-            }
+        bintrayUpload.doFirst(task -> {
+            String welcomeMessage = uploadWelcomeMessage((BintrayUploadTask) task);
+            LOG.lifecycle(welcomeMessage);
         });
 
         final BintrayExtension.PackageConfig pkg = bintray.getPkg();
@@ -64,23 +60,21 @@ public class ShipkitBintrayPlugin implements Plugin<Project> {
         pkg.getVersion().getGpg().setSign(true);
 
         //Defer configuration of other properties
-        deferredConfiguration(project, new Runnable() {
-            public void run() {
-                //Below overwrites prior value in case the user configured dry run directly on the bintray extension.
-                //It should be ok.
-                bintray.setDryRun(conf.isDryRun());
+        deferredConfiguration(project, () -> {
+            //Below overwrites prior value in case the user configured dry run directly on the bintray extension.
+            //It should be ok.
+            bintray.setDryRun(conf.isDryRun());
 
-                if (pkg.getDesc() == null) {
-                    pkg.setDesc(project.getDescription());
-                }
+            if (pkg.getDesc() == null) {
+                pkg.setDesc(project.getDescription());
+            }
 
-                if (pkg.getName() == null) {
-                    pkg.setName(project.getGroup().toString());
-                }
+            if (pkg.getName() == null) {
+                pkg.setName(project.getGroup().toString());
+            }
 
-                if (pkg.getVersion().getVcsTag() == null) {
-                    pkg.getVersion().setVcsTag(conf.getGit().getTagPrefix() + project.getVersion());
-                }
+            if (pkg.getVersion().getVcsTag() == null) {
+                pkg.getVersion().setVcsTag(conf.getGit().getTagPrefix() + project.getVersion());
             }
         });
 
@@ -96,20 +90,18 @@ public class ShipkitBintrayPlugin implements Plugin<Project> {
             pkg.setVcsUrl(conf.getGitHub().getUrl() + "/" + conf.getGitHub().getRepository() + ".git");
         }
 
-        LazyConfiguration.lazyConfiguration(bintrayUpload, new Runnable() {
-            public void run() {
-                String key = notNull(bintray.getKey(), "BINTRAY_API_KEY",
-                    "Missing 'bintray.key' value.\n" +
-                        "  Please configure Bintray extension or export 'BINTRAY_API_KEY' env variable.");
-                bintray.setKey(key);
-                // api key is set by Bintray plugin, based on 'bintray.key' value, before lazy configuration.
-                // Hence we need to set it again here:
-                bintrayUpload.setApiKey(key);
+        LazyConfiguration.lazyConfiguration(bintrayUpload, () -> {
+            String key = notNull(bintray.getKey(), "BINTRAY_API_KEY",
+                "Missing 'bintray.key' value.\n" +
+                    "  Please configure Bintray extension or export 'BINTRAY_API_KEY' env variable.");
+            bintray.setKey(key);
+            // api key is set by Bintray plugin, based on 'bintray.key' value, before lazy configuration.
+            // Hence we need to set it again here:
+            bintrayUpload.setApiKey(key);
 
-                //workaround for https://github.com/bintray/gradle-bintray-plugin/issues/170
-                notNull(bintray.getUser(), "Missing 'bintray.user' value.\n" +
-                    "  Please configure Bintray extension.");
-            }
+            //workaround for https://github.com/bintray/gradle-bintray-plugin/issues/170
+            notNull(bintray.getUser(), "Missing 'bintray.user' value.\n" +
+                "  Please configure Bintray extension.");
         });
     }
 
