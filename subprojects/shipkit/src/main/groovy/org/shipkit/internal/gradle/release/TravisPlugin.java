@@ -1,6 +1,5 @@
 package org.shipkit.internal.gradle.release;
 
-import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
@@ -15,6 +14,8 @@ import org.shipkit.internal.gradle.git.GitBranchPlugin;
 import org.shipkit.internal.gradle.git.GitSetupPlugin;
 import org.shipkit.internal.gradle.git.tasks.GitCheckOutTask;
 import org.shipkit.internal.gradle.util.StringUtil;
+
+import static org.shipkit.internal.gradle.travis.TravisUtils.generateCommitMessage;
 
 /**
  * Configures the release automation to be used with Travis CI.
@@ -43,6 +44,10 @@ public class TravisPlugin implements Plugin<Project> {
         project.getPlugins().apply(CiReleasePlugin.class);
 
         final String branch = System.getenv("TRAVIS_BRANCH");
+        final String travisCommitMessage = System.getenv("TRAVIS_COMMIT_MESSAGE");
+        final String travisBuildNumber = System.getenv("TRAVIS_BUILD_NUMBER");
+        final String pr = System.getenv("TRAVIS_PULL_REQUEST");
+
         LOG.info("Branch from 'TRAVIS_BRANCH' env variable: {}", branch);
         ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
         //configure branch based on Travis' env variable
@@ -61,20 +66,14 @@ public class TravisPlugin implements Plugin<Project> {
                 "Alternatively, you can set the task's 'rev' property explicitly."));
 
         //update release needed task based on Travis' env variables
-        String pr = System.getenv("TRAVIS_PULL_REQUEST");
         LOG.info("Pull request from 'TRAVIS_PULL_REQUEST' env variable: {}", pr);
         final boolean isPullRequest = pr != null && !pr.trim().isEmpty() && !pr.equals("false");
         LOG.info("Pull request build: {}", isPullRequest);
 
-        String travisJobUrl = generateTravisBuildUrl(conf);
-        String commitMessage = System.getenv("TRAVIS_COMMIT_MESSAGE") + ". CI job: " + travisJobUrl;
         project.getTasks().withType(ReleaseNeededTask.class, t -> {
-            t.setCommitMessage(commitMessage);
+            t.setCommitMessage(generateCommitMessage(conf, travisCommitMessage, travisBuildNumber));
             t.setPullRequest(isPullRequest);
         });
     }
 
-    private String generateTravisBuildUrl(ShipkitConfiguration conf) {
-        return "https://travis-ci.org/" + conf.getGitHub().getRepository()+ "/builds/" + System.getenv("TRAVIS_BUILD_NUMBER");
-    }
 }
