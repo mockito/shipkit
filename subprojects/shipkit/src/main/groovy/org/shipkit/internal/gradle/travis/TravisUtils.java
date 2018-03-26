@@ -7,6 +7,9 @@ public class TravisUtils {
     private static final String URL_PATTERN = "https://travis-ci.org/%s/builds/%s";
 
     public static String generateCommitMessage(ShipkitConfiguration conf, String travisCommitMessage, String travisBuildNumber) {
+        if (travisCommitMessage == null) {
+            return null;
+        }
         String travisJobUrl = generateTravisBuildUrl(conf, travisBuildNumber);
 
         if (travisCommitMessage.contains("[ci skip]")) {
