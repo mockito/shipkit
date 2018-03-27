@@ -3,4 +3,4 @@ apply plugin: 'base' // for clean task, TODO ms: push it to the plugin, make 'ch
 apply plugin: 'org.shipkit.test-downstream'
 
 testDownstream.addRepository("https://github.com/mockito/shipkit-example")
-testDownstream.addRepository("https://github.com/mockito/mockito")
+//testDownstream.addRepository("https://github.com/mockito/mockito")
