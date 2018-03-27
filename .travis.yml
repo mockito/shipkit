@@ -20,6 +20,7 @@ install:
 
 before_script:
   - _JAVA_OPTIONS=
+  - GRADLE_OPTS="-Xmx1024m -Xms128m"
 
 script:
-  - ./gradlew build testDownstream -PcheckJava8Compatibility -Xmx1024m -Xms128m -s && ./gradlew ciPerformRelease -s
+  - ./gradlew build testDownstream -PcheckJava8Compatibility -s && ./gradlew ciPerformRelease -s
