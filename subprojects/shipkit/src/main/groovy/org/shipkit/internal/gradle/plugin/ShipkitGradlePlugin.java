@@ -2,7 +2,6 @@ package org.shipkit.internal.gradle.plugin;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.shipkit.internal.gradle.release.CiReleasePlugin;
 import org.shipkit.internal.gradle.release.GradlePortalReleasePlugin;
 import org.shipkit.internal.gradle.release.TravisPlugin;
 
@@ -13,7 +12,6 @@ import org.shipkit.internal.gradle.release.TravisPlugin;
  *
  * <ul>
  *     <li>{@link TravisPlugin}</li>
- *     <li>{@link CiReleasePlugin}</li>
  *     <li>{@link GradlePortalReleasePlugin}</li>
  * </ul>
  */
@@ -22,7 +20,6 @@ public class ShipkitGradlePlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
         project.getPlugins().apply(TravisPlugin.class);
-        project.getPlugins().apply(CiReleasePlugin.class);
         project.getPlugins().apply(GradlePortalReleasePlugin.class);
     }
 }
