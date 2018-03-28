@@ -34,42 +34,42 @@ public class FindOpenPullRequestTask extends DefaultTask {
     }
 
     /**
-     * See {@link ShipkitConfiguration.GitHub#getReadOnlyAuthToken()}
+     * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.GitHub#getReadOnlyAuthToken()}
      */
     public String getAuthToken() {
         return authToken;
     }
 
     /**
-     * See {@link ShipkitConfiguration.GitHub#getReadOnlyAuthToken()}
+     * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.GitHub#getReadOnlyAuthToken()}
      */
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
     }
 
     /**
-     * See {@link ShipkitConfiguration.GitHub#getApiUrl()}
+     * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.GitHub#getApiUrl()}
      */
     public String getGitHubApiUrl() {
         return gitHubApiUrl;
     }
 
     /**
-     * See {@link ShipkitConfiguration.GitHub#getApiUrl()}
+     * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.GitHub#getApiUrl()}
      */
     public void setGitHubApiUrl(String gitHubApiUrl) {
         this.gitHubApiUrl = gitHubApiUrl;
     }
 
     /**
-     * See {@link ShipkitConfiguration.GitHub#getRepository()}
+     * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.GitHub#getRepository()}
      */
     public String getUpstreamRepositoryName() {
         return upstreamRepositoryName;
     }
 
     /**
-     * See {@link ShipkitConfiguration.GitHub#getRepository()}
+     * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.GitHub#getRepository()}
      */
     public void setUpstreamRepositoryName(String upstreamRepositoryName) {
         this.upstreamRepositoryName = upstreamRepositoryName;

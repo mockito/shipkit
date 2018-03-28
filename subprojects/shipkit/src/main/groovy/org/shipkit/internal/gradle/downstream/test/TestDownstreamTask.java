@@ -128,14 +128,14 @@ public class TestDownstreamTask extends DefaultTask {
     }
 
     /**
-     * See {@link ShipkitConfiguration.GitHub#getUrl()}
+     * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.GitHub#getUrl()}
      */
     public String getGitHubUrl() {
         return gitHubUrl;
     }
 
     /**
-     * See {@link ShipkitConfiguration.GitHub#getUrl()}
+     * See {@link org.shipkit.gradle.configuration.ShipkitConfiguration.GitHub#getUrl()}
      */
     public void setGitHubUrl(String gitHubUrl) {
         this.gitHubUrl = gitHubUrl;
