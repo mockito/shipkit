@@ -6,27 +6,13 @@ public class TravisUtils {
 
     private static final String URL_PATTERN = "https://travis-ci.org/%s/builds/%s";
 
-    public static String generateCommitMessage(ShipkitConfiguration conf, String travisCommitMessage, String travisBuildNumber) {
-        if (travisCommitMessage == null) {
-            return null;
+    public static String generateCommitMessagePostfix(ShipkitConfiguration conf, String travisBuildNumber) {
+        if (travisBuildNumber == null) {
+            return conf.getGit().getCommitMessagePostfix();
         }
         String travisJobUrl = generateTravisBuildUrl(conf, travisBuildNumber);
 
-        if (travisCommitMessage.contains("[ci skip]")) {
-            return travisCommitMessage.replace(" [ci skip]", ". CI job: " + travisJobUrl + " [ci skip]");
-        } else {
-            return travisCommitMessage + ". CI job: " + travisJobUrl;
-        }
-    }
-
-    public static String generateCommitMessagePostfix(ShipkitConfiguration conf, String travisCommitMessage, String travisBuildNumber) {
-        if (travisCommitMessage == null) {
-            return null;
-        }
-        String travisJobUrl = generateTravisBuildUrl(conf, travisBuildNumber);
-
-        return "CI job: " + travisJobUrl + " [ci skip]";
-
+        return String.format("CI job: %s %s", travisJobUrl, conf.getGit().getCommitMessagePostfix());
     }
 
     private static String generateTravisBuildUrl(ShipkitConfiguration conf, String travisBuildNumber) {
