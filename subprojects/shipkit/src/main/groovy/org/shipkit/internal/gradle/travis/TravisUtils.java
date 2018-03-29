@@ -19,6 +19,16 @@ public class TravisUtils {
         }
     }
 
+    public static String generateCommitMessagePostfix(ShipkitConfiguration conf, String travisCommitMessage, String travisBuildNumber) {
+        if (travisCommitMessage == null) {
+            return null;
+        }
+        String travisJobUrl = generateTravisBuildUrl(conf, travisBuildNumber);
+
+        return "CI job: " + travisJobUrl + " [ci skip]";
+
+    }
+
     private static String generateTravisBuildUrl(ShipkitConfiguration conf, String travisBuildNumber) {
         return String.format(URL_PATTERN, conf.getGitHub().getRepository(), travisBuildNumber);
     }

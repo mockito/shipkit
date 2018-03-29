@@ -5,6 +5,7 @@ import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
+import org.shipkit.gradle.git.GitCommitTask;
 import org.shipkit.gradle.git.IdentifyGitBranchTask;
 import org.shipkit.gradle.release.ReleaseNeededTask;
 import org.shipkit.internal.gradle.configuration.BasicValidator;
@@ -16,6 +17,7 @@ import org.shipkit.internal.gradle.git.tasks.GitCheckOutTask;
 import org.shipkit.internal.gradle.util.StringUtil;
 
 import static org.shipkit.internal.gradle.travis.TravisUtils.generateCommitMessage;
+import static org.shipkit.internal.gradle.travis.TravisUtils.generateCommitMessagePostfix;
 
 /**
  * Configures the release automation to be used with Travis CI.
@@ -73,6 +75,10 @@ public class TravisPlugin implements Plugin<Project> {
         project.getTasks().withType(ReleaseNeededTask.class, t -> {
             t.setCommitMessage(generateCommitMessage(conf, travisCommitMessage, travisBuildNumber));
             t.setPullRequest(isPullRequest);
+        });
+
+        project.getTasks().withType(GitCommitTask.class, t -> {
+            t.setCommitMessagePostfix(generateCommitMessagePostfix(conf, travisCommitMessage, travisBuildNumber));
         });
     }
 
