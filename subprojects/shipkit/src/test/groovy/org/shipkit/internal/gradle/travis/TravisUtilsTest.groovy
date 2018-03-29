@@ -9,25 +9,30 @@ class TravisUtilsTest extends Specification {
         given:
         ShipkitConfiguration shipkitConfiguration = Mock(ShipkitConfiguration)
         ShipkitConfiguration.GitHub gitHub = Mock(ShipkitConfiguration.GitHub)
+        ShipkitConfiguration.Git git = Mock(ShipkitConfiguration.Git)
         shipkitConfiguration.getGitHub() >> gitHub
+        shipkitConfiguration.getGit() >> git
+        1 * git.commitMessagePostfix >> "[ci skip]"
         1 * gitHub.getRepository() >> "mockito/shipkit"
         0 * _
         when:
-        def url = TravisUtils.generateCommitMessage(shipkitConfiguration, "original [ci skip]", "123")
+        def url = TravisUtils.generateCommitMessagePostfix(shipkitConfiguration, "123")
         then:
-        url == "original. CI job: https://travis-ci.org/mockito/shipkit/builds/123 [ci skip]"
+        url == "CI job: https://travis-ci.org/mockito/shipkit/builds/123 [ci skip]"
     }
 
-    def "should build travis url without [ci skip]"() {
+    def "should build postfix without travis url if blank build number"() {
         given:
         ShipkitConfiguration shipkitConfiguration = Mock(ShipkitConfiguration)
         ShipkitConfiguration.GitHub gitHub = Mock(ShipkitConfiguration.GitHub)
+        ShipkitConfiguration.Git git = Mock(ShipkitConfiguration.Git)
         shipkitConfiguration.getGitHub() >> gitHub
-        1 * gitHub.getRepository() >> "mockito/shipkit"
+        shipkitConfiguration.getGit() >> git
+        1 * git.commitMessagePostfix >> "[ci skip]"
         0 * _
         when:
-        def url = TravisUtils.generateCommitMessage(shipkitConfiguration, "original", "123")
+        def url = TravisUtils.generateCommitMessagePostfix(shipkitConfiguration, "")
         then:
-        url == "original. CI job: https://travis-ci.org/mockito/shipkit/builds/123"
+        url == "[ci skip]"
     }
 }
