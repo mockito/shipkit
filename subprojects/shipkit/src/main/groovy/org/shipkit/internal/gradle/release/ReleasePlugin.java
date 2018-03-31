@@ -5,6 +5,7 @@ import org.gradle.api.Project;
 import org.shipkit.gradle.exec.ShipkitExecTask;
 import org.shipkit.gradle.git.IdentifyGitBranchTask;
 import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
+import org.shipkit.internal.gradle.bintray.ShipkitBintrayPlugin;
 import org.shipkit.internal.gradle.git.GitBranchPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.notes.ReleaseNotesPlugin;
@@ -42,6 +43,7 @@ public class ReleasePlugin implements Plugin<Project> {
 
     public static final String PERFORM_RELEASE_TASK = "performRelease";
     public static final String TEST_RELEASE_TASK = "testRelease";
+    public static final String CONTRIBUTOR_TEST_RELEASE_TASK = "contributorTestRelease";
     public static final String RELEASE_CLEAN_UP_TASK = "releaseCleanUp";
 
     @Override
@@ -83,6 +85,17 @@ public class ReleasePlugin implements Plugin<Project> {
             //using finalizedBy so that all clean up tasks run, even if one of them fails
             t.finalizedBy(GitPlugin.PERFORM_GIT_COMMIT_CLEANUP_TASK);
             t.finalizedBy(GitPlugin.TAG_CLEANUP_TASK);
+        });
+
+        TaskMaker.task(project, CONTRIBUTOR_TEST_RELEASE_TASK, ShipkitExecTask.class, t -> {
+            //modelled after testReleaseTask, see its code comments
+            t.setDescription("Similar to 'testRelease' but excludes tasks that require Git/Bintray permissions. " +
+                "Useful for contributors who don't have the permissions.");
+
+            t.getExecCommands().add(execCommand("Performing release in dry run, with cleanup",
+                asList("./gradlew", RELEASE_NEEDED, PERFORM_RELEASE_TASK, RELEASE_CLEAN_UP_TASK, "-PdryRun",
+                    "-x", GitPlugin.GIT_PUSH_TASK, "-x", ShipkitBintrayPlugin.BINTRAY_UPLOAD_TASK)));
+            TaskSuccessfulMessage.logOnSuccess(t, "  The release test was successful. Ship it!");
         });
     }
 }
