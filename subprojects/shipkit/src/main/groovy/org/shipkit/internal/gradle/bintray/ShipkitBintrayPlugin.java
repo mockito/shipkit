@@ -55,6 +55,17 @@ public class ShipkitBintrayPlugin implements Plugin<Project> {
             LOG.lifecycle(welcomeMessage);
         });
 
+        bintrayUpload.doLast(task -> {
+                BintrayUploadTask bintrayUploadTask = (BintrayUploadTask)task;
+                if ((bintrayUploadTask.getFileUploads() == null || bintrayUploadTask.getFileUploads().length == 0) &&
+                    (bintrayUploadTask.getConfigurationUploads() == null || bintrayUploadTask.getConfigurationUploads().length == 0) &&
+                    (bintrayUploadTask.getPublicationUploads() == null || bintrayUploadTask.getPublicationUploads().length == 0)) {
+                    LOG.lifecycle("No artifacts have been published to bintray!");
+                }
+            }
+        );
+
+
         final BintrayExtension.PackageConfig pkg = bintray.getPkg();
         pkg.setPublicDownloadNumbers(true);
         pkg.getVersion().getGpg().setSign(true);
