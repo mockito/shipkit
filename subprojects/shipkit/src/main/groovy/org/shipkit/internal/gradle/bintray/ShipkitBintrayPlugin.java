@@ -56,7 +56,7 @@ public class ShipkitBintrayPlugin implements Plugin<Project> {
         });
 
         bintrayUpload.doLast(task -> {
-                BintrayUploadTask bintrayUploadTask = (BintrayUploadTask)task;
+                BintrayUploadTask bintrayUploadTask = (BintrayUploadTask) task;
                 if ((bintrayUploadTask.getFileUploads() == null || bintrayUploadTask.getFileUploads().length == 0) &&
                     (bintrayUploadTask.getConfigurationUploads() == null || bintrayUploadTask.getConfigurationUploads().length == 0) &&
                     (bintrayUploadTask.getPublicationUploads() == null || bintrayUploadTask.getPublicationUploads().length == 0)) {
@@ -64,7 +64,6 @@ public class ShipkitBintrayPlugin implements Plugin<Project> {
                 }
             }
         );
-
 
         final BintrayExtension.PackageConfig pkg = bintray.getPkg();
         pkg.setPublicDownloadNumbers(true);
