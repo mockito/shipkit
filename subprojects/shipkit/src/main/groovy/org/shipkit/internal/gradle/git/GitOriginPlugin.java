@@ -1,13 +1,15 @@
 package org.shipkit.internal.gradle.git;
 
 import org.gradle.api.Action;
-import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.tasks.IdentifyGitOriginRepoTask;
+import org.shipkit.internal.gradle.util.ProjectUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
+
+import java.util.Optional;
 
 /**
  * This plugin adds task that identifies GitHub repository url and name and keeps it in the field on this plugin.
@@ -29,12 +31,7 @@ public class GitOriginPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
-        if (project.getParent() != null) {
-            //TODO SF let's have shipkit configuration use the same pattern and add some unit tests
-            throw new GradleException("Plugin '" + this.getClass().getSimpleName() + "' is intended to be applied only root project.\n" +
-                "This is needed so that we don't invoke git commands multiple times, per each submodule.\n" +
-                "Please apply this plugin to the root project instead of '" + project.getPath() + "'.");
-        }
+        ProjectUtil.requireRootProject(project, this.getClass(), Optional.of("This is needed so that we don't invoke git commands multiple times, per each submodule."));
         identifyTask = TaskMaker.task(project, IDENTIFY_GIT_ORIGIN_TASK, IdentifyGitOriginRepoTask.class, new Action<IdentifyGitOriginRepoTask>() {
             public void execute(IdentifyGitOriginRepoTask t) {
                 t.setDescription("Identifies current git origin repo.");
