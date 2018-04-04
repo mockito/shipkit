@@ -3,6 +3,7 @@ package org.shipkit.internal.gradle.java;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.shipkit.internal.gradle.release.ShipkitBasePlugin;
+import org.shipkit.internal.gradle.util.ProjectUtil;
 
 /**
  * Continuous delivery for Java with Travis and Bintray.
@@ -25,6 +26,7 @@ import org.shipkit.internal.gradle.release.ShipkitBasePlugin;
 public class ShipkitJavaPlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
+        ProjectUtil.requireRootProject(project, this.getClass());
         project.getPlugins().apply(ShipkitBasePlugin.class);
         project.getPlugins().apply(PomContributorsPlugin.class);
 
