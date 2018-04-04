@@ -1,6 +1,5 @@
 package org.shipkit.internal.gradle.release;
 
-import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -45,33 +44,25 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
         final Task performRelease = project.getTasks().getByName(ReleasePlugin.PERFORM_RELEASE_TASK);
         final Task gitPush = project.getTasks().getByName(GitPlugin.GIT_PUSH_TASK);
 
-        project.allprojects(new Action<Project>() {
-            @Override
-            public void execute(final Project subproject) {
-                subproject.getPlugins().withId("com.gradle.plugin-publish", new Action<Plugin>() {
-                    @Override
-                    public void execute(Plugin plugin) {
-                        subproject.getPlugins().apply(PluginDiscoveryPlugin.class);
-                        subproject.getPlugins().apply(PluginValidationPlugin.class);
-                        subproject.getPlugins().apply(GradlePortalPublishPlugin.class);
-                        subproject.getPlugins().apply(ComparePublicationsPlugin.class);
+        project.allprojects(subproject -> subproject.getPlugins().withId("com.gradle.plugin-publish", plugin -> {
+            subproject.getPlugins().apply(PluginDiscoveryPlugin.class);
+            subproject.getPlugins().apply(PluginValidationPlugin.class);
+            subproject.getPlugins().apply(GradlePortalPublishPlugin.class);
+            subproject.getPlugins().apply(ComparePublicationsPlugin.class);
 
-                        Task publishPlugins = subproject.getTasks().getByName(GradlePortalPublishPlugin.PUBLISH_PLUGINS_TASK);
+            Task publishPlugins = subproject.getTasks().getByName(GradlePortalPublishPlugin.PUBLISH_PLUGINS_TASK);
 
-                        performRelease.dependsOn(publishPlugins); //perform release will actually publish the plugins
-                        publishPlugins.mustRunAfter(gitPush);     //git push is easier to revert than perform release
+            performRelease.dependsOn(publishPlugins); //perform release will actually publish the plugins
+            publishPlugins.mustRunAfter(gitPush);     //git push is easier to revert than perform release
 
-                        //We first build plugins to be published, then do git push, we're using 'buildArchives' for that
-                        //We know that "buildArchives" task exists because 'com.gradle.plugin-publish' applies Java plugin
-                        Task archivesTask = subproject.getTasks().getByName("buildArchives");
-                        publishPlugins.dependsOn(archivesTask);
-                        gitPush.mustRunAfter(archivesTask);
+            //We first build plugins to be published, then do git push, we're using 'buildArchives' for that
+            //We know that "buildArchives" task exists because 'com.gradle.plugin-publish' applies Java plugin
+            Task archivesTask = subproject.getTasks().getByName("buildArchives");
+            publishPlugins.dependsOn(archivesTask);
+            gitPush.mustRunAfter(archivesTask);
 
-                        UpdateReleaseNotesTask updateNotes = (UpdateReleaseNotesTask) project.getTasks().getByName(ReleaseNotesPlugin.UPDATE_NOTES_TASK);
-                        updateNotes.setPublicationRepository(conf.getReleaseNotes().getPublicationRepository());
-                    }
-                });
-            }
-        });
+            UpdateReleaseNotesTask updateNotes = (UpdateReleaseNotesTask) project.getTasks().getByName(ReleaseNotesPlugin.UPDATE_NOTES_TASK);
+            updateNotes.setPublicationRepository(conf.getReleaseNotes().getPublicationRepository());
+        }));
     }
 }
