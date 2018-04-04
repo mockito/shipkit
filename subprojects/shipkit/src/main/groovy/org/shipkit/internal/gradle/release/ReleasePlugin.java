@@ -2,10 +2,10 @@ package org.shipkit.internal.gradle.release;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.shipkit.gradle.exec.ExecCommand;
 import org.shipkit.gradle.exec.ShipkitExecTask;
 import org.shipkit.gradle.git.IdentifyGitBranchTask;
 import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
-import org.shipkit.internal.gradle.bintray.ShipkitBintrayPlugin;
 import org.shipkit.internal.gradle.git.GitBranchPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.notes.ReleaseNotesPlugin;
@@ -13,6 +13,9 @@ import org.shipkit.internal.gradle.notes.tasks.UpdateReleaseNotes;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.gradle.util.TaskSuccessfulMessage;
 import org.shipkit.internal.gradle.version.VersioningPlugin;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
@@ -33,10 +36,13 @@ import static org.shipkit.internal.gradle.release.ReleaseNeededPlugin.RELEASE_NE
  * </ul>
  *
  * Adds tasks:
+ *
  * <ul>
  *     <li>performRelease</li>
  *     <li>testRelease</li>
  *     <li>releaseCleanUp</li>
+ *     <li>contributorTestRelease - runs a test of release logic excluding tasks that need secret keys
+ *     (git push, bintray upload, etc). See also 'testRelease' task.</li>
  * </ul>
  */
 public class ReleasePlugin implements Plugin<Project> {
@@ -45,6 +51,7 @@ public class ReleasePlugin implements Plugin<Project> {
     public static final String TEST_RELEASE_TASK = "testRelease";
     public static final String CONTRIBUTOR_TEST_RELEASE_TASK = "contributorTestRelease";
     public static final String RELEASE_CLEAN_UP_TASK = "releaseCleanUp";
+    private ShipkitExecTask contributorTestRelease;
 
     @Override
     public void apply(final Project project) {
@@ -87,15 +94,24 @@ public class ReleasePlugin implements Plugin<Project> {
             t.finalizedBy(GitPlugin.TAG_CLEANUP_TASK);
         });
 
-        TaskMaker.task(project, CONTRIBUTOR_TEST_RELEASE_TASK, ShipkitExecTask.class, t -> {
+        contributorTestRelease = TaskMaker.task(project, CONTRIBUTOR_TEST_RELEASE_TASK, ShipkitExecTask.class, t -> {
             //modelled after testReleaseTask, see its code comments
             t.setDescription("Similar to 'testRelease' but excludes tasks that require Git/Bintray permissions. " +
                 "Useful for contributors who don't have the permissions.");
 
-            t.getExecCommands().add(execCommand("Performing release in dry run, with cleanup",
-                asList("./gradlew", RELEASE_NEEDED, PERFORM_RELEASE_TASK, RELEASE_CLEAN_UP_TASK, "-PdryRun",
-                    "-x", GitPlugin.GIT_PUSH_TASK, "-x", ShipkitBintrayPlugin.BINTRAY_UPLOAD_TASK)));
+            t.getExecCommands().add(contributorTestCommand());
             TaskSuccessfulMessage.logOnSuccess(t, "  The release test was successful. Ship it!");
         });
+    }
+
+    private static ExecCommand contributorTestCommand(String ... additionalArguments) {
+        List<String> commandLine = new LinkedList<>(asList(
+            "./gradlew", RELEASE_NEEDED, PERFORM_RELEASE_TASK, RELEASE_CLEAN_UP_TASK, "-PdryRun", "-x", GitPlugin.GIT_PUSH_TASK));
+        commandLine.addAll(asList(additionalArguments));
+        return execCommand("Performing release in dry run, with cleanup", commandLine);
+    }
+
+    public void excludeFromContributorTest(String taskName) {
+        contributorTestRelease.setExecCommands(asList(contributorTestCommand("-x", taskName)));
     }
 }

@@ -28,6 +28,10 @@ import org.shipkit.internal.gradle.plugin.PluginValidationPlugin;
  *     <li>{@link GradlePortalPublishPlugin}</li>
  *     <li>{@link PluginDiscoveryPlugin}</li>
  *     <li>{@link PluginValidationPlugin}</li>
+ *     <li>Configures {@link ReleasePlugin#CONTRIBUTOR_TEST_RELEASE_TASK} task to exclude
+ *       {@link GradlePortalPublishPlugin#PUBLISH_PLUGINS_TASK} task from contributor test.
+ *       This way, contributors can test release logic without having secret keys.
+ *     </li></li>
  * </ul>
  *
  * Behavior:
@@ -39,7 +43,7 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
 
     @Override
     public void apply(final Project project) {
-        project.getPlugins().apply(ReleasePlugin.class);
+        ReleasePlugin releasePlugin = project.getPlugins().apply(ReleasePlugin.class);
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
         final Task performRelease = project.getTasks().getByName(ReleasePlugin.PERFORM_RELEASE_TASK);
         final Task gitPush = project.getTasks().getByName(GitPlugin.GIT_PUSH_TASK);
@@ -63,6 +67,9 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
 
             UpdateReleaseNotesTask updateNotes = (UpdateReleaseNotesTask) project.getTasks().getByName(ReleaseNotesPlugin.UPDATE_NOTES_TASK);
             updateNotes.setPublicationRepository(conf.getReleaseNotes().getPublicationRepository());
+
+            //when contributors are testing, we need to avoid publish task because it requires secret keys
+            releasePlugin.excludeFromContributorTest(GradlePortalPublishPlugin.PUBLISH_PLUGINS_TASK);
         }));
     }
 }
