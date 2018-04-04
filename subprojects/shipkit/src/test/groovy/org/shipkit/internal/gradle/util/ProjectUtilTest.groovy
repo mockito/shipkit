@@ -6,9 +6,9 @@ import spock.lang.Specification
 
 class ProjectUtilTest extends Specification {
 
-    def "requireRootProject check passes for rootProject"() {
-        def project = Mock(Project)
+    def project = Mock(Project)
 
+    def "requireRootProject check passes for rootProject"() {
         when:
         ProjectUtil.requireRootProject(project, ProjectUtilTest)
 
@@ -17,9 +17,6 @@ class ProjectUtilTest extends Specification {
     }
 
     def "requireRootProject fails for non-rootProject"() {
-        def project = Mock(Project)
-        project.path >> ':subproject'
-
         when:
         project.getParent() >> Mock(Project)
         ProjectUtil.requireRootProject(project, ProjectUtilTest)

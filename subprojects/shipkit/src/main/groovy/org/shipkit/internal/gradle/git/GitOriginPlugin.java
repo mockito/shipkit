@@ -9,8 +9,6 @@ import org.shipkit.internal.gradle.git.tasks.IdentifyGitOriginRepoTask;
 import org.shipkit.internal.gradle.util.ProjectUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
 
-import java.util.Optional;
-
 /**
  * This plugin adds task that identifies GitHub repository url and name and keeps it in the field on this plugin.
  * Applies plugins:
@@ -31,7 +29,7 @@ public class GitOriginPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
-        ProjectUtil.requireRootProject(project, this.getClass(), Optional.of("This is needed so that we don't invoke git commands multiple times, per each submodule."));
+        ProjectUtil.requireRootProject(project, this.getClass(), "This is needed so that we don't invoke git commands multiple times, per each submodule.");
         identifyTask = TaskMaker.task(project, IDENTIFY_GIT_ORIGIN_TASK, IdentifyGitOriginRepoTask.class, new Action<IdentifyGitOriginRepoTask>() {
             public void execute(IdentifyGitOriginRepoTask t) {
                 t.setDescription("Identifies current git origin repo.");
