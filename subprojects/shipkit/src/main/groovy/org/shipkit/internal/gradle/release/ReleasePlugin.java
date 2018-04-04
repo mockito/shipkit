@@ -38,11 +38,14 @@ import static org.shipkit.internal.gradle.release.ReleaseNeededPlugin.RELEASE_NE
  * Adds tasks:
  *
  * <ul>
- *     <li>performRelease</li>
- *     <li>testRelease</li>
- *     <li>releaseCleanUp</li>
+ *     <li>performRelease - ships new release: builds artifacts, generates release notes,
+ *       makes version bump commit, creates tag, pushes code, uploads to bintray. Ship it!</li>
+ *     <li>testRelease - performs release test in 'dryRun' mode. Useful to test the release logic
+ *       without actually performing externally visible commands like 'gitPush' or 'bintrayUpload'.</li>
+ *     <li>releaseCleanUp - cleans up after the release (removes version bump commit, removes the tag).
+ *       Useful in conjuction with 'testRelease' task.</li>
  *     <li>contributorTestRelease - runs a test of release logic excluding tasks that need secret keys
- *     (git push, bintray upload, etc). See also 'testRelease' task.</li>
+ *       (git push, bintray upload, etc). See also 'testRelease' task.</li>
  * </ul>
  */
 public class ReleasePlugin implements Plugin<Project> {
