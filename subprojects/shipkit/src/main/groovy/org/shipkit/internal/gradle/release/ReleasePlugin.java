@@ -114,6 +114,10 @@ public class ReleasePlugin implements Plugin<Project> {
         return execCommand("Performing release in dry run, with cleanup", commandLine);
     }
 
+    /**
+     * Overwrites the contributorTestRelease task to exclude additional task.
+     * Needed so that contributors can test release logic without running tasks that require secret keys.
+     */
     public void excludeFromContributorTest(String taskName) {
         contributorTestRelease.setExecCommands(asList(contributorTestCommand("-x", taskName)));
     }
