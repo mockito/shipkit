@@ -30,12 +30,16 @@ import static org.shipkit.internal.gradle.java.JavaPublishPlugin.MAVEN_LOCAL_TAS
  * <ul>
  *     <li>Hooks up bintray upload tasks to the release tasks</li>
  *     <li>Configures Bintray publication repository on the release notes tasks</li>
+ *     <li>Configures {@link ReleasePlugin#CONTRIBUTOR_TEST_RELEASE_TASK} task to exclude
+ *     {@link ShipkitBintrayPlugin#BINTRAY_UPLOAD_TASK} task from contributor test.
+ *     This way, contributors can test release logic without having secret keys.
+ *     </li>
  * </ul>
  */
 public class BintrayReleasePlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
-        project.getPlugins().apply(ReleasePlugin.class);
+        ReleasePlugin releasePlugin = project.getPlugins().apply(ReleasePlugin.class);
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
         final Task gitPush = project.getTasks().getByName(GitPlugin.GIT_PUSH_TASK);
@@ -70,6 +74,11 @@ public class BintrayReleasePlugin implements Plugin<Project> {
                 // and we cannot refer to it in a normal way, by task instance.
                 String mavenLocalTask = subproject.getPath() + ":" + MAVEN_LOCAL_TASK;
                 gitPush.mustRunAfter(mavenLocalTask);
+            });
+
+            subproject.getPlugins().withType(ShipkitBintrayPlugin.class, plugin -> {
+                //when contributors are testing, we need to avoid bintray task because it requires secret keys
+                releasePlugin.excludeFromContributorTest(ShipkitBintrayPlugin.BINTRAY_UPLOAD_TASK);
             });
         });
     }

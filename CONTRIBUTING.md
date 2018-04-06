@@ -21,13 +21,13 @@ Be pragmatic, all rules have exceptions given good reasons.
 1. Clone shipkit repo, make your changes, then run ```./gradlew fastInstall```
 This will install the artifacts in local maven repository for easy sharing.
 Notice the version you're building in the build output.
-2. Clone shipkit-example repo and ensure that 'shipkit-example/build.gradle' file uses the correct version of shipkit (declared at the top of build.gradle).
+2. Clone [shipkit-example](https://github.com/mockito/shipkit-example) repo
+and ensure that 'shipkit-example/build.gradle' file uses the correct version of shipkit (declared at the top of build.gradle).
 It should use the same version that was built in the previous step.
 3. Basic testing for contributors:
  - Smoke test (no tasks are run): ```./gradlew performRelease -m```
  - Test most things, without actually making any code pushes/publications:
- ```./gradlew releaseNeeded performRelease releaseCleanUp -x gitPush -x bintrayUpload -PdryRun```
- TODO: add "contributorTestRelease" task that wraps above similar to "testRelease" task.
+ ```./gradlew contributorTestRelease```
  - Release notes content: ```./gradlew updateReleaseNotes -Ppreview```
     To generate sizable release notes content, before running 'updateReleaseNotes' you can downgrade the 'previousVersion' in 'version.properties'.
     Release notes are generated from 'previousVersion' to current 'version' as declared in 'version.properties' file.
@@ -40,6 +40,11 @@ It should use the same version that was built in the previous step.
  For example, it will switch git user.
  Remember to switch it back when you finished.
  - Clone "mockito/mockito" repository and make testing with a proper project :)
+5. ```testRelease``` vs. ```contributorTestRelease``` - the latter excludes tasks that need secret keys
+and is useful for testing on a project where you don't have permissions to. Examples:
+If you are contributor out of the core team, use ```contributorTestRelease``` with shipkit-example.
+If you are core team member, use ```testRelease``` with shipkit-example.
+If you are contributor, you can use ```testRelease``` with your own project that you have permissions to.
 
 ### Troubleshooting releases
 
