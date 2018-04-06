@@ -65,7 +65,7 @@ public class ReleasePlugin implements Plugin<Project> {
 
         TaskMaker.task(project, PERFORM_RELEASE_TASK, t -> {
             t.setDescription("Performs release. " +
-                    "For testing, use: './gradlew testRelease'");
+                "For testing, use: './gradlew testRelease'");
 
             t.dependsOn(VersioningPlugin.BUMP_VERSION_FILE_TASK, UPDATE_NOTES_TASK);
             t.dependsOn(GitPlugin.PERFORM_GIT_PUSH_TASK);
@@ -107,7 +107,7 @@ public class ReleasePlugin implements Plugin<Project> {
         });
     }
 
-    private static ExecCommand contributorTestCommand(String ... additionalArguments) {
+    private static ExecCommand contributorTestCommand(String... additionalArguments) {
         List<String> commandLine = new LinkedList<>(asList(
             "./gradlew", RELEASE_NEEDED, PERFORM_RELEASE_TASK, RELEASE_CLEAN_UP_TASK, "-PdryRun", "-x", GitPlugin.GIT_PUSH_TASK));
         commandLine.addAll(asList(additionalArguments));
