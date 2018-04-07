@@ -1,7 +1,9 @@
 package org.shipkit.internal.gradle.bintray;
 
+import com.jfrog.bintray.gradle.Artifact;
 import com.jfrog.bintray.gradle.BintrayExtension;
 import com.jfrog.bintray.gradle.BintrayUploadTask;
+import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
@@ -57,10 +59,11 @@ public class ShipkitBintrayPlugin implements Plugin<Project> {
 
         bintrayUpload.doLast(task -> {
                 BintrayUploadTask bintrayUploadTask = (BintrayUploadTask) task;
-                if ((bintrayUploadTask.getFileUploads() == null || bintrayUploadTask.getFileUploads().length == 0) &&
-                    (bintrayUploadTask.getConfigurationUploads() == null || bintrayUploadTask.getConfigurationUploads().length == 0) &&
-                    (bintrayUploadTask.getPublicationUploads() == null || bintrayUploadTask.getPublicationUploads().length == 0)) {
-                    LOG.lifecycle("No artifacts have been published to bintray!");
+                if (bintrayUploadTask.isEnabled() && hasNoArtifacts(bintrayUploadTask)) {
+                    throw new GradleException("'" + bintrayUploadTask.getName() + "' currently has no artifacts for publication.\n" +
+                        " - if the current project '" + project.getPath() + "' is not supposed to publish to bintray -> let's disable the bintray task (bintrayUpload.enabled = false)\n" +
+                        " - if it is supposed to publish to bintray -> configure the task so that it has artifacts to publish\n"
+                    );
                 }
             }
         );
@@ -113,6 +116,16 @@ public class ShipkitBintrayPlugin implements Plugin<Project> {
             notNull(bintray.getUser(), "Missing 'bintray.user' value.\n" +
                 "  Please configure Bintray extension.");
         });
+    }
+
+    private boolean hasNoArtifacts(BintrayUploadTask bintrayUploadTask) {
+        return isEmpty(bintrayUploadTask.getFileUploads()) &&
+            isEmpty(bintrayUploadTask.getConfigurationUploads()) &&
+            isEmpty(bintrayUploadTask.getPublicationUploads());
+    }
+
+    private boolean isEmpty(Artifact[] artifacts) {
+        return artifacts == null || artifacts.length == 0;
     }
 
     static String uploadWelcomeMessage(BintrayUploadTask t) {
