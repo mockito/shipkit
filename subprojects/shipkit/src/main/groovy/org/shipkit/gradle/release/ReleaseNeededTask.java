@@ -22,7 +22,6 @@ public class ReleaseNeededTask extends DefaultTask {
     private String commitMessage;
     private boolean pullRequest;
     private boolean skipComparePublications;
-    private boolean explosive;
     private List<File> comparisonResults = new LinkedList<>();
 
     /**
@@ -100,21 +99,6 @@ public class ReleaseNeededTask extends DefaultTask {
      */
     public void setSkipComparePublications(boolean skipComparePublications) {
         this.skipComparePublications = skipComparePublications;
-    }
-
-    /**
-     * If the exception should be thrown if the release is not needed.
-     */
-    public boolean isExplosive() {
-        return explosive;
-    }
-
-    /**
-     * See {@link #isExplosive()}
-     */
-    public ReleaseNeededTask setExplosive(boolean explosive) {
-        this.explosive = explosive;
-        return this;
     }
 
     /**

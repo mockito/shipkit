@@ -7,6 +7,9 @@ import org.shipkit.gradle.release.ReleaseNeededTask;
 import org.shipkit.internal.util.ArgumentValidation;
 import org.shipkit.internal.util.EnvVariables;
 
+import java.io.File;
+import java.io.IOException;
+
 public class ReleaseNeeded {
 
     private final static Logger LOG = Logging.getLogger(ReleaseNeededTask.class);
@@ -28,11 +31,24 @@ public class ReleaseNeeded {
         boolean releaseNeeded = releaseNeed.needed;
         String message = releaseNeed.explanation;
 
-        if (!releaseNeeded && task.isExplosive()) {
-            throw new GradleException(message);
-        } else {
-            LOG.lifecycle(message);
+        File releaseNeededFile = new File(task.getProject().getBuildDir(), "release-needed.txt");
+
+        if (releaseNeededFile.exists()) {
+            releaseNeededFile.delete();
         }
+
+        if (releaseNeeded) {
+            try {
+                File buildDir = task.getProject().getBuildDir();
+                if (!buildDir.exists()) {
+                    buildDir.mkdirs();
+                }
+                releaseNeededFile.createNewFile();
+            } catch (IOException e) {
+                throw new GradleException("Unable to create release-needed.txt");
+            }
+        }
+        LOG.lifecycle(message);
         return releaseNeeded;
     }
 

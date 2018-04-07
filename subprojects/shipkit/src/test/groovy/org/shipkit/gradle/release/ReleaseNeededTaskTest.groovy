@@ -1,6 +1,5 @@
 package org.shipkit.gradle.release
 
-import org.gradle.api.GradleException
 import org.gradle.testfixtures.ProjectBuilder
 import org.shipkit.internal.gradle.release.tasks.ReleaseNeeded
 import org.shipkit.internal.util.EnvVariables
@@ -70,21 +69,8 @@ class ReleaseNeededTaskTest extends Specification {
         false                    || false
     }
 
-    def "should fail if release not needed and mode is explosive"() {
-        given:
-        task.setExplosive(true)
-        task.setPullRequest(true) // pullRequest == true makes notNeeded == true
-
-        when:
-        task.releaseNeeded()
-
-        then:
-        thrown(GradleException)
-    }
-
     def "should NOT fail if release not needed and mode is NOT explosive"() {
         given:
-        task.setExplosive(false)
         task.setPullRequest(true) // pullRequest == true makes notNeeded == true
 
         expect:
