@@ -61,8 +61,8 @@ public class ShipkitBintrayPlugin implements Plugin<Project> {
                 BintrayUploadTask bintrayUploadTask = (BintrayUploadTask) task;
                 if (bintrayUploadTask.isEnabled() && hasNoArtifacts(bintrayUploadTask)) {
                     throw new GradleException("'" + bintrayUploadTask.getName() + "' currently has no artifacts for publication.\n" +
-                        " - if the current project '" + project.getPath() + "' is not supposed to publish to bintray -> let's disable the bintray task (bintrayUpload.enabled = false)\n" +
-                        " - if it is supposed to publish to bintray -> configure the task so that it has artifacts to publish\n"
+                        " - if the current project '" + project.getPath() + "' is not supposed to publish to bintray -> please disable the bintray task (bintrayUpload.enabled = false)\n" +
+                        " - if it is supposed to publish to bintray -> configure the task so that it has artifacts to publish (see https://github.com/bintray/gradle-bintray-plugin#step-7-define-artifacts-to-be-uploaded-to-bintray).\n"
                     );
                 }
             }
