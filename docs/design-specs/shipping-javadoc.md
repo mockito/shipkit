@@ -65,7 +65,7 @@ In the future, we can have separate "current" directory for a major version, e.g
 
 ### Example implementation
 
-Example implementation is for guidance only.
+Example implementation is for guidance only, optional when reviewing this design spec.
 
 New “org.shipkit.javadoc" plugin
 
