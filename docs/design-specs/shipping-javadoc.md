@@ -50,59 +50,68 @@ In the future, we can have separate "current" directory for a major version, e.g
 
 ## Implementation
 
-(Work in progress)
-
 - new plugin: “org.shipkit.javadoc"
-- behavior:
+- the plugin adds tasks that
     - clone Javadoc repo (shallow clone for speed!)
-    - copy new javadoc files to a new version directory
-    - refresh files in "current" directory
+    - depend on "javadocJar" tasks of type Jar (convention over configuration:
+    if you have a task named "javadocJar" of type Jar, the plugin picks it up automatically.
+    - unzip the contents of "javadocJar" and copy them to javadoc repo
+    Unzipping the jar optimizes for correctness, not for speed.
+    We want to guaratee that the published javadoc html is _exactly_ what in the jar file
     - git add, git commit, git push
     - announce
         - the message at the end of the release points to new javadoc
         - release notes contain link to new javadoc
 
+### Example implementation
 
-### Pseudo code
+Example implementation is for guidance only.
 
-Pseudo code design of “org.shipkit.javadoc" (work in progress)
+New “org.shipkit.javadoc" plugin
 
 ```
-workDir = build/shipkit-javadoc
-repoDir = workDir/javadoc-repo
-stagingDir = workDir/javadoc-staging
+workDir = build/shipkit-javadoc      //parent dir for repo dir and for staging dir
+repoDir = workDir/javadoc-repo       //clone dir of the GH javadoc repo
+stagingDir = workDir/javadoc-staging //where we prepare files
 
 tasks.create "cloneJavadocRepo" {
-	cloneRepo = conf.gitHub.repo + "-javadoc"
+    description "Clones Javadoc repository where we store html files"
+
+	cloneRepo = conf.gitHub.repo + "-javadoc" //sensible default (convention over configuration)
 	targetDir = repoDir
 	onlyIf { stagingDir not empty }
-}
-
-allCopyTasks = []
-allprojects.plugins.withId("shipkit.java.library") {
-	//configure name based on
-	allCopyTasks << tasks.create("copyReleaseJavadoc", Copy) {
-		dependsOn javadocJar
-		cloneJavadocRepo.mustRunAfter it //build javadoc first so that if there is no javadoc we will avoid cloning
-		from { zipTree(javadocJar.archivePath) } // we publish javadoc as in the javadoc jar file to force consistency
-		into stagingDir/javadocJar.baseName
-	}
-}
-
-task refreshCurrentJavadoc(type: Sync) {
-	mustRunAfter cloneJavadocRepo
-	dependsOn allCopyTasks
-	from stagingDir
-	into $cloneRepo/current
-	onlyIf { stagingDir not empty }
+	// TODO shallow clone!
 }
 
 task refreshVersionJavadoc(type: Sync) {
+    description "Copies Javadoc html from staging dir to the javadoc repo clone dir"
+
 	mustRunAfter cloneJavadocRepo
-	dependsOn allCopyTasks
 	from stagingDir
 	into $cloneRepo/$project.version
 	onlyIf { stagingDir not empty }
+}
+
+task refreshCurrentJavadoc(type: Sync) {
+    description "Copies Javadoc html from javadoc repo clone dir "[version]" dir to "current" dir"
+
+	dependsOn refreshVersionJavadoc
+	from $cloneRepo/$project.version
+	into $cloneRepo/current
+	onlyIf { $cloneRepo/$project.version not empty }
+}
+
+allprojects.tasks.matching { it.name == 'javadocJar' && it instanceof Jar) }.all { task ->
+	//convention over configuration: pick up all 'javadocJar' tasks of type Jar
+	tasks.create("copyContentsOf" + task.name, Copy) {
+	    description "Extracts contents of javadoc jar to the staging directory"
+
+		dependsOn task
+		refreshVersionJavadoc dependsOn it
+		cloneJavadocRepo.mustRunAfter it //build javadoc first so that if there is no javadoc we will avoid cloning
+		from { zipTree(javadocJar.archivePath) }
+		into { stagingDir/javadocJar.baseName } // note that we need to use Closure/Callable because 'baseName' can be set by user later
+	}
 }
 
 task gitCommitJavadoc(type: GitCommitTask) {
@@ -126,7 +135,7 @@ task releaseJavadoc {
 	dependsOn gitPushJavadoc
 }
 
-project.getPlugins().withType(ReleasePlugin.class) {
-  performRelease.dependsOn releaseJavadoc
-}
+Existing ReleasePlugin
+    - apply JavadocPlugin
+    - performRelease.dependsOn releaseJavadoc
 ```
