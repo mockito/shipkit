@@ -21,6 +21,8 @@ public class ReleaseNeeded {
     private final static String SKIP_RELEASE_KEYWORD = "[ci skip-release]";
     private static final String SKIP_COMPARE_PUBLICATIONS = "[ci skip-compare-publications]";
 
+    public static final String RELEASE_NEEDED_FILENAME = "release-needed.txt";
+
     public boolean releaseNeeded(ReleaseNeededTask task) {
         return releaseNeeded(task, new EnvVariables());
     }
@@ -31,7 +33,7 @@ public class ReleaseNeeded {
         boolean releaseNeeded = releaseNeed.needed;
         String message = releaseNeed.explanation;
 
-        File releaseNeededFile = new File(task.getProject().getBuildDir(), "release-needed.txt");
+        File releaseNeededFile = new File(task.getProject().getBuildDir(), RELEASE_NEEDED_FILENAME);
 
         if (releaseNeededFile.exists()) {
             releaseNeededFile.delete();
@@ -45,7 +47,7 @@ public class ReleaseNeeded {
                 }
                 releaseNeededFile.createNewFile();
             } catch (IOException e) {
-                throw new GradleException("Unable to create release-needed.txt");
+                throw new GradleException("Unable to create "  + releaseNeededFile.getAbsolutePath(), e);
             }
         }
         LOG.lifecycle(message);
