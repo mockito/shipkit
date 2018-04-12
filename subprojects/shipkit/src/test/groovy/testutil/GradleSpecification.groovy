@@ -24,10 +24,10 @@ abstract class GradleSpecification extends Specification implements GradleVersio
     String gradleVersion = GradleVersion.current().version
 
     private static final String CLASSES_DIR = findClassesDir()
-    private static final String RESOURCES_DIR = findResourcesDir()
+    private static final String RESOURCES_DIR = findResourcesDir(CLASSES_DIR)
 
     void setup() {
-        buildFile = projectDir.newFile('build.gradle')
+        buildFile = file('build.gradle')
         buildFile << """buildscript {
             dependencies {
                 classpath files("${CLASSES_DIR}")
@@ -41,8 +41,21 @@ abstract class GradleSpecification extends Specification implements GradleVersio
                 jcenter()
                 maven { url "https://plugins.gradle.org/m2/" }
             }
-        }"""
-        settingsFile = projectDir.newFile('settings.gradle')
+        }
+        """
+        settingsFile = file('settings.gradle')
+    }
+
+    /**
+     * Convenience method for creating files using path.
+     * You can pass "foo.txt" or "foo/bar/baz.txt".
+     * Creates empty file (including parent dirs) and returns it.
+     */
+    protected File file(String fileName) {
+        File file = new File(projectDir.root, fileName)
+        file.getParentFile().mkdirs()
+        file.createNewFile()
+        file
     }
 
     /**
@@ -91,10 +104,17 @@ abstract class GradleSpecification extends Specification implements GradleVersio
         return findDir(bearing)
     }
 
-    private static String findResourcesDir() {
-        //Using standard location of gradle plugins to find where production resources are outputted by IDE or build system
-        def bearing = "META-INF/gradle-plugins"
-        return findDir(bearing)
+    private static String findResourcesDir(String classesDir) {
+        //Using well known conventions (IDEA, Gradle) to locate resources dir
+        def candidates = ["$classesDir/../resources", "$classesDir/../../../resources/main"]
+        for (String c : candidates) {
+            if (new File(c).directory) {
+                return c
+            }
+        }
+
+        throw new RuntimeException("Unable to set up integration tests. Cannot locate resources directory.\n" +
+            "Tried following locations:\n  - " + candidates.join("\n  - "))
     }
 
     private static String findDir(String bearing) {
