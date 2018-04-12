@@ -86,4 +86,5 @@ task fastInstall { Task t ->
     t.doLast { println "  Shipkit $version installed to local maven repo" }
 }
 
+//TODO delete below when PR is merged
 tasks.check.dependsOn validatePlugins
