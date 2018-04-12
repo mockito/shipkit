@@ -26,7 +26,7 @@ class TestDownstreamPluginTest extends PluginSpecification {
 
         then:
         UploadGistsTask uploadGists = project.tasks.uploadGists
-        uploadGists.filesToUpload*.name.toString() == "[a.log, b.log]"
+        (uploadGists.filesToUpload*.name as TreeSet).toString() == "[a.log, b.log]"
         project.tasks.testDownstream.uploadGistsTask == uploadGists
     }
 
