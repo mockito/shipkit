@@ -1,6 +1,5 @@
 package org.shipkit.internal.gradle.version;
 
-import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
@@ -65,20 +64,13 @@ public class VersioningPlugin implements Plugin<Project> {
         project.getExtensions().add(VersionInfo.class.getName(), versionInfo);
         final String version = versionInfo.getVersion();
 
-        project.allprojects(new Action<Project>() {
-            @Override
-            public void execute(Project project) {
-                project.setVersion(version);
-            }
-        });
+        project.allprojects(project1 -> project1.setVersion(version));
 
-        TaskMaker.task(project, BUMP_VERSION_FILE_TASK, BumpVersionFileTask.class, new Action<BumpVersionFileTask>() {
-            public void execute(final BumpVersionFileTask t) {
-                t.setDescription("Increments version number in " + versionFile.getName());
-                t.setVersionFile(versionFile);
-                String versionChangeMessage = formatVersionInformationInCommitMessage(version, versionInfo.getPreviousVersion());
-                GitPlugin.registerChangesForCommitIfApplied(singletonList(versionFile), versionChangeMessage, t);
-            }
+        TaskMaker.task(project, BUMP_VERSION_FILE_TASK, BumpVersionFileTask.class, t -> {
+            t.setDescription("Increments version number in " + versionFile.getName());
+            t.setVersionFile(versionFile);
+            String versionChangeMessage = formatVersionInformationInCommitMessage(version, versionInfo.getPreviousVersion());
+            GitPlugin.registerChangesForCommitIfApplied(singletonList(versionFile), versionChangeMessage, t);
         });
     }
 
