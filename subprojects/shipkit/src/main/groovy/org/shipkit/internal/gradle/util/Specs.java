@@ -18,11 +18,6 @@ public class Specs {
      */
     public static Spec<Task> withName(final String ... names) {
         Set<String> namesSet = new HashSet<>(asList(names));
-        return new Spec<Task>() {
-            @Override
-            public boolean isSatisfiedBy(Task t) {
-                return namesSet.contains(t.getName());
-            }
-        };
+        return t -> namesSet.contains(t.getName());
     }
 }
