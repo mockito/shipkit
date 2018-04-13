@@ -53,6 +53,8 @@ abstract class GradleSpecification extends Specification implements GradleVersio
                 releaseNotes.publicationRepository = "repo"
             }
         """
+
+        file("version.properties") << "version=1.0.0"
     }
 
     /**

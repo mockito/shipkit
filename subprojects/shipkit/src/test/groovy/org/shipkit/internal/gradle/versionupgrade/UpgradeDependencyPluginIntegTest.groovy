@@ -21,8 +21,6 @@ class UpgradeDependencyPluginIntegTest extends GradleSpecification {
             apply plugin: "org.shipkit.upgrade-dependency"
         """
 
-        file("version.properties") << "version=1.0.0"
-
         expect:
         BuildResult result = pass("performVersionUpgrade", "-Pdependency=org.shipkit:shipkit:0.2.3", "-m", "-s")
         skippedTaskPathsGradleBugWorkaround(result.output).join("\n") == """:checkoutBaseBranch

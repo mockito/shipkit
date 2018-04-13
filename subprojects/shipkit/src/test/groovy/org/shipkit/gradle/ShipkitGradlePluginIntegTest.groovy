@@ -25,8 +25,6 @@ class ShipkitGradlePluginIntegTest extends GradleSpecification {
             ext.'gradle.publish.secret' = 'secret'
         """
 
-        file("version.properties") << "version=1.0.0"
-
         expect:
         BuildResult result = pass("performRelease", "-m", "-s")
         skippedTaskPathsGradleBugWorkaround(result.output).join("\n") == """:bumpVersionFile

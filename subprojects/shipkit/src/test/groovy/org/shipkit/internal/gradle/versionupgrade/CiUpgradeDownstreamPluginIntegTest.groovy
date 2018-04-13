@@ -26,8 +26,6 @@ class CiUpgradeDownstreamPluginIntegTest extends GradleSpecification {
             }
         """
 
-        file("version.properties") << "version=1.0.0"
-
         expect:
         BuildResult result = pass("upgradeDownstream", "-m", "-s")
         skippedTaskPathsGradleBugWorkaround(result.output).join("\n") == """:cloneWwilkMockito

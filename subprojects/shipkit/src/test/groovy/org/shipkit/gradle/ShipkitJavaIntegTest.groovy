@@ -42,12 +42,9 @@ class ShipkitJavaIntegTest extends GradleSpecification {
             }
         """
 
-        buildFile << """
-            apply plugin: "org.shipkit.java"
-        """
+        buildFile << "apply plugin: 'org.shipkit.java'"
 
         settingsFile << "include 'api', 'impl'"
-        file("version.properties") << "version=1.0.0"
         file('api/build.gradle') << "apply plugin: 'java'"
         file('impl/build.gradle') << "apply plugin: 'java'"
 

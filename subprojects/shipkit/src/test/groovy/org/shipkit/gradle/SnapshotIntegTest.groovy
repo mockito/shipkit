@@ -9,7 +9,6 @@ class SnapshotIntegTest extends GradleSpecification {
         given:
         settingsFile << "include 'java-module'"
         buildFile << "apply plugin: 'org.shipkit.java'"
-        file("version.properties") << "version=1.0.0"
 
         file("java-module/build.gradle")   << "apply plugin: 'java'"
 
@@ -25,7 +24,6 @@ class SnapshotIntegTest extends GradleSpecification {
         given:
         settingsFile << "include 'gradle-plugin-module'"
         buildFile << "apply plugin: 'org.shipkit.gradle-plugin'"
-        file("version.properties") << "version=1.0.0"
 
         file("gradle-plugin-module/build.gradle")   << "apply plugin: 'com.gradle.plugin-publish'"
 
