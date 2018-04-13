@@ -1,5 +1,6 @@
 package org.shipkit.internal.gradle.snapshot;
 
+import org.gradle.StartParameter;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
@@ -8,6 +9,17 @@ import org.shipkit.internal.gradle.util.TaskMaker;
 
 import static org.shipkit.internal.gradle.util.Specs.withName;
 
+/**
+ * <ul>
+ *     <li>Adds 'snapshot' task with no behavior.
+ *          The task will depend on specific tasks that create and install local snapshot</li>
+ *     <li>Checks if 'snapshot' task is requested from command line
+ *          by inspecting {@link StartParameter#getTaskNames()}.
+ *          If requested then tasks with name 'javadoc' and 'groovydoc' are automatically disabled.
+ *          This way, we make building snapshots fast - we don't need docs for local testing of snapshot.
+ *          </li>
+ * </ul>
+ */
 public class LocalSnapshotPlugin implements Plugin<Project> {
 
     public static final String SNAPSHOT_TASK = "snapshot";
