@@ -26,6 +26,7 @@ import static org.shipkit.internal.gradle.util.StringUtil.isEmpty;
  * <ul>
  *     <li>{@link ShipkitConfigurationPlugin}</li>
  *     <li>com.gradle.plugin-publish</li>
+ *     <li>{@link LocalMavenSnapshotPlugin}</li>
  * </ul>
  *
  * <ul>
