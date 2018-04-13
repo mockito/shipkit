@@ -24,12 +24,15 @@ import org.shipkit.internal.gradle.util.StringUtil;
  * <ul>
  *     <li>{@link JavaLibraryPlugin}</li>
  *     <li>maven-publish</li>
+ *     <li>{@link LocalSnapshotPlugin}</li>
  * </ul>
  *
  * Other features:
  * <ul>
  *     <li>Configures Gradle's publications to publish java library</li>
- *     <li>Adds build.dependsOn "publishToMavenLocal" to flesh out publication issues during the build</li>
+ *     <li>Configures 'build' taks to depend on 'publishJavaLibraryToMavenLocal'
+ *          to flesh out publication issues during the build</li>
+ *     <li>Configures 'snapshot' task to depend on 'publishJavaLibraryToMavenLocal'</li>
  * </ul>
  */
 public class JavaPublishPlugin implements Plugin<Project> {
