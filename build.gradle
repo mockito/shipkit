@@ -6,7 +6,7 @@ buildscript {
     }
     dependencies {
         classpath 'org.shipkit:shipkit:2.0.19'
-        classpath 'com.gradle:build-scan-plugin:1.12.1'
+        classpath 'com.gradle:build-scan-plugin:1.13.1'
         classpath 'ru.vyarus:gradle-animalsniffer-plugin:1.4.3'
     }
 }
