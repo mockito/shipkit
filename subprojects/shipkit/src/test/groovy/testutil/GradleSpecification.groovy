@@ -50,6 +50,7 @@ abstract class GradleSpecification extends Specification implements GradleVersio
             shipkit {
                 gitHub.readOnlyAuthToken = "foo"
                 gitHub.repository = "repo"
+                releaseNotes.publicationRepository = "repo"
             }
         """
     }
