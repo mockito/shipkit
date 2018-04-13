@@ -10,8 +10,7 @@ class UpgradeDownstreamPluginIntegTest extends GradleSpecification {
         gradleVersion = gradleVersionToTest
 
         and:
-        projectDir.newFolder("gradle")
-        projectDir.newFile("gradle/shipkit.gradle") << """
+        file("gradle/shipkit.gradle") << """
             shipkit {
                 gitHub.url = "http://github.com"
             }
@@ -25,7 +24,7 @@ class UpgradeDownstreamPluginIntegTest extends GradleSpecification {
             }
         """
 
-        projectDir.newFile("version.properties") << "version=1.0.0"
+        file("version.properties") << "version=1.0.0"
 
         expect:
         BuildResult result = pass("upgradeDownstream", "-m", "-s")
