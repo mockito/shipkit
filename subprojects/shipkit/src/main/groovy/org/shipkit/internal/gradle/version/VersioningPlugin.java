@@ -18,8 +18,10 @@ import static java.util.Collections.singletonList;
  * The plugin adds following tasks:
  *
  * <ul>
- *     <li>bumpVersionFile - increments version in "version.properties" file,
+ *     <li>Adds task 'bumpVersionFile' - increments version in "version.properties" file,
  *     see {@link BumpVersionFileTask}</li>
+ *     <li>Applies {@link LocalSnapshotPlugin} for 'snapshot' task.
+ *     Will add "-SNAPSHOT" postfix to version in case 'snapshot' task is requested</li>
  * </ul>
  *
  * The plugin adds following extensions:
