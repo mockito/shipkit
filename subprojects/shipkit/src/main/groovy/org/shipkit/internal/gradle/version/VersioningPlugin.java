@@ -46,12 +46,12 @@ public class VersioningPlugin implements Plugin<Project> {
     public static final String BUMP_VERSION_FILE_TASK = "bumpVersionFile";
 
     public void apply(final Project project) {
-        project.getPlugins().apply(LocalSnapshotPlugin.class);
+        LocalSnapshotPlugin snapshotPlugin = project.getPlugins().apply(LocalSnapshotPlugin.class);
 
         final File versionFile = project.file(VERSION_FILE_NAME);
 
         final VersionInfo versionInfo = new VersionInfoFactory().createVersionInfo(versionFile,
-            project.getVersion(), project.getGradle().getStartParameter().getTaskNames());
+            project.getVersion(), snapshotPlugin.getSnapshotInfo().isSnapshot());
 
         project.getExtensions().add(VersionInfo.class.getName(), versionInfo);
         final String version = versionInfo.getVersion();

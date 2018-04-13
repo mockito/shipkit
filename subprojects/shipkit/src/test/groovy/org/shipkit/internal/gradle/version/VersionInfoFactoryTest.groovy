@@ -15,10 +15,10 @@ class VersionInfoFactoryTest extends Specification {
         def missingFile = new File("does not exist")
 
         expect:
-        new VersionInfoFactory().createVersionInfo(versionFile, "foo", ["foo", "build"]).version == "1.0.0"
-        new VersionInfoFactory().createVersionInfo(versionFile, "foo", ["foo", "snapshot"]).version == "1.0.0-SNAPSHOT"
+        new VersionInfoFactory().createVersionInfo(versionFile, "foo", false).version == "1.0.0"
+        new VersionInfoFactory().createVersionInfo(versionFile, "foo", true).version == "1.0.0-SNAPSHOT"
 
-        new VersionInfoFactory().createVersionInfo(missingFile, "0.9", ["foo", "build"]).version == "0.9"
-        new VersionInfoFactory().createVersionInfo(missingFile, "0.9", ["foo", "snapshot"]).version == "0.9-SNAPSHOT"
+        new VersionInfoFactory().createVersionInfo(missingFile, "0.9", false).version == "0.9"
+        new VersionInfoFactory().createVersionInfo(missingFile, "0.9", true).version == "0.9-SNAPSHOT"
     }
 }

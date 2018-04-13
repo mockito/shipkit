@@ -6,7 +6,6 @@ import org.shipkit.internal.version.Version;
 import org.shipkit.version.VersionInfo;
 
 import java.io.File;
-import java.util.List;
 
 class VersionInfoFactory {
 
@@ -15,8 +14,7 @@ class VersionInfoFactory {
     /**
      * Creates version info and logs the version we will be building
      */
-    VersionInfo createVersionInfo(File versionFile, Object version, List<String> taskNames) {
-        boolean isSnapshot = taskNames.contains("snapshot");
+    VersionInfo createVersionInfo(File versionFile, Object version, boolean isSnapshot) {
         VersionInfo info;
         if (versionFile.isFile()) {
             info = Version.versionInfo(versionFile, isSnapshot);
