@@ -12,7 +12,7 @@ class BumpVersionFileTest extends Specification {
     def "shows informative message"() {
         def versionFile = tmp.newFile("version.properties")
         versionFile << "version=1.0.1\npreviousVersion=1.0.0"
-        def info = Version.versionInfo(versionFile)
+        def info = Version.versionInfo(versionFile, false)
 
         expect:
         BumpVersionFile.versionMessage(info, "version.properties", ":bumpVersionFile") == """:bumpVersionFile - updated version file 'version.properties'

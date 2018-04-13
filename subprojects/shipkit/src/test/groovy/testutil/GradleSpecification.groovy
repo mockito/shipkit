@@ -44,6 +44,14 @@ abstract class GradleSpecification extends Specification implements GradleVersio
         }
         """
         settingsFile = file('settings.gradle')
+
+        //Shipkit configuration with sensible defaults
+        file("gradle/shipkit.gradle") << """
+            shipkit {
+                gitHub.readOnlyAuthToken = "foo"
+                gitHub.repository = "repo"
+            }
+        """
     }
 
     /**

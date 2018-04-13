@@ -3,7 +3,6 @@ package org.shipkit.internal.version;
 import org.shipkit.version.VersionInfo;
 
 import java.io.File;
-import java.util.LinkedList;
 
 /**
  * Version utilities
@@ -11,13 +10,16 @@ import java.util.LinkedList;
 public class Version {
 
     /**
-     * Provides instance of version information
+     * Provides instance of version information, version is loaded from file
      */
-    public static VersionInfo versionInfo(File versionFile) {
-        return DefaultVersionInfo.fromFile(versionFile);
+    public static VersionInfo versionInfo(File versionFile, boolean isSnapshot) {
+        return DefaultVersionInfo.fromFile(versionFile, isSnapshot);
     }
 
-    public static VersionInfo defaultVersionInfo(File versionFile, String projectVersion) {
-        return new DefaultVersionInfo(versionFile, projectVersion, new LinkedList<>(), null);
+    /**
+     * Provides instance of version information, version has to be passed explicitly
+     */
+    public static VersionInfo defaultVersionInfo(File versionFile, String projectVersion, boolean isSnapshot) {
+        return DefaultVersionInfo.fromString(versionFile, projectVersion, isSnapshot);
     }
 }

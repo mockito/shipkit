@@ -24,15 +24,27 @@ class DefaultVersionInfo implements VersionInfo {
         this.previousVersion = previousVersion;
     }
 
-    static DefaultVersionInfo fromFile(File versionFile) {
+    static DefaultVersionInfo fromFile(File versionFile, boolean isSnapshot) {
         Properties properties = PropertiesUtil.readProperties(versionFile);
         String version = properties.getProperty("version");
         if (version == null) {
             throw new IllegalArgumentException("Missing 'version=' properties in file: " + versionFile);
         }
+        version = maybeSnapshot(isSnapshot, version);
         String previousVersion = properties.getProperty("previousVersion");
         LinkedList<String> notableVersions = parseNotableVersions(properties);
         return new DefaultVersionInfo(versionFile, version, notableVersions, previousVersion);
+    }
+
+    static VersionInfo fromString(File versionFile, String projectVersion, boolean isSnapshot) {
+        return new DefaultVersionInfo(versionFile, maybeSnapshot(isSnapshot, projectVersion), new LinkedList<>(), null);
+    }
+
+    private static String maybeSnapshot(boolean isSnapshot, String version) {
+        if (isSnapshot && !version.endsWith("-SNAPSHOT")) {
+            version += "-SNAPSHOT";
+        }
+        return version;
     }
 
     private static LinkedList<String> parseNotableVersions(Properties properties) {

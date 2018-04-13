@@ -2,13 +2,11 @@ package org.shipkit.internal.gradle.version;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.version.BumpVersionFileTask;
 import org.shipkit.internal.gradle.git.GitPlugin;
+import org.shipkit.internal.gradle.snapshot.LocalSnapshotPlugin;
 import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
-import org.shipkit.internal.version.Version;
 import org.shipkit.version.VersionInfo;
 
 import java.io.File;
@@ -43,23 +41,17 @@ import static java.util.Collections.singletonList;
  */
 public class VersioningPlugin implements Plugin<Project> {
 
-    private static final Logger LOG = Logging.getLogger(VersioningPlugin.class);
-
     public static final String VERSION_FILE_NAME = "version.properties";
 
     public static final String BUMP_VERSION_FILE_TASK = "bumpVersionFile";
 
     public void apply(final Project project) {
+        project.getPlugins().apply(LocalSnapshotPlugin.class);
+
         final File versionFile = project.file(VERSION_FILE_NAME);
 
-        final VersionInfo versionInfo;
-        if (versionFile.isFile()) {
-            versionInfo = Version.versionInfo(versionFile);
-            LOG.lifecycle("  Building version '{}' (value loaded from '{}' file).", versionInfo.getVersion(), versionFile.getName());
-        } else {
-            versionInfo = Version.defaultVersionInfo(versionFile, project.getVersion().toString());
-            LOG.lifecycle("  Building version '{}'.", versionInfo.getVersion());
-        }
+        final VersionInfo versionInfo = new VersionInfoFactory().createVersionInfo(versionFile,
+            project.getVersion(), project.getGradle().getStartParameter().getTaskNames());
 
         project.getExtensions().add(VersionInfo.class.getName(), versionInfo);
         final String version = versionInfo.getVersion();

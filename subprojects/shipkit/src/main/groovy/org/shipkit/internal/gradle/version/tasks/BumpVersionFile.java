@@ -11,7 +11,7 @@ public class BumpVersionFile {
     private final static Logger LOG = Logging.getLogger(BumpVersionFileTask.class);
 
     public void bumpVersionFile(BumpVersionFileTask task) {
-        VersionInfo versionInfo = Version.versionInfo(task.getVersionFile());
+        VersionInfo versionInfo = Version.versionInfo(task.getVersionFile(), false);
         VersionInfo newVersion = versionInfo.bumpVersion();
         String versionFile = task.getVersionFile().getName();
         LOG.lifecycle(versionMessage(newVersion, versionFile, task.getPath()));
