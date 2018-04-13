@@ -51,7 +51,7 @@ public class VersioningPlugin implements Plugin<Project> {
         final File versionFile = project.file(VERSION_FILE_NAME);
 
         final VersionInfo versionInfo = new VersionInfoFactory().createVersionInfo(versionFile,
-            project.getVersion(), snapshotPlugin.getSnapshotInfo().isSnapshot());
+            project.getVersion(), snapshotPlugin.isSnapshot());
 
         project.getExtensions().add(VersionInfo.class.getName(), versionInfo);
         final String version = versionInfo.getVersion();

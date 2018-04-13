@@ -12,12 +12,11 @@ public class LocalSnapshotPlugin implements Plugin<Project> {
 
     public static final String SNAPSHOT_TASK = "snapshot";
     private final static Logger LOG = Logging.getLogger(LocalSnapshotPlugin.class);
-    private SnapshotInfo info;
+    private boolean isSnapshot;
 
     @Override
     public void apply(Project project) {
-        boolean isSnapshot = project.getGradle().getStartParameter().getTaskNames().contains(SNAPSHOT_TASK);
-        info = new SnapshotInfo(isSnapshot);
+        this.isSnapshot = project.getGradle().getStartParameter().getTaskNames().contains(SNAPSHOT_TASK);
 
         TaskMaker.task(project, SNAPSHOT_TASK, t -> {
             t.setDescription("Depends on specific tasks that create local snapshot files.");
@@ -31,20 +30,7 @@ public class LocalSnapshotPlugin implements Plugin<Project> {
         });
     }
 
-    public SnapshotInfo getSnapshotInfo() {
-        return info;
-    }
-
-    public static class SnapshotInfo {
-
-        private final boolean isSnapshot;
-
-        SnapshotInfo(boolean isSnapshot) {
-            this.isSnapshot = isSnapshot;
-        }
-
-        public boolean isSnapshot() {
-            return isSnapshot;
-        }
+    public boolean isSnapshot() {
+        return isSnapshot;
     }
 }
