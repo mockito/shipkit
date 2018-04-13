@@ -5,7 +5,6 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.gradle.api.specs.Spec;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.gradle.configuration.BasicValidator;
 import org.shipkit.internal.gradle.configuration.LazyConfiguration;
@@ -67,22 +66,16 @@ public class GradlePortalPublishPlugin implements Plugin<Project> {
 
         final Task publishPlugins = project.getTasks().getByName(PUBLISH_PLUGINS_TASK);
 
-        LazyConfiguration.lazyConfiguration(publishPlugins, new Runnable() {
-            @Override
-            public void run() {
-                authenticate(PUBLISH_KEY_PROPERTY, project, PUBLISH_KEY_ENV, envVariables);
-                authenticate(PUBLISH_SECRET_PROPERTY, project, PUBLISH_SECRET_ENV, envVariables);
-            }
+        LazyConfiguration.lazyConfiguration(publishPlugins, () -> {
+            authenticate(PUBLISH_KEY_PROPERTY, project, PUBLISH_KEY_ENV, envVariables);
+            authenticate(PUBLISH_SECRET_PROPERTY, project, PUBLISH_SECRET_ENV, envVariables);
         });
 
-        publishPlugins.onlyIf(new Spec<Task>() {
-            @Override
-            public boolean isSatisfiedBy(Task t) {
-                if (conf.isDryRun()) {
-                    LOG.info("dryRun is enabled, skipping '{}' using 'onlyIf'", t.getName());
-                }
-                return !conf.isDryRun();
+        publishPlugins.onlyIf(t -> {
+            if (conf.isDryRun()) {
+                LOG.info("dryRun is enabled, skipping '{}' using 'onlyIf'", t.getName());
             }
+            return !conf.isDryRun();
         });
     }
 
