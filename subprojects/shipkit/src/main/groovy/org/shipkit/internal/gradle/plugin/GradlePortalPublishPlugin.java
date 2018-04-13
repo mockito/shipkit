@@ -10,6 +10,7 @@ import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.gradle.configuration.BasicValidator;
 import org.shipkit.internal.gradle.configuration.LazyConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
+import org.shipkit.internal.gradle.snapshot.LocalMavenSnapshotPlugin;
 import org.shipkit.internal.util.EnvVariables;
 
 import javax.inject.Inject;
@@ -59,6 +60,7 @@ public class GradlePortalPublishPlugin implements Plugin<Project> {
     @Override
     public void apply(final Project project) {
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
+        project.getPlugins().apply(LocalMavenSnapshotPlugin.class);
 
         project.getPlugins().apply("com.gradle.plugin-publish");
         //Above also applies 'java' plugin
