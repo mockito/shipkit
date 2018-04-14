@@ -6,7 +6,7 @@ import org.gradle.api.specs.Spec;
 import java.util.HashSet;
 import java.util.Set;
 
-import static edu.emory.mathcs.backport.java.util.Arrays.asList;
+import static java.util.Arrays.asList;
 
 /**
  * Helper methods for Gradle Spec objects
