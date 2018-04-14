@@ -18,7 +18,7 @@ class SnapshotIntegTest extends GradleSpecification {
         then:
         result.task(":java-module:snapshot").outcome == TaskOutcome.SUCCESS
         result.task(":snapshot").outcome == TaskOutcome.UP_TO_DATE //this is how Gradle reports tasks with no behavior
-        file("java-module/build/libs/java-module-1.0.0-SNAPSHOT.jar").exists()
+        assertFileExists("java-module/build/libs/java-module-1.0.0-SNAPSHOT.jar")
     }
 
     def "snapshot build for Gradle plugin project"() {
@@ -34,6 +34,6 @@ class SnapshotIntegTest extends GradleSpecification {
         then:
         result.task(":gradle-plugin-module:snapshot").outcome == TaskOutcome.SUCCESS
         result.task(":snapshot").outcome == TaskOutcome.UP_TO_DATE
-        file("gradle-plugin-module/build/libs/gradle-plugin-module-1.0.0-SNAPSHOT.jar").exists()
+        assertFileExists("gradle-plugin-module/build/libs/gradle-plugin-module-1.0.0-SNAPSHOT.jar")
     }
 }

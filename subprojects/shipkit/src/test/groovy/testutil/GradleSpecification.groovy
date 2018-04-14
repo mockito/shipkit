@@ -80,6 +80,22 @@ abstract class GradleSpecification extends Specification implements GradleVersio
     }
 
     /**
+     * Asserts if file exists, throwing informative exception if not.
+     * File path is evaluated as {@link #file(java.lang.String)}
+     */
+    protected void assertFileExists(String filePath) {
+        File file = file(filePath)
+        if (!file.exists()) {
+            if (!file.parentFile.exists()) {
+                throw new AssertionError("Directory does not exist: ${file.parentFile}")
+            } else {
+                throw new AssertionError("File does not exist: ${filePath}. All files in this dir:\n  " +
+                    file.parentFile.list().join("\n  "))
+            }
+        }
+    }
+
+    /**
      * Runs Gradle with given arguments, prints the build.gradle file to the standard output if the test fails
      */
     protected BuildResult pass(String... args) {
