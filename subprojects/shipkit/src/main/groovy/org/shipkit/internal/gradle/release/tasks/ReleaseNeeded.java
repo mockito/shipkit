@@ -28,6 +28,12 @@ public class ReleaseNeeded {
     }
 
     boolean releaseNeeded(ReleaseNeededTask task, EnvVariables envVariables) {
+        File releaseNeededFile = new File(task.getProject().getBuildDir(), RELEASE_NEEDED_FILENAME);
+
+        if (releaseNeededFile.exists()) {
+            releaseNeededFile.delete();
+        }
+
         ReleaseNeed releaseNeed = releaseNeed(task, envVariables);
 
         boolean releaseNeeded = releaseNeed.needed;
@@ -35,12 +41,6 @@ public class ReleaseNeeded {
 
         if (!releaseNeeded && task.isExplosive()) {
             throw new GradleException(message);
-        }
-
-        File releaseNeededFile = new File(task.getProject().getBuildDir(), RELEASE_NEEDED_FILENAME);
-
-        if (releaseNeededFile.exists()) {
-            releaseNeededFile.delete();
         }
 
         if (releaseNeeded) {
