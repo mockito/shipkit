@@ -7,7 +7,7 @@ Releasing every time we have a change in the project may lead to quite
 a lot of releases. It would be better to release only when the change is
 interesting from the customer perspective. How to achieve that? Shipkit
 provides you with two tasks that may help you with solving that problem:
-- **assertReleaseNeeded**
+- **assertReleaseNeeded** (deprecated)
 - **releaseNeeded**
 
 The only difference between them is that **assertReleaseNeeded** fails
@@ -43,12 +43,12 @@ Release is needed when all above is false and:
 #### Usage
 
 You usually don't need to apply this plugin. It comes with **ShipkitJavaPlugin**
-or **ShipkitGradlePlugin**. Also **assertReleaseNeeded** is a part of **ciPerformRelease** task.
+or **ShipkitGradlePlugin**. Also **releaseNeeded** is a part of **ciPerformRelease** task.
 
 To test it - run in the command line:
 
 ```
-./gradlew assertReleaseNeeded
+./gradlew releaseNeeded
 ```
 
 or

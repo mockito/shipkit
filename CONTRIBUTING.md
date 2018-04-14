@@ -33,7 +33,7 @@ It should use the same version that was built in the previous step.
     Release notes are generated from 'previousVersion' to current 'version' as declared in 'version.properties' file.
 4. Advanced testing (occasionally, for core developers, edge cases):
  - Release notes in file: ```./gradlew updateReleaseNotes```, then inspect updated file
- - Test release needed task: ```./gradlew assertReleaseNeeded```
+ - Test release needed task: ```./gradlew releaseNeeded```
  - If you are one of the core developers you can export env variables and even test git push and bintray upload.
  Run ```./gradlew testRelease``` follow the prompts and export necessary env variables.
  - Test ciReleasePrepare task but beware that it will reconfigure your working copy!

@@ -189,7 +189,7 @@ script:
 
 The "script" part of Travis CI setup consists of 2 operations separate with "&&". This is the easiest way to configure releases in Travis. The first operation is typically the "build" command, but you totally configure it. Second operation uses "&&" so that it is only triggered if the build succeeds. "ciPerformRelease" task is the core of Shipkit, it aggregates few other tasks:
 
-- **assertReleaseNeeded** which checks if release should be made during this build.
+- **releaseNeeded** which checks if release should be made during this build.
 There is a number of ways how you can skip release — eg. by using **[ci skip-release]** in your commit message or set **SKIP_RELEASE** environment variable.
 You can find more ways here.
 - **ciReleasePrepare** that sets up Git configuration on Travis, eg. sets git.user and git.email properties
