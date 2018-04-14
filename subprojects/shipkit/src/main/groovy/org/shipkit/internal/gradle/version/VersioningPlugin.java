@@ -1,15 +1,12 @@
 package org.shipkit.internal.gradle.version;
 
-import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.version.BumpVersionFileTask;
 import org.shipkit.internal.gradle.git.GitPlugin;
+import org.shipkit.internal.gradle.snapshot.LocalSnapshotPlugin;
 import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
-import org.shipkit.internal.version.Version;
 import org.shipkit.version.VersionInfo;
 
 import java.io.File;
@@ -21,8 +18,10 @@ import static java.util.Collections.singletonList;
  * The plugin adds following tasks:
  *
  * <ul>
- *     <li>bumpVersionFile - increments version in "version.properties" file,
+ *     <li>Adds task 'bumpVersionFile' - increments version in "version.properties" file,
  *     see {@link BumpVersionFileTask}</li>
+ *     <li>Applies {@link LocalSnapshotPlugin} for 'snapshot' task.
+ *     Will add "-SNAPSHOT" postfix to version in case 'snapshot' task is requested</li>
  * </ul>
  *
  * The plugin adds following extensions:
@@ -44,41 +43,28 @@ import static java.util.Collections.singletonList;
  */
 public class VersioningPlugin implements Plugin<Project> {
 
-    private static final Logger LOG = Logging.getLogger(VersioningPlugin.class);
-
     public static final String VERSION_FILE_NAME = "version.properties";
 
     public static final String BUMP_VERSION_FILE_TASK = "bumpVersionFile";
 
     public void apply(final Project project) {
+        LocalSnapshotPlugin snapshotPlugin = project.getPlugins().apply(LocalSnapshotPlugin.class);
+
         final File versionFile = project.file(VERSION_FILE_NAME);
 
-        final VersionInfo versionInfo;
-        if (versionFile.isFile()) {
-            versionInfo = Version.versionInfo(versionFile);
-            LOG.lifecycle("  Building version '{}' (value loaded from '{}' file).", versionInfo.getVersion(), versionFile.getName());
-        } else {
-            versionInfo = Version.defaultVersionInfo(versionFile, project.getVersion().toString());
-            LOG.lifecycle("  Building version '{}'.", versionInfo.getVersion());
-        }
+        final VersionInfo versionInfo = new VersionInfoFactory().createVersionInfo(versionFile,
+            project.getVersion(), snapshotPlugin.isSnapshot());
 
         project.getExtensions().add(VersionInfo.class.getName(), versionInfo);
         final String version = versionInfo.getVersion();
 
-        project.allprojects(new Action<Project>() {
-            @Override
-            public void execute(Project project) {
-                project.setVersion(version);
-            }
-        });
+        project.allprojects(project1 -> project1.setVersion(version));
 
-        TaskMaker.task(project, BUMP_VERSION_FILE_TASK, BumpVersionFileTask.class, new Action<BumpVersionFileTask>() {
-            public void execute(final BumpVersionFileTask t) {
-                t.setDescription("Increments version number in " + versionFile.getName());
-                t.setVersionFile(versionFile);
-                String versionChangeMessage = formatVersionInformationInCommitMessage(version, versionInfo.getPreviousVersion());
-                GitPlugin.registerChangesForCommitIfApplied(singletonList(versionFile), versionChangeMessage, t);
-            }
+        TaskMaker.task(project, BUMP_VERSION_FILE_TASK, BumpVersionFileTask.class, t -> {
+            t.setDescription("Increments version number in " + versionFile.getName());
+            t.setVersionFile(versionFile);
+            String versionChangeMessage = formatVersionInformationInCommitMessage(version, versionInfo.getPreviousVersion());
+            GitPlugin.registerChangesForCommitIfApplied(singletonList(versionFile), versionChangeMessage, t);
         });
     }
 

@@ -22,8 +22,7 @@ class ShipkitJavaIntegTest extends GradleSpecification {
         gradleVersion = gradleVersionToTest
 
         and:
-        projectDir.newFolder("gradle")
-        projectDir.newFile("gradle/shipkit.gradle") << """
+        file("gradle/shipkit.gradle") << """
             shipkit {
                 gitHub.readOnlyAuthToken = "foo"
                 gitHub.writeAuthToken = "secret"
@@ -43,16 +42,11 @@ class ShipkitJavaIntegTest extends GradleSpecification {
             }
         """
 
-        buildFile << """
-            apply plugin: "org.shipkit.java"
-        """
+        buildFile << "apply plugin: 'org.shipkit.java'"
 
         settingsFile << "include 'api', 'impl'"
-        projectDir.newFile("version.properties") << "version=1.0.0"
-        projectDir.newFolder('api')
-        projectDir.newFolder('impl')
-        projectDir.newFile('api/build.gradle') << "apply plugin: 'java'"
-        projectDir.newFile('impl/build.gradle') << "apply plugin: 'java'"
+        file('api/build.gradle') << "apply plugin: 'java'"
+        file('impl/build.gradle') << "apply plugin: 'java'"
 
         expect:
         BuildResult result = pass("performRelease", "-m", "-s")

@@ -3,6 +3,7 @@ package org.shipkit.internal.gradle.java;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.publish.PublicationContainer;
@@ -10,6 +11,7 @@ import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.api.tasks.bundling.Jar;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
+import org.shipkit.internal.gradle.snapshot.LocalSnapshotPlugin;
 import org.shipkit.internal.gradle.util.GradleDSLHelper;
 import org.shipkit.internal.gradle.util.PomCustomizer;
 import org.shipkit.internal.gradle.util.StringUtil;
@@ -22,12 +24,15 @@ import org.shipkit.internal.gradle.util.StringUtil;
  * <ul>
  *     <li>{@link JavaLibraryPlugin}</li>
  *     <li>maven-publish</li>
+ *     <li>{@link LocalSnapshotPlugin}</li>
  * </ul>
  *
  * Other features:
  * <ul>
  *     <li>Configures Gradle's publications to publish java library</li>
- *     <li>Adds build.dependsOn "publishToMavenLocal" to flesh out publication issues during the build</li>
+ *     <li>Configures 'build' taks to depend on 'publishJavaLibraryToMavenLocal'
+ *          to flesh out publication issues during the build</li>
+ *     <li>Configures 'snapshot' task to depend on 'publishJavaLibraryToMavenLocal'</li>
  * </ul>
  */
 public class JavaPublishPlugin implements Plugin<Project> {
@@ -40,6 +45,10 @@ public class JavaPublishPlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
+
+        project.getPlugins().apply(LocalSnapshotPlugin.class);
+        Task snapshotTask = project.getTasks().getByName(LocalSnapshotPlugin.SNAPSHOT_TASK);
+        snapshotTask.dependsOn(MAVEN_LOCAL_TASK);
 
         project.getPlugins().apply(JavaLibraryPlugin.class);
         project.getPlugins().apply("maven-publish");
@@ -63,6 +72,6 @@ public class JavaPublishPlugin implements Plugin<Project> {
         });
 
         //so that we flesh out problems with maven publication during the build process
-        project.getTasks().getByName("build").dependsOn("publishToMavenLocal");
+        project.getTasks().getByName("build").dependsOn(MAVEN_LOCAL_TASK);
     }
 }

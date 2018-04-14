@@ -10,8 +10,7 @@ class UpgradeDependencyPluginIntegTest extends GradleSpecification {
         gradleVersion = gradleVersionToTest
 
         and:
-        projectDir.newFolder("gradle")
-        projectDir.newFile("gradle/shipkit.gradle") << """
+        file("gradle/shipkit.gradle") << """
             shipkit {
                 gitHub.writeAuthToken = "secret"
                 gitHub.repository = "repo"
@@ -21,8 +20,6 @@ class UpgradeDependencyPluginIntegTest extends GradleSpecification {
         buildFile << """
             apply plugin: "org.shipkit.upgrade-dependency"
         """
-
-        projectDir.newFile("version.properties") << "version=1.0.0"
 
         expect:
         BuildResult result = pass("performVersionUpgrade", "-Pdependency=org.shipkit:shipkit:0.2.3", "-m", "-s")

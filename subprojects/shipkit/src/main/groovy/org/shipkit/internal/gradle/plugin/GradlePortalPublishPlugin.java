@@ -5,11 +5,11 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.gradle.api.specs.Spec;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.gradle.configuration.BasicValidator;
 import org.shipkit.internal.gradle.configuration.LazyConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
+import org.shipkit.internal.gradle.snapshot.LocalMavenSnapshotPlugin;
 import org.shipkit.internal.util.EnvVariables;
 
 import javax.inject.Inject;
@@ -26,6 +26,7 @@ import static org.shipkit.internal.gradle.util.StringUtil.isEmpty;
  * <ul>
  *     <li>{@link ShipkitConfigurationPlugin}</li>
  *     <li>com.gradle.plugin-publish</li>
+ *     <li>{@link LocalMavenSnapshotPlugin}</li>
  * </ul>
  *
  * <ul>
@@ -59,28 +60,23 @@ public class GradlePortalPublishPlugin implements Plugin<Project> {
     @Override
     public void apply(final Project project) {
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
+        project.getPlugins().apply(LocalMavenSnapshotPlugin.class);
 
         project.getPlugins().apply("com.gradle.plugin-publish");
         //Above also applies 'java' plugin
 
         final Task publishPlugins = project.getTasks().getByName(PUBLISH_PLUGINS_TASK);
 
-        LazyConfiguration.lazyConfiguration(publishPlugins, new Runnable() {
-            @Override
-            public void run() {
-                authenticate(PUBLISH_KEY_PROPERTY, project, PUBLISH_KEY_ENV, envVariables);
-                authenticate(PUBLISH_SECRET_PROPERTY, project, PUBLISH_SECRET_ENV, envVariables);
-            }
+        LazyConfiguration.lazyConfiguration(publishPlugins, () -> {
+            authenticate(PUBLISH_KEY_PROPERTY, project, PUBLISH_KEY_ENV, envVariables);
+            authenticate(PUBLISH_SECRET_PROPERTY, project, PUBLISH_SECRET_ENV, envVariables);
         });
 
-        publishPlugins.onlyIf(new Spec<Task>() {
-            @Override
-            public boolean isSatisfiedBy(Task t) {
-                if (conf.isDryRun()) {
-                    LOG.info("dryRun is enabled, skipping '{}' using 'onlyIf'", t.getName());
-                }
-                return !conf.isDryRun();
+        publishPlugins.onlyIf(t -> {
+            if (conf.isDryRun()) {
+                LOG.info("dryRun is enabled, skipping '{}' using 'onlyIf'", t.getName());
             }
+            return !conf.isDryRun();
         });
     }
 
