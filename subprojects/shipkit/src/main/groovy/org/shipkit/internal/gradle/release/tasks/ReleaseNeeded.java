@@ -24,16 +24,16 @@ public class ReleaseNeeded {
     public static final String RELEASE_NEEDED_FILENAME = "release-needed.txt";
 
     public boolean releaseNeeded(ReleaseNeededTask task) {
-        return releaseNeeded(task, new EnvVariables());
-    }
-
-    boolean releaseNeeded(ReleaseNeededTask task, EnvVariables envVariables) {
-        File releaseNeededFile = new File(task.getProject().getBuildDir(), RELEASE_NEEDED_FILENAME);
+        File releaseNeededFile = getReleaseNeededFile(task);
 
         if (releaseNeededFile.exists()) {
             releaseNeededFile.delete();
         }
 
+        return releaseNeeded(task, new EnvVariables());
+    }
+
+    boolean releaseNeeded(ReleaseNeededTask task, EnvVariables envVariables) {
         ReleaseNeed releaseNeed = releaseNeed(task, envVariables);
 
         boolean releaseNeeded = releaseNeed.needed;
@@ -44,10 +44,14 @@ public class ReleaseNeeded {
         }
 
         if (releaseNeeded) {
-            IOUtil.writeFile(releaseNeededFile, "");
+            IOUtil.writeFile(getReleaseNeededFile(task), "");
         }
         LOG.lifecycle(message);
         return releaseNeeded;
+    }
+
+    static File getReleaseNeededFile(ReleaseNeededTask task) {
+        return new File(task.getProject().getBuildDir(), RELEASE_NEEDED_FILENAME);
     }
 
     private ReleaseNeed releaseNeed(ReleaseNeededTask task, EnvVariables envVariables) {
