@@ -36,6 +36,7 @@ public class GitHubStatusCheck {
 
     public PullRequestStatus checkStatusWithRetries() throws IOException, InterruptedException {
         int timeouts = 0;
+        long alreadyWaitingInSeconds = 0;
         while (timeouts < amountOfRetries) {
             JsonObject status = getStatusCheck(task, gitHubApi);
             // it might be the case that we are too fast and statuses are not available yet -> let's do at least
@@ -47,7 +48,10 @@ public class GitHubStatusCheck {
             } else {
                 timeouts++;
                 long waitTimeInMillis = defaultInitialTimeout * timeouts;
-                LOG.lifecycle("Pull Request checks still in pending state. Waiting {} seconds...", TimeUnit.MILLISECONDS.toSeconds(waitTimeInMillis));
+                long waitTimeInSeconds = TimeUnit.MILLISECONDS.toSeconds(waitTimeInMillis);
+                LOG.lifecycle("Pull Request checks still in pending state. Waiting time so far: {} seconds. " +
+                    "Waiting {} seconds...", alreadyWaitingInSeconds, waitTimeInSeconds);
+                alreadyWaitingInSeconds += waitTimeInSeconds;
                 Thread.sleep(waitTimeInMillis);
             }
         }
