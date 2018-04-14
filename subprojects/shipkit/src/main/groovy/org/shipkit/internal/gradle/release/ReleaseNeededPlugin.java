@@ -10,6 +10,7 @@ import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitBranchPlugin;
 import org.shipkit.internal.gradle.java.ComparePublicationsPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
+import org.shipkit.internal.util.DeprecatedWarning;
 
 /**
  * Adds tasks for checking if release is needed.
@@ -52,9 +53,10 @@ public class ReleaseNeededPlugin implements Plugin<Project> {
         //Task that throws an exception when release is not needed is very useful for CI workflows
         //Travis CI job will stop executing further commands if assertReleaseNeeded fails.
         //See the example projects how we have set up the 'assertReleaseNeeded' task in CI pipeline.
-        releaseNeededTask(project, ASSERT_RELEASE_NEEDED_TASK, conf)
-            .setExplosive(true)
+        ReleaseNeededTask assertReleaseNeededTask = releaseNeededTask(project, ASSERT_RELEASE_NEEDED_TASK, conf);
+        assertReleaseNeededTask.setExplosive(true)
             .setDescription("Asserts that criteria for the release are met and throws exception if release is not needed.");
+        assertReleaseNeededTask.doFirst(task -> DeprecatedWarning.warn(task.getName()));
 
         //Below task is useful for testing. It will not throw an exception but will run the code that check is release is needed
         //and it will print the information to the console.
