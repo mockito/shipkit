@@ -56,7 +56,7 @@ public class ReleaseNeededPlugin implements Plugin<Project> {
         ReleaseNeededTask assertReleaseNeededTask = releaseNeededTask(project, ASSERT_RELEASE_NEEDED_TASK, conf);
         assertReleaseNeededTask.setExplosive(true)
             .setDescription("Asserts that criteria for the release are met and throws exception if release is not needed.");
-        assertReleaseNeededTask.doFirst(task -> DeprecatedWarning.warn(task.getName()));
+        assertReleaseNeededTask.doFirst(task -> DeprecatedWarning.warn(task.getName(), "Please use '" + RELEASE_NEEDED + "' task instead."));
 
         //Below task is useful for testing. It will not throw an exception but will run the code that check is release is needed
         //and it will print the information to the console.
