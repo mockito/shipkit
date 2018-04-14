@@ -10,7 +10,7 @@ class CiUpgradeDownstreamPluginIntegTest extends GradleSpecification {
         gradleVersion = gradleVersionToTest
 
         and:
-        file("gradle/shipkit.gradle") << """
+        newFile("gradle/shipkit.gradle") << """
             shipkit {
                 gitHub.url = "http://github.com"
                 gitHub.readOnlyAuthToken = "token"

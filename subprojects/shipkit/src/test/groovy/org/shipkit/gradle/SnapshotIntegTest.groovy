@@ -10,7 +10,7 @@ class SnapshotIntegTest extends GradleSpecification {
         settingsFile << "include 'java-module'"
         buildFile << "apply plugin: 'org.shipkit.java'"
 
-        file("java-module/build.gradle")   << "apply plugin: 'java'"
+        newFile("java-module/build.gradle")   << "apply plugin: 'java'"
 
         when:
         def result = pass("snapshot")
@@ -25,7 +25,7 @@ class SnapshotIntegTest extends GradleSpecification {
         settingsFile << "include 'gradle-plugin-module'"
         buildFile << "apply plugin: 'org.shipkit.gradle-plugin'"
 
-        file("gradle-plugin-module/build.gradle")   << "apply plugin: 'com.gradle.plugin-publish'"
+        newFile("gradle-plugin-module/build.gradle")   << "apply plugin: 'com.gradle.plugin-publish'"
 
         when:
         def result = pass("snapshot")

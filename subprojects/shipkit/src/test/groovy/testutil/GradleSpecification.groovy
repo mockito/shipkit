@@ -27,7 +27,7 @@ abstract class GradleSpecification extends Specification implements GradleVersio
     private static final String RESOURCES_DIR = findResourcesDir(CLASSES_DIR)
 
     void setup() {
-        buildFile = file('build.gradle')
+        buildFile = newFile('build.gradle')
         buildFile << """buildscript {
             dependencies {
                 classpath files("${CLASSES_DIR}")
@@ -43,10 +43,11 @@ abstract class GradleSpecification extends Specification implements GradleVersio
             }
         }
         """
-        settingsFile = file('settings.gradle')
+        settingsFile = newFile('settings.gradle')
+        settingsFile << ""
 
         //Shipkit configuration with sensible defaults
-        file("gradle/shipkit.gradle") << """
+        newFile("gradle/shipkit.gradle") << """
             shipkit {
                 gitHub.readOnlyAuthToken = "foo"
                 gitHub.repository = "repo"
@@ -54,18 +55,27 @@ abstract class GradleSpecification extends Specification implements GradleVersio
             }
         """
 
-        file("version.properties") << "version=1.0.0"
+        newFile("version.properties") << "version=1.0.0"
     }
 
     /**
-     * Convenience method for creating files using path.
+     * Convenience method for creating new files using path.
      * You can pass "foo.txt" or "foo/bar/baz.txt".
      * Creates empty file (including parent dirs) and returns it.
      */
-    protected File file(String fileName) {
-        File file = new File(projectDir.root, fileName)
+    protected File newFile(String filePath) {
+        File file = file(filePath)
         file.getParentFile().mkdirs()
         file.createNewFile()
+        file
+    }
+
+    /**
+     * Convenience method for selecting files using path.
+     * You can pass "foo.txt" or "foo/bar/baz.txt".
+     */
+    protected File file(String filePath) {
+        File file = new File(projectDir.root, filePath)
         file
     }
 
