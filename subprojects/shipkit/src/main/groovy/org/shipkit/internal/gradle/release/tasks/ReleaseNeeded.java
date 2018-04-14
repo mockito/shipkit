@@ -1,5 +1,6 @@
 package org.shipkit.internal.gradle.release.tasks;
 
+import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.release.ReleaseNeededTask;
@@ -31,6 +32,10 @@ public class ReleaseNeeded {
 
         boolean releaseNeeded = releaseNeed.needed;
         String message = releaseNeed.explanation;
+
+        if (!releaseNeeded && task.isExplosive()) {
+            throw new GradleException(message);
+        }
 
         File releaseNeededFile = new File(task.getProject().getBuildDir(), RELEASE_NEEDED_FILENAME);
 
