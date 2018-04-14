@@ -27,6 +27,8 @@ public class LocalSnapshotPlugin implements Plugin<Project> {
 
     public static final String SNAPSHOT_TASK = "snapshot";
     private final static Logger LOG = Logging.getLogger(LocalSnapshotPlugin.class);
+
+    //Boolean wrapper for early failure if the isSnapshot getter is accessed before "apply()" method
     private Boolean isSnapshot;
 
     @Override
