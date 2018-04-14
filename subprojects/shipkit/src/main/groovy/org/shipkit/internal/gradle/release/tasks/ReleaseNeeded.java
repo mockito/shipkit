@@ -1,14 +1,13 @@
 package org.shipkit.internal.gradle.release.tasks;
 
-import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.release.ReleaseNeededTask;
+import org.shipkit.internal.notes.util.IOUtil;
 import org.shipkit.internal.util.ArgumentValidation;
 import org.shipkit.internal.util.EnvVariables;
 
 import java.io.File;
-import java.io.IOException;
 
 public class ReleaseNeeded {
 
@@ -40,15 +39,7 @@ public class ReleaseNeeded {
         }
 
         if (releaseNeeded) {
-            try {
-                File buildDir = task.getProject().getBuildDir();
-                if (!buildDir.exists()) {
-                    buildDir.mkdirs();
-                }
-                releaseNeededFile.createNewFile();
-            } catch (IOException e) {
-                throw new GradleException("Unable to create "  + releaseNeededFile.getAbsolutePath(), e);
-            }
+            IOUtil.writeFile(releaseNeededFile, "");
         }
         LOG.lifecycle(message);
         return releaseNeeded;
