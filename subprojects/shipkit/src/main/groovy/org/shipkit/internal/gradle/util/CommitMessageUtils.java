@@ -7,11 +7,15 @@ public class CommitMessageUtils {
 
     public static String generateCommitMessagePostfix(ShipkitConfiguration conf, String travisBuildNumber) {
         if (!StringUtil.isEmpty(travisBuildNumber)) {
-            String travisJobUrl = generateTravisBuildUrl(conf, travisBuildNumber);
-            return String.format("CI job: %s %s", travisJobUrl, conf.getGit().getCommitMessagePostfix());
+            return getTravisCommitMessagePostfix(conf, travisBuildNumber);
         }
 
         return conf.getGit().getCommitMessagePostfix();
+    }
+
+    private static String getTravisCommitMessagePostfix(ShipkitConfiguration conf, String travisBuildNumber) {
+        String travisJobUrl = generateTravisBuildUrl(conf, travisBuildNumber);
+        return String.format("CI job: %s %s", travisJobUrl, conf.getGit().getCommitMessagePostfix());
     }
 
     private static String generateTravisBuildUrl(ShipkitConfiguration conf, String travisBuildNumber) {
