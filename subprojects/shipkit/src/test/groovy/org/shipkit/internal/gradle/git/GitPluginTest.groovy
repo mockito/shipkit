@@ -2,6 +2,7 @@ package org.shipkit.internal.gradle.git
 
 import org.shipkit.gradle.git.GitCommitTask
 import org.shipkit.gradle.git.GitPushTask
+import spock.util.environment.RestoreSystemProperties
 import testutil.PluginSpecification
 
 class GitPluginTest extends PluginSpecification {
@@ -36,6 +37,7 @@ class GitPluginTest extends PluginSpecification {
         gitCommit.commitMessagePostfix == "[ci skip]"
     }
 
+    @RestoreSystemProperties
     def "configures git commit in Travis environment"() {
         conf.gitHub.repository = 'my-repo'
         conf.gitHub.writeAuthToken = 'foo'
