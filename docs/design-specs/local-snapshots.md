@@ -9,7 +9,7 @@ Tickets:
  - original user feedback: [#358](https://github.com/mockito/shipkit/issues/358)
  - current work ticket: [#692](https://github.com/mockito/shipkit/issues/692)
 
-## Design
+## Creating snapshots
 
 New task “snapshot” builds a snapshot version and installs it to a local repository.
 The task optimizes for speed so that the user can engage e2e testing rapidly, without the need to fix unit tests or checkstyle.
@@ -27,7 +27,7 @@ Additional requirements:
  - by default "snapshot" installs Maven artifacts to local maven repo.
  - in future, an option to build local ivy snapshot via separate plugin
 
-## Implementation
+## Producing snapshots
 
 - New LocalSnapshotPlugin
     - id: "org.shipkit.local-snapshot"
@@ -53,10 +53,58 @@ Additional requirements:
         - snapshot.dependsOn install
         - disable javadoc and groovydoc if snapshot in DAG - speeeed!
 
-## Future ivy support
+### Future ivy support
 
 In order to add ivy local repo support, we can roll out a new plugin.
 Users wishing to install to local ivy repo can apply "org.shipkit.local-ivy-snapshot"
 to every module that produces artifacts.
 
 Low priority but likely needed for onboarding [linkedin/play-parseq](https://github.com/mockito/shipkit/issues/673) project.
+
+## Consuming snapshots
+
+Running "snapshot" in producer project assembles snapshot artifacts
+and also writes a snapshot info file ("~/.gradle/shipkit/snapshot.properties")
+
+Consumer project can run "useSnapshot" task to quickly start using
+the snapshot that was most recently built on this machine.
+"useSnapshot" updates dependencies in *.gradle files to use the snapshot version
+found in snapshot info file.
+
+## Writing snapshot info
+
+Snapshot info in "~/.gradle/shipkit/snapshot.properties" file has "group=version" format:
+
+```
+org.shipkit=1.2.3-SNAPSHOT
+```
+
+ - LocalSnapshotPlugin applies RootLocalSnapshotPlugin to the root project
+ - RootLocalSnapshotPlugin adds ":writeSnapshotInfo" task of type WriteSnapshotInfoTask
+    - WriteSnapshotInfoTask has property: "snapshotInfoFile" defaulted to
+    "${project.gradle.gradleUserHomeDir}/shipkit/snapshot.properties"
+    - when task completes, it informs that snapshots were created and can be used with 'useSnapshot'
+    - the message contains link to more info: http://local-snapshot.shipkit.org
+ - "snapshot" task added by LocalSnapshotPlugin is finalized by ":writeSnapshotInfo"
+ - Caveat: because we use "finalized by", the "writeSnapshotInfo" will write the info
+    regardless if the build is successful or failed. This should be fine becuase if the build fails
+    the user does not have expectation that the snapshot works and would not attempt to run "useSnapshot".
+    At times, it can be useful that we write snapshot info on failed build
+    becuase expert users can leverage it.
+    Good example is running "./gradlew snapshot check --continue"
+    with the intention to build snapshot and run checks after that.
+    Even if checkstyle check fails, the expert users may want to test with local snapshot.
+
+## Reading snapshot info
+
+ - RootLocalSnapshotPlugin adds ":useSnapshot" task of type UseSnapshotTask, with properties:
+    - File snapshotInfoFile (same default as WriteSnapshotInfoTask)
+    - List<File> buildFiles - build files where we will attempt to update the dependency version.
+    Build files are defaulted to all build files of all projects in the build
+ - Updating dependencies is simple and only supports String notation. Example:
+ If snapshot info has "org.shipkit=1.2.3-SNAPSHOT" then we will update all
+ "org.shipkit:(module):(version)" with "org.shipkit:(module):1.2.3-SNAPSHOT"
+ - We write a one-line summary with how many files were updated
+ - We fail with meaningful message when:
+    - there is no snapshot info file or it cannot be read
+    - there is no dependency to update in any of the build files
