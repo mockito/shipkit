@@ -16,8 +16,10 @@ import org.shipkit.internal.gradle.util.TaskMaker;
 import java.io.File;
 import java.util.List;
 
+import static java.lang.System.getenv;
 import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
 import static org.shipkit.internal.gradle.util.GitUtil.getTag;
+import static org.shipkit.internal.gradle.util.TravisUtils.generateCommitMessagePostfix;
 
 /**
  * Adds Git-specific tasks needed for the release process.
@@ -55,13 +57,15 @@ public class GitPlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
+        String commitMessage = generateCommitMessagePostfix(conf, getenv("TRAVIS_BUILD_NUMBER"));
 
         TaskMaker.task(project, GIT_COMMIT_TASK, GitCommitTask.class, new Action<GitCommitTask>() {
             public void execute(final GitCommitTask t) {
                 t.setDescription("Commits all changed files using generic --author and aggregated commit message");
                 t.setGitUserName(conf.getGit().getUser());
                 t.setGitUserEmail(conf.getGit().getEmail());
-                t.setCommitMessagePostfix(conf.getGit().getCommitMessagePostfix());
+                t.setCommitMessagePostfix(commitMessage);
+
             }
         });
 
