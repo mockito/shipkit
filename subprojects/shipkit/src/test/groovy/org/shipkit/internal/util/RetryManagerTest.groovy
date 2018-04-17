@@ -6,7 +6,7 @@ class RetryManagerTest extends Specification {
 
     def "should retry when retries limit not reached"() {
         given:
-        RetryManager retryCounter = RetryManager.defaultRetryValues();
+        RetryManager retryCounter = RetryManager.defaultRetryValues()
 
         expect:
         retryCounter.shouldRetry()
@@ -16,7 +16,7 @@ class RetryManagerTest extends Specification {
         given:
         RetryManager retryCounter = RetryManager.defaultRetryValues()
         for (int i = 0; i < 20; i++) {
-            retryCounter.waitNow({})
+            retryCounter.waitNow({ })
         }
 
         expect:
@@ -27,7 +27,7 @@ class RetryManagerTest extends Specification {
         given:
         RetryManager retryCounter = RetryManager.defaultRetryValues()
         for (int i = 0; i < 7; i++) {
-            retryCounter.waitNow({})
+            retryCounter.waitNow({ })
         }
 
         expect:
@@ -37,7 +37,7 @@ class RetryManagerTest extends Specification {
     def "should provide correct information when timeout happened"() {
         given:
         RetryManager retryCounter = RetryManager.defaultRetryValues()
-        retryCounter.waitNow({})
+        retryCounter.waitNow({ })
 
         expect:
         retryCounter.timeoutHappened()
