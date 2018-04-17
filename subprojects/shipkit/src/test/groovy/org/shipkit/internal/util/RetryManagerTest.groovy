@@ -6,7 +6,7 @@ class RetryManagerTest extends Specification {
 
     def "should retry when retries limit not reached"() {
         given:
-        RetryManager retryCounter = RetryManager.defaultRetryValues(new Sleeper());
+        RetryManager retryCounter = RetryManager.defaultRetryValues();
 
         expect:
         retryCounter.shouldRetry()
@@ -14,12 +14,9 @@ class RetryManagerTest extends Specification {
 
     def "should not retry when retries limit reached"() {
         given:
-        def sleeper = Mock(Sleeper) {
-            sleep(_) >> null
-        }
-        RetryManager retryCounter = RetryManager.defaultRetryValues(sleeper)
+        RetryManager retryCounter = RetryManager.defaultRetryValues()
         for (int i = 0; i < 20; i++) {
-            retryCounter.waitNow()
+            retryCounter.waitNow({})
         }
 
         expect:
@@ -28,12 +25,9 @@ class RetryManagerTest extends Specification {
 
     def "providing correct description"() {
         given:
-        def sleeper = Mock(Sleeper) {
-            sleep(_) >> null
-        }
-        RetryManager retryCounter = RetryManager.defaultRetryValues(sleeper)
+        RetryManager retryCounter = RetryManager.defaultRetryValues()
         for (int i = 0; i < 7; i++) {
-            retryCounter.waitNow()
+            retryCounter.waitNow({})
         }
 
         expect:
@@ -42,11 +36,8 @@ class RetryManagerTest extends Specification {
 
     def "should provide correct information when timeout happened"() {
         given:
-        def sleeper = Mock(Sleeper) {
-            sleep(_) >> null
-        }
-        RetryManager retryCounter = RetryManager.defaultRetryValues(sleeper)
-        retryCounter.waitNow()
+        RetryManager retryCounter = RetryManager.defaultRetryValues()
+        retryCounter.waitNow({})
 
         expect:
         retryCounter.timeoutHappened()
@@ -54,7 +45,7 @@ class RetryManagerTest extends Specification {
 
     def "should provide correct information when no timeout happened"() {
         given:
-        RetryManager retryCounter = RetryManager.defaultRetryValues(new Sleeper())
+        RetryManager retryCounter = RetryManager.defaultRetryValues()
 
         expect:
         !retryCounter.timeoutHappened()

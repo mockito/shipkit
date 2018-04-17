@@ -17,42 +17,32 @@ public class GitHubStatusCheck {
 
     private MergePullRequestTask task;
     private GitHubApi gitHubApi;
-    private final int amountOfRetries;
-    private final long defaultInitialTimeout;
+    private RetryManager retryManager;
 
     public GitHubStatusCheck(MergePullRequestTask task, GitHubApi gitHubApi, int amountOfRetries, long defaultInitialTimeout) {
         this.task = task;
         this.gitHubApi = gitHubApi;
-        this.amountOfRetries = amountOfRetries;
-        this.defaultInitialTimeout = defaultInitialTimeout;
+        this.retryManager = RetryManager.customRetryValues(amountOfRetries, defaultInitialTimeout);
     }
 
     public GitHubStatusCheck(MergePullRequestTask task, GitHubApi gitHubApi) {
         this.task = task;
         this.gitHubApi = gitHubApi;
-        this.amountOfRetries = 20;
-        this.defaultInitialTimeout = TimeUnit.SECONDS.toMillis(10);
+        this.retryManager = RetryManager.defaultRetryValues();
     }
 
     public PullRequestStatus checkStatusWithRetries() throws IOException, InterruptedException {
-        int timeouts = 0;
-        long alreadyWaitingInSeconds = 0;
-        while (timeouts < amountOfRetries) {
+        while (retryManager.shouldRetry()) {
             JsonObject status = getStatusCheck(task, gitHubApi);
             // it might be the case that we are too fast and statuses are not available yet -> let's do at least
             // one retry in this case.
-            if (timeouts > 0 && isNullOrEmpty(status, "statuses")) {
+            if (retryManager.timeoutHappened() && isNullOrEmpty(status, "statuses")) {
                 return PullRequestStatus.NO_CHECK_DEFINED;
             } else if (!isNullOrEmpty(status, "statuses") && allStatusesPassed(status)) {
                 return PullRequestStatus.SUCCESS;
             } else {
-                timeouts++;
-                long waitTimeInMillis = defaultInitialTimeout * timeouts;
-                long waitTimeInSeconds = TimeUnit.MILLISECONDS.toSeconds(waitTimeInMillis);
-                LOG.lifecycle("Pull Request checks still in pending state. Waiting time so far: {} seconds. " +
-                    "Waiting {} seconds...", alreadyWaitingInSeconds, waitTimeInSeconds);
-                alreadyWaitingInSeconds += waitTimeInSeconds;
-                Thread.sleep(waitTimeInMillis);
+                LOG.lifecycle("Pull Request checks still in pending state. {}", retryManager.describe());
+                retryManager.waitNow(this::waitingMethod);
             }
         }
         return PullRequestStatus.TIMEOUT;
@@ -103,8 +93,16 @@ public class GitHubStatusCheck {
 
     private boolean hasErrorStates(JsonObject statusDetails) {
         return statusDetails != null &&
-               statusDetails.getString("state") != null &&
-               (statusDetails.getString("state").equals("error") ||
-               statusDetails.getString("state").equals("failure"));
+            statusDetails.getString("state") != null &&
+            (statusDetails.getString("state").equals("error") ||
+                statusDetails.getString("state").equals("failure"));
+    }
+
+    private void waitingMethod(Long t) {
+        try {
+            Thread.sleep(TimeUnit.SECONDS.toMillis(t));
+        } catch (InterruptedException e) {
+            LOG.lifecycle("Waiting interrupted");
+        }
     }
 }
