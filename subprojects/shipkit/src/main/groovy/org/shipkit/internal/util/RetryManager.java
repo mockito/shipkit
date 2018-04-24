@@ -42,7 +42,7 @@ class RetryManager {
         timeoutsCount++;
     }
 
-    private void waitByConsumer(Consumer<Long> waitingConsumer) throws InterruptedException {
+    private void waitByConsumer(Consumer<Long> waitingConsumer) {
         waitingConsumer.accept(waitTime);
     }
 
