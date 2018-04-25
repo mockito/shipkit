@@ -89,7 +89,7 @@ public class ReleaseNeededTask extends DefaultTask {
      * <br>
      * E.g. mockito project uses this to make sure that releases to mavenCentral are actually triggered:
      * <br>
-     * <code>assertReleaseNeeded.skipComparePublications = shouldReleaseToCentral(project)</code>
+     * <code>releaseNeeded.skipComparePublications = shouldReleaseToCentral(project)</code>
      */
     public boolean isSkipComparePublications() {
         return skipComparePublications;
