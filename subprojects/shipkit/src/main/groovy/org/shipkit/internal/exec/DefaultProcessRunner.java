@@ -71,9 +71,6 @@ public class DefaultProcessRunner implements ProcessRunner {
             String output = mask(readFully(new BufferedReader(new InputStreamReader(process.getInputStream()))));
             storeOutputToFile(output);
 
-            //TODO add sanity timeout when we move to Java 1.7
-            // 1. we can do something like process.waitFor(15, TimeUnit.MINUTES)
-            // 2. first, we need to change the compatibility, push to Gradle 3.0, stop building with Java 1.6.
             process.waitFor();
 
             result = new ProcessResult(output, process);
