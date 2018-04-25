@@ -55,7 +55,7 @@ public class CiReleasePlugin implements Plugin<Project> {
                 task.setDescription("Checks if release is needed. If so it will prepare for ci release and perform release.");
                 task.getExecCommands().add(execCommand(
                     "Checking if release is needed", asList("./gradlew", ReleaseNeededPlugin.RELEASE_NEEDED), execResult -> {
-                        if (new File(project.getBuildDir(), ReleaseNeeded.RELEASE_NEEDED_FILENAME).exists()) {
+                        if (!new File(project.getBuildDir(), ReleaseNeeded.RELEASE_NEEDED_FILENAME).exists()) {
                             throw new StopExecutionException();
                         }
                     }));
