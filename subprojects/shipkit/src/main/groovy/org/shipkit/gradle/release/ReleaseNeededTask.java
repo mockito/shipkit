@@ -103,6 +103,8 @@ public class ReleaseNeededTask extends DefaultTask {
     }
 
     /**
+     * @deprecated no longer need this feature and it is scheduled to be deleted in the next major version.
+     *
      * If the exception should be thrown if the release is not needed.
      */
     @Deprecated
@@ -111,6 +113,8 @@ public class ReleaseNeededTask extends DefaultTask {
     }
 
     /**
+     * @deprecated we no longer need this feature and it is scheduled to be deleted in the next major version.
+     *
      * See {@link #isExplosive()}
      */
     @Deprecated
