@@ -50,9 +50,9 @@ public class ReleaseNeededPlugin implements Plugin<Project> {
     public void apply(Project project) {
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
-        //Task that throws an exception when release is not needed is very useful for CI workflows
-        //Travis CI job will stop executing further commands if assertReleaseNeeded fails.
-        //See the example projects how we have set up the 'assertReleaseNeeded' task in CI pipeline.
+        //Task that throws an exception when release is not needed
+        //We used it originally to prevent Travis CI from releasing when release was not needed.
+        //Kept for backwards compatibility
         ReleaseNeededTask assertReleaseNeededTask = releaseNeededTask(project, ASSERT_RELEASE_NEEDED_TASK, conf);
         assertReleaseNeededTask.setExplosive(true)
             .setDescription("Asserts that criteria for the release are met and throws exception if release is not needed.");
