@@ -36,7 +36,7 @@ import org.shipkit.internal.util.DeprecatedWarning;
  *
  * <ul>
  *     <li>assertReleaseNeeded - {@link ReleaseNeededTask}
- *      - checks if release is needed and fails the build if not needed. Used in release process.</li>
+ *      - DEPRECATED - checks if release is needed and fails the build if not needed. Not used currently.</li>
  *     <li>releaseNeeded - {@link ReleaseNeededTask}
  *     - prints information if the release is needed. Useful for testing.</li>
  * </ul>
@@ -55,7 +55,7 @@ public class ReleaseNeededPlugin implements Plugin<Project> {
         //Kept for backwards compatibility
         ReleaseNeededTask assertReleaseNeededTask = releaseNeededTask(project, ASSERT_RELEASE_NEEDED_TASK, conf);
         assertReleaseNeededTask.setExplosive(true)
-            .setDescription("Asserts that criteria for the release are met and throws exception if release is not needed.");
+            .setDescription("[DEPRECATED] Asserts that criteria for the release are met and throws exception if release is not needed.");
         assertReleaseNeededTask.doFirst(task -> DeprecatedWarning.warn(task.getName(), "Please use '" + RELEASE_NEEDED + "' task instead."));
 
         //Below task is useful for testing. It will not throw an exception but will run the code that check is release is needed
