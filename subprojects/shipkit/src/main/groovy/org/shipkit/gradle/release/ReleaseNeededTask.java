@@ -89,7 +89,7 @@ public class ReleaseNeededTask extends DefaultTask {
      * <br>
      * E.g. mockito project uses this to make sure that releases to mavenCentral are actually triggered:
      * <br>
-     * <code>assertReleaseNeeded.skipComparePublications = shouldReleaseToCentral(project)</code>
+     * <code>releaseNeeded.skipComparePublications = shouldReleaseToCentral(project)</code>
      */
     public boolean isSkipComparePublications() {
         return skipComparePublications;
@@ -103,15 +103,21 @@ public class ReleaseNeededTask extends DefaultTask {
     }
 
     /**
+     * @deprecated no longer need this feature and it is scheduled to be deleted in the next major version.
+     *
      * If the exception should be thrown if the release is not needed.
      */
+    @Deprecated
     public boolean isExplosive() {
         return explosive;
     }
 
     /**
+     * @deprecated we no longer need this feature and it is scheduled to be deleted in the next major version.
+     *
      * See {@link #isExplosive()}
      */
+    @Deprecated
     public ReleaseNeededTask setExplosive(boolean explosive) {
         this.explosive = explosive;
         return this;

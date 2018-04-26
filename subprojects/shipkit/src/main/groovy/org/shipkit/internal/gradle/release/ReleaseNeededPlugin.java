@@ -10,6 +10,7 @@ import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitBranchPlugin;
 import org.shipkit.internal.gradle.java.ComparePublicationsPlugin;
 import org.shipkit.internal.gradle.util.TaskMaker;
+import org.shipkit.internal.util.DeprecatedWarning;
 
 /**
  * Adds tasks for checking if release is needed.
@@ -35,7 +36,7 @@ import org.shipkit.internal.gradle.util.TaskMaker;
  *
  * <ul>
  *     <li>assertReleaseNeeded - {@link ReleaseNeededTask}
- *      - checks if release is needed and fails the build if not needed. Used in release process.</li>
+ *      - DEPRECATED - checks if release is needed and fails the build if not needed. Not used currently.</li>
  *     <li>releaseNeeded - {@link ReleaseNeededTask}
  *     - prints information if the release is needed. Useful for testing.</li>
  * </ul>
@@ -49,18 +50,19 @@ public class ReleaseNeededPlugin implements Plugin<Project> {
     public void apply(Project project) {
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
-        //Task that throws an exception when release is not needed is very useful for CI workflows
-        //Travis CI job will stop executing further commands if assertReleaseNeeded fails.
-        //See the example projects how we have set up the 'assertReleaseNeeded' task in CI pipeline.
-        releaseNeededTask(project, ASSERT_RELEASE_NEEDED_TASK, conf)
-                .setExplosive(true)
-                .setDescription("Asserts that criteria for the release are met and throws exception if release is not needed.");
+        //Task that throws an exception when release is not needed
+        //We used it originally to prevent Travis CI from releasing when release was not needed.
+        //Kept for backwards compatibility
+        ReleaseNeededTask assertReleaseNeededTask = releaseNeededTask(project, ASSERT_RELEASE_NEEDED_TASK, conf);
+        assertReleaseNeededTask.setExplosive(true)
+            .setDescription("[DEPRECATED] Asserts that criteria for the release are met and throws exception if release is not needed.");
+        assertReleaseNeededTask.doFirst(task -> DeprecatedWarning.warn(task.getName(), "Please use '" + RELEASE_NEEDED + "' task instead."));
 
         //Below task is useful for testing. It will not throw an exception but will run the code that check is release is needed
         //and it will print the information to the console.
         releaseNeededTask(project, RELEASE_NEEDED, conf)
-                .setExplosive(false)
-                .setDescription("Checks and prints to the console if criteria for the release are met.");
+            .setExplosive(false)
+            .setDescription("Checks and prints to the console if criteria for the release are met.");
     }
 
     private static ReleaseNeededTask releaseNeededTask(final Project project, String taskName,

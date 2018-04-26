@@ -27,6 +27,7 @@ class ReleaseNeededTaskTest extends Specification {
 
         expect:
         new ReleaseNeeded().releaseNeeded(task, envVariables) == releaseNeeded
+        releaseNeeded == ReleaseNeeded.getReleaseNeededFile(task).exists()
 
         where:
         commitMessage                    | branch    | pullRequest | skipEnvVar | comparisonResults || releaseNeeded
@@ -89,5 +90,6 @@ class ReleaseNeededTaskTest extends Specification {
 
         expect:
         !task.releaseNeeded()
+        !ReleaseNeeded.getReleaseNeededFile(task).exists()
     }
 }

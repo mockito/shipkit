@@ -4,8 +4,11 @@ import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.shipkit.gradle.release.ReleaseNeededTask;
+import org.shipkit.internal.notes.util.IOUtil;
 import org.shipkit.internal.util.ArgumentValidation;
 import org.shipkit.internal.util.EnvVariables;
+
+import java.io.File;
 
 public class ReleaseNeeded {
 
@@ -18,7 +21,15 @@ public class ReleaseNeeded {
     private final static String SKIP_RELEASE_KEYWORD = "[ci skip-release]";
     private static final String SKIP_COMPARE_PUBLICATIONS = "[ci skip-compare-publications]";
 
+    public static final String RELEASE_NEEDED_FILENAME = "release-needed.txt";
+
     public boolean releaseNeeded(ReleaseNeededTask task) {
+        File releaseNeededFile = getReleaseNeededFile(task);
+
+        if (releaseNeededFile.exists()) {
+            releaseNeededFile.delete();
+        }
+
         return releaseNeeded(task, new EnvVariables());
     }
 
@@ -30,10 +41,17 @@ public class ReleaseNeeded {
 
         if (!releaseNeeded && task.isExplosive()) {
             throw new GradleException(message);
-        } else {
-            LOG.lifecycle(message);
         }
+
+        if (releaseNeeded) {
+            IOUtil.writeFile(getReleaseNeededFile(task), "");
+        }
+        LOG.lifecycle(message);
         return releaseNeeded;
+    }
+
+    static File getReleaseNeededFile(ReleaseNeededTask task) {
+        return new File(task.getProject().getBuildDir(), RELEASE_NEEDED_FILENAME);
     }
 
     private ReleaseNeed releaseNeed(ReleaseNeededTask task, EnvVariables envVariables) {
