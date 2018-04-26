@@ -7,7 +7,7 @@ class InitPluginIntegTest extends GradleSpecification {
     def "runs initShipkit task in a project without any Shipkit configuration (using gradle version #gradleVersionToTest)"() {
         given:
         gradleVersion = gradleVersionToTest
-        assert file("version.properties").delete()
+        assert file("version.properties").delete() //simulate clean state
 
         and:
         buildFile << "apply plugin: 'org.shipkit.java'"

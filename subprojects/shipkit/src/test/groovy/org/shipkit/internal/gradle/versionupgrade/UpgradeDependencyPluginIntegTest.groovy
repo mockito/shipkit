@@ -10,7 +10,7 @@ class UpgradeDependencyPluginIntegTest extends GradleSpecification {
         gradleVersion = gradleVersionToTest
 
         and:
-        file("gradle/shipkit.gradle") << """
+        newFile("gradle/shipkit.gradle") << """
             shipkit {
                 gitHub.writeAuthToken = "secret"
                 gitHub.repository = "repo"

@@ -10,7 +10,7 @@ class SnapshotIntegTest extends GradleSpecification {
         settingsFile << "include 'java-module'"
         buildFile << "apply plugin: 'org.shipkit.java'"
 
-        file("java-module/build.gradle")   << "apply plugin: 'java'"
+        newFile("java-module/build.gradle")   << "apply plugin: 'java'"
 
         when:
         def result = pass("snapshot")
@@ -18,6 +18,7 @@ class SnapshotIntegTest extends GradleSpecification {
         then:
         result.task(":java-module:snapshot").outcome == TaskOutcome.SUCCESS
         result.task(":snapshot").outcome == TaskOutcome.UP_TO_DATE //this is how Gradle reports tasks with no behavior
+        assertFileExists("java-module/build/libs/java-module-1.0.0-SNAPSHOT.jar")
     }
 
     def "snapshot build for Gradle plugin project"() {
@@ -25,7 +26,7 @@ class SnapshotIntegTest extends GradleSpecification {
         settingsFile << "include 'gradle-plugin-module'"
         buildFile << "apply plugin: 'org.shipkit.gradle-plugin'"
 
-        file("gradle-plugin-module/build.gradle")   << "apply plugin: 'com.gradle.plugin-publish'"
+        newFile("gradle-plugin-module/build.gradle")   << "apply plugin: 'com.gradle.plugin-publish'"
 
         when:
         def result = pass("snapshot")
@@ -33,5 +34,6 @@ class SnapshotIntegTest extends GradleSpecification {
         then:
         result.task(":gradle-plugin-module:snapshot").outcome == TaskOutcome.SUCCESS
         result.task(":snapshot").outcome == TaskOutcome.UP_TO_DATE
+        assertFileExists("gradle-plugin-module/build/libs/gradle-plugin-module-1.0.0-SNAPSHOT.jar")
     }
 }
