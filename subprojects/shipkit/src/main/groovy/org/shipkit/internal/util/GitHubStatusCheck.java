@@ -9,7 +9,6 @@ import org.shipkit.internal.gradle.versionupgrade.MergePullRequestTask;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.concurrent.TimeUnit;
 
 public class GitHubStatusCheck {
 
@@ -22,13 +21,13 @@ public class GitHubStatusCheck {
     public GitHubStatusCheck(MergePullRequestTask task, GitHubApi gitHubApi, int amountOfRetries, long defaultInitialTimeout) {
         this.task = task;
         this.gitHubApi = gitHubApi;
-        this.retryManager = RetryManager.customRetryValues(amountOfRetries, defaultInitialTimeout);
+        this.retryManager = RetryManager.of(amountOfRetries, defaultInitialTimeout);
     }
 
     public GitHubStatusCheck(MergePullRequestTask task, GitHubApi gitHubApi) {
         this.task = task;
         this.gitHubApi = gitHubApi;
-        this.retryManager = RetryManager.defaultRetryValues();
+        this.retryManager = RetryManager.newInstance();
     }
 
     public PullRequestStatus checkStatusWithRetries() throws IOException, InterruptedException {
@@ -42,7 +41,7 @@ public class GitHubStatusCheck {
                 return PullRequestStatus.SUCCESS;
             } else {
                 LOG.lifecycle("Pull Request checks still in pending state. {}", retryManager.describe());
-                retryManager.waitNow(this::waitingMethod);
+                retryManager.waitNow();
             }
         }
         return PullRequestStatus.TIMEOUT;
@@ -96,13 +95,5 @@ public class GitHubStatusCheck {
             statusDetails.getString("state") != null &&
             (statusDetails.getString("state").equals("error") ||
                 statusDetails.getString("state").equals("failure"));
-    }
-
-    private void waitingMethod(Long t) {
-        try {
-            Thread.sleep(TimeUnit.SECONDS.toMillis(t));
-        } catch (InterruptedException e) {
-            LOG.lifecycle("Waiting interrupted");
-        }
     }
 }

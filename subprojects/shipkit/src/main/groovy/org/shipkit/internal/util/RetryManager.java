@@ -1,8 +1,13 @@
 package org.shipkit.internal.util;
 
-import java.util.function.Consumer;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
+
+import java.util.concurrent.TimeUnit;
 
 class RetryManager {
+
+    private static final Logger LOG = Logging.getLogger(RetryManager.class);
 
     private final int numberOfRetries;
     private final long timeoutLength;
@@ -19,11 +24,11 @@ class RetryManager {
         this.waitTime = 0;
     }
 
-    static RetryManager defaultRetryValues() {
+    static RetryManager newInstance() {
         return new RetryManager(20, 10);
     }
 
-    static RetryManager customRetryValues(int numberOfPossibleRetries, long timeoutLength) {
+    static RetryManager of(int numberOfPossibleRetries, long timeoutLength) {
         return new RetryManager(numberOfPossibleRetries, timeoutLength);
     }
 
@@ -31,9 +36,9 @@ class RetryManager {
         return timeoutsCount < numberOfRetries;
     }
 
-    void waitNow(Consumer<Long> waitingConsumer) throws InterruptedException {
+    void waitNow() throws InterruptedException {
         computeWaitingValues();
-        waitByConsumer(waitingConsumer);
+        waitForRetry();
     }
 
     private void computeWaitingValues() {
@@ -42,8 +47,12 @@ class RetryManager {
         timeoutsCount++;
     }
 
-    private void waitByConsumer(Consumer<Long> waitingConsumer) {
-        waitingConsumer.accept(waitTime);
+    private void waitForRetry() {
+        try {
+            Thread.sleep(TimeUnit.SECONDS.toMillis(waitTime));
+        } catch (InterruptedException e) {
+            LOG.lifecycle("Waiting interrupted");
+        }
     }
 
     String describe() {
