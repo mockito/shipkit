@@ -16,32 +16,30 @@ import org.shipkit.internal.gradle.util.TaskMaker;
 import java.io.File;
 import java.util.List;
 
-import static java.lang.System.getProperty;
 import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
 import static org.shipkit.internal.gradle.util.GitUtil.getTag;
-import static org.shipkit.internal.gradle.util.CommitMessageUtils.generateCommitMessagePostfix;
 
 /**
  * Adds Git-specific tasks needed for the release process.
- *
+ * <p>
  * Applies plugins:
  * <ul>
- *     <li>{@link ShipkitConfigurationPlugin}</li>
- *     <li>{@link GitBranchPlugin}</li>
+ * <li>{@link ShipkitConfigurationPlugin}</li>
+ * <li>{@link GitBranchPlugin}</li>
  * </ul>
- *
+ * <p>
  * Adds tasks:
  * <ul>
- *     <li>identifyGitBranch - {@link IdentifyGitBranchTask}</li>
- *     <li>gitCommit</li>
- *     <li>gitTag</li>
- *     <li>gitPush</li>
- *     <li>performGitPush - {@link GitPushTask}</li>
- *
- *     <li>performGitCommitCleanUp</li>
- *     <li>gitSoftResetCommit</li>
- *     <li>gitStash</li>
- *     <li>gitTagCleanUp</li>
+ * <li>identifyGitBranch - {@link IdentifyGitBranchTask}</li>
+ * <li>gitCommit</li>
+ * <li>gitTag</li>
+ * <li>gitPush</li>
+ * <li>performGitPush - {@link GitPushTask}</li>
+ * <p>
+ * <li>performGitCommitCleanUp</li>
+ * <li>gitSoftResetCommit</li>
+ * <li>gitStash</li>
+ * <li>gitTagCleanUp</li>
  * </ul>
  */
 public class GitPlugin implements Plugin<Project> {
@@ -57,15 +55,15 @@ public class GitPlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
-        String commitMessage = generateCommitMessagePostfix(conf, getProperty("TRAVIS_BUILD_NUMBER"));
 
         TaskMaker.task(project, GIT_COMMIT_TASK, GitCommitTask.class, new Action<GitCommitTask>() {
             public void execute(final GitCommitTask t) {
                 t.setDescription("Commits all changed files using generic --author and aggregated commit message");
                 t.setGitUserName(conf.getGit().getUser());
                 t.setGitUserEmail(conf.getGit().getEmail());
-                t.setCommitMessagePostfix(commitMessage);
-
+                if (t.getCommitMessagePostfix() == null) {
+                    t.setCommitMessagePostfix(conf.getGit().getCommitMessagePostfix());
+                }
             }
         });
 
@@ -93,12 +91,12 @@ public class GitPlugin implements Plugin<Project> {
                 t.setSecretValue(info.getWriteToken());
 
                 project.getPlugins().apply(GitBranchPlugin.class)
-                        .provideBranchTo(t, new Action<String>() {
-                            @Override
-                            public void execute(String branch) {
-                                t.getTargets().add(branch);
-                            }
-                        });
+                    .provideBranchTo(t, new Action<String>() {
+                        @Override
+                        public void execute(String branch) {
+                            t.getTargets().add(branch);
+                        }
+                    });
             }
         });
 

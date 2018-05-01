@@ -4,7 +4,7 @@ import spock.lang.Specification
 
 import org.shipkit.gradle.configuration.ShipkitConfiguration
 
-class CommitMessageUtilsTest extends Specification {
+class TravisCommitMessageUtilsTest extends Specification {
 
     def "should build travis url with [ci skip]"() {
         given:
@@ -17,7 +17,7 @@ class CommitMessageUtilsTest extends Specification {
         1 * gitHub.getRepository() >> "mockito/shipkit"
         0 * _
         when:
-        def url = CommitMessageUtils.generateCommitMessagePostfix(shipkitConfiguration, "123")
+        def url = TravisCommitMessageUtils.decorateCommitMessagePostfix(shipkitConfiguration, "123")
         then:
         url == "CI job: https://travis-ci.org/mockito/shipkit/builds/123 [ci skip]"
     }
@@ -33,7 +33,7 @@ class CommitMessageUtilsTest extends Specification {
         1 * git.commitMessagePostfix >> "[ci skip]"
         0 * _
         when:
-        def url = CommitMessageUtils.generateCommitMessagePostfix(shipkitConfiguration, "")
+        def url = TravisCommitMessageUtils.decorateCommitMessagePostfix(shipkitConfiguration, "")
         then:
         url == "[ci skip]"
     }

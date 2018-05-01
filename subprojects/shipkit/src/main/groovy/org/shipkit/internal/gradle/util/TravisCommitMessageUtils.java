@@ -2,10 +2,10 @@ package org.shipkit.internal.gradle.util;
 
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 
-public class CommitMessageUtils {
+public class TravisCommitMessageUtils {
     private static final String URL_PATTERN = "https://travis-ci.org/%s/builds/%s";
 
-    public static String generateCommitMessagePostfix(ShipkitConfiguration conf, String travisBuildNumber) {
+    public static String decorateCommitMessagePostfix(ShipkitConfiguration conf, String travisBuildNumber) {
         if (!StringUtil.isEmpty(travisBuildNumber)) {
             return getTravisCommitMessagePostfix(conf, travisBuildNumber);
         }
