@@ -45,10 +45,7 @@
 
         <!-- Imports -->
         <module name="RedundantImport"/>
-        <!--
-        Disabled, does not work correctly when imports are used for classes referenced in javadocs.
         <module name="UnusedImports"/>
-        -->
 
         <!-- Naming -->
         <module name="ConstantName"/>

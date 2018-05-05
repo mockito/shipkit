@@ -1,6 +1,5 @@
 package org.shipkit.internal.notes.contributors.github;
 
-import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.notes.contributors.ContributorsSerializer;
 
 import java.io.File;
