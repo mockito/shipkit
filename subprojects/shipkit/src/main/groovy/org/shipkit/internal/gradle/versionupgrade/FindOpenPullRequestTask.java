@@ -4,7 +4,6 @@ import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.TaskAction;
-import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.gradle.git.domain.PullRequest;
 
 import java.io.IOException;

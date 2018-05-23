@@ -5,7 +5,6 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.exec.SilentExecTask;
 import org.shipkit.internal.gradle.git.CloneGitRepositoryTaskFactory;
 import org.shipkit.internal.gradle.git.tasks.CloneGitRepositoryTask;
