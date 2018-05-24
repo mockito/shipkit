@@ -11,7 +11,7 @@ class GitHubStatusCheckTest extends Specification {
 
     def "should return SUCCESS if status true before timeout"() {
         given:
-        GitHubStatusCheck gitHubStatusCheck = new GitHubStatusCheck(task, gitHubApi, 20, 10)
+        GitHubStatusCheck gitHubStatusCheck = new GitHubStatusCheck(task, gitHubApi, 20, 1)
 
         task.getPullRequestSha() >> "sha"
         task.getUpstreamRepositoryName() >> "upstreamRepo"
@@ -41,7 +41,7 @@ class GitHubStatusCheckTest extends Specification {
 
     def "should return NO_CHECK_DEFINED if no status defined"() {
         given:
-        GitHubStatusCheck gitHubStatusCheck = new GitHubStatusCheck(task, gitHubApi, 2, 10)
+        GitHubStatusCheck gitHubStatusCheck = new GitHubStatusCheck(task, gitHubApi, 2, 1)
 
         task.getPullRequestSha() >> "sha"
         task.getPullRequestUrl() >> "prURL"
@@ -56,7 +56,7 @@ class GitHubStatusCheckTest extends Specification {
 
     def "should return TIMEOUT if state is still pending after retries"() {
         given:
-        GitHubStatusCheck gitHubStatusCheck = new GitHubStatusCheck(task, gitHubApi, 2, 10)
+        GitHubStatusCheck gitHubStatusCheck = new GitHubStatusCheck(task, gitHubApi, 2, 1)
 
         task.getPullRequestSha() >> "sha"
         task.getPullRequestUrl() >> "prURL"
