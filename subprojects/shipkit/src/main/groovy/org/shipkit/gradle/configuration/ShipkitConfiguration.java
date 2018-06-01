@@ -28,6 +28,7 @@ public class ShipkitConfiguration {
     private final ReleaseNotes releaseNotes = new ReleaseNotes();
     private final Git git = new Git();
     private final Team team = new Team();
+    private final IncubatingWarnings incubatingWarnings = new IncubatingWarnings();
 
     private String previousReleaseVersion;
     private boolean dryRun;
@@ -438,6 +439,27 @@ public class ShipkitConfiguration {
          */
         public void setIgnoredContributors(Collection<String> ignoredContributors) {
             store.put("team.ignoredContributors", ignoredContributors);
+        }
+    }
+
+    /**
+     * Incubating warnings configuraction
+     */
+    public class IncubatingWarnings {
+        private static final String INCUBATING_WARNINGS_ACKNOWLEDGED_KEY = "incubatingWarnings.acknowledged";
+
+        /**
+         * Plugin names, which are in incubating state that will not have [INCUBATING] warning printed during runs
+         */
+        public Collection<String> getAcknowledged() {
+            return store.getCollection(INCUBATING_WARNINGS_ACKNOWLEDGED_KEY);
+        }
+
+        /**
+         * See {@link #getAcknowledged()}
+         */
+        public void setAcknowledged(Collection<String> acknowledged) {
+            store.put("incubatingWarnings.acknowledged", acknowledged);
         }
     }
 }
