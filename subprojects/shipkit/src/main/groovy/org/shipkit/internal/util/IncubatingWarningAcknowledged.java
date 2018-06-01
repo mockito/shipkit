@@ -9,7 +9,7 @@ public class IncubatingWarningAcknowledged implements Predicate<String> {
 
     private Collection<String> acknowledgedWarnings;
 
-    private IncubatingWarningAcknowledged(ShipkitConfiguration configuration) {
+    public IncubatingWarningAcknowledged(ShipkitConfiguration configuration) {
         this.acknowledgedWarnings = configuration.getIncubatingWarnings().getAcknowledged();
     }
 

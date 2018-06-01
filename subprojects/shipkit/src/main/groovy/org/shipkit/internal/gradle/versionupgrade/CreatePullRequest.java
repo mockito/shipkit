@@ -4,10 +4,13 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
+import org.shipkit.gradle.configuration.ShipkitConfiguration;
+import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.domain.PullRequest;
 import org.shipkit.internal.gradle.util.BranchUtils;
 import org.shipkit.internal.util.GitHubApi;
 import org.shipkit.internal.util.IncubatingWarning;
+import org.shipkit.internal.util.IncubatingWarningAcknowledged;
 
 import java.io.IOException;
 
@@ -29,7 +32,11 @@ class CreatePullRequest {
 
         String headBranch = BranchUtils.getHeadBranch(task.getForkRepositoryName(), task.getVersionBranch());
 
-        IncubatingWarning.warn("creating pull requests");
+        final ShipkitConfiguration configuration = task.getProject().getPlugins()
+            .apply(ShipkitConfigurationPlugin.class).getConfiguration();
+        IncubatingWarningAcknowledged acknowledgedIncubatingWarningPredicate = new IncubatingWarningAcknowledged(configuration);
+        IncubatingWarning.warn("creating pull requests", acknowledgedIncubatingWarningPredicate);
+
         LOG.lifecycle("  Creating a pull request of title '{}' in repository '{}' between base = '{}' and head = '{}'.",
             task.getPullRequestTitle(), task.getUpstreamRepositoryName(), task.getBaseBranch(), headBranch);
 
