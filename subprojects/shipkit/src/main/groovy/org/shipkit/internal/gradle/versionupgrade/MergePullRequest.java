@@ -12,6 +12,8 @@ import org.shipkit.internal.util.GitHubStatusCheck;
 import org.shipkit.internal.util.IncubatingWarning;
 import org.shipkit.internal.util.IncubatingWarningAcknowledged;
 
+import java.util.function.Predicate;
+
 class MergePullRequest {
 
     private static final Logger LOG = Logging.getLogger(MergePullRequest.class);
@@ -31,7 +33,7 @@ class MergePullRequest {
 
         final ShipkitConfiguration configuration = task.getProject().getPlugins()
             .apply(ShipkitConfigurationPlugin.class).getConfiguration();
-        IncubatingWarningAcknowledged acknowledgedIncubatingWarningPredicate = new IncubatingWarningAcknowledged(configuration);
+        Predicate acknowledgedIncubatingWarningPredicate = new IncubatingWarningAcknowledged(configuration).negate();
         IncubatingWarning.warn("merge pull requests", acknowledgedIncubatingWarningPredicate);
 
         LOG.lifecycle("Waiting for status of a pull request in repository '{}' between base = '{}' and head = '{}'.", task.getUpstreamRepositoryName(), task.getBaseBranch(), headBranch);

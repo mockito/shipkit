@@ -13,6 +13,7 @@ import org.shipkit.internal.util.IncubatingWarning;
 import org.shipkit.internal.util.IncubatingWarningAcknowledged;
 
 import java.io.IOException;
+import java.util.function.Predicate;
 
 import static org.shipkit.internal.gradle.util.PullRequestUtils.toPullRequest;
 
@@ -34,7 +35,7 @@ class CreatePullRequest {
 
         final ShipkitConfiguration configuration = task.getProject().getPlugins()
             .apply(ShipkitConfigurationPlugin.class).getConfiguration();
-        IncubatingWarningAcknowledged acknowledgedIncubatingWarningPredicate = new IncubatingWarningAcknowledged(configuration);
+        Predicate acknowledgedIncubatingWarningPredicate = new IncubatingWarningAcknowledged(configuration).negate();
         IncubatingWarning.warn("creating pull requests", acknowledgedIncubatingWarningPredicate);
 
         LOG.lifecycle("  Creating a pull request of title '{}' in repository '{}' between base = '{}' and head = '{}'.",

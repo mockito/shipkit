@@ -25,6 +25,7 @@ import org.shipkit.internal.util.IncubatingWarning;
 import org.shipkit.internal.util.IncubatingWarningAcknowledged;
 
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
 import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
@@ -97,7 +98,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
         final GitOriginPlugin gitOriginPlugin = project.getRootProject().getPlugins().apply(GitOriginPlugin.class);
         project.getPlugins().apply(GitConfigPlugin.class);
 
-        IncubatingWarningAcknowledged acknowledgedIncubatingWarningPredicate = new IncubatingWarningAcknowledged(conf);
+        Predicate acknowledgedIncubatingWarningPredicate = new IncubatingWarningAcknowledged(conf).negate();
         IncubatingWarning.warn("upgrade-dependency plugin", acknowledgedIncubatingWarningPredicate);
 
         upgradeDependencyExtension = project.getExtensions().create("upgradeDependency", UpgradeDependencyExtension.class);

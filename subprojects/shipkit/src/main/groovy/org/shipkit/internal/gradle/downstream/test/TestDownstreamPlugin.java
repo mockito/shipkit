@@ -18,6 +18,7 @@ import org.shipkit.internal.util.IncubatingWarningAcknowledged;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.util.function.Predicate;
 
 /**
  * This plugin tests your library end-to-end (e2e) using downstream projects.
@@ -56,7 +57,7 @@ public class TestDownstreamPlugin implements Plugin<Project> {
         project.getPlugins().apply(UploadGistsPlugin.class);
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
-        IncubatingWarningAcknowledged acknowledgedIncubatingWarningPredicate = new IncubatingWarningAcknowledged(conf);
+        Predicate acknowledgedIncubatingWarningPredicate = new IncubatingWarningAcknowledged(conf).negate();
         IncubatingWarning.warn("downstream-testing plugin", acknowledgedIncubatingWarningPredicate);
 
         final File logsDirectory = project.getBuildDir();
