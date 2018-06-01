@@ -15,6 +15,6 @@ public class IncubatingWarningAcknowledged implements Predicate<String> {
 
     @Override
     public boolean test(String test) {
-     return acknowledgedWarnings.stream().anyMatch((acknowledged) -> test.startsWith(acknowledged));
+        return acknowledgedWarnings.stream().anyMatch(acknowledged -> test.startsWith(acknowledged));
     }
 }
