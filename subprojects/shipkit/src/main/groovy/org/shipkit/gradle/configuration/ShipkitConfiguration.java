@@ -60,6 +60,8 @@ public class ShipkitConfiguration {
         team.setContributors(Collections.<String>emptyList());
         team.setDevelopers(Collections.<String>emptyList());
         team.setIgnoredContributors(Collections.<String>emptyList());
+
+        incubatingWarnings.setAcknowledged(Collections.emptyList());
     }
 
     ShipkitConfiguration(ShipkitConfigurationStore store) {
@@ -96,6 +98,10 @@ public class ShipkitConfiguration {
 
     public Team getTeam() {
         return team;
+    }
+
+    public IncubatingWarnings getIncubatingWarnings() {
+        return incubatingWarnings;
     }
 
     /**
@@ -443,13 +449,14 @@ public class ShipkitConfiguration {
     }
 
     /**
-     * Incubating warnings configuraction
+     * Incubating warnings configuration
      */
     public class IncubatingWarnings {
         private static final String INCUBATING_WARNINGS_ACKNOWLEDGED_KEY = "incubatingWarnings.acknowledged";
 
         /**
-         * Plugin names, which are in incubating state that will not have [INCUBATING] warning printed during runs
+         * Plugins/tasks names in incubating state that will not have [INCUBATING] warning printed during
+         * runs
          */
         public Collection<String> getAcknowledged() {
             return store.getCollection(INCUBATING_WARNINGS_ACKNOWLEDGED_KEY);
