@@ -5,7 +5,7 @@ import spock.lang.Specification
 
 class IncubatingWarningAcknowledgedTest extends Specification {
 
-    def "name in acknowledged warnings"(){
+    def "name in acknowledged warnings"() {
         given:
         ShipkitConfiguration configuration = new ShipkitConfiguration()
         configuration.incubatingWarnings.acknowledged = Arrays.asList("test2", "test")
@@ -15,7 +15,7 @@ class IncubatingWarningAcknowledgedTest extends Specification {
         incubatingWarningAcknowledged.test("test")
     }
 
-    def "name starts with acknowledged entry in acknowledged warnings"(){
+    def "name starts with acknowledged entry in acknowledged warnings"() {
         given:
         ShipkitConfiguration configuration = new ShipkitConfiguration()
         configuration.incubatingWarnings.acknowledged = Arrays.asList("test2", "test")
@@ -25,7 +25,7 @@ class IncubatingWarningAcknowledgedTest extends Specification {
         incubatingWarningAcknowledged.test("test plugin")
     }
 
-    def "no acknowledged incubating warnings"(){
+    def "no acknowledged incubating warnings"() {
         given:
         ShipkitConfiguration configuration = new ShipkitConfiguration()
         configuration.incubatingWarnings.acknowledged = Collections.emptyList()
@@ -35,7 +35,7 @@ class IncubatingWarningAcknowledgedTest extends Specification {
         !incubatingWarningAcknowledged.test("test")
     }
 
-    def "name not in acknowledged warnings"(){
+    def "name not in acknowledged warnings"() {
         given:
         ShipkitConfiguration configuration = new ShipkitConfiguration()
         configuration.incubatingWarnings.acknowledged = Arrays.asList("not1", "not2")
@@ -45,7 +45,7 @@ class IncubatingWarningAcknowledgedTest extends Specification {
         !incubatingWarningAcknowledged.test("test")
     }
 
-    def "name with acknowledged text, but does not start with it"(){
+    def "name with acknowledged text, but does not start with it"() {
         given:
         ShipkitConfiguration configuration = new ShipkitConfiguration()
         configuration.incubatingWarnings.acknowledged = Arrays.asList("test", "ot")
