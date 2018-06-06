@@ -3,11 +3,16 @@ package org.shipkit.internal.gradle.versionupgrade;
 import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
+import org.shipkit.gradle.configuration.ShipkitConfiguration;
+import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.domain.PullRequestStatus;
 import org.shipkit.internal.gradle.util.BranchUtils;
 import org.shipkit.internal.util.GitHubApi;
 import org.shipkit.internal.util.GitHubStatusCheck;
 import org.shipkit.internal.util.IncubatingWarning;
+import org.shipkit.internal.util.IncubatingWarningAcknowledged;
+
+import java.util.function.Predicate;
 
 class MergePullRequest {
 
@@ -26,7 +31,11 @@ class MergePullRequest {
 
         String headBranch = BranchUtils.getHeadBranch(task.getForkRepositoryName(), task.getVersionBranch());
 
-        IncubatingWarning.warn("merge pull requests");
+        final ShipkitConfiguration configuration = task.getProject().getPlugins()
+            .apply(ShipkitConfigurationPlugin.class).getConfiguration();
+        Predicate acknowledgedIncubatingWarningPredicate = new IncubatingWarningAcknowledged(configuration).negate();
+        IncubatingWarning.warn("merge pull requests", acknowledgedIncubatingWarningPredicate);
+
         LOG.lifecycle("Waiting for status of a pull request in repository '{}' between base = '{}' and head = '{}'.", task.getUpstreamRepositoryName(), task.getBaseBranch(), headBranch);
 
         String url = task.getPullRequestUrl();

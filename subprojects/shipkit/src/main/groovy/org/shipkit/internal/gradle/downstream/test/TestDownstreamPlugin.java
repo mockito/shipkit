@@ -14,9 +14,11 @@ import org.shipkit.internal.gradle.release.tasks.UploadGistsTask;
 import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.util.IncubatingWarning;
+import org.shipkit.internal.util.IncubatingWarningAcknowledged;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.util.function.Predicate;
 
 /**
  * This plugin tests your library end-to-end (e2e) using downstream projects.
@@ -52,10 +54,11 @@ public class TestDownstreamPlugin implements Plugin<Project> {
     }
 
     public void apply(final Project project) {
-        IncubatingWarning.warn("downstream-testing plugin");
-
         project.getPlugins().apply(UploadGistsPlugin.class);
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
+
+        Predicate acknowledgedIncubatingWarningPredicate = new IncubatingWarningAcknowledged(conf).negate();
+        IncubatingWarning.warn("downstream-testing plugin", acknowledgedIncubatingWarningPredicate);
 
         final File logsDirectory = project.getBuildDir();
 
