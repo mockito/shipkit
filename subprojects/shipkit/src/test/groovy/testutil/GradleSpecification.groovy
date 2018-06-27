@@ -33,8 +33,8 @@ abstract class GradleSpecification extends Specification implements GradleVersio
                 classpath files("${CLASSES_DIR}")
                 classpath files("${RESOURCES_DIR}")
                 classpath "com.github.cliftonlabs:json-simple:2.1.2"
-                classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.1"
-                classpath "com.gradle.publish:plugin-publish-plugin:0.9.6"
+                classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.3"
+                classpath "com.gradle.publish:plugin-publish-plugin:0.9.7"
             }
 
             repositories {
