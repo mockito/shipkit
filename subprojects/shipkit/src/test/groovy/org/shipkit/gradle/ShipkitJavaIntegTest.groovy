@@ -82,6 +82,7 @@ class ShipkitJavaIntegTest extends GradleSpecification {
 :performGitPush
 :api:bintrayUpload
 :impl:bintrayUpload
+:bintrayPublish
 :performRelease"""
 
         where:
