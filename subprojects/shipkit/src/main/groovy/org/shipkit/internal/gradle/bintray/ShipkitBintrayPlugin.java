@@ -1,8 +1,8 @@
 package org.shipkit.internal.gradle.bintray;
 
-import com.jfrog.bintray.gradle.Artifact;
 import com.jfrog.bintray.gradle.BintrayExtension;
-import com.jfrog.bintray.gradle.BintrayUploadTask;
+import com.jfrog.bintray.gradle.tasks.BintrayUploadTask;
+import com.jfrog.bintray.gradle.tasks.entities.Artifact;
 import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
