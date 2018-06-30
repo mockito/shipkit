@@ -9,7 +9,7 @@ apply plugin: 'com.gradle.plugin-publish'
 apply from: "$rootDir/gradle/upgrade-downstream.gradle"
 
 checkstyle {
-    toolVersion = '8.10'
+    toolVersion = '8.11'
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
 }
 
