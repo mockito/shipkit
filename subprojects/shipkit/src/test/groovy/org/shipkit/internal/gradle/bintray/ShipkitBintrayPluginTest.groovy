@@ -95,7 +95,7 @@ class ShipkitBintrayPluginTest extends PluginSpecification {
 
         expect:
         ShipkitBintrayPlugin.uploadWelcomeMessage(u) == """:bintrayUpload - publishing to Bintray
-  - dry run: false, version: 1.0.0, Maven Central sync: false
+  - dry run: false, publish: false, version: 1.0.0, Maven Central sync: false
   - user/org: shipkit-bot/shipkit.org, repository/package: shipkit/shipkit-example"""
     }
 }
