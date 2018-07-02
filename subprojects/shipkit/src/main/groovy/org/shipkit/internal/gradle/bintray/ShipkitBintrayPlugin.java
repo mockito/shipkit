@@ -131,6 +131,7 @@ public class ShipkitBintrayPlugin implements Plugin<Project> {
     static String uploadWelcomeMessage(BintrayUploadTask t) {
         return t.getPath() + " - publishing to Bintray\n" +
             "  - dry run: " + t.getDryRun()
+            + ", publish: " + t.isPublish()
             + ", version: " + t.getVersionName()
             + ", Maven Central sync: " + t.getSyncToMavenCentral() + "\n" +
             "  - user/org: " + t.getUser() + "/" + t.getUserOrg()
