@@ -49,7 +49,7 @@ test {
 }
 
 codenarc {
-    toolVersion = '1.1'
+    toolVersion = '1.2'
 }
 
 pluginBundle {
