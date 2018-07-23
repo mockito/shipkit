@@ -21,25 +21,25 @@ import static org.shipkit.internal.gradle.util.GitUtil.getTag;
 
 /**
  * Adds Git-specific tasks needed for the release process.
- *
+ * <p>
  * Applies plugins:
  * <ul>
- *     <li>{@link ShipkitConfigurationPlugin}</li>
- *     <li>{@link GitBranchPlugin}</li>
+ * <li>{@link ShipkitConfigurationPlugin}</li>
+ * <li>{@link GitBranchPlugin}</li>
  * </ul>
- *
+ * <p>
  * Adds tasks:
  * <ul>
- *     <li>identifyGitBranch - {@link IdentifyGitBranchTask}</li>
- *     <li>gitCommit</li>
- *     <li>gitTag</li>
- *     <li>gitPush</li>
- *     <li>performGitPush - {@link GitPushTask}</li>
- *
- *     <li>performGitCommitCleanUp</li>
- *     <li>gitSoftResetCommit</li>
- *     <li>gitStash</li>
- *     <li>gitTagCleanUp</li>
+ * <li>identifyGitBranch - {@link IdentifyGitBranchTask}</li>
+ * <li>gitCommit</li>
+ * <li>gitTag</li>
+ * <li>gitPush</li>
+ * <li>performGitPush - {@link GitPushTask}</li>
+ * <p>
+ * <li>performGitCommitCleanUp</li>
+ * <li>gitSoftResetCommit</li>
+ * <li>gitStash</li>
+ * <li>gitTagCleanUp</li>
  * </ul>
  */
 public class GitPlugin implements Plugin<Project> {
@@ -61,7 +61,9 @@ public class GitPlugin implements Plugin<Project> {
                 t.setDescription("Commits all changed files using generic --author and aggregated commit message");
                 t.setGitUserName(conf.getGit().getUser());
                 t.setGitUserEmail(conf.getGit().getEmail());
-                t.setCommitMessagePostfix(conf.getGit().getCommitMessagePostfix());
+                if (t.getCommitMessagePostfix() == null) {
+                    t.setCommitMessagePostfix(conf.getGit().getCommitMessagePostfix());
+                }
             }
         });
 
@@ -89,12 +91,12 @@ public class GitPlugin implements Plugin<Project> {
                 t.setSecretValue(info.getWriteToken());
 
                 project.getPlugins().apply(GitBranchPlugin.class)
-                        .provideBranchTo(t, new Action<String>() {
-                            @Override
-                            public void execute(String branch) {
-                                t.getTargets().add(branch);
-                            }
-                        });
+                    .provideBranchTo(t, new Action<String>() {
+                        @Override
+                        public void execute(String branch) {
+                            t.getTargets().add(branch);
+                        }
+                    });
             }
         });
 
