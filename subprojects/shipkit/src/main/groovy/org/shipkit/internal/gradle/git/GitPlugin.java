@@ -8,7 +8,6 @@ import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.gradle.exec.ShipkitExecTask;
 import org.shipkit.gradle.git.GitCommitTask;
 import org.shipkit.gradle.git.GitPushTask;
-import org.shipkit.gradle.git.IdentifyGitBranchTask;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.util.GitUtil;
 import org.shipkit.internal.gradle.util.TaskMaker;
@@ -30,7 +29,6 @@ import static org.shipkit.internal.gradle.util.GitUtil.getTag;
  *
  * Adds tasks:
  * <ul>
- *     <li>identifyGitBranch - {@link IdentifyGitBranchTask}</li>
  *     <li>gitCommit</li>
  *     <li>gitTag</li>
  *     <li>gitPush</li>
