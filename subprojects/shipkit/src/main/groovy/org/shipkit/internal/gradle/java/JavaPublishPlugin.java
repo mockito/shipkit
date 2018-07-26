@@ -1,12 +1,10 @@
 package org.shipkit.internal.gradle.java;
 
-import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.gradle.api.publish.PublicationContainer;
 import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.api.tasks.bundling.Jar;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
@@ -56,19 +54,15 @@ public class JavaPublishPlugin implements Plugin<Project> {
         final Jar sourcesJar = (Jar) project.getTasks().getByName(JavaLibraryPlugin.SOURCES_JAR_TASK);
         final Jar javadocJar = (Jar) project.getTasks().getByName(JavaLibraryPlugin.JAVADOC_JAR_TASK);
 
-        GradleDSLHelper.publications(project, new Action<PublicationContainer>() {
-            public void execute(PublicationContainer publications) {
-                MavenPublication p = publications.create(PUBLICATION_NAME, MavenPublication.class, new Action<MavenPublication>() {
-                    public void execute(MavenPublication publication) {
-                        publication.from(project.getComponents().getByName("java"));
-                        publication.artifact(sourcesJar);
-                        publication.artifact(javadocJar);
-                        publication.setArtifactId(((Jar) project.getTasks().getByName("jar")).getBaseName());
-                        PomCustomizer.customizePom(project, conf, publication);
-                    }
-                });
-                LOG.info("{} - configured '{}' publication", project.getPath(), p.getArtifactId());
-            }
+        GradleDSLHelper.publications(project, publications -> {
+            MavenPublication p = publications.create(PUBLICATION_NAME, MavenPublication.class, publication -> {
+                publication.from(project.getComponents().getByName("java"));
+                publication.artifact(sourcesJar);
+                publication.artifact(javadocJar);
+                publication.setArtifactId(((Jar) project.getTasks().getByName("jar")).getBaseName());
+                PomCustomizer.customizePom(project, conf, publication);
+            });
+            LOG.info("{} - configured '{}' publication", project.getPath(), p.getArtifactId());
         });
 
         //so that we flesh out problems with maven publication during the build process
