@@ -8,6 +8,7 @@ import org.gradle.api.logging.Logging;
 import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.api.tasks.bundling.Jar;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
+import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.snapshot.LocalSnapshotPlugin;
 import org.shipkit.internal.gradle.util.GradleDSLHelper;
@@ -59,7 +60,9 @@ public class JavaPublishPlugin implements Plugin<Project> {
                 publication.from(project.getComponents().getByName("java"));
                 publication.artifact(sourcesJar);
                 publication.artifact(javadocJar);
-                publication.setArtifactId(((Jar) project.getTasks().getByName("jar")).getBaseName());
+                DeferredConfiguration.deferredConfiguration(project, () -> {
+                    publication.setArtifactId(((Jar) project.getTasks().getByName("jar")).getBaseName());
+                });
                 PomCustomizer.customizePom(project, conf, publication);
             });
             LOG.info("{} - configured '{}' publication", project.getPath(), p.getArtifactId());
