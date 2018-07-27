@@ -9,6 +9,7 @@ import org.shipkit.internal.exec.SilentExecTask;
 import org.shipkit.internal.gradle.git.CloneGitRepositoryTaskFactory;
 import org.shipkit.internal.gradle.git.tasks.CloneGitRepositoryTask;
 import org.shipkit.internal.gradle.release.tasks.UploadGistsTask;
+import org.shipkit.internal.gradle.util.GradleWrapper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -16,7 +17,8 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.shipkit.internal.gradle.util.StringUtil.capitalize;
-import static org.shipkit.internal.util.RepositoryNameUtil.*;
+import static org.shipkit.internal.util.RepositoryNameUtil.extractRepoNameFromGitHubUrl;
+import static org.shipkit.internal.util.RepositoryNameUtil.repositoryNameToCamelCase;
 
 /**
  * Aggregates all downstream-test-related tasks. It can be configured to run e2e tests on provided repositories.
@@ -69,7 +71,7 @@ public class TestDownstreamTask extends DefaultTask {
         dependsOn(run);
 
         // Using Gradle's composite builds ("--include-build") so that we're picking up current version of tools
-        run.setCommand(asList("./gradlew",
+        run.setCommand(asList(GradleWrapper.getWrapperCommand(),
                 "releaseNeeded", "performRelease",
                 "releaseCleanUp", "-PdryRun",
                 "-x", "gitPush", "-x", "bintrayUpload",

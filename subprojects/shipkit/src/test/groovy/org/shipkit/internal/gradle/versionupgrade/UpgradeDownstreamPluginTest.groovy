@@ -5,6 +5,7 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.shipkit.gradle.exec.ShipkitExecTask
 import org.shipkit.internal.gradle.git.tasks.CloneGitRepositoryTask
 import org.shipkit.internal.gradle.java.ShipkitJavaPlugin
+import org.shipkit.internal.gradle.util.GradleWrapper
 import testutil.PluginSpecification
 
 class UpgradeDownstreamPluginTest extends PluginSpecification {
@@ -61,7 +62,7 @@ class UpgradeDownstreamPluginTest extends PluginSpecification {
 
         then:
         ShipkitExecTask task = project.tasks['upgradeWwilkMockito']
-        task.execCommands[0].commandLine == ["./gradlew", "performVersionUpgrade", "-Pdependency=depGroup:depName:0.1.2"]
+        task.execCommands[0].commandLine == [GradleWrapper.getWrapperCommand(), "performVersionUpgrade", "-Pdependency=depGroup:depName:0.1.2"]
     }
 
     @Override
