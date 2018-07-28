@@ -10,6 +10,7 @@ import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.exec.ExecCommandFactory;
 import org.shipkit.internal.gradle.git.CloneGitRepositoryTaskFactory;
+import org.shipkit.internal.gradle.util.GradleWrapper;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.util.ExposedForTesting;
 import org.shipkit.version.VersionInfo;
@@ -89,7 +90,7 @@ public class UpgradeDownstreamPlugin implements Plugin<Project> {
                 task.setDescription("Performs dependency upgrade in " + consumerRepository);
                 task.execCommand(ExecCommandFactory.execCommand("Upgrading dependency",
                     CloneGitRepositoryTaskFactory.getConsumerRepoCloneDir(project, consumerRepository),
-                    "./gradlew", "performVersionUpgrade", getDependencyProperty(project)));
+                    GradleWrapper.getWrapperCommand(), "performVersionUpgrade", getDependencyProperty(project)));
             }
         });
     }

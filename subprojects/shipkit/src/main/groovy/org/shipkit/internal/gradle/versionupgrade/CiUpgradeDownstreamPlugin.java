@@ -4,6 +4,7 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.shipkit.gradle.exec.ShipkitExecTask;
 import org.shipkit.internal.gradle.release.CiReleasePlugin;
+import org.shipkit.internal.gradle.util.GradleWrapper;
 
 import static java.util.Arrays.asList;
 import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
@@ -29,6 +30,6 @@ public class CiUpgradeDownstreamPlugin implements Plugin<Project> {
         ShipkitExecTask ciPerformReleaseTask = (ShipkitExecTask) project.getRootProject().getTasks().findByName(CiReleasePlugin.CI_PERFORM_RELEASE_TASK);
 
         ciPerformReleaseTask.getExecCommands().add(execCommand(
-                "Upgrading downstream projects", asList("./gradlew", UpgradeDownstreamPlugin.UPGRADE_DOWNSTREAM_TASK)));
+                "Upgrading downstream projects", asList(GradleWrapper.getWrapperCommand(), UpgradeDownstreamPlugin.UPGRADE_DOWNSTREAM_TASK)));
     }
 }

@@ -10,6 +10,7 @@ import org.shipkit.internal.gradle.git.GitBranchPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
 import org.shipkit.internal.gradle.notes.ReleaseNotesPlugin;
 import org.shipkit.internal.gradle.notes.tasks.UpdateReleaseNotes;
+import org.shipkit.internal.gradle.util.GradleWrapper;
 import org.shipkit.internal.gradle.util.TaskMaker;
 import org.shipkit.internal.gradle.util.TaskSuccessfulMessage;
 import org.shipkit.internal.gradle.version.VersioningPlugin;
@@ -85,7 +86,7 @@ public class ReleasePlugin implements Plugin<Project> {
             //releaseCleanUp is already set up to run all his "subtasks" after performRelease is performed
             //releaseNeeded is used here only to execute the code paths in the release needed task (extra testing)
             t.getExecCommands().add(execCommand("Performing release in dry run, with cleanup",
-                asList("./gradlew", RELEASE_NEEDED, PERFORM_RELEASE_TASK, RELEASE_CLEAN_UP_TASK, "-PdryRun")));
+                asList(GradleWrapper.getWrapperCommand(), RELEASE_NEEDED, PERFORM_RELEASE_TASK, RELEASE_CLEAN_UP_TASK, "-PdryRun")));
             TaskSuccessfulMessage.logOnSuccess(t, "  The release test was successful. Ship it!");
         });
 
@@ -109,7 +110,7 @@ public class ReleasePlugin implements Plugin<Project> {
 
     private static ExecCommand contributorTestCommand(String... additionalArguments) {
         List<String> commandLine = new LinkedList<>(asList(
-            "./gradlew", RELEASE_NEEDED, PERFORM_RELEASE_TASK, RELEASE_CLEAN_UP_TASK, "-PdryRun", "-x", GitPlugin.GIT_PUSH_TASK));
+            GradleWrapper.getWrapperCommand(), RELEASE_NEEDED, PERFORM_RELEASE_TASK, RELEASE_CLEAN_UP_TASK, "-PdryRun", "-x", GitPlugin.GIT_PUSH_TASK));
         commandLine.addAll(asList(additionalArguments));
         return execCommand("Performing release in dry run, with cleanup", commandLine);
     }
