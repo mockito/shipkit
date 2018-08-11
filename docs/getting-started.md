@@ -146,6 +146,7 @@ You need to generate personal access tokens on GitHub.
   3. Give your token a descriptive name (read only token)
   4. Please don't check any scope
 ![GitHub Read Only Token](img/githubReadOnlyToken.png)
+
   5. Click **Generate token**
   6. Copy Token and paste it as value of `readOnlyAuthToken` in "shipkit.gradle"
 
@@ -157,6 +158,7 @@ You need to generate personal access tokens on GitHub.
   3. Give your token a descriptive name (write token)
   4. Please check `public_repo`
 ![GitHub Write Token](img/githubWriteToken.png)
+
   5. Click **Generate token**
   6. Copy Token
   7. Export write token as **GH_WRITE_TOKEN** env variable on Travis CI.
