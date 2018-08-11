@@ -137,22 +137,26 @@ When you are done testing Shipkit and you want to use it on production there is 
 #### GitHub
 
 You need to generate personal access tokens on GitHub.
-* Read only token
+
+#####  Read only token
+
   Read-only token will be checked in with the source code and will enable any contributor to perform light release testing (preview release notes, automatically generate contributors for poms, etc).
   1. Go to [Personal access tokens](https://github.com/settings/tokens) page
   2. Click **Generate new token**
   3. Give your token a descriptive name (read only token)
   4. Please don't check any scope
-  ![GitHub Read Only Token](img/githubReadOnlyToken.png)
+![GitHub Read Only Token](img/githubReadOnlyToken.png)
   5. Click **Generate token**
   6. Copy Token and paste it as value of `readOnlyAuthToken` in "shipkit.gradle"
-* Write token
+
+##### Write token
+
   Write token should be used on CI machine to perform actual releases.
   1. Go to [Personal access tokens](https://github.com/settings/tokens) page
   2. Click **Generate new token**
   3. Give your token a descriptive name (write token)
   4. Please check `public_repo`
-  ![GitHub Write Token](img/githubWriteToken.png)
+![GitHub Write Token](img/githubWriteToken.png)
   5. Click **Generate token**
   6. Copy Token
   7. Export write token as **GH_WRITE_TOKEN** env variable on Travis CI.
