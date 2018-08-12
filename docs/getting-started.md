@@ -83,7 +83,8 @@ shipkit {
 ```
 
 Property **github.repository** is by default filled with your remote origin URL, while **github.readOnlyAuthToken** uses generic [shipkit-org](https://github.com/shipkit-org) account.
-It is sufficient to try out a release locally.
+It is sufficient to try out a release locally. 
+More info about how to generate GitHub's tokens is in [Production configuration](#production-configuration)  
 
 ### Bintray configuration
 
@@ -135,15 +136,33 @@ When you are done testing Shipkit and you want to use it on production there is 
 
 #### GitHub
 
-You need to [generate personal access tokens on GitHub](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/).
-Please generate 1 read-only token and 1 write token.
-When generating the token, GitHub asks about "auth scopes".
-Read-only token should have no auth scopes checked.
-Write token needs "public repo" auth token checked.
-Read-only token will be checked in with the source code and will enable any contributor to perform light release testing (preview release notes, automatically generate contributors for poms, etc).
-Write token should be used on CI machine to perform actual releases.
-Export write token as **GH_WRITE_TOKEN** env variable on Travis CI.
-We recommend configuring env variables in [Travis CI repository settings](https://docs.travis-ci.com/user/environment-variables/#Defining-Variables-in-Repository-Settings).
+You need to generate personal access tokens on GitHub.
+
+#####  Read only token
+
+  Read-only token will be checked in with the source code and will enable any contributor to perform light release testing (preview release notes, automatically generate contributors for poms, etc).
+  1. Go to [Personal access tokens](https://github.com/settings/tokens) page
+  2. Click **Generate new token**
+  3. Give your token a descriptive name (read only token)
+  4. Please don't check any scope
+![GitHub Read Only Token](img/githubReadOnlyToken.png)
+
+  5. Click **Generate token**
+  6. Copy Token and paste it as value of `readOnlyAuthToken` in "shipkit.gradle"
+
+##### Write token
+
+  Write token should be used on CI machine to perform actual releases.
+  1. Go to [Personal access tokens](https://github.com/settings/tokens) page
+  2. Click **Generate new token**
+  3. Give your token a descriptive name (write token)
+  4. Please check `public_repo`
+![GitHub Write Token](img/githubWriteToken.png)
+
+  5. Click **Generate token**
+  6. Copy Token
+  7. Export write token as **GH_WRITE_TOKEN** env variable on Travis CI.
+  We recommend configuring env variables in [Travis CI repository settings](https://docs.travis-ci.com/user/environment-variables/#Defining-Variables-in-Repository-Settings).
 
 #### Shipkit
 
@@ -156,7 +175,7 @@ You need to change default values in shipkit.gradle to the appropriate ones for 
 For this you have to sign up for Bintray's free open source plan, and at least one repository.
 See Bintray's [getting started guide](https://bintray.com/docs/usermanual/starting/starting_gettingstarted.html).
 
-Once you created Bintray account, please generate [Bintray API key](https://bintray.com/docs/usermanual/interacting/interacting_interacting.html#anchorAPIKEY) so that you can publish automatically to your repositories.
+Once you created Bintray account, please generate [Bintray API key](https://www.jfrog.com/confluence/display/BT/Interacting#Interacting-APIKey) so that you can publish automatically to your repositories.
 For safety, don't check in the API key to Git.
 Instead, configure **BINTRAY_API_KEY** environment variable in [Travis CI repository settings](https://docs.travis-ci.com/user/environment-variables/#Defining-Variables-in-Repository-Settings).
 
@@ -187,7 +206,11 @@ script:
  - ./gradlew build -s && ./gradlew ciPerformRelease
 ```
 
-The "script" part of Travis CI setup consists of 2 operations separate with "&&". This is the easiest way to configure releases in Travis. The first operation is typically the "build" command, but you totally configure it. Second operation uses "&&" so that it is only triggered if the build succeeds. "ciPerformRelease" task is the core of Shipkit, it aggregates few other tasks:
+The "script" part of Travis CI setup consists of 2 operations separate with "&&". 
+This is the easiest way to configure releases in Travis. 
+The first operation is typically the "build" command, but you totally configure it. 
+Second operation uses "&&" so that it is only triggered if the build succeeds. 
+"ciPerformRelease" task is the core of Shipkit, it aggregates few other tasks:
 
 - **releaseNeeded** which checks if release should be made during this build.
 There is a number of ways how you can skip release — eg. by using **[ci skip-release]** in your commit message or set **SKIP_RELEASE** environment variable.
