@@ -92,7 +92,8 @@ public class UpdateReleaseNotes {
 
         Map<String, Contributor> contributorsMap = contributorsMap(task.getContributors(), contributorsFromGitHub, task.getDevelopers(), task.getGitHubUrl());
         String notes = ReleaseNotesFormatters.detailedFormatter(headerMessage,
-            "", task.getGitHubLabelMapping(), vcsCommitTemplate, task.getPublicationRepository(), contributorsMap, task.isEmphasizeVersion())
+            "", task.getGitHubLabelMapping(), vcsCommitTemplate, task.getPublicationRepository(),
+            contributorsMap, task.isEmphasizeVersion(), task.getPublicationPluginName())
             .formatReleaseNotes(data);
 
         return notes + "\n\n";

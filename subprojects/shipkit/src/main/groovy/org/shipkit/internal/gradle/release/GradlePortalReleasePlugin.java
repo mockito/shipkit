@@ -67,6 +67,7 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
 
             UpdateReleaseNotesTask updateNotes = (UpdateReleaseNotesTask) project.getTasks().getByName(ReleaseNotesPlugin.UPDATE_NOTES_TASK);
             updateNotes.setPublicationRepository(conf.getReleaseNotes().getPublicationRepository());
+            updateNotes.setPublicationPluginName(conf.getReleaseNotes().getPublicationPluginName());
 
             //when contributors are testing, we need to avoid publish task because it requires secret keys
             releasePlugin.excludeFromContributorTest(GradlePortalPublishPlugin.PUBLISH_PLUGINS_TASK);

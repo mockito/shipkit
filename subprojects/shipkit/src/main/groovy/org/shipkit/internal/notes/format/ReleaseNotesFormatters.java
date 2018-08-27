@@ -45,8 +45,9 @@ public class ReleaseNotesFormatters {
                                                                String vcsCommitsLinkTemplate,
                                                                String publicationRepository,
                                                                Map<String, Contributor> contributors,
-                                                               boolean emphasizeVersion) {
+                                                               boolean emphasizeVersion,
+                                                               String publicationPluginName) {
         return new DetailedFormatter(header, introductionText, labelMapping, vcsCommitsLinkTemplate,
-                publicationRepository, contributors, emphasizeVersion);
+                publicationRepository, contributors, emphasizeVersion, publicationPluginName);
     }
 }

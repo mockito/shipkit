@@ -11,7 +11,7 @@ import spock.lang.Specification
 class DetailedFormatterTest extends Specification {
 
     def f = new DetailedFormatter("Info about shipkit\n\n", "Release notes:\n\n", ["noteworthy": "Noteworthy", "bug": "Bugfixes"],
-            "http://commits/{0}...{1}", "Bintray/", [:], false)
+            "http://commits/{0}...{1}", "Bintray/", [:], false, "")
 
     def "no releases"() {
         expect:
@@ -158,7 +158,7 @@ Release notes:
         }
 
         def summary = DetailedFormatter.releaseSummary(new Date(1483500000000), "1.2.3", c, [:], "link",
-                "https://bintray.com/shipkit/")
+                "https://bintray.com/shipkit/", "")
 
         expect:
         summary == """ - 2017-01-04 - [100 commits](link) by 4 authors - published to [![Bintray](https://img.shields.io/badge/Bintray-1.2.3-green.svg)](https://bintray.com/shipkit/1.2.3)
@@ -173,6 +173,36 @@ Release notes:
 
         expect:
         DetailedFormatter.authorLink(c, null) == "John"
+    }
+
+    def "gradle plugin portal badge"() {
+        def c = Stub(ContributionSet) {
+            getAllCommits() >> [Stub(Commit)] * 100 //100 commits
+            getAuthorCount() >> 1
+            getContributions() >> [ c("Szczepan Faber", 100)]
+        }
+
+        def summary = DetailedFormatter.releaseSummary(new Date(1483500000000), "1.2.3", c, [:], "link",
+            "https://plugins.gradle.org/plugin/org.shipkit.java/", "org.shipkit.java.gradle.plugin")
+
+        expect:
+        summary == """ - 2017-01-04 - [100 commits](link) by Szczepan Faber - published to [![Gradle](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/org/shipkit/java/org.shipkit.java.gradle.plugin/maven-metadata.xml.svg?colorB=007ec6&label=Gradle)](https://plugins.gradle.org/plugin/org.shipkit.java/1.2.3)
+"""
+    }
+
+    def "gradle plugin portal badge when empty plugin name"() {
+        def c = Stub(ContributionSet) {
+            getAllCommits() >> [Stub(Commit)] * 100 //100 commits
+            getAuthorCount() >> 1
+            getContributions() >> [ c("Szczepan Faber", 100)]
+        }
+
+        def summary = DetailedFormatter.releaseSummary(new Date(1483500000000), "1.2.3", c, [:], "link",
+            "https://plugins.gradle.org/plugin/org.shipkit.java/", "")
+
+        expect:
+        summary == """ - 2017-01-04 - [100 commits](link) by Szczepan Faber - published to [![Gradle](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/org/shipkit/java/maven-metadata.xml.svg?colorB=007ec6&label=Gradle)](https://plugins.gradle.org/plugin/org.shipkit.java/1.2.3)
+"""
     }
 
     private Contribution c(String name, int commits) {

@@ -55,6 +55,7 @@ public class ShipkitConfiguration {
         releaseNotes.setFile("docs/release-notes.md");
         releaseNotes.setIgnoreCommitsContaining(singletonList("[ci skip]"));
         releaseNotes.setLabelMapping(Collections.<String, String>emptyMap());
+        releaseNotes.setPublicationPluginName("");
 
         team.setContributors(Collections.<String>emptyList());
         team.setDevelopers(Collections.<String>emptyList());
@@ -296,6 +297,36 @@ public class ShipkitConfiguration {
          */
         public void setPublicationRepository(String publicationRepository) {
             store.put("releaseNotes.publicationRepository", publicationRepository);
+        }
+
+        /**
+         * Get the Publication Plugin Name
+         *
+         * @see @setPublicationPluginName(String)
+         */
+        public String getPublicationPluginName() {
+            return store.getString("releaseNotes.publicationPluginName");
+        }
+
+        /**
+         * Set the Publication Plugin Name published to Gradle Plugin Portal.
+         * This is currently used to configure repository Badge URL when generating release notes.
+         * E.g.
+         * <pre>
+         *     releaseNotes.publicationPluginName = "org.shipkit.java.gradle.plugin"
+         * </pre>
+         * and
+         * <pre>
+         *    releaseNotes.publicationRepository = "https://plugins.gradle.org/plugin/org.shipkit.java/"
+         * </pre>
+         * Will generate Gradle Badge:
+         * <pre>
+         *     https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/org/shipkit/java/org.shipkit.java.gradle.plugin/maven-metadata.xml.svg?colorB=007ec6&label=Gradle
+         * </pre>
+         * This will show nice badge with actual plugin version in Gradle Plugin Portal.
+         */
+        public void setPublicationPluginName(String publicationPluginName) {
+            store.put("releaseNotes.publicationPluginName", publicationPluginName);
         }
     }
 
