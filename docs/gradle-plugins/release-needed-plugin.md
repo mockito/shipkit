@@ -12,7 +12,7 @@ if the release is needed.
 #### Configuration
 
 Implementations of ReleaseNeededTask allow you to configure following properties:
-- **releaseBranchRegex** is used to determine if we should release on this branch or not.
+- **releasableBranchRegex** is used to determine if we should release on this branch or not.
 For example we don't want to release on tags and feature branches. This parameter is a
 regular Java regex, and defaults to "master|release/.+".
 - **pullRequest** is set to **true** if the build is done for pull request.
@@ -29,7 +29,7 @@ Release is considered not needed when:
  * we are building a "pull request", see [Travis Documentation](https://docs.travis-ci.com/user/environment-variables/) for more information
 
 Release is needed when all above is false and:
- * we are building on a branch that matches releaseBranchRegex (e.g. 'master'), see **releaseBranchRegex** in [Configuration section](#configuration)
+ * we are building on a branch that matches releasableBranchRegex (e.g. 'master'), see **releasableBranchRegex** in [Configuration section](#configuration)
  * and one of the following criteria is true:
    * there are changes in the binaries when compared to previous version
    * commit message contains '[ci skip-compare-publications]'
