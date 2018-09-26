@@ -52,6 +52,9 @@ abstract class GradleSpecification extends Specification implements GradleVersio
                 gitHub.readOnlyAuthToken = "foo"
                 gitHub.repository = "repo"
                 releaseNotes.publicationRepository = "repo"
+
+                licenseInfo.license = "The MIT License"
+                licenseInfo.url = "https://github.com/repo/blob/master/LICENSE"
             }
         """
 
