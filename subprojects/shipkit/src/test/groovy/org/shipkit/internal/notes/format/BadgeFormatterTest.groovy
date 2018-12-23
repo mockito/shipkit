@@ -16,8 +16,6 @@ class BadgeFormatterTest extends Specification {
     }
 
     def "gradle plugin portal badge"() {
-
-
         def summary = badgeFormatter.getRepositoryBadge("1.2.3",
             "https://plugins.gradle.org/plugin/org.shipkit.java/",
             "org.shipkit.java.gradle.plugin")
