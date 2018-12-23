@@ -1,6 +1,5 @@
 package org.shipkit.internal.notes.format;
 
-import org.shipkit.internal.comparison.artifact.DefaultArtifactUrlResolverFactory;
 import org.shipkit.internal.notes.model.*;
 import org.shipkit.internal.util.DateUtil;
 import org.shipkit.internal.util.MultiMap;
@@ -17,7 +16,6 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
 
     private static final int MAX_AUTHORS = 3;
     private static final String NO_LABEL = "Remaining changes";
-    private static final String GRADLE_PORTAL_URL = "https://plugins.gradle.org/plugin/";
     private final String introductionText;
     private final Map<String, String> labelMapping;
     private final String vcsCommitsLinkTemplate;
@@ -26,10 +24,11 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
     private final boolean emphasizeVersion;
     private final String header;
     private final String publicationPluginName;
+    private final BadgeFormatter badgeFormatter;
 
     DetailedFormatter(String header, String introductionText, Map<String, String> labelMapping, String vcsCommitsLinkTemplate,
                       String publicationRepository, Map<String, Contributor> contributors, boolean emphasizeVersion,
-                      String publicationPluginName) {
+                      String publicationPluginName, BadgeFormatter badgeFormatter) {
         this.header = header;
         this.introductionText = introductionText;
         this.labelMapping = labelMapping;
@@ -38,6 +37,7 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         this.contributors = contributors;
         this.emphasizeVersion = emphasizeVersion;
         this.publicationPluginName = publicationPluginName;
+        this.badgeFormatter = badgeFormatter;
     }
 
     @Override
@@ -76,52 +76,15 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         return prefix + version;
     }
 
-    static String releaseSummary(Date date, String version, ContributionSet contributions, Map<String, Contributor>
+    String releaseSummary(Date date, String version, ContributionSet contributions, Map<String, Contributor>
         contributors, String vcsCommitsLink, String publicationRepository, String pluginName) {
         return summaryDatePrefix(date) + authorsSummary(contributions, contributors, vcsCommitsLink)
-            + " - published to " + getRepositoryBadge(version, publicationRepository, pluginName) + "\n" +
+            + " - published to " + badgeFormatter.getRepositoryBadge(version, publicationRepository, pluginName) + "\n" +
             authorsSummaryAppendix(contributions, contributors);
     }
 
     private static String summaryDatePrefix(Date date) {
         return " - " + DateUtil.formatDate(date) + " - ";
-    }
-
-    private static String getRepositoryBadge(String version, String publicationRepository, String pluginName) {
-        if (publicationRepository.startsWith(GRADLE_PORTAL_URL)) {
-            return gradlePluginPortalBadge(version, publicationRepository, pluginName);
-        } else {
-            return bintrayBadge(version, publicationRepository);
-        }
-    }
-
-    private static String gradlePluginPortalBadge(String version, String publicationRepository, String pluginName) {
-        // https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/org/shipkit/org.shipkit.java.gradle.plugin/maven-metadata.xml.svg?colorB=007ec6&label=Gradle
-        final String markdownPrefix = "[![Gradle](";
-        final String shieldsIoBadgeLink = "https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/"
-            + extractPackageFromRepo(publicationRepository, pluginName)
-            + "/maven-metadata.xml.svg?colorB=007ec6&label=Gradle";
-        final String markdownPostfix = ")]";
-        final String repositoryLinkWithVersion = DefaultArtifactUrlResolverFactory.resolveUrlFromPublicationRepository(publicationRepository, version);
-        return markdownPrefix + shieldsIoBadgeLink + markdownPostfix + "(" + repositoryLinkWithVersion + ")";
-    }
-
-    private static String extractPackageFromRepo(String publicationRepository, String pluginName) {
-
-        String packageName = publicationRepository.substring(GRADLE_PORTAL_URL.length(), publicationRepository.length() - 1)
-            .replace('.', '/');
-        if (!isEmpty(pluginName)) {
-            packageName = packageName + "/" + pluginName;
-        }
-        return packageName;
-    }
-
-    private static String bintrayBadge(String version, String publicationRepository) {
-        final String markdownPrefix = "[![Bintray](";
-        final String shieldsIoBadgeLink = "https://img.shields.io/badge/Bintray-" + version + "-green.svg";
-        final String markdownPostfix = ")]";
-        final String repositoryLinkWithVersion = DefaultArtifactUrlResolverFactory.resolveUrlFromPublicationRepository(publicationRepository, version);
-        return markdownPrefix + shieldsIoBadgeLink + markdownPostfix + "(" + repositoryLinkWithVersion + ")";
     }
 
     private static String authorsSummaryAppendix(ContributionSet contributions, Map<String, Contributor> contributors) {
