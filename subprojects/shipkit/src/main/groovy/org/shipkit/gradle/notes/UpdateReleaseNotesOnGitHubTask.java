@@ -2,8 +2,10 @@ package org.shipkit.gradle.notes;
 
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
+import org.shipkit.internal.gradle.notes.tasks.UpdateReleaseNotes;
 import org.shipkit.internal.gradle.notes.tasks.UpdateReleaseNotesOnGitHub;
 import org.shipkit.internal.notes.header.HeaderProvider;
+import org.shipkit.internal.util.GitHubApi;
 
 /**
  * Generates incremental, detailed release notes text and appends them to the file {@link #getReleaseNotesFile()}.
@@ -20,7 +22,10 @@ public class UpdateReleaseNotesOnGitHubTask extends AbstractReleaseNotesTask {
      */
     @TaskAction
     public void updateReleaseNotesOnGitHub() throws Exception {
-        new UpdateReleaseNotesOnGitHub().updateReleaseNotes(this, new HeaderProvider());
+        GitHubApi gitHubApi = new GitHubApi(gitHubApiUrl, gitHubWriteToken);
+        UpdateReleaseNotes updateReleaseNotes = new UpdateReleaseNotes();
+        new UpdateReleaseNotesOnGitHub(gitHubApi, updateReleaseNotes)
+            .updateReleaseNotes(this, new HeaderProvider());
     }
 
     /**
