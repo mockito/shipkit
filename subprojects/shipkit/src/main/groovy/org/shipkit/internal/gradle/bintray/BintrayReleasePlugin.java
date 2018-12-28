@@ -5,6 +5,7 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
+import org.shipkit.gradle.notes.UpdateReleaseNotesOnGitHubTask;
 import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
@@ -57,12 +58,18 @@ public class BintrayReleasePlugin implements Plugin<Project> {
                 final BintrayExtension bintray = subproject.getExtensions().getByType(BintrayExtension.class);
                 deferredConfiguration(subproject, () -> {
                     UpdateReleaseNotesTask updateNotes = (UpdateReleaseNotesTask) project.getTasks().getByName(ReleaseNotesPlugin.UPDATE_NOTES_TASK);
+                    UpdateReleaseNotesOnGitHubTask updateNotesOnGitHub = (UpdateReleaseNotesOnGitHubTask) project.getTasks().getByName(ReleaseNotesPlugin.UPDATE_NOTES_ON_GITHUB_TASK);
                     String userSpecifiedRepo = conf.getLenient().getReleaseNotes().getPublicationRepository();
                     if (userSpecifiedRepo != null) {
                         updateNotes.setPublicationRepository(userSpecifiedRepo);
+                        updateNotesOnGitHub.setPublicationRepository(userSpecifiedRepo);
                     } else {
-                        updateNotes.setPublicationRepository(BintrayUtil.getRepoLink(bintray));
+                        String repoLink = BintrayUtil.getRepoLink(bintray);
+                        updateNotes.setPublicationRepository(repoLink);
+                        updateNotesOnGitHub.setPublicationRepository(repoLink);
                     }
+
+                    updateNotesOnGitHub.setGitHubWriteToken(conf.getLenient().getGitHub().getWriteAuthToken());
                 });
             });
 

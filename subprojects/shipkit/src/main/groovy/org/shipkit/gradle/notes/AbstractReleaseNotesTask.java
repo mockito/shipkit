@@ -18,16 +18,13 @@ public class AbstractReleaseNotesTask extends DefaultTask {
     private File releaseNotesFile;
     private boolean previewMode;
 
-    @Input
-    @Optional
-    private String previousVersion;
+    @Input @Optional private String previousVersion;
     @Input private String gitHubUrl;
     @Input private String gitHubRepository;
     @Input private Map<String, String> gitHubLabelMapping = new LinkedHashMap<>();
     @Input private String publicationRepository;
     @Input @Optional private String publicationPluginName;
-    @InputFile
-    private File releaseNotesData;
+    @InputFile private File releaseNotesData;
     @Input private Collection<String> developers = new LinkedList<>();
     @Input private Collection<String> contributors = new LinkedList<>();
     @InputFile @Optional private File contributorsDataFile;

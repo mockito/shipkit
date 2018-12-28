@@ -1,11 +1,12 @@
 package org.shipkit.internal.gradle.notes;
 
-import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
+import org.shipkit.gradle.notes.AbstractReleaseNotesTask;
 import org.shipkit.gradle.notes.FetchReleaseNotesTask;
+import org.shipkit.gradle.notes.UpdateReleaseNotesOnGitHubTask;
 import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.contributors.github.GitHubContributorsPlugin;
@@ -33,15 +34,17 @@ import static java.util.Collections.singletonList;
  * <ul>
  * <li>fetchReleaseNotes - fetches release notes data, see {@link FetchReleaseNotesTask}</li>
  * <li>updateReleaseNotes - updates release notes file in place, or only displays preview if project property 'preview' exists, see {@link UpdateReleaseNotesTask}</li>
+ * <li>updateReleaseNotesOnGitHub - updates release notes on GitHub, or only displays preview if project property 'preview' exists, see {@link org.shipkit.gradle.notes.UpdateReleaseNotesOnGitHubTask}</li>
  * </ul>
  * <p>
  * It also adds updates release notes changes if {@link GitPlugin} applied
  */
 public class ReleaseNotesPlugin implements Plugin<Project> {
 
-    public static final String PREVIEW_PROJECT_PROPERTY = "preview";
+    private static final String PREVIEW_PROJECT_PROPERTY = "preview";
     private static final String FETCH_NOTES_TASK = "fetchReleaseNotes";
     public static final String UPDATE_NOTES_TASK = "updateReleaseNotes";
+    public static final String UPDATE_NOTES_ON_GITHUB_TASK = "updateReleaseNotesOnGitHub";
 
     public void apply(final Project project) {
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
@@ -51,46 +54,56 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     }
 
     private static void releaseNotesTasks(final Project project, final ShipkitConfiguration conf) {
-        final FetchReleaseNotesTask releaseNotesFetcher = TaskMaker.task(project, FETCH_NOTES_TASK, FetchReleaseNotesTask.class, new Action<FetchReleaseNotesTask>() {
-            public void execute(final FetchReleaseNotesTask t) {
-                t.setDescription("Fetches release notes data from Git and GitHub and serializes them to a file");
-                t.setOutputFile(new File(project.getBuildDir(), "detailed-release-notes.ser"));
-                t.setGitHubApiUrl(conf.getGitHub().getApiUrl());
-                t.setGitHubReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
-                t.setGitHubRepository(conf.getGitHub().getRepository());
-                t.setPreviousVersion(conf.getPreviousReleaseVersion());
-                t.setTagPrefix(conf.getGit().getTagPrefix());
-                t.setIgnoreCommitsContaining(conf.getReleaseNotes().getIgnoreCommitsContaining());
-                t.setIgnoredContributors(conf.getTeam().getIgnoredContributors());
+        final FetchReleaseNotesTask releaseNotesFetcher = TaskMaker.task(project, FETCH_NOTES_TASK, FetchReleaseNotesTask.class, task -> {
+            task.setDescription("Fetches release notes data from Git and GitHub and serializes them to a file");
+            task.setOutputFile(new File(project.getBuildDir(), "detailed-release-notes.ser"));
+            task.setGitHubApiUrl(conf.getGitHub().getApiUrl());
+            task.setGitHubReadOnlyAuthToken(conf.getGitHub().getReadOnlyAuthToken());
+            task.setGitHubRepository(conf.getGitHub().getRepository());
+            task.setPreviousVersion(conf.getPreviousReleaseVersion());
+            task.setTagPrefix(conf.getGit().getTagPrefix());
+            task.setIgnoreCommitsContaining(conf.getReleaseNotes().getIgnoreCommitsContaining());
+            task.setIgnoredContributors(conf.getTeam().getIgnoredContributors());
+        });
+
+        Task contributorsFetcher = project.getTasks().getByName(GitHubContributorsPlugin.FETCH_CONTRIBUTORS);
+
+        TaskMaker.task(project, UPDATE_NOTES_TASK, UpdateReleaseNotesTask.class, task -> {
+            task.setDescription("Updates release notes file. Run with '-Ppreview' if you only want to see the preview.");
+
+            configureDetailedNotes(task, releaseNotesFetcher, project, conf, contributorsFetcher);
+
+            boolean previewMode = project.hasProperty(PREVIEW_PROJECT_PROPERTY);
+            task.setPreviewMode(previewMode);
+
+            if (!previewMode) {
+                File releaseNotesFile = project.file(conf.getReleaseNotes().getFile());
+                GitPlugin.registerChangesForCommitIfApplied(
+                    singletonList(releaseNotesFile), "release notes updated", task);
+                task.getOutputs().file(releaseNotesFile);
             }
         });
 
-        final Task contributorsFetcher = project.getTasks().getByName(GitHubContributorsPlugin.FETCH_CONTRIBUTORS);
+        UpdateReleaseNotesOnGitHubTask updateReleaseNotesOnGitHubTask = TaskMaker.task(project, UPDATE_NOTES_ON_GITHUB_TASK, UpdateReleaseNotesOnGitHubTask.class, task -> {
+            task.setDescription("Updates release notes on GitHub releases page. Run with '-Ppreview' if you only want to see the preview.");
 
-        TaskMaker.task(project, UPDATE_NOTES_TASK, UpdateReleaseNotesTask.class, new Action<UpdateReleaseNotesTask>() {
-            public void execute(final UpdateReleaseNotesTask t) {
-                t.setDescription("Updates release notes file. Run with '-Ppreview' if you only want to see the preview.");
+            configureDetailedNotes(task, releaseNotesFetcher, project, conf, contributorsFetcher);
 
-                configureDetailedNotes(t, releaseNotesFetcher, project, conf, contributorsFetcher);
+            boolean previewMode = project.hasProperty(PREVIEW_PROJECT_PROPERTY);
+            task.setPreviewMode(previewMode);
 
-                boolean previewMode = project.hasProperty(PREVIEW_PROJECT_PROPERTY);
-                t.setPreviewMode(previewMode);
-
-                if (!previewMode) {
-                    File releaseNotesFile = project.file(conf.getReleaseNotes().getFile());
-                    GitPlugin.registerChangesForCommitIfApplied(
-                        singletonList(releaseNotesFile), "release notes updated", t);
-                    t.getOutputs().file(releaseNotesFile);
-                }
-            }
+            task.setGitHubWriteToken(conf.getLenient().getGitHub().getWriteAuthToken());
         });
+
+        updateReleaseNotesOnGitHubTask.setGitHubApiUrl(conf.getGitHub().getApiUrl());
+        updateReleaseNotesOnGitHubTask.setUpstreamRepositoryName(conf.getGitHub().getRepository());
     }
 
-    private static void configureDetailedNotes(final UpdateReleaseNotesTask task,
-                                               final FetchReleaseNotesTask releaseNotesFetcher,
-                                               final Project project,
-                                               final ShipkitConfiguration conf,
-                                               final Task contributorsFetcher) {
+    private static void configureDetailedNotes(AbstractReleaseNotesTask task,
+                                               FetchReleaseNotesTask releaseNotesFetcher,
+                                               Project project,
+                                               ShipkitConfiguration conf,
+                                               Task contributorsFetcher) {
         task.dependsOn(releaseNotesFetcher);
         task.dependsOn(contributorsFetcher);
 
