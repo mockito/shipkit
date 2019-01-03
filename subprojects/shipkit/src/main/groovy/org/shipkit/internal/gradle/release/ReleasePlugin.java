@@ -97,6 +97,7 @@ public class ReleasePlugin implements Plugin<Project> {
             //using finalizedBy so that all clean up tasks run, even if one of them fails
             t.finalizedBy(GitPlugin.PERFORM_GIT_COMMIT_CLEANUP_TASK);
             t.finalizedBy(GitPlugin.TAG_CLEANUP_TASK);
+            t.finalizedBy(ReleaseNotesPlugin.UPDATE_NOTES_ON_GITHUB_TASK_CLEANUP_TASK);
         });
 
         contributorTestRelease = TaskMaker.task(project, CONTRIBUTOR_TEST_RELEASE_TASK, ShipkitExecTask.class, t -> {

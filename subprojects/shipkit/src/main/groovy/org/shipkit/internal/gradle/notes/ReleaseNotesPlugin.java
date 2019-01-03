@@ -4,10 +4,7 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
-import org.shipkit.gradle.notes.AbstractReleaseNotesTask;
-import org.shipkit.gradle.notes.FetchReleaseNotesTask;
-import org.shipkit.gradle.notes.UpdateReleaseNotesOnGitHubTask;
-import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
+import org.shipkit.gradle.notes.*;
 import org.shipkit.internal.gradle.configuration.LazyConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.contributors.github.GitHubContributorsPlugin;
@@ -46,6 +43,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     private static final String FETCH_NOTES_TASK = "fetchReleaseNotes";
     public static final String UPDATE_NOTES_TASK = "updateReleaseNotes";
     public static final String UPDATE_NOTES_ON_GITHUB_TASK = "updateReleaseNotesOnGitHub";
+    public static final String UPDATE_NOTES_ON_GITHUB_TASK_CLEANUP_TASK = "updateReleaseNotesOnGitHubCleanUp";
 
     public void apply(final Project project) {
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
@@ -100,6 +98,18 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
 
         updateReleaseNotesOnGitHubTask.setGitHubApiUrl(conf.getGitHub().getApiUrl());
         updateReleaseNotesOnGitHubTask.setUpstreamRepositoryName(conf.getGitHub().getRepository());
+
+        UpdateReleaseNotesOnGitHubCleanupTask updateReleaseNotesOnGitHubCleanupTask = TaskMaker.task(project, UPDATE_NOTES_ON_GITHUB_TASK_CLEANUP_TASK, UpdateReleaseNotesOnGitHubCleanupTask.class, task -> {
+            task.setDescription("Remove release notes from GitHub release page created by updateReleaseNotesOnGitHub task.");
+
+            configureDetailedNotes(task, releaseNotesFetcher, project, conf, contributorsFetcher);
+            LazyConfiguration.lazyConfiguration(task, () -> {
+                task.setGitHubWriteToken(conf.getGitHub().getWriteAuthToken());
+            });
+        });
+
+        updateReleaseNotesOnGitHubCleanupTask.setGitHubApiUrl(conf.getGitHub().getApiUrl());
+        updateReleaseNotesOnGitHubCleanupTask.setUpstreamRepositoryName(conf.getGitHub().getRepository());
     }
 
     private static void configureDetailedNotes(AbstractReleaseNotesTask task,

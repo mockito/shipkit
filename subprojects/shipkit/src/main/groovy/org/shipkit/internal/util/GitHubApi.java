@@ -42,6 +42,10 @@ public class GitHubApi {
         return doRequest(relativeUrl, "PATCH", Optional.of(body));
     }
 
+    public String delete(String relativeUrl) throws IOException {
+        return doRequest(relativeUrl, "DELETE", Optional.empty());
+    }
+
     private String doRequest(String relativeUrl, String method, Optional<String> body) throws IOException {
         URL url = new URL(gitHubApiUrl + relativeUrl);
 

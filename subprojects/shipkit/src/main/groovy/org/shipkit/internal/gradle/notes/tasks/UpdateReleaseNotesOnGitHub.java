@@ -4,10 +4,13 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.json.simple.JsonObject;
 import org.json.simple.Jsoner;
+import org.shipkit.gradle.notes.UpdateReleaseNotesOnGitHubCleanupTask;
 import org.shipkit.gradle.notes.UpdateReleaseNotesOnGitHubTask;
 import org.shipkit.internal.gradle.util.StringUtil;
 import org.shipkit.internal.notes.header.HeaderProvider;
 import org.shipkit.internal.util.GitHubApi;
+
+import java.io.IOException;
 
 public class UpdateReleaseNotesOnGitHub {
     private static final Logger LOG = Logging.getLogger(UpdateReleaseNotesOnGitHub.class);
@@ -61,5 +64,28 @@ public class UpdateReleaseNotesOnGitHub {
             return task.getVersion();
         }
         return task.getTagPrefix() + task.getVersion();
+    }
+
+    public void removeReleaseNotes(UpdateReleaseNotesOnGitHubCleanupTask task) {
+        String releaseId;
+        try {
+            releaseId = findReleaseByTagName(task);
+        } catch (Exception e) {
+            LOG.lifecycle("Can't find release on GitHub to remove");
+            LOG.debug("GitHub find release by tag returned: " + e.getMessage(), e);
+            return;
+        }
+
+        try {
+            removeRelease(releaseId, task);
+        } catch (IOException e) {
+            LOG.lifecycle("Can't delete release {} from GitHub", releaseId);
+            LOG.debug("GitHub can't delete release " + releaseId + ": " + e.getMessage(), e);
+        }
+    }
+
+    private void removeRelease(String releaseId, UpdateReleaseNotesOnGitHubCleanupTask task) throws IOException {
+        String url = "/repos/" + task.getUpstreamRepositoryName() + "/releases/" + releaseId;
+        gitHubApi.delete(url);
     }
 }
