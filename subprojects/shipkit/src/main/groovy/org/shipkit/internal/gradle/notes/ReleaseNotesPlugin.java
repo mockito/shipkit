@@ -8,6 +8,7 @@ import org.shipkit.gradle.notes.AbstractReleaseNotesTask;
 import org.shipkit.gradle.notes.FetchReleaseNotesTask;
 import org.shipkit.gradle.notes.UpdateReleaseNotesOnGitHubTask;
 import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
+import org.shipkit.internal.gradle.configuration.LazyConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.contributors.github.GitHubContributorsPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
@@ -92,7 +93,9 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
             boolean previewMode = project.hasProperty(PREVIEW_PROJECT_PROPERTY);
             task.setPreviewMode(previewMode);
 
-            task.setGitHubWriteToken(conf.getLenient().getGitHub().getWriteAuthToken());
+            LazyConfiguration.lazyConfiguration(task, () -> {
+                task.setGitHubWriteToken(conf.getGitHub().getWriteAuthToken());
+            });
         });
 
         updateReleaseNotesOnGitHubTask.setGitHubApiUrl(conf.getGitHub().getApiUrl());

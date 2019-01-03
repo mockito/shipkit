@@ -213,7 +213,7 @@ public class ShipkitConfiguration {
          */
         public String getWriteAuthToken() {
             return (String) store.getValue("gitHub.writeAuthToken", "GH_WRITE_TOKEN", "Please export 'GH_WRITE_TOKEN' variable first!\n" +
-                "It is highly recommended to keep write token secure and store env variable 'GH_WRITE_TOKEN' with your CI configuration." +
+                "It is highly recommended to keep write token secure and store env variable 'GH_WRITE_TOKEN' with your CI configuration. " +
                 "Alternatively, you can configure GitHub write auth token explicitly (don't check this in to Git!):\n" +
                 "  shipkit.gitHub.writeAuthToken = 'secret'");
         }
