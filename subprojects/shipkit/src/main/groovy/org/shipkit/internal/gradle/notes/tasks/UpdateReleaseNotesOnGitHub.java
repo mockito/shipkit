@@ -26,19 +26,29 @@ public class UpdateReleaseNotesOnGitHub {
     }
 
     private void updateOnGitHub(UpdateReleaseNotesOnGitHubTask task, String text) throws Exception {
+        String releaseId = findReleaseByTagName(task);
+        editRelease(releaseId, text, task);
+    }
+
+    private String findReleaseByTagName(UpdateReleaseNotesOnGitHubTask task) throws Exception {
+        String tagName = tagName(task);
+        String url = "/repos/" + task.getUpstreamRepositoryName() + "/releases/tags/" + tagName;
+        LOG.debug("GitHub release id by tag name GET {}", url);
+        LOG.lifecycle("GET {}", url);
+
+        String response = gitHubApi.get(url);
+        JsonObject responseJson = (JsonObject) Jsoner.deserialize(response);
+        return responseJson.getString("id");
+    }
+
+    private void editRelease(String releaseId, String text, UpdateReleaseNotesOnGitHubTask task) throws Exception {
         JsonObject body = new JsonObject();
-
-        body.put("tag_name", tagName(task));
-        body.put("name", tagName(task));
         body.put("body", text);
-        body.put("draft", false);
-        body.put("prerelease", task.isEmphasizeVersion());
 
-        String url = "/repos/" + task.getUpstreamRepositoryName() + "/releases";
-
-        LOG.debug("GitHub update release notes on release page POST {} body: {}", url, body.toJson());
-        LOG.lifecycle("POST {}", url);
-        String response = gitHubApi.post(url, body.toJson());
+        String url = "/repos/" + task.getUpstreamRepositoryName() + "/releases/" + releaseId;
+        LOG.debug("GitHub edit release notes on release page PATCH {} body: {}", url, body.toJson());
+        LOG.lifecycle("PATCH {}", url);
+        String response = gitHubApi.patch(url, body.toJson());
 
         JsonObject responseJson = (JsonObject) Jsoner.deserialize(response);
 

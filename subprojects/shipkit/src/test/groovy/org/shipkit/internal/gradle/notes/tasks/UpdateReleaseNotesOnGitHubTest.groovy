@@ -7,9 +7,13 @@ import spock.lang.Specification
 
 class UpdateReleaseNotesOnGitHubTest extends Specification {
 
-    def url = "/repos/mockito/shipkit-example/releases"
-    def body = '{"tag_name":"v1.0.0","prerelease":false,"draft":false,"name":"v1.0.0","body":"text"}'
-    def response = "{\n" +
+    def urlReleaseIdByTagName = "/repos/mockito/shipkit-example/releases/tags/v1.0.0"
+    def urlEditRelease = "/repos/mockito/shipkit-example/releases/1234"
+    def body = '{"body":"text"}'
+    def responseReleaseIdByTagName = "{\n" +
+        "  \"id\": 1234\n" +
+        "}"
+    def responseEditRelease = "{\n" +
         "  \"html_url\": \"https://github.com/mockito/shipkit-example/releases/v1.0.0\"" +
         "}"
 
@@ -30,6 +34,7 @@ class UpdateReleaseNotesOnGitHubTest extends Specification {
 
         then:
         1 * updateReleaseNotes.generateNewContent(task, header) >> "text"
-        1 * gitHubApi.post(url, body) >> response
+        1 * gitHubApi.get(urlReleaseIdByTagName) >> responseReleaseIdByTagName
+        1 * gitHubApi.patch(urlEditRelease, body) >> responseEditRelease
     }
 }
