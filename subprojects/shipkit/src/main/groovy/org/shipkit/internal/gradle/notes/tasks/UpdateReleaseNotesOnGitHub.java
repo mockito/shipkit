@@ -25,7 +25,12 @@ public class UpdateReleaseNotesOnGitHub {
 
     public void updateReleaseNotes(UpdateReleaseNotesOnGitHubTask task, HeaderProvider headerProvider) throws Exception {
         String releaseNotesText = updateReleaseNotes.generateNewContent(task, headerProvider);
-        updateOnGitHub(task, releaseNotesText);
+        if (task.isPreviewMode()) {
+            LOG.lifecycle("  Preview of release notes update:\n" +
+                "  ----------------\n" + releaseNotesText + "\n----------------");
+        } else {
+            updateOnGitHub(task, releaseNotesText);
+        }
     }
 
     private void updateOnGitHub(UpdateReleaseNotesOnGitHubTask task, String text) throws Exception {
@@ -39,9 +44,18 @@ public class UpdateReleaseNotesOnGitHub {
         LOG.debug("GitHub release id by tag name GET {}", url);
         LOG.lifecycle("GET {}", url);
 
-        String response = gitHubApi.get(url);
-        JsonObject responseJson = (JsonObject) Jsoner.deserialize(response);
-        return responseJson.getString("id");
+        try {
+            String response = gitHubApi.get(url);
+            JsonObject responseJson = (JsonObject) Jsoner.deserialize(response);
+            return responseJson.getString("id");
+        } catch (Exception e) {
+            if (task.isDryRun()) {
+                LOG.lifecycle("  returned some error, but run in -PdryRun mode, so will continue with default value: " +
+                    "\"DEFAULT_RELEASE_ID\".\nSee stacktrace for more details.", e);
+                return "DEFAULT_RELEASE_ID";
+            }
+            throw e;
+        }
     }
 
     private void editRelease(String releaseId, String text, UpdateReleaseNotesOnGitHubTask task) throws Exception {
@@ -50,13 +64,18 @@ public class UpdateReleaseNotesOnGitHub {
 
         String url = "/repos/" + task.getUpstreamRepositoryName() + "/releases/" + releaseId;
         LOG.debug("GitHub edit release notes on release page PATCH {} body: {}", url, body.toJson());
+        if (task.isDryRun()) {
+            LOG.lifecycle("It's -PdryRun mode, releases notes on GitHub will be NOT changed." +
+                "\n  It will execute in normal mode: PATCH {}", url);
+            return;
+        }
         LOG.lifecycle("PATCH {}", url);
         String response = gitHubApi.patch(url, body.toJson());
 
         JsonObject responseJson = (JsonObject) Jsoner.deserialize(response);
 
         String htmlUrl = responseJson.getString("html_url");
-        LOG.lifecycle("  Release notes updated on GitHub: {}", htmlUrl);
+        LOG.lifecycle("  Successfully updated release notes on GitHub: {}", htmlUrl);
     }
 
     private String tagName(UpdateReleaseNotesOnGitHubTask task) {

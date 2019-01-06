@@ -16,6 +16,7 @@ public class UpdateReleaseNotesOnGitHubTask extends AbstractReleaseNotesTask {
     @Input private String gitHubApiUrl;
     @Input private String gitHubWriteToken;
     @Input private String upstreamRepositoryName;
+    @Input private boolean dryRun;
 
     /**
      * Generates incremental release notes and appends it to the top of release notes file.
@@ -68,5 +69,19 @@ public class UpdateReleaseNotesOnGitHubTask extends AbstractReleaseNotesTask {
      */
     public void setUpstreamRepositoryName(String upstreamRepositoryName) {
         this.upstreamRepositoryName = upstreamRepositoryName;
+    }
+
+    /**
+     * Whether release notes should be updated on GitHub or not
+     */
+    public boolean isDryRun() {
+        return dryRun;
+    }
+
+    /**
+     * See {@link #isDryRun()}
+     */
+    public void setDryRun(boolean dryRun) {
+        this.dryRun = dryRun;
     }
 }

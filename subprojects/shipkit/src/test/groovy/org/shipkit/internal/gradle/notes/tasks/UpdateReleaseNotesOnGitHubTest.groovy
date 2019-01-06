@@ -39,6 +39,50 @@ class UpdateReleaseNotesOnGitHubTest extends Specification {
         1 * gitHubApi.patch(urlEditRelease, body) >> responseEditRelease
     }
 
+    def "should not call GitHub API when preview mode"() {
+        setup:
+        def gitHubApi = Mock(GitHubApi)
+        def updateReleaseNotes = Mock(UpdateReleaseNotes)
+        def task = Mock(UpdateReleaseNotesOnGitHubCleanupTask)
+        task.upstreamRepositoryName >> "mockito/shipkit-example"
+        task.tagPrefix >> "v"
+        task.version >> "1.0.0"
+        task.previewMode >> true
+
+        def header = new HeaderProvider()
+        def update = new UpdateReleaseNotesOnGitHub(gitHubApi, updateReleaseNotes)
+
+        when:
+        update.updateReleaseNotes(task, header)
+
+        then:
+        0 * gitHubApi.get(_)
+        0 * gitHubApi.delete(_)
+        0 * gitHubApi.patch(_)
+    }
+
+    def "should not edit release notes on GitHub when dry run mode"() {
+        setup:
+        def gitHubApi = Mock(GitHubApi)
+        def updateReleaseNotes = Mock(UpdateReleaseNotes)
+        def task = Mock(UpdateReleaseNotesOnGitHubCleanupTask)
+        task.upstreamRepositoryName >> "mockito/shipkit-example"
+        task.tagPrefix >> "v"
+        task.version >> "1.0.0"
+        task.dryRun >> true
+
+        def header = new HeaderProvider()
+        def update = new UpdateReleaseNotesOnGitHub(gitHubApi, updateReleaseNotes)
+
+        when:
+        update.updateReleaseNotes(task, header)
+
+        then:
+        1 * gitHubApi.get(_)
+        0 * gitHubApi.delete(_)
+        0 * gitHubApi.patch(_)
+    }
+
     def "should clean up release notes on GitHub"() {
         setup:
         def gitHubApi = Mock(GitHubApi)

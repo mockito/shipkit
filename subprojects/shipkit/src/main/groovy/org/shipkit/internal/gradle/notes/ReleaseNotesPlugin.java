@@ -98,6 +98,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
 
         updateReleaseNotesOnGitHubTask.setGitHubApiUrl(conf.getGitHub().getApiUrl());
         updateReleaseNotesOnGitHubTask.setUpstreamRepositoryName(conf.getGitHub().getRepository());
+        updateReleaseNotesOnGitHubTask.setDryRun(conf.isDryRun());
 
         UpdateReleaseNotesOnGitHubCleanupTask updateReleaseNotesOnGitHubCleanupTask = TaskMaker.task(project, UPDATE_NOTES_ON_GITHUB_TASK_CLEANUP_TASK, UpdateReleaseNotesOnGitHubCleanupTask.class, task -> {
             task.setDescription("Remove release notes from GitHub release page created by updateReleaseNotesOnGitHub task.");
