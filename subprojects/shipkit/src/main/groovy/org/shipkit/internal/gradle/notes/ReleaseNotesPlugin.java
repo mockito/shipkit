@@ -43,7 +43,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
     private static final String FETCH_NOTES_TASK = "fetchReleaseNotes";
     public static final String UPDATE_NOTES_TASK = "updateReleaseNotes";
     public static final String UPDATE_NOTES_ON_GITHUB_TASK = "updateReleaseNotesOnGitHub";
-    public static final String UPDATE_NOTES_ON_GITHUB_TASK_CLEANUP_TASK = "updateReleaseNotesOnGitHubCleanUp";
+    public static final String UPDATE_NOTES_ON_GITHUB_CLEANUP_TASK = "updateReleaseNotesOnGitHubCleanUp";
 
     public void apply(final Project project) {
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
@@ -100,10 +100,14 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
         updateReleaseNotesOnGitHubTask.setUpstreamRepositoryName(conf.getGitHub().getRepository());
         updateReleaseNotesOnGitHubTask.setDryRun(conf.isDryRun());
 
-        UpdateReleaseNotesOnGitHubCleanupTask updateReleaseNotesOnGitHubCleanupTask = TaskMaker.task(project, UPDATE_NOTES_ON_GITHUB_TASK_CLEANUP_TASK, UpdateReleaseNotesOnGitHubCleanupTask.class, task -> {
+        UpdateReleaseNotesOnGitHubCleanupTask updateReleaseNotesOnGitHubCleanupTask = TaskMaker.task(project, UPDATE_NOTES_ON_GITHUB_CLEANUP_TASK, UpdateReleaseNotesOnGitHubCleanupTask.class, task -> {
             task.setDescription("Remove release notes from GitHub release page created by updateReleaseNotesOnGitHub task.");
 
             configureDetailedNotes(task, releaseNotesFetcher, project, conf, contributorsFetcher);
+
+            boolean previewMode = project.hasProperty(PREVIEW_PROJECT_PROPERTY);
+            task.setPreviewMode(previewMode);
+
             LazyConfiguration.lazyConfiguration(task, () -> {
                 task.setGitHubWriteToken(conf.getGitHub().getWriteAuthToken());
             });
@@ -111,6 +115,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
 
         updateReleaseNotesOnGitHubCleanupTask.setGitHubApiUrl(conf.getGitHub().getApiUrl());
         updateReleaseNotesOnGitHubCleanupTask.setUpstreamRepositoryName(conf.getGitHub().getRepository());
+        updateReleaseNotesOnGitHubCleanupTask.setPublicationRepository("aa");
     }
 
     private static void configureDetailedNotes(AbstractReleaseNotesTask task,
