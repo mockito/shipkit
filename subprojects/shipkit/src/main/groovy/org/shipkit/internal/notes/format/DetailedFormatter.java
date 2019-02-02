@@ -1,13 +1,13 @@
 package org.shipkit.internal.notes.format;
 
-import org.shipkit.internal.comparison.artifact.DefaultArtifactUrlResolverFactory;
-import org.shipkit.internal.gradle.util.StringUtil;
+import org.shipkit.internal.notes.model.*;
 import org.shipkit.internal.util.DateUtil;
 import org.shipkit.internal.util.MultiMap;
-import org.shipkit.internal.notes.model.*;
 
 import java.text.MessageFormat;
 import java.util.*;
+
+import static org.shipkit.internal.gradle.util.StringUtil.isEmpty;
 
 /**
  * Generates release notes. The class is hard to maintain. If you have ideas on how to make it cleaner, go for it
@@ -23,9 +23,12 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
     private final Map<String, Contributor> contributors;
     private final boolean emphasizeVersion;
     private final String header;
+    private final String publicationPluginName;
+    private final BadgeFormatter badgeFormatter;
 
     DetailedFormatter(String header, String introductionText, Map<String, String> labelMapping, String vcsCommitsLinkTemplate,
-                      String publicationRepository, Map<String, Contributor> contributors, boolean emphasizeVersion) {
+                      String publicationRepository, Map<String, Contributor> contributors, boolean emphasizeVersion,
+                      String publicationPluginName, BadgeFormatter badgeFormatter) {
         this.header = header;
         this.introductionText = introductionText;
         this.labelMapping = labelMapping;
@@ -33,6 +36,8 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         this.publicationRepository = publicationRepository;
         this.contributors = contributors;
         this.emphasizeVersion = emphasizeVersion;
+        this.publicationPluginName = publicationPluginName;
+        this.badgeFormatter = badgeFormatter;
     }
 
     @Override
@@ -49,7 +54,7 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
             String vcsCommitsLink = MessageFormat.format(vcsCommitsLinkTemplate, d.getPreviousVersionVcsTag(), d.getVcsTag());
             sb.append("\n");
             sb.append(releaseSummary(d.getDate(), d.getVersion(), d.getContributions(), contributors, vcsCommitsLink,
-                publicationRepository));
+                publicationRepository, publicationPluginName));
 
             if (!d.getContributions().getContributions().isEmpty()) {
                 //no point printing any improvements information if there are no code changes
@@ -71,23 +76,15 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         return prefix + version;
     }
 
-    static String releaseSummary(Date date, String version, ContributionSet contributions, Map<String, Contributor>
-        contributors, String vcsCommitsLink, String publicationRepository) {
+    String releaseSummary(Date date, String version, ContributionSet contributions, Map<String, Contributor>
+        contributors, String vcsCommitsLink, String publicationRepository, String pluginName) {
         return summaryDatePrefix(date) + authorsSummary(contributions, contributors, vcsCommitsLink)
-            + " - published to " + getBintrayBadge(version, publicationRepository) + "\n" +
+            + " - published to " + badgeFormatter.getRepositoryBadge(version, publicationRepository, pluginName) + "\n" +
             authorsSummaryAppendix(contributions, contributors);
     }
 
     private static String summaryDatePrefix(Date date) {
         return " - " + DateUtil.formatDate(date) + " - ";
-    }
-
-    private static String getBintrayBadge(String version, String publicationRepository) {
-        final String markdownPrefix = "[![Bintray](";
-        final String shieldsIoBadgeLink = "https://img.shields.io/badge/Bintray-" + version + "-green.svg";
-        final String markdownPostfix = ")]";
-        final String repositoryLinkWithVersion = DefaultArtifactUrlResolverFactory.resolveUrlFromPublicationRepository(publicationRepository, version);
-        return markdownPrefix + shieldsIoBadgeLink + markdownPostfix + "(" + repositoryLinkWithVersion + ")";
     }
 
     private static String authorsSummaryAppendix(ContributionSet contributions, Map<String, Contributor> contributors) {
@@ -158,7 +155,7 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
     }
 
     private static String link(String text, String link) {
-        return StringUtil.isEmpty(link) ? text :
+        return isEmpty(link) ? text :
                 "[" + text + "](" + link + ")";
     }
 

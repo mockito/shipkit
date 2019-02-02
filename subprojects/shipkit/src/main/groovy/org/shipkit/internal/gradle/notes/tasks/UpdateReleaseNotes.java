@@ -11,6 +11,7 @@ import org.shipkit.internal.notes.contributors.DefaultContributor;
 import org.shipkit.internal.notes.contributors.DefaultProjectContributorsSet;
 import org.shipkit.internal.notes.contributors.ProjectContributorsSerializer;
 import org.shipkit.internal.notes.contributors.ProjectContributorsSet;
+import org.shipkit.internal.notes.format.BadgeFormatter;
 import org.shipkit.internal.notes.format.ReleaseNotesFormatters;
 import org.shipkit.internal.notes.header.HeaderProvider;
 import org.shipkit.internal.notes.model.Contributor;
@@ -91,8 +92,10 @@ public class UpdateReleaseNotes {
         }
 
         Map<String, Contributor> contributorsMap = contributorsMap(task.getContributors(), contributorsFromGitHub, task.getDevelopers(), task.getGitHubUrl());
+        BadgeFormatter badgeFormatter = new BadgeFormatter();
         String notes = ReleaseNotesFormatters.detailedFormatter(headerMessage,
-            "", task.getGitHubLabelMapping(), vcsCommitTemplate, task.getPublicationRepository(), contributorsMap, task.isEmphasizeVersion())
+            "", task.getGitHubLabelMapping(), vcsCommitTemplate, task.getPublicationRepository(),
+            contributorsMap, task.isEmphasizeVersion(), task.getPublicationPluginName(), badgeFormatter)
             .formatReleaseNotes(data);
 
         return notes + "\n\n";

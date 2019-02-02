@@ -10,12 +10,13 @@ import spock.lang.Specification
 
 class DetailedFormatterTest extends Specification {
 
-    def f = new DetailedFormatter("Info about shipkit\n\n", "Release notes:\n\n", ["noteworthy": "Noteworthy", "bug": "Bugfixes"],
-            "http://commits/{0}...{1}", "Bintray/", [:], false)
+    def badgeFormatter = new BadgeFormatter()
+    def detaliedFormatter = new DetailedFormatter("Info about shipkit\n\n", "Release notes:\n\n", ["noteworthy": "Noteworthy", "bug": "Bugfixes"],
+        "http://commits/{0}...{1}", "Bintray/", [:], false, "", badgeFormatter)
 
     def "no releases"() {
         expect:
-        f.formatReleaseNotes([]) == """Info about shipkit
+        detaliedFormatter.formatReleaseNotes([]) == """Info about shipkit
 
 Release notes:
 
@@ -27,7 +28,7 @@ No release information."""
         def d2 = new DefaultReleaseNotesData("1.9.0", new Date(1483100000000), Stub(ContributionSet), [], "v1.8.0", "v1.9.0")
 
         expect:
-        f.formatReleaseNotes([d1, d2]) == """Info about shipkit
+        detaliedFormatter.formatReleaseNotes([d1, d2]) == """Info about shipkit
 
 Release notes:
 
@@ -50,7 +51,7 @@ Release notes:
         def d = new DefaultReleaseNotesData("2.0.0", new Date(1483500000000), c, [], "v1.9.0", "v2.0.0")
 
         expect:
-        f.formatReleaseNotes([d]) == """Info about shipkit
+        detaliedFormatter.formatReleaseNotes([d]) == """Info about shipkit
 
 Release notes:
 
@@ -157,8 +158,8 @@ Release notes:
                                     c("Tim van der Lippe", 10)]
         }
 
-        def summary = DetailedFormatter.releaseSummary(new Date(1483500000000), "1.2.3", c, [:], "link",
-                "https://bintray.com/shipkit/")
+        def summary = detaliedFormatter.releaseSummary(new Date(1483500000000), "1.2.3", c, [:], "link",
+                "https://bintray.com/shipkit/", "")
 
         expect:
         summary == """ - 2017-01-04 - [100 commits](link) by 4 authors - published to [![Bintray](https://img.shields.io/badge/Bintray-1.2.3-green.svg)](https://bintray.com/shipkit/1.2.3)
