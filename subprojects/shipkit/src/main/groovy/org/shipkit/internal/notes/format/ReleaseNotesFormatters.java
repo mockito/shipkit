@@ -38,7 +38,7 @@ public class ReleaseNotesFormatters {
  *                      For example: https://github.com/mockito/mockito/compare/{0}...{1}".
      * @param publicationRepository where the binaries were published to, will be printed as-is in the release notes
      * @param contributors mapped by name, used to generate links to GitHub profiles
-     * @param badgeFormatter
+     * @param badgeFormatter Formatter for the repository badge where artifact is published
      */
     public static MultiReleaseNotesFormatter detailedFormatter(String header,
                                                                String introductionText,
