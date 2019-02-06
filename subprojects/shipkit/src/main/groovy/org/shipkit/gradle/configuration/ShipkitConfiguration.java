@@ -218,8 +218,61 @@ public class ShipkitConfiguration {
                 "  shipkit.gitHub.writeAuthToken = 'secret'");
         }
 
+        /**
+         * @see {@link #getWriteAuthToken()}
+         */
         public void setWriteAuthToken(String writeAuthToken) {
             store.put("gitHub.writeAuthToken", writeAuthToken);
+        }
+
+        /**
+         * GitHub Javadoc repository name, for example: "mockito/shipkit-javadoc".
+         * The default value is repository with "-javadoc" suffix.
+         * @since 2.2.0
+         */
+        public String getJavadocRepository() {
+            return store.getString("gitHub.javadocRepository");
+        }
+
+        /**
+         * @see {@link #getJavadocRepository()}
+         * @since 2.2.0
+         */
+        public void setJavadocRepository(String javadocRepository) {
+            store.put("gitHub.javadocRepository", javadocRepository);
+        }
+
+        /**
+         * GitHub Javadoc repository branch name. The branch needs to exist.
+         * By default it's using the branch set as main in GitHub repo, usually master.
+         * @since 2.2.0
+         */
+        public String getJavadocRepositoryBranch() {
+            return store.getString("gitHub.javadocRepositoryBranch");
+        }
+
+        /**
+         * @see {@link #getJavadocRepositoryBranch()}
+         * @since 2.2.0
+         */
+        public void setJavadocRepositoryBranch(String javadocRepositoryBranch) {
+            store.put("gitHub.javadocRepositoryBranch", javadocRepositoryBranch);
+        }
+
+        /**
+         * GitHub Javadoc repository directory where put javadoc files. By default it's root directory.
+         * @since 2.2.0
+         */
+        public String getJavadocRepositoryDirectory() {
+            return store.getString("gitHub.javadocRepositoryDirectory");
+        }
+
+        /**
+         * @see {@link #getJavadocRepositoryDirectory()}
+         * @since 2.2.0
+         */
+        public void setJavadocRepositoryDirectory(String javadocRepositoryDirectory) {
+            store.put("gitHub.javadocRepositoryDirectory", javadocRepositoryDirectory);
         }
     }
 
@@ -303,7 +356,7 @@ public class ShipkitConfiguration {
          * Get the Publication Plugin Name
          *
          * @see @setPublicationPluginName(String)
-         *
+         * @since 2.0.32
          * @deprecated since 2.1.6 because we no longer are using this one. It is scheduled to be removed in 3.0.0.
          */
         @Deprecated
@@ -327,6 +380,8 @@ public class ShipkitConfiguration {
          *     https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/org/shipkit/java/org.shipkit.java.gradle.plugin/maven-metadata.xml.svg?colorB=007ec6&label=Gradle
          * </pre>
          * This will show nice badge with actual plugin version in Gradle Plugin Portal.
+         *
+         * @since 2.0.32
          *
          * @deprecated since 2.1.6 because we no longer are using this one. It is scheduled to be removed in 3.0.0.
          */
