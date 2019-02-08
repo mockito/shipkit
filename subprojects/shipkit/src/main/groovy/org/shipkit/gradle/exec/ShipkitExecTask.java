@@ -20,7 +20,7 @@ public class ShipkitExecTask extends DefaultTask {
      * Executes all commands
      */
     @TaskAction public void execCommands() {
-        new ShipkitExec().execCommands(this.getExecCommands(), this.getProject());
+        new ShipkitExec().execCommands(this.getExecCommands(), this.getProject(), null);
     }
 
     /**

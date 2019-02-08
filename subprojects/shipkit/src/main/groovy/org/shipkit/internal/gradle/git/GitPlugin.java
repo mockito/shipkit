@@ -54,14 +54,8 @@ public class GitPlugin implements Plugin<Project> {
     public void apply(final Project project) {
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
-        TaskMaker.task(project, GIT_COMMIT_TASK, GitCommitTask.class, new Action<GitCommitTask>() {
-            public void execute(final GitCommitTask t) {
-                t.setDescription("Commits all changed files using generic --author and aggregated commit message");
-                t.setGitUserName(conf.getGit().getUser());
-                t.setGitUserEmail(conf.getGit().getEmail());
-                t.setCommitMessagePostfix(conf.getGit().getCommitMessagePostfix());
-            }
-        });
+        GitCommitTaskFactory.createGitCommitTask(project, GIT_COMMIT_TASK,
+            "Commits all changed files using generic --author and aggregated commit message");
 
         TaskMaker.task(project, GIT_TAG_TASK, ShipkitExecTask.class, new Action<ShipkitExecTask>() {
             public void execute(final ShipkitExecTask t) {

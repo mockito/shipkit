@@ -4,6 +4,7 @@ import org.shipkit.gradle.git.GitPushTask;
 import org.shipkit.internal.exec.DefaultProcessRunner;
 import org.shipkit.internal.gradle.util.handler.GitPushExceptionHandler;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,12 +34,19 @@ public class GitPush {
 
         Runnable gitPush = new Runnable() {
             public void run() {
-                new DefaultProcessRunner(task.getProject().getProjectDir())
+                new DefaultProcessRunner(getWorkDir(task))
                     .setSecretValue(task.getSecretValue())
                     .run(GitPush.gitPushArgs(task.getUrl(), task.getTargets(), task.isDryRun()));
             }
         };
 
         withExceptionHandling(gitPush, new GitPushExceptionHandler(task.getSecretValue()));
+    }
+
+    private File getWorkDir(GitPushTask task) {
+        if (task.getWorkingDir() != null) {
+            return new File(task.getWorkingDir());
+        }
+        return task.getProject().getProjectDir();
     }
 }

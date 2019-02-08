@@ -19,5 +19,17 @@ class GitCommitTaskTest extends Specification {
         then:
         gitCommit.descriptions == ["description"]
         gitCommit.filesToCommit == [f]
+        gitCommit.dependsOn.contains(task)
+    }
+
+    def "enables adding directory to commit"() {
+        def gitCommit = project.tasks.create("foo", GitCommitTask)
+
+        when:
+        gitCommit.addDirectory("foo", "description")
+
+        then:
+        gitCommit.descriptions == ["description"]
+        gitCommit.directoriesToCommit == [new File("foo")]
     }
 }

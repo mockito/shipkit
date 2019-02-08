@@ -3,6 +3,7 @@ package org.shipkit.gradle.git;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.SkipWhenEmpty;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.internal.gradle.git.tasks.GitCommitImpl;
@@ -18,11 +19,13 @@ import java.util.List;
 public class GitCommitTask extends DefaultTask {
 
     @Input @SkipWhenEmpty private List<File> filesToCommit = new ArrayList<>();
+    @Input @SkipWhenEmpty private List<File> directoriesToCommit = new ArrayList<>();
     private List<String> descriptions = new ArrayList<>();
 
     @Input String gitUserName;
     @Input String gitUserEmail;
     @Input String commitMessagePostfix;
+    @Input @Optional String workingDir;
 
     @TaskAction public void commit() {
         new GitCommitImpl().commit(this);
@@ -40,6 +43,17 @@ public class GitCommitTask extends DefaultTask {
         dependsOn(taskMakingChange);
         filesToCommit.addAll(files);
         descriptions.add(changeDescription);
+    }
+
+    /**
+     * Register a directory to be committed.
+     *
+     * @param directory     to be committed
+     * @param description   description to be included in commit message
+     */
+    public void addDirectory(String directory, String description) {
+        directoriesToCommit.add(new File(directory));
+        descriptions.add(description);
     }
 
     /**
@@ -92,10 +106,33 @@ public class GitCommitTask extends DefaultTask {
     }
 
     /**
-     * Change descriptions to be included in the commit message.
+     * Get descriptions to be included in the commit message.
      * Descriptions are registered using {@link #addChange(List, String, Task)}
      */
     public List<String> getDescriptions() {
         return descriptions;
+    }
+
+    /**
+     * The directories to be committed as registered using {@link #addDirectory(String, String)} method.
+     */
+    public List<File> getDirectoriesToCommit() {
+        return directoriesToCommit;
+    }
+
+    /**
+     * Gets working directory where commands are executed. By default it is project root directory.
+     * @since 2.2.0
+     */
+    public String getWorkingDir() {
+        return workingDir;
+    }
+
+    /**
+     * @see {@link #getWorkingDir()}
+     * @since 2.2.0
+     */
+    public void setWorkingDir(String workingDir) {
+        this.workingDir = workingDir;
     }
 }
