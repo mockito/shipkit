@@ -42,7 +42,9 @@ public class InitVersioning {
                 FALLBACK_INITIAL_VERSION, versionFile.getName());
             return FALLBACK_INITIAL_VERSION;
         } else {
-            LOG.lifecycle("  Configured '{}' version in '{}' file. Please remove 'version={}' setting from *.gradle file.",
+            LOG.lifecycle("  Configured '{}' version in '{}' file. Please remove 'version={}' setting from " +
+                    "*.gradle file. Version needs follow semantic versioning i.e. contains 3 numbers separated " +
+                    "by . (dot), e.g. 0.0.1 or 1.0.0 or 1.2.34 etc.",
                 project.getVersion(), versionFile.getName(), project.getVersion());
             return project.getVersion().toString();
         }

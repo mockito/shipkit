@@ -80,6 +80,7 @@ class ShipkitJavaIntegTest extends GradleSpecification {
 :impl:publishJavaLibraryPublicationToMavenLocal
 :gitPush
 :performGitPush
+:updateReleaseNotesOnGitHub
 :api:bintrayUpload
 :impl:bintrayUpload
 :bintrayPublish
