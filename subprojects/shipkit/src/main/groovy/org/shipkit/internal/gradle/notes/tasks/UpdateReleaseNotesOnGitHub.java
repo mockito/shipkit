@@ -36,7 +36,6 @@ public class UpdateReleaseNotesOnGitHub {
     private String findReleaseByTagName(UpdateReleaseNotesOnGitHubTask task) throws Exception {
         String tagName = tagName(task);
         String url = "/repos/" + task.getUpstreamRepositoryName() + "/releases/tags/" + tagName;
-        LOG.debug("GitHub release id by tag name GET {}", url);
         LOG.lifecycle("GET {}", url);
 
         try {
@@ -68,7 +67,6 @@ public class UpdateReleaseNotesOnGitHub {
         body.put("name", tagName);
         body.put("body", text);
 
-        LOG.debug("GitHub create release by tag name POST {}", url);
         LOG.lifecycle("POST {}", url);
 
         try {
@@ -99,7 +97,6 @@ public class UpdateReleaseNotesOnGitHub {
             releaseId = findReleaseByTagName(task);
         } catch (Exception e) {
             LOG.lifecycle("Can't find release on GitHub to remove");
-            LOG.debug("GitHub find release by tag returned: " + e.getMessage(), e);
             return;
         }
 
@@ -107,7 +104,6 @@ public class UpdateReleaseNotesOnGitHub {
             removeRelease(releaseId, task);
         } catch (IOException e) {
             LOG.lifecycle("Can't delete release {} from GitHub", releaseId);
-            LOG.debug("GitHub can't delete release " + releaseId + ": " + e.getMessage(), e);
         }
     }
 
