@@ -8,13 +8,15 @@ import spock.lang.Specification
 
 class UpdateReleaseNotesOnGitHubTest extends Specification {
 
+    def urlCreateReleaseByTagName = "/repos/mockito/shipkit-example/releases"
     def urlReleaseIdByTagName = "/repos/mockito/shipkit-example/releases/tags/v1.0.0"
-    def urlEditRelease = "/repos/mockito/shipkit-example/releases/1234"
-    def body = '{"body":"text"}'
+    def body = '{"tag_name":"v1.0.0",' +
+        '"name":"v1.0.0",' +
+        '"body":"text"}'
     def responseReleaseIdByTagName = "{\n" +
         "  \"id\": 1234\n" +
         "}"
-    def responseEditRelease = "{\n" +
+    def responseCreateReleaseByTagName = "{\n" +
         "  \"html_url\": \"https://github.com/mockito/shipkit-example/releases/v1.0.0\"" +
         "}"
 
@@ -35,8 +37,7 @@ class UpdateReleaseNotesOnGitHubTest extends Specification {
 
         then:
         1 * updateReleaseNotes.generateNewContent(task, header) >> "text"
-        1 * gitHubApi.get(urlReleaseIdByTagName) >> responseReleaseIdByTagName
-        1 * gitHubApi.patch(urlEditRelease, body) >> responseEditRelease
+        1 * gitHubApi.post(urlCreateReleaseByTagName, body) >> responseCreateReleaseByTagName
     }
 
     def "should not call GitHub API when preview mode"() {
@@ -78,9 +79,9 @@ class UpdateReleaseNotesOnGitHubTest extends Specification {
         update.updateReleaseNotes(task, header)
 
         then:
-        1 * gitHubApi.get(_)
+        0 * gitHubApi.get(_)
         0 * gitHubApi.delete(_)
-        0 * gitHubApi.patch(_)
+        0 * gitHubApi.post(_, _)
     }
 
     def "should clean up release notes on GitHub"() {
