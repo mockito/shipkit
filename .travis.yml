@@ -22,4 +22,4 @@ before_script:
   - _JAVA_OPTIONS=
 
 script:
-  - ./gradlew build testDownstream -PcheckJava8Compatibility -s && ./gradlew ciPerformRelease -x updateReleaseNotesOnGitHub -s
+  - ./gradlew build testDownstream -PcheckJava8Compatibility -s && ./gradlew ciPerformRelease -s
