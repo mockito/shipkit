@@ -85,6 +85,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
 
         UpdateReleaseNotesOnGitHubTask updateReleaseNotesOnGitHubTask = TaskMaker.task(project, UPDATE_NOTES_ON_GITHUB_TASK, UpdateReleaseNotesOnGitHubTask.class, task -> {
             task.setDescription("Updates release notes on GitHub releases page. Run with '-Ppreview' if you only want to see the preview.");
+            task.mustRunAfter(GitPlugin.GIT_PUSH_TASK);
 
             configureDetailedNotes(task, releaseNotesFetcher, project, conf, contributorsFetcher);
 
