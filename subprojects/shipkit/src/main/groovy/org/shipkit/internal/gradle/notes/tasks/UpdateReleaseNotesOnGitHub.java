@@ -93,6 +93,12 @@ public class UpdateReleaseNotesOnGitHub {
 
     public void removeReleaseNotes(UpdateReleaseNotesOnGitHubCleanupTask task) {
         String releaseId;
+
+        if (task.isDryRun()) {
+            LOG.lifecycle("It's -PdryRun mode, releases notes on GitHub will NOT be deleted.");
+            return;
+        }
+
         try {
             releaseId = findReleaseByTagName(task);
         } catch (Exception e) {
