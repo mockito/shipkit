@@ -21,7 +21,7 @@ class BadgeFormatterTest extends Specification {
             "org.shipkit.java.gradle.plugin")
 
         expect:
-        summary == """[![Gradle](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/org/shipkit/java/org.shipkit.java.gradle.plugin/maven-metadata.xml.svg?colorB=007ec6&label=Gradle)](https://plugins.gradle.org/plugin/org.shipkit.java/1.2.3)"""
+        summary == """[![Gradle](https://img.shields.io/badge/Gradle-v1.2.3-blue.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/1.2.3)"""
     }
 
     def "gradle plugin portal badge when empty plugin name"() {
@@ -30,6 +30,6 @@ class BadgeFormatterTest extends Specification {
             "")
 
         expect:
-        summary == """[![Gradle](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/org/shipkit/java/maven-metadata.xml.svg?colorB=007ec6&label=Gradle)](https://plugins.gradle.org/plugin/org.shipkit.java/1.2.3)"""
+        summary == """[![Gradle](https://img.shields.io/badge/Gradle-v1.2.3-blue.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/1.2.3)"""
     }
 }
