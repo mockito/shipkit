@@ -112,7 +112,7 @@ public class ReleasePlugin implements Plugin<Project> {
 
     private static ExecCommand contributorTestCommand(String... additionalArguments) {
         List<String> commandLine = new LinkedList<>(asList(
-            GradleWrapper.getWrapperCommand(), RELEASE_NEEDED, PERFORM_RELEASE_TASK, RELEASE_CLEAN_UP_TASK, "-PdryRun", "-x", GitPlugin.GIT_PUSH_TASK, "-x", ReleaseNotesPlugin.UPDATE_NOTES_ON_GITHUB_TASK));
+            GradleWrapper.getWrapperCommand(), RELEASE_NEEDED, PERFORM_RELEASE_TASK, RELEASE_CLEAN_UP_TASK, "-PdryRun", "-x", GitPlugin.GIT_PUSH_TASK, "-x", ReleaseNotesPlugin.UPDATE_NOTES_ON_GITHUB_TASK, "-x", ReleaseNotesPlugin.UPDATE_NOTES_ON_GITHUB_CLEANUP_TASK));
         commandLine.addAll(asList(additionalArguments));
         return execCommand("Performing release in dry run, with cleanup", commandLine);
     }

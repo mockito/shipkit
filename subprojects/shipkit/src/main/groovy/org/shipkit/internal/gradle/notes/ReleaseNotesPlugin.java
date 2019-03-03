@@ -116,6 +116,7 @@ public class ReleaseNotesPlugin implements Plugin<Project> {
 
         updateReleaseNotesOnGitHubCleanupTask.setGitHubApiUrl(conf.getGitHub().getApiUrl());
         updateReleaseNotesOnGitHubCleanupTask.setUpstreamRepositoryName(conf.getGitHub().getRepository());
+        updateReleaseNotesOnGitHubCleanupTask.setDryRun(conf.isDryRun());
         updateReleaseNotesOnGitHubCleanupTask.setPublicationRepository("aa");
     }
 
