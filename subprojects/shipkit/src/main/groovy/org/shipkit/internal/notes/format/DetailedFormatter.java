@@ -23,12 +23,11 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
     private final Map<String, Contributor> contributors;
     private final boolean emphasizeVersion;
     private final String header;
-    private final String publicationPluginName;
     private final BadgeFormatter badgeFormatter;
 
     DetailedFormatter(String header, String introductionText, Map<String, String> labelMapping, String vcsCommitsLinkTemplate,
                       String publicationRepository, Map<String, Contributor> contributors, boolean emphasizeVersion,
-                      String publicationPluginName, BadgeFormatter badgeFormatter) {
+                      BadgeFormatter badgeFormatter) {
         this.header = header;
         this.introductionText = introductionText;
         this.labelMapping = labelMapping;
@@ -36,7 +35,6 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
         this.publicationRepository = publicationRepository;
         this.contributors = contributors;
         this.emphasizeVersion = emphasizeVersion;
-        this.publicationPluginName = publicationPluginName;
         this.badgeFormatter = badgeFormatter;
     }
 
@@ -54,7 +52,7 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
             String vcsCommitsLink = MessageFormat.format(vcsCommitsLinkTemplate, d.getPreviousVersionVcsTag(), d.getVcsTag());
             sb.append("\n");
             sb.append(releaseSummary(d.getDate(), d.getVersion(), d.getContributions(), contributors, vcsCommitsLink,
-                publicationRepository, publicationPluginName));
+                publicationRepository));
 
             if (!d.getContributions().getContributions().isEmpty()) {
                 //no point printing any improvements information if there are no code changes
@@ -77,9 +75,9 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
     }
 
     String releaseSummary(Date date, String version, ContributionSet contributions, Map<String, Contributor>
-        contributors, String vcsCommitsLink, String publicationRepository, String pluginName) {
+        contributors, String vcsCommitsLink, String publicationRepository) {
         return summaryDatePrefix(date) + authorsSummary(contributions, contributors, vcsCommitsLink)
-            + " - published to " + badgeFormatter.getRepositoryBadge(version, publicationRepository, pluginName) + "\n" +
+            + " - published to " + badgeFormatter.getRepositoryBadge(version, publicationRepository) + "\n" +
             authorsSummaryAppendix(contributions, contributors);
     }
 

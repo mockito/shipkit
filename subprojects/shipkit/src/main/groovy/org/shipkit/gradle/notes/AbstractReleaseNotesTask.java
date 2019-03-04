@@ -23,7 +23,6 @@ public class AbstractReleaseNotesTask extends DefaultTask {
     @Input private String gitHubRepository;
     @Input private Map<String, String> gitHubLabelMapping = new LinkedHashMap<>();
     @Input private String publicationRepository;
-    @Input @Optional private String publicationPluginName;
     @InputFile private File releaseNotesData;
     @Input private Collection<String> developers = new LinkedList<>();
     @Input private Collection<String> contributors = new LinkedList<>();
@@ -247,13 +246,5 @@ public class AbstractReleaseNotesTask extends DefaultTask {
 
     public void setHeader(String header) {
         this.header = header;
-    }
-
-    public String getPublicationPluginName() {
-        return publicationPluginName;
-    }
-
-    public void setPublicationPluginName(String publicationPluginName) {
-        this.publicationPluginName = publicationPluginName;
     }
 }
