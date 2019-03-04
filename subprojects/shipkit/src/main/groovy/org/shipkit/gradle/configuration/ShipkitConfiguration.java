@@ -304,6 +304,7 @@ public class ShipkitConfiguration {
          *
          * @see @setPublicationPluginName(String)
          */
+        @Deprecated
         public String getPublicationPluginName() {
             return store.getString("releaseNotes.publicationPluginName");
         }
@@ -325,6 +326,7 @@ public class ShipkitConfiguration {
          * </pre>
          * This will show nice badge with actual plugin version in Gradle Plugin Portal.
          */
+        @Deprecated
         public void setPublicationPluginName(String publicationPluginName) {
             store.put("releaseNotes.publicationPluginName", publicationPluginName);
         }
