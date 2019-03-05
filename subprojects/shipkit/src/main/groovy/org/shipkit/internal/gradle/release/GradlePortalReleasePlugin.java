@@ -68,7 +68,6 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
 
             UpdateReleaseNotesTask updateNotes = (UpdateReleaseNotesTask) project.getTasks().getByName(ReleaseNotesPlugin.UPDATE_NOTES_TASK);
             updateNotes.setPublicationRepository(conf.getReleaseNotes().getPublicationRepository());
-            updateNotes.setPublicationPluginName(conf.getReleaseNotes().getPublicationPluginName());
 
             UpdateReleaseNotesOnGitHubTask updateNotesOnGitHub = (UpdateReleaseNotesOnGitHubTask) project.getTasks().getByName(ReleaseNotesPlugin.UPDATE_NOTES_ON_GITHUB_TASK);
             updateNotesOnGitHub.setPublicationRepository(conf.getReleaseNotes().getPublicationRepository());

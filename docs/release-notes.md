@@ -10,26 +10,26 @@
  - fix 'No value has been specified for property 'publicationRepository'' [(#783)](https://github.com/mockito/shipkit/pull/783)
 
 #### 2.1.4
- - 2019-03-01 - [6 commits](https://github.com/mockito/shipkit/compare/v2.1.3...v2.1.4) by [Erhard Pointl](https://github.com/epeee) (4), [shipkit.org automated bot](https://github.com/shipkit-org) (2) - published to [![Gradle](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/org/shipkit/java/maven-metadata.xml.svg?colorB=007ec6&label=Gradle)](https://plugins.gradle.org/plugin/org.shipkit.java/2.1.4)
+ - 2019-03-01 - [6 commits](https://github.com/mockito/shipkit/compare/v2.1.3...v2.1.4) by [Erhard Pointl](https://github.com/epeee) (4), [shipkit.org automated bot](https://github.com/shipkit-org) (2) - published to [![Gradle](https://img.shields.io/badge/Gradle-v2.1.4-blue.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/2.1.4)
  - Make sure that gitPush is executed before updateReleaseNotesOnGithub [(#782)](https://github.com/mockito/shipkit/pull/782)
  - Update objenesis (v3.0.1) and get rid of not needed dependency [(#780)](https://github.com/mockito/shipkit/pull/780)
  - Version of shipkit upgraded to 2.1.3 [(#779)](https://github.com/mockito/shipkit/pull/779)
 
 #### 2.1.3
- - 2019-02-23 - [2 commits](https://github.com/mockito/shipkit/compare/v2.1.2...v2.1.3) by [Marcin Stachniuk](https://github.com/mstachniuk) - published to [![Gradle](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/org/shipkit/java/maven-metadata.xml.svg?colorB=007ec6&label=Gradle)](https://plugins.gradle.org/plugin/org.shipkit.java/2.1.3)
+ - 2019-02-23 - [2 commits](https://github.com/mockito/shipkit/compare/v2.1.2...v2.1.3) by [Marcin Stachniuk](https://github.com/mstachniuk) - published to [![Gradle](https://img.shields.io/badge/Gradle-v2.1.3-blue.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/2.1.3)
  - Temporally downgrade Shipkit to fix release [(#778)](https://github.com/mockito/shipkit/pull/778)
 
 #### 2.1.2
- - 2019-02-23 - [2 commits](https://github.com/mockito/shipkit/compare/v2.1.1...v2.1.2) by [Marcin Stachniuk](https://github.com/mstachniuk) - published to [![Gradle](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/org/shipkit/java/maven-metadata.xml.svg?colorB=007ec6&label=Gradle)](https://plugins.gradle.org/plugin/org.shipkit.java/2.1.2)
+ - 2019-02-23 - [2 commits](https://github.com/mockito/shipkit/compare/v2.1.1...v2.1.2) by [Marcin Stachniuk](https://github.com/mstachniuk) - published to [![Gradle](https://img.shields.io/badge/Gradle-v2.1.2-blue.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/2.1.2)
  - Temporally disable updateReleaseNotesOnGitHub to fix release [(#777)](https://github.com/mockito/shipkit/pull/777)
 
 #### 2.1.1
- - 2019-02-23 - [5 commits](https://github.com/mockito/shipkit/compare/v2.1.0...v2.1.1) by [Marcin Stachniuk](https://github.com/mstachniuk) (3), [shipkit.org automated bot](https://github.com/shipkit-org) (2) - published to [![Gradle](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/org/shipkit/java/maven-metadata.xml.svg?colorB=007ec6&label=Gradle)](https://plugins.gradle.org/plugin/org.shipkit.java/2.1.1)
+ - 2019-02-23 - [5 commits](https://github.com/mockito/shipkit/compare/v2.1.0...v2.1.1) by [Marcin Stachniuk](https://github.com/mstachniuk) (3), [shipkit.org automated bot](https://github.com/shipkit-org) (2) - published to [![Gradle](https://img.shields.io/badge/Gradle-v2.1.1-blue.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/2.1.1)
  - Fix updateReleaseNotesOnGitHub task #775 [(#776)](https://github.com/mockito/shipkit/pull/776)
  - Version of shipkit upgraded to 2.1.0 [(#773)](https://github.com/mockito/shipkit/pull/773)
 
 #### 2.1.0
- - 2019-02-20 - [20 commits](https://github.com/mockito/shipkit/compare/v2.0.32...v2.1.0) by [Marcin Stachniuk](https://github.com/mstachniuk) (13), [Erhard Pointl](https://github.com/epeee) (5), [shipkit.org automated bot](https://github.com/shipkit-org) (2) - published to [![Gradle](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/org/shipkit/java/maven-metadata.xml.svg?colorB=007ec6&label=Gradle)](https://plugins.gradle.org/plugin/org.shipkit.java/2.1.0)
+ - 2019-02-20 - [20 commits](https://github.com/mockito/shipkit/compare/v2.0.32...v2.1.0) by [Marcin Stachniuk](https://github.com/mstachniuk) (13), [Erhard Pointl](https://github.com/epeee) (5), [shipkit.org automated bot](https://github.com/shipkit-org) (2) - published to [![Gradle](https://img.shields.io/badge/Gradle-v2.1.0-blue.svg)](https://plugins.gradle.org/plugin/org.shipkit.java/2.1.0)
  - Update dependencies [(#771)](https://github.com/mockito/shipkit/pull/771)
  - Add Gradle 5.2.1 to gradle versions to test [(#770)](https://github.com/mockito/shipkit/pull/770)
  - Version of shipkit upgraded to 2.0.32 [(#769)](https://github.com/mockito/shipkit/pull/769)

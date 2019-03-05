@@ -96,7 +96,7 @@ public class UpdateReleaseNotes {
         BadgeFormatter badgeFormatter = new BadgeFormatter();
         String notes = ReleaseNotesFormatters.detailedFormatter(headerMessage,
             "", task.getGitHubLabelMapping(), vcsCommitTemplate, task.getPublicationRepository(),
-            contributorsMap, task.isEmphasizeVersion(), task.getPublicationPluginName(), badgeFormatter)
+            contributorsMap, task.isEmphasizeVersion(), badgeFormatter)
             .formatReleaseNotes(data);
 
         return notes + "\n\n";

@@ -12,7 +12,7 @@ class DetailedFormatterTest extends Specification {
 
     def badgeFormatter = new BadgeFormatter()
     def detaliedFormatter = new DetailedFormatter("Info about shipkit\n\n", "Release notes:\n\n", ["noteworthy": "Noteworthy", "bug": "Bugfixes"],
-        "http://commits/{0}...{1}", "Bintray/", [:], false, "", badgeFormatter)
+        "http://commits/{0}...{1}", "Bintray/", [:], false, badgeFormatter)
 
     def "no releases"() {
         expect:
@@ -159,7 +159,7 @@ Release notes:
         }
 
         def summary = detaliedFormatter.releaseSummary(new Date(1483500000000), "1.2.3", c, [:], "link",
-                "https://bintray.com/shipkit/", "")
+                "https://bintray.com/shipkit/")
 
         expect:
         summary == """ - 2017-01-04 - [100 commits](link) by 4 authors - published to [![Bintray](https://img.shields.io/badge/Bintray-1.2.3-green.svg)](https://bintray.com/shipkit/1.2.3)

@@ -8,20 +8,17 @@ public class BadgeFormatter {
 
     private static final String GRADLE_PORTAL_URL = "https://plugins.gradle.org/plugin/";
 
-    public String getRepositoryBadge(String version, String publicationRepository, String pluginName) {
+    public String getRepositoryBadge(String version, String publicationRepository) {
         if (publicationRepository.startsWith(GRADLE_PORTAL_URL)) {
-            return gradlePluginPortalBadge(version, publicationRepository, pluginName);
+            return gradlePluginPortalBadge(version, publicationRepository);
         } else {
             return bintrayBadge(version, publicationRepository);
         }
     }
 
-    private String gradlePluginPortalBadge(String version, String publicationRepository, String pluginName) {
-        // https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/org/shipkit/org.shipkit.java.gradle.plugin/maven-metadata.xml.svg?colorB=007ec6&label=Gradle
+    private String gradlePluginPortalBadge(String version, String publicationRepository) {
         final String markdownPrefix = "[![Gradle](";
-        final String shieldsIoBadgeLink = "https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/"
-            + extractPackageFromRepo(publicationRepository, pluginName)
-            + "/maven-metadata.xml.svg?colorB=007ec6&label=Gradle";
+        final String shieldsIoBadgeLink = "https://img.shields.io/badge/Gradle-v" + version + "-blue.svg";
         final String markdownPostfix = ")]";
         final String repositoryLinkWithVersion = DefaultArtifactUrlResolverFactory.resolveUrlFromPublicationRepository(publicationRepository, version);
         return markdownPrefix + shieldsIoBadgeLink + markdownPostfix + "(" + repositoryLinkWithVersion + ")";
