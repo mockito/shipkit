@@ -25,6 +25,7 @@ public class ShipkitConfiguration {
     private final ShipkitConfigurationStore store;
 
     private final GitHub gitHub = new GitHub();
+    private final Javadoc javadoc = new Javadoc();
     private final ReleaseNotes releaseNotes = new ReleaseNotes();
     private final Git git = new Git();
     private final Team team = new Team();
@@ -84,6 +85,10 @@ public class ShipkitConfiguration {
 
     public GitHub getGitHub() {
         return gitHub;
+    }
+
+    public Javadoc getJavadoc() {
+        return javadoc;
     }
 
     public ReleaseNotes getReleaseNotes() {
@@ -224,22 +229,24 @@ public class ShipkitConfiguration {
         public void setWriteAuthToken(String writeAuthToken) {
             store.put("gitHub.writeAuthToken", writeAuthToken);
         }
+    }
 
+    public class Javadoc {
         /**
          * GitHub Javadoc repository name, for example: "mockito/shipkit-javadoc".
          * The default value is repository with "-javadoc" suffix.
          * @since 2.2.0
          */
-        public String getJavadocRepository() {
-            return store.getString("gitHub.javadocRepository");
+        public String getRepository() {
+            return store.getString("javadoc.repository");
         }
 
         /**
-         * @see {@link #getJavadocRepository()}
+         * @see {@link #getRepository()}
          * @since 2.2.0
          */
-        public void setJavadocRepository(String javadocRepository) {
-            store.put("gitHub.javadocRepository", javadocRepository);
+        public void setRepository(String javadocRepository) {
+            store.put("javadoc.repository", javadocRepository);
         }
 
         /**
@@ -247,32 +254,50 @@ public class ShipkitConfiguration {
          * By default it's using the branch set as main in GitHub repo, usually master.
          * @since 2.2.0
          */
-        public String getJavadocRepositoryBranch() {
-            return store.getString("gitHub.javadocRepositoryBranch");
+        public String getRepositoryBranch() {
+            return store.getString("javadoc.repositoryBranch");
         }
 
         /**
-         * @see {@link #getJavadocRepositoryBranch()}
+         * @see {@link #getRepositoryBranch()}
          * @since 2.2.0
          */
-        public void setJavadocRepositoryBranch(String javadocRepositoryBranch) {
-            store.put("gitHub.javadocRepositoryBranch", javadocRepositoryBranch);
+        public void setRepositoryBranch(String javadocRepositoryBranch) {
+            store.put("javadoc.repositoryBranch", javadocRepositoryBranch);
         }
 
         /**
          * GitHub Javadoc repository directory where put javadoc files. By default it's root directory.
          * @since 2.2.0
          */
-        public String getJavadocRepositoryDirectory() {
-            return store.getString("gitHub.javadocRepositoryDirectory");
+        public String getRepositoryDirectory() {
+            return store.getString("javadoc.repositoryDirectory");
         }
 
         /**
-         * @see {@link #getJavadocRepositoryDirectory()}
+         * @see {@link #getRepositoryDirectory()}
          * @since 2.2.0
          */
-        public void setJavadocRepositoryDirectory(String javadocRepositoryDirectory) {
-            store.put("gitHub.javadocRepositoryDirectory", javadocRepositoryDirectory);
+        public void setRepositoryDirectory(String javadocRepositoryDirectory) {
+            store.put("javadoc.repositoryDirectory", javadocRepositoryDirectory);
+        }
+
+        /**
+         * Commit message used to commit Javadocs. Default: "Update current and ${version} Javadocs. [ci skip]"
+         * You can override this message and ${version} will be replaced by currently build version.
+         * You don't need to specify "[ci skip]" in your message - it will be added automatically.
+         * @since 2.2.0
+         */
+        public String getCommitMessage() {
+            return store.getString("javadoc.commitMessage");
+        }
+
+        /**
+         * @see {@link #getCommitMessage()}
+         * @since 2.2.0
+         */
+        public void setCommitMessage(String commitMessage) {
+            store.put("javadoc.commitMessage", commitMessage);
         }
     }
 

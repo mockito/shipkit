@@ -22,7 +22,7 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.shipkit.internal.util.RepositoryNameUtil.repositoryNameToCamelCase;
+import static java.util.Objects.isNull;
 
 /**
  * TODO
@@ -47,8 +47,8 @@ public class JavadocPlugin implements Plugin<Project> {
 
         ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
         ShipkitConfiguration lenientConf = conf.getLenient();
-        String directory = lenientConf.getGitHub().getJavadocRepositoryDirectory();
-        String branch = lenientConf.getGitHub().getJavadocRepositoryBranch();
+        String directory = lenientConf.getJavadoc().getRepositoryDirectory();
+        String branch = lenientConf.getJavadoc().getRepositoryBranch();
         String javadocRepository = getJavadocRepository(conf);
         String gitHubUrl = conf.getGitHub().getUrl();
 
@@ -56,12 +56,12 @@ public class JavadocPlugin implements Plugin<Project> {
             task -> {
                 task.setDescription("Clones Javadoc repo " + javadocRepository + " into a temporary directory.");
                 task.setRepositoryUrl(gitHubUrl + "/" + javadocRepository);
-                task.setTargetDir(new File(getJavadocRepoCloneDir(project, javadocRepository)));
+                task.setTargetDir(new File(getJavadocRepoCloneDir(project)));
                 task.setDepth(10);
                 // TODO onlyIf { stagingDir not empty }
             });
 
-        TaskMaker.task(project, CHECKOUT_JAVADOC_REPO_BRANCH, GitCheckOutTask.class, task -> {
+        GitCheckOutTask checkoutJavadocRepoBranch = TaskMaker.task(project, CHECKOUT_JAVADOC_REPO_BRANCH, GitCheckOutTask.class, task -> {
             task.setDescription("Checkout branch in Javadoc repository");
             task.dependsOn(cloneJavadocTask);
             task.onlyIf(foo -> branch != null);
@@ -108,24 +108,24 @@ public class JavadocPlugin implements Plugin<Project> {
 
         Copy copyStageToRepoDir = TaskMaker.task(project, COPY_JAVADOC_STAGE_TO_REPO_DIR_TASK, Copy.class, task -> {
             task.setDescription("Copy prepared Javadocs from stage directory to the repository directory");
-            task.dependsOn(refreshVersionJavadocTask, refreshCurrentJavadocTask);
+            task.dependsOn(checkoutJavadocRepoBranch, refreshVersionJavadocTask, refreshCurrentJavadocTask);
             task.from(getJavadocStageDir(project));
-            task.into(getJavadocRepoCloneDir(project, javadocRepository, directory));
+            task.into(getJavadocRepoCloneDir(project, directory));
         });
 
         GitCommitTask commitJavadocTask = GitCommitTaskFactory.createGitCommitTask(project, COMMIT_JAVADOC_TASK,
             "Commit changes in Javadoc repository directory");
 
         commitJavadocTask.dependsOn(copyStageToRepoDir);
-        commitJavadocTask.addDirectory(getJavadocRepoCloneDir(project, javadocRepository, directory),
-                "Update current and " + project.getVersion() + " Javadocs");
-        commitJavadocTask.setWorkingDir(getJavadocRepoCloneDir(project, javadocRepository));
+        String commitMessage = getCommitMessage(project, lenientConf);
+        commitJavadocTask.addDirectory(getJavadocRepoCloneDir(project, directory), commitMessage);
+        commitJavadocTask.setWorkingDir(getJavadocRepoCloneDir(project));
 
         GitPushTask pushJavadoc = TaskMaker.task(project, PUSH_JAVADOC_TASK, GitPushTask.class, task -> {
             task.setDescription("Pushes Javadocs to remote Javadoc repo.");
             task.dependsOn(commitJavadocTask);
             task.setDryRun(conf.isDryRun());
-            task.setWorkingDir(getJavadocRepoCloneDir(project, javadocRepository));
+            task.setWorkingDir(getJavadocRepoCloneDir(project));
 
             task.setUrl(cloneJavadocTask.getRepositoryUrl());
             GitUrlInfo info = new GitUrlInfo(conf);
@@ -140,26 +140,44 @@ public class JavadocPlugin implements Plugin<Project> {
             task.setDescription("Clone Javadoc repository, copy Javadocs, commit and push");
             task.dependsOn(cloneJavadocTask, commitJavadocTask, pushJavadoc);
         });
+
+        deleteBuildDIrInRootProjectWhenCleanTask(project);
+    }
+
+    private String getCommitMessage(Project project, ShipkitConfiguration lenientConf) {
+        String commitMessage = lenientConf.getJavadoc().getCommitMessage();
+        if (isNull(commitMessage)) {
+            commitMessage = "Update current and ${version} Javadocs.";
+        }
+        commitMessage = commitMessage.replaceAll("\\$\\{version\\}", project.getVersion().toString());
+        return commitMessage;
     }
 
     private String getJavadocRepository(ShipkitConfiguration conf) {
-        String javadocRepository = conf.getLenient().getGitHub().getJavadocRepository();
+        String javadocRepository = conf.getLenient().getJavadoc().getRepository();
         if (javadocRepository == null) {
             javadocRepository = conf.getGitHub().getRepository() + "-javadoc";  // sensible default
         }
         return javadocRepository;
     }
 
-    private String getJavadocRepoCloneDir(Project project, String javadocRepository) {
-        return project.getRootProject().getBuildDir().getAbsolutePath() + "/javadoc-repo/" + repositoryNameToCamelCase(javadocRepository);
+    private String getJavadocRepoCloneDir(Project project) {
+        return project.getRootProject().getBuildDir().getAbsolutePath() + "/javadoc-repo";
     }
 
-    private String getJavadocRepoCloneDir(Project project, String javadocRepository, String subdirectory) {
-        return getJavadocRepoCloneDir(project, javadocRepository)
+    private String getJavadocRepoCloneDir(Project project, String subdirectory) {
+        return getJavadocRepoCloneDir(project)
             + "/" + (subdirectory != null ? subdirectory : ".");
     }
 
     private String getJavadocStageDir(Project project) {
         return project.getRootProject().getBuildDir().getAbsolutePath() + "/javadoc-stage";
+    }
+
+    private void deleteBuildDIrInRootProjectWhenCleanTask(Project project) {
+        Set<Task> cleanTasks = project.getTasksByName("clean", true);
+        cleanTasks.forEach(task -> task.doLast(task1 -> {
+            project.delete(project.getBuildDir().getAbsolutePath());
+        }));
     }
 }
