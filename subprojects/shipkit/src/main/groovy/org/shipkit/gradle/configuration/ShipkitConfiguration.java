@@ -303,6 +303,8 @@ public class ShipkitConfiguration {
          * Get the Publication Plugin Name
          *
          * @see @setPublicationPluginName(String)
+         *
+         * @deprecated since 2.1.6 because we no longer are using this one. It is scheduled to be removed in 2.2.0.
          */
         @Deprecated
         public String getPublicationPluginName() {
@@ -325,6 +327,8 @@ public class ShipkitConfiguration {
          *     https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/org/shipkit/java/org.shipkit.java.gradle.plugin/maven-metadata.xml.svg?colorB=007ec6&label=Gradle
          * </pre>
          * This will show nice badge with actual plugin version in Gradle Plugin Portal.
+         *
+         * @deprecated since 2.1.6 because we no longer are using this one. It is scheduled to be removed in 2.2.0.
          */
         @Deprecated
         public void setPublicationPluginName(String publicationPluginName) {
