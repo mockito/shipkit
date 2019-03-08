@@ -304,7 +304,7 @@ public class ShipkitConfiguration {
          *
          * @see @setPublicationPluginName(String)
          *
-         * @deprecated since 2.1.6 because we no longer are using this one. It is scheduled to be removed in 2.2.0.
+         * @deprecated since 2.1.6 because we no longer are using this one. It is scheduled to be removed in 3.0.0.
          */
         @Deprecated
         public String getPublicationPluginName() {
@@ -328,7 +328,7 @@ public class ShipkitConfiguration {
          * </pre>
          * This will show nice badge with actual plugin version in Gradle Plugin Portal.
          *
-         * @deprecated since 2.1.6 because we no longer are using this one. It is scheduled to be removed in 2.2.0.
+         * @deprecated since 2.1.6 because we no longer are using this one. It is scheduled to be removed in 3.0.0.
          */
         @Deprecated
         public void setPublicationPluginName(String publicationPluginName) {
