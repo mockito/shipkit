@@ -9,8 +9,8 @@ public class GitUrlInfo {
     private final String gitUrl;
     private final String writeToken;
 
-    public GitUrlInfo(ShipkitConfiguration conf) {
-        gitUrl = getGitHubUrl(conf.getGitHub().getRepository(), conf);
+    public GitUrlInfo(ShipkitConfiguration conf, String repository) {
+        gitUrl = getGitHubUrl(repository, conf);
         writeToken = conf.getLenient().getGitHub().getWriteAuthToken();
     }
 

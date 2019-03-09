@@ -94,6 +94,7 @@ public class UpdateReleaseNotes {
 
         Map<String, Contributor> contributorsMap = contributorsMap(task.getContributors(), contributorsFromGitHub, task.getDevelopers(), task.getGitHubUrl());
         BadgeFormatter badgeFormatter = new BadgeFormatter();
+        // TODO release notes contain link to new javadoc
         String notes = ReleaseNotesFormatters.detailedFormatter(headerMessage,
             "", task.getGitHubLabelMapping(), vcsCommitTemplate, task.getPublicationRepository(),
             contributorsMap, task.isEmphasizeVersion(), badgeFormatter)

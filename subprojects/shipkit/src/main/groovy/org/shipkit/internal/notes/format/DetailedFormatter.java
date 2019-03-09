@@ -76,6 +76,7 @@ class DetailedFormatter implements MultiReleaseNotesFormatter {
 
     String releaseSummary(Date date, String version, ContributionSet contributions, Map<String, Contributor>
         contributors, String vcsCommitsLink, String publicationRepository) {
+        // TODO the message at the end of the release points to new javadoc
         return summaryDatePrefix(date) + authorsSummary(contributions, contributors, vcsCommitsLink)
             + " - published to " + badgeFormatter.getRepositoryBadge(version, publicationRepository) + "\n" +
             authorsSummaryAppendix(contributions, contributors);

@@ -76,7 +76,7 @@ public class GitPlugin implements Plugin<Project> {
                 t.getTargets().add(GitUtil.getTag(conf, project));
                 t.setDryRun(conf.isDryRun());
 
-                GitUrlInfo info = new GitUrlInfo(conf);
+                GitUrlInfo info = new GitUrlInfo(conf, conf.getGitHub().getRepository());
                 t.setUrl(info.getGitUrl());
                 t.setSecretValue(info.getWriteToken());
 
