@@ -115,6 +115,7 @@ public class GitCommitTask extends DefaultTask {
 
     /**
      * The directories to be committed as registered using {@link #addDirectory(String, String)} method.
+     * @since 2.2.0
      */
     public List<File> getDirectoriesToCommit() {
         return directoriesToCommit;

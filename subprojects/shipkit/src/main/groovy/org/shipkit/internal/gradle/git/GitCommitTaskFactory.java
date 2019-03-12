@@ -9,7 +9,7 @@ import org.shipkit.internal.gradle.util.TaskMaker;
 public class GitCommitTaskFactory {
 
     public static GitCommitTask createGitCommitTask(Project project, String taskName, String description) {
-        final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
+        ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
         return TaskMaker.task(project, taskName, GitCommitTask.class, task -> {
             task.setDescription(description);
