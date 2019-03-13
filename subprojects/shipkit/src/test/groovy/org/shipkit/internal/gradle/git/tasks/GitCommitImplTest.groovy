@@ -19,23 +19,7 @@ class GitCommitImplTest extends Specification {
         def f2 = new File("f2")
 
         expect:
-        getAddCommand([f1, f2], []) == ["git", "add", f1.absolutePath, f2.absolutePath]
-    }
-
-    def "git add command for directories"() {
-        def d1 = new File("d1")
-        def d2 = new File("d2")
-
-        expect:
-        getAddCommand([], [d1, d2]) == ["git", "add", d1.absolutePath, d2.absolutePath]
-    }
-
-    def "git add command for files and directories"() {
-        def f1 = new File("f1")
-        def d1 = new File("d1")
-
-        expect:
-        getAddCommand([f1], [d1]) == ["git", "add", f1.absolutePath, d1.absolutePath]
+        getAddCommand([f1, f2]) == ["git", "add", f1.absolutePath, f2.absolutePath]
     }
 
     def "git commit command"() {
