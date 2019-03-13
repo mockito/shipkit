@@ -22,14 +22,17 @@ class GitCommitTaskTest extends Specification {
         gitCommit.dependsOn.contains(task)
     }
 
-    def "enables adding directory to commit"() {
+    def "enables adding changes to commit and null task"() {
+        def f = new File("foo")
         def gitCommit = project.tasks.create("foo", GitCommitTask)
+        def numberOfDepended = gitCommit.dependsOn.size()
 
         when:
-        gitCommit.addDirectory("foo", "description")
+        gitCommit.addChange([f], "description", null)
 
         then:
         gitCommit.descriptions == ["description"]
-        gitCommit.directoriesToCommit == [new File("foo")]
+        gitCommit.filesToCommit == [f]
+        gitCommit.dependsOn.size() == numberOfDepended
     }
 }

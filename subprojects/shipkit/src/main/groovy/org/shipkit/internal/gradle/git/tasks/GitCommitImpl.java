@@ -18,7 +18,7 @@ public class GitCommitImpl {
     public void commit(GitCommitTask task) {
         Collection<ExecCommand> commands = new LinkedList<>();
         commands.add(execCommand("Adding files to git",
-            getAddCommand(task.getFilesToCommit(), task.getDirectoriesToCommit())));
+            getAddCommand(task.getFilesToCommit())));
         commands.add(execCommand("Performing git commit",
             getCommitCommand(task.getGitUserName(), task.getGitUserEmail(), task.getDescriptions(), task.getCommitMessagePostfix())));
         new ShipkitExec().execCommands(commands, task.getProject(), task.getWorkingDir());
@@ -35,15 +35,12 @@ public class GitCommitImpl {
         return result.toString();
     }
 
-    static List<String> getAddCommand(List<File> files, List<File> directories) {
+    static List<String> getAddCommand(List<File> files) {
         List<String> args = new ArrayList<>();
         args.add("git");
         args.add("add");
         for (File file : files) {
             args.add(file.getAbsolutePath());
-        }
-        for (File directory : directories) {
-            args.add(directory.getAbsolutePath());
         }
         return args;
     }

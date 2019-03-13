@@ -10,6 +10,7 @@ import org.shipkit.gradle.exec.ExecCommand;
 import org.shipkit.internal.exec.ExternalProcessStream;
 import org.shipkit.internal.gradle.util.StringUtil;
 
+import java.io.File;
 import java.util.Collection;
 
 public class ShipkitExec {
@@ -22,7 +23,7 @@ public class ShipkitExec {
      * @param project       Gradle Project instance
      * @param workingDir    Working directory where command will be executed, it may be null
      */
-    public void execCommands(Collection<ExecCommand> execCommands, Project project, String workingDir) {
+    public void execCommands(Collection<ExecCommand> execCommands, Project project, File workingDir) {
         for (final ExecCommand execCommand : execCommands) {
             ExecResult result = project.exec(new Action<ExecSpec>() {
                 @Override

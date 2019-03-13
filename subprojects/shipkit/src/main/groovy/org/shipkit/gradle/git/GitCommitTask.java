@@ -19,13 +19,12 @@ import java.util.List;
 public class GitCommitTask extends DefaultTask {
 
     @Input @SkipWhenEmpty private List<File> filesToCommit = new ArrayList<>();
-    @Input @SkipWhenEmpty private List<File> directoriesToCommit = new ArrayList<>();
     private List<String> descriptions = new ArrayList<>();
 
     @Input String gitUserName;
     @Input String gitUserEmail;
     @Input String commitMessagePostfix;
-    @Input @Optional String workingDir;
+    @Input @Optional File workingDir;
 
     @TaskAction public void commit() {
         new GitCommitImpl().commit(this);
@@ -40,20 +39,11 @@ public class GitCommitTask extends DefaultTask {
      * @param taskMakingChange  task that makes the change, we will automatically set 'dependsOn' this task
      */
     public void addChange(List<File> files, String changeDescription, Task taskMakingChange) {
-        dependsOn(taskMakingChange);
+        if (taskMakingChange != null) {
+            dependsOn(taskMakingChange);
+        }
         filesToCommit.addAll(files);
         descriptions.add(changeDescription);
-    }
-
-    /**
-     * Register a directory to be committed.
-     *
-     * @param directory     to be committed
-     * @param description   description to be included in commit message
-     */
-    public void addDirectory(String directory, String description) {
-        directoriesToCommit.add(new File(directory));
-        descriptions.add(description);
     }
 
     /**
@@ -114,18 +104,10 @@ public class GitCommitTask extends DefaultTask {
     }
 
     /**
-     * The directories to be committed as registered using {@link #addDirectory(String, String)} method.
-     * @since 2.2.0
-     */
-    public List<File> getDirectoriesToCommit() {
-        return directoriesToCommit;
-    }
-
-    /**
      * Gets working directory where commands are executed. By default it is project root directory.
      * @since 2.2.0
      */
-    public String getWorkingDir() {
+    public File getWorkingDir() {
         return workingDir;
     }
 
@@ -133,7 +115,7 @@ public class GitCommitTask extends DefaultTask {
      * @see {@link #getWorkingDir()}
      * @since 2.2.0
      */
-    public void setWorkingDir(String workingDir) {
+    public void setWorkingDir(File workingDir) {
         this.workingDir = workingDir;
     }
 }

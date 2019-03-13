@@ -20,9 +20,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import static java.util.Collections.singletonList;
 import static java.util.Objects.isNull;
 
 /**
@@ -184,8 +186,9 @@ public class JavadocPlugin implements Plugin<Project> {
             "Commit changes in Javadoc repository directory");
 
         String commitMessage = getCommitMessage(project, conf.getLenient());
-        commitJavadocTask.addDirectory(getJavadocRepoCloneDir(project, directory), commitMessage);
-        commitJavadocTask.setWorkingDir(getJavadocRepoCloneDir(project));
+        File file = new File(getJavadocRepoCloneDir(project, directory));
+        commitJavadocTask.addChange(singletonList(file), commitMessage, null);
+        commitJavadocTask.setWorkingDir(new File(getJavadocRepoCloneDir(project)));
         return commitJavadocTask;
     }
 
