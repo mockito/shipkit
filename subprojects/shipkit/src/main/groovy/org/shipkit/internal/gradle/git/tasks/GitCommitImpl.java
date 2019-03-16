@@ -21,7 +21,7 @@ public class GitCommitImpl {
             getAddCommand(task.getFilesToCommit())));
         commands.add(execCommand("Performing git commit",
             getCommitCommand(task.getGitUserName(), task.getGitUserEmail(), task.getDescriptions(), task.getCommitMessagePostfix())));
-        new ShipkitExec().execCommands(commands, task.getProject());
+        new ShipkitExec().execCommands(commands, task.getProject(), task.getWorkingDir());
     }
 
     static String getAggregatedCommitMessage(List<String> descriptions) {

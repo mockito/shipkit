@@ -14,7 +14,7 @@ class GitCommitImplTest extends Specification {
         getAggregatedCommitMessage(["release notes updated", "version bumped"]) == "release notes updated + version bumped"
     }
 
-    def "git add command"() {
+    def "git add command for files"() {
         def f1 = new File("f1")
         def f2 = new File("f2")
 

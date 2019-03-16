@@ -19,5 +19,20 @@ class GitCommitTaskTest extends Specification {
         then:
         gitCommit.descriptions == ["description"]
         gitCommit.filesToCommit == [f]
+        gitCommit.dependsOn.contains(task)
+    }
+
+    def "enables adding changes to commit and null task"() {
+        def f = new File("foo")
+        def gitCommit = project.tasks.create("foo", GitCommitTask)
+        def numberOfDepended = gitCommit.dependsOn.size()
+
+        when:
+        gitCommit.addChange([f], "description", null)
+
+        then:
+        gitCommit.descriptions == ["description"]
+        gitCommit.filesToCommit == [f]
+        gitCommit.dependsOn.size() == numberOfDepended
     }
 }

@@ -3,6 +3,7 @@ package org.shipkit.gradle.git;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.SkipWhenEmpty;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.internal.gradle.git.tasks.GitCommitImpl;
@@ -23,6 +24,7 @@ public class GitCommitTask extends DefaultTask {
     @Input String gitUserName;
     @Input String gitUserEmail;
     @Input String commitMessagePostfix;
+    @Input @Optional File workingDir;
 
     @TaskAction public void commit() {
         new GitCommitImpl().commit(this);
@@ -37,7 +39,9 @@ public class GitCommitTask extends DefaultTask {
      * @param taskMakingChange  task that makes the change, we will automatically set 'dependsOn' this task
      */
     public void addChange(List<File> files, String changeDescription, Task taskMakingChange) {
-        dependsOn(taskMakingChange);
+        if (taskMakingChange != null) {
+            dependsOn(taskMakingChange);
+        }
         filesToCommit.addAll(files);
         descriptions.add(changeDescription);
     }
@@ -92,10 +96,26 @@ public class GitCommitTask extends DefaultTask {
     }
 
     /**
-     * Change descriptions to be included in the commit message.
+     * Get descriptions to be included in the commit message.
      * Descriptions are registered using {@link #addChange(List, String, Task)}
      */
     public List<String> getDescriptions() {
         return descriptions;
+    }
+
+    /**
+     * Gets working directory where commands are executed. By default it is project root directory.
+     * @since 2.2.0
+     */
+    public File getWorkingDir() {
+        return workingDir;
+    }
+
+    /**
+     * @see {@link #getWorkingDir()}
+     * @since 2.2.0
+     */
+    public void setWorkingDir(File workingDir) {
+        this.workingDir = workingDir;
     }
 }

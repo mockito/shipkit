@@ -16,13 +16,28 @@ Using Gradle vocabulary: all archives produced by all subprojects in your build 
 Say that one of your subprojects is a "test" or "sample" project that you don't want to publish.
 To prevent publication, disable ```bintrayUpload``` task:
 
-```java
+```groovy
 //build.gradle of a subproject that you don't want to publish
 apply plugin: 'java'
 ...
 bintrayUpload.enabled = false
 ```
 
-See [docs/getting-started.md](/docs/getting-started.md) document.
+### How to build my library against different JDK versions?
 
+Sometimes projects are build against different Java versions, but you can't release the same 
+artifact version twice. To avoid failed builds on Travis, you can configure it like that:
 
+```yaml
+matrix:
+  include:
+  - jdk: oraclejdk8
+  - jdk: oraclejdk9
+    env: SKIP_RELEASE=true
+  - jdk: openjdk10
+    env: SKIP_RELEASE=true
+  - jdk: openjdk11
+    env: SKIP_RELEASE=true
+```   
+
+Now only artifacts produced by JDK8 build will be published.

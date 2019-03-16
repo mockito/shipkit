@@ -2,6 +2,7 @@ package org.shipkit.gradle.git;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.internal.gradle.git.tasks.GitPush;
 
@@ -20,6 +21,7 @@ public class GitPushTask extends DefaultTask {
     @Input private List<String> targets = new LinkedList<>();
     @Input private String url;
     @Input private boolean dryRun;
+    @Input @Optional private String workingDir;
     private String secretValue;
 
     @TaskAction public void gitPush() {
@@ -81,5 +83,21 @@ public class GitPushTask extends DefaultTask {
      */
     public void setSecretValue(String secretValue) {
         this.secretValue = secretValue;
+    }
+
+    /**
+     * Gets working directory where commands are executed. By default it is project root directory.
+     * @since 2.2.0
+     */
+    public String getWorkingDir() {
+        return workingDir;
+    }
+
+    /**
+     * @see {@link #getWorkingDir()}
+     * @since 2.2.0
+     */
+    public void setWorkingDir(String workingDir) {
+        this.workingDir = workingDir;
     }
 }
