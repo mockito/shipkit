@@ -25,6 +25,7 @@ import java.util.Set;
 
 import static java.util.Collections.singletonList;
 import static java.util.Objects.isNull;
+import static org.shipkit.internal.gradle.release.ReleasePlugin.PERFORM_RELEASE_TASK;
 
 /**
  * Release Javadoc to git repository.
@@ -95,8 +96,12 @@ public class JavadocPlugin implements Plugin<Project> {
         GitPushTask pushJavadoc = createPushJavadocTask(project, conf);
         pushJavadoc.dependsOn(commitJavadocTask);
 
-        Task releaseJavadocTask = createReleaseJavadocTask(project, cloneJavadocTask, commitJavadocTask, pushJavadoc);
+        Task releaseJavadocTask = createReleaseJavadocTask(project);
         releaseJavadocTask.dependsOn(cloneJavadocTask, commitJavadocTask, pushJavadoc);
+        Task performReleaseTask = project.getRootProject().getTasks().findByName(PERFORM_RELEASE_TASK);
+        if (performReleaseTask != null) {
+            performReleaseTask.dependsOn(releaseJavadocTask);
+        }
 
         deleteBuildDIrInRootProjectWhenCleanTask(project);
     }
@@ -209,7 +214,7 @@ public class JavadocPlugin implements Plugin<Project> {
         });
     }
 
-    private Task createReleaseJavadocTask(Project project, CloneGitRepositoryTask cloneJavadocTask, GitCommitTask commitJavadocTask, GitPushTask pushJavadoc) {
+    private Task createReleaseJavadocTask(Project project) {
         return TaskMaker.task(project, RELEASE_JAVADOC_TASK, task -> {
             task.setDescription("Clone Javadoc repository, copy Javadocs, commit and push");
         });

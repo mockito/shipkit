@@ -235,6 +235,11 @@ public class ShipkitConfiguration {
         /**
          * GitHub Javadoc repository name, for example: "mockito/shipkit-javadoc".
          * The default value is repository with "-javadoc" suffix.
+         * <p>
+         * To enable shipping Javadoc you need to apply Javadoc plugin first:
+         * <pre>
+         * apply plugin: "org.shipkit.javadoc"
+         * </pre>
          * @since 2.2.0
          */
         public String getRepository() {
@@ -252,6 +257,11 @@ public class ShipkitConfiguration {
         /**
          * GitHub Javadoc repository branch name. The branch needs to exist.
          * By default it's using the branch set as main in GitHub repo, usually master.
+         * <p>
+         * To enable shipping Javadoc you need to apply Javadoc plugin first:
+         * <pre>
+         * apply plugin: "org.shipkit.javadoc"
+         * </pre>
          * @since 2.2.0
          */
         public String getRepositoryBranch() {
@@ -267,7 +277,12 @@ public class ShipkitConfiguration {
         }
 
         /**
-         * GitHub Javadoc repository directory where put javadoc files. By default it's root directory.
+         * GitHub Javadoc repository directory where put javadoc files. By default it's project root directory.
+         * <p>
+         * To enable shipping Javadoc you need to apply Javadoc plugin first:
+         * <pre>
+         * apply plugin: "org.shipkit.javadoc"
+         * </pre>
          * @since 2.2.0
          */
         public String getRepositoryDirectory() {
@@ -286,6 +301,11 @@ public class ShipkitConfiguration {
          * Commit message used to commit Javadocs. Default: "Update current and ${version} Javadocs. [ci skip]"
          * You can override this message and ${version} will be replaced by currently build version.
          * You don't need to specify "[ci skip]" in your message - it will be added automatically.
+         * <p>
+         * To enable shipping Javadoc you need to apply Javadoc plugin first:
+         * <pre>
+         * apply plugin: "org.shipkit.javadoc"
+         * </pre>
          * @since 2.2.0
          */
         public String getCommitMessage() {

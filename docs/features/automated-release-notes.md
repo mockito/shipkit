@@ -50,6 +50,8 @@ This builds stronger team, with high visibility of changes and constant peer rev
 When merging pull request in GitHub, the default commit message will have #id of the PR.
 This is perfect of Shipkit because we can pick up the #id from the commit message during release notes generation.
 
+Release notes are also uploaded to GitHub "Releases" page, e.g.: https://github.com/mockito/shipkit/releases
+
 Thank you for reading!
 Questions or feedback?
 Start discussion [by opening a ticket](https://github.com/mockito/shipkit/issues/new) in GitHub!
