@@ -8,4 +8,4 @@ shipkit {
     releaseNotes.publicationRepository = "https://plugins.gradle.org/plugin/org.shipkit.java/"
 }
 
-apply plugin: 'org.shipkit.upgrade-dependency'
+//apply plugin: 'org.shipkit.upgrade-dependency'
