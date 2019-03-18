@@ -59,13 +59,13 @@ import static org.shipkit.internal.gradle.release.ReleasePlugin.PERFORM_RELEASE_
  */
 public class JavadocPlugin implements Plugin<Project> {
 
+    public static final String PUSH_JAVADOC_TASK = "pushJavadoc";
     private static final String CHECKOUT_JAVADOC_REPO_BRANCH = "checkoutJavadocRepoBranch";
     private static final String CLONE_JAVADOC_REPO = "cloneJavadocRepo";
     private static final String COMMIT_JAVADOC_TASK = "commitJavadoc";
     private static final String COPY_JAVADOC_STAGE_TO_REPO_DIR_TASK = "copyJavadocStageToRepoDir";
     private static final String COPY_JAVADOC_TO_STAGE_VERSION_DIR_TASK = "copyJavadocToStageVersionDir";
     private static final String COPY_JAVADOC_TO_STAGE_CURRENT_DIR_TASK = "copyJavadocToStageCurrentDir";
-    private static final String PUSH_JAVADOC_TASK = "pushJavadoc";
     private static final String RELEASE_JAVADOC_TASK = "releaseJavadoc";
     private static final String REFRESH_CURRENT_JAVADOC_TASK = "refreshCurrentJavadoc";
     private static final String REFRESH_VERSION_JAVADOC_TASK = "refreshVersionJavadoc";
