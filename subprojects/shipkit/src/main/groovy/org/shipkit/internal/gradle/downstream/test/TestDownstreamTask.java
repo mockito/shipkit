@@ -75,6 +75,7 @@ public class TestDownstreamTask extends DefaultTask {
                 "releaseNeeded", "performRelease",
                 "releaseCleanUp", "-PdryRun",
                 "-x", "gitPush", "-x", "bintrayUpload", "-x", "updateReleaseNotesOnGitHub",
+                "-x", "pushJavadoc",
                 "--include-build", getProject().getRootDir().getAbsolutePath(), "-s"));
 
         // Build log in separate file instead of including it in the console of the parent build
