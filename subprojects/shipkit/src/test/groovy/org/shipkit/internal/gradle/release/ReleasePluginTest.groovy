@@ -14,6 +14,6 @@ class ReleasePluginTest extends Specification {
 
         then:
         ShipkitExecTask contrib = project.tasks.getByName(ReleasePlugin.CONTRIBUTOR_TEST_RELEASE_TASK)
-        contrib.execCommands*.commandLine.toString() == "[[./gradlew, releaseNeeded, performRelease, releaseCleanUp, -PdryRun, -x, gitPush, -x, updateReleaseNotesOnGitHub, -x, updateReleaseNotesOnGitHubCleanUp]]"
+        contrib.execCommands*.commandLine.toString() == "[[./gradlew, releaseNeeded, performRelease, releaseCleanUp, -PdryRun, -x, gitPush, -x, updateReleaseNotesOnGitHub, -x, updateReleaseNotesOnGitHubCleanUp, -x, pushJavadoc]]"
     }
 }
