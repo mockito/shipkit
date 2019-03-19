@@ -1,5 +1,5 @@
-apply plugin: 'org.shipkit.ci-upgrade-downstream'
-
-upgradeDownstream {
-    repositories = ['mockito/shipkit-example', 'mockito/shipkit']
-}
+//apply plugin: 'org.shipkit.ci-upgrade-downstream'
+//
+//upgradeDownstream {
+//    repositories = ['mockito/shipkit-example', 'mockito/shipkit']
+//}
