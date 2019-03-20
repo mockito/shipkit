@@ -44,6 +44,7 @@ public class IdentifyGitOriginRepoTask extends DefaultTask {
             LOG.lifecycle("  Identified Git origin repository: " + repository);
         } catch (Exception e) {
             LOG.lifecycle("  Problems getting url of git remote origin (run with -i or -d for more info).\n" +
+                getAdditionalInfo(e) +
                 "  Using fallback '" + FALLBACK_GITHUB_REPO + "' instead.\n" +
                 "  Please update it in the shipkit file.\n");
             LOG.debug("  Problems getting url of git remote origin", e);
@@ -75,5 +76,13 @@ public class IdentifyGitOriginRepoTask extends DefaultTask {
     @ExposedForTesting
     void setOriginRepoProvider(GitOriginRepoProvider originRepoProvider) {
         this.originRepoProvider = originRepoProvider;
+    }
+
+    private String getAdditionalInfo(Exception e) {
+        Throwable cause = e.getCause();
+        if(cause == null)
+            return "";
+
+        return "  Error message:\n    " + cause.getMessage() + "\n";
     }
 }
