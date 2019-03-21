@@ -8,8 +8,9 @@ Write it as Javadoc and publish to separate (or the same) repo. Make it availabl
 
 #### Intro
 
-Gradle build generate Jar with Javadoc by default. Shipkit allows you to publish your Javadoc in GitHub repository.
-In connection with [GitHub Pages](https://pages.github.com/) your documentation can be visible for your users right 
+Gradle build generate Jar with Javadoc by default. 
+Shipkit allows you to push your unpacked Javadoc in HTML format to the GitHub repository/brach.
+So that [GitHub Pages](https://pages.github.com/) can show browsable, readable HTML Javadocs for your users right 
 after each release. 
 
 #### Nitty gritty
