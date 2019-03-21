@@ -28,6 +28,7 @@ To enable shipping Javadoc, you need to apply Javadoc plugin in your ```build.gr
 ```gradle
 apply plugin: "org.shipkit.java"
 // enable Shipkit Javadoc plugin. Now Javadoc can be shipped to the GitHub repository
+// this plugin should be applied AFTER org.shipkit.java
 apply plugin: "org.shipkit.javadoc"
 ``` 
 
