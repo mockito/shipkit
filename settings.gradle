@@ -1,6 +1,5 @@
 include "shipkit"
-//TODO uncommend after https://github.com/mockito/shipkit/pull/800 is merged
-//include "testDownstream"
+include "testDownstream"
 
 rootProject.name = "shipkit-root"
 
