@@ -22,4 +22,6 @@ before_script:
   - _JAVA_OPTIONS=
 
 script:
-  - ./gradlew build testDownstream -PcheckJava8Compatibility -s && ./gradlew ciPerformRelease -s
+# temporary disabled testDownstream
+#  - ./gradlew build testDownstream -PcheckJava8Compatibility -s && ./gradlew ciPerformRelease -s
+  - ./gradlew build -PcheckJava8Compatibility -s && ./gradlew ciPerformRelease -s
