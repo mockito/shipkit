@@ -80,8 +80,9 @@ public class IdentifyGitOriginRepoTask extends DefaultTask {
 
     private String getAdditionalInfo(Exception e) {
         Throwable cause = e.getCause();
-        if(cause == null)
+        if (cause == null) {
             return "";
+        }
 
         return "  Error message:\n    " + cause.getMessage() + "\n";
     }
