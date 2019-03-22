@@ -21,6 +21,6 @@ class GradlePortalReleasePluginTest extends PluginSpecification {
         updateNotes.publicationRepository == "publicRepo"
 
         ShipkitExecTask contrib = project.tasks.getByName(ReleasePlugin.CONTRIBUTOR_TEST_RELEASE_TASK)
-        contrib.execCommands*.commandLine.toString() == "[[./gradlew, releaseNeeded, performRelease, releaseCleanUp, -PdryRun, -x, gitPush, -x, updateReleaseNotesOnGitHub, -x, updateReleaseNotesOnGitHubCleanUp, -x, publishPlugins]]"
+        contrib.execCommands*.commandLine.toString() == "[[./gradlew, releaseNeeded, performRelease, releaseCleanUp, -PdryRun, -x, gitPush, -x, updateReleaseNotesOnGitHub, -x, updateReleaseNotesOnGitHubCleanUp, -x, pushJavadoc, -x, publishPlugins]]"
     }
 }

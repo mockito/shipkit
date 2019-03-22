@@ -3,11 +3,14 @@ package org.shipkit.internal.gradle.javadoc;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.Copy;
 import org.gradle.jvm.tasks.Jar;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.gradle.git.GitCommitTask;
 import org.shipkit.gradle.git.GitPushTask;
+import org.shipkit.internal.gradle.configuration.DeferredConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitCommitTaskFactory;
 import org.shipkit.internal.gradle.git.GitPlugin;
@@ -25,6 +28,7 @@ import java.util.Set;
 
 import static java.util.Collections.singletonList;
 import static java.util.Objects.isNull;
+import static org.shipkit.internal.gradle.release.ReleasePlugin.PERFORM_RELEASE_TASK;
 
 /**
  * Release Javadoc to git repository.
@@ -57,6 +61,9 @@ import static java.util.Objects.isNull;
  * </ul>
  */
 public class JavadocPlugin implements Plugin<Project> {
+    public static final String PUSH_JAVADOC_TASK = "pushJavadoc";
+
+    private static final Logger LOGGER = Logging.getLogger(JavadocPlugin.class);
 
     private static final String CHECKOUT_JAVADOC_REPO_BRANCH = "checkoutJavadocRepoBranch";
     private static final String CLONE_JAVADOC_REPO = "cloneJavadocRepo";
@@ -64,7 +71,6 @@ public class JavadocPlugin implements Plugin<Project> {
     private static final String COPY_JAVADOC_STAGE_TO_REPO_DIR_TASK = "copyJavadocStageToRepoDir";
     private static final String COPY_JAVADOC_TO_STAGE_VERSION_DIR_TASK = "copyJavadocToStageVersionDir";
     private static final String COPY_JAVADOC_TO_STAGE_CURRENT_DIR_TASK = "copyJavadocToStageCurrentDir";
-    private static final String PUSH_JAVADOC_TASK = "pushJavadoc";
     private static final String RELEASE_JAVADOC_TASK = "releaseJavadoc";
     private static final String REFRESH_CURRENT_JAVADOC_TASK = "refreshCurrentJavadoc";
     private static final String REFRESH_VERSION_JAVADOC_TASK = "refreshVersionJavadoc";
@@ -95,8 +101,15 @@ public class JavadocPlugin implements Plugin<Project> {
         GitPushTask pushJavadoc = createPushJavadocTask(project, conf);
         pushJavadoc.dependsOn(commitJavadocTask);
 
-        Task releaseJavadocTask = createReleaseJavadocTask(project, cloneJavadocTask, commitJavadocTask, pushJavadoc);
+        Task releaseJavadocTask = createReleaseJavadocTask(project);
         releaseJavadocTask.dependsOn(cloneJavadocTask, commitJavadocTask, pushJavadoc);
+        // To avoid missing of performRelease task, when org.shipkit.javadoc plugin is applied before org.shipkit.java
+        DeferredConfiguration.deferredConfiguration(project, () -> {
+            Task performReleaseTask = project.getRootProject().getTasks().findByName(PERFORM_RELEASE_TASK);
+            if (performReleaseTask != null) {
+                performReleaseTask.dependsOn(releaseJavadocTask);
+            }
+        });
 
         deleteBuildDIrInRootProjectWhenCleanTask(project);
     }
@@ -129,7 +142,12 @@ public class JavadocPlugin implements Plugin<Project> {
         Set<Copy> copyToVersionTasks = new HashSet<>();
         Set<Copy> copyToCurrentTasks = new HashSet<>();
 
-        project.getTasksByName("javadocJar", true).stream()
+        Set<Task> javadocJarSet = project.getTasksByName("javadocJar", true);
+        if (javadocJarSet.isEmpty()) {
+            LOGGER.warn("Not found any 'javadocJar' task. You probably applied 'org.shipkit.javadoc' plugin before 'org.shipkit.java'. " +
+                "Please apply 'org.shipkit.java' plugin first!");
+        }
+        javadocJarSet.stream()
             .map(task -> (Jar) task)
             .forEach(javadocJarTask -> {
                 Copy copyToVersionTask = TaskMaker.task(javadocJarTask.getProject(), COPY_JAVADOC_TO_STAGE_VERSION_DIR_TASK, Copy.class, copyTask -> {
@@ -209,7 +227,7 @@ public class JavadocPlugin implements Plugin<Project> {
         });
     }
 
-    private Task createReleaseJavadocTask(Project project, CloneGitRepositoryTask cloneJavadocTask, GitCommitTask commitJavadocTask, GitPushTask pushJavadoc) {
+    private Task createReleaseJavadocTask(Project project) {
         return TaskMaker.task(project, RELEASE_JAVADOC_TASK, task -> {
             task.setDescription("Clone Javadoc repository, copy Javadocs, commit and push");
         });
