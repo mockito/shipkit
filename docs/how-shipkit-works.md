@@ -47,101 +47,108 @@ Let's looks closer to those tasks.
 
 #### releaseNeeded
 
-The following text image (created via https://textart.io/sequence[textart.io]) shows detailed sequence diagram.
+The following text image (created via [textart.io](https://textart.io/sequence)) shows detailed sequence diagram.
 Text used to create this diagram: https://gist.github.com/mstachniuk/b7cfd3bef9fc1753c8759a2760505da9
 
 ```
-+---------+                                 +---------+                                  +---------+                                            +-----+                                      +---------+
-| Travis  |                                 | Gradle  |                                  | Shipkit |                                            | Git |                                      | Bintray |
-+---------+                                 +---------+                                  +---------+                                            +-----+                                      +---------+
-     |                                           |                                            |                                                    |                                              |
-     | Run gradlew ciPerformRelease              |                                            |                                                    |                                              |
-     |------------------------------------------>|                                            |                                                    |                                              |
-     |                                           |                                            |                                                    |                                              |
-     |                                           | task identifyGitBranch                     |                                                    |                                              |
-     |                                           |------------------------------------------->|                                                    |                                              |
-     |                                           |                                            |                                                    |                                              |
-     |                                           |                                            | read branch name                                   |                                              |
-     |                                           |                                            |--------------------------------------------------->|                                              |
-     |                                           |                                            |                                                    |                                              |
-     |                                           |                                            |                                current branch name |                                              |
-     |                                           |                                            |<---------------------------------------------------|                                              |
-     |                                           |                                            |                                                    |                                              |
-     |                                           |                                            |                                                    |                                              |
-     |                                           |<-------------------------------------------|                                                    |                                              |
-     |                                           |                                            |                                                    |                                              |
-     |                                           | task downloadPreviousReleaseArtifacts      |                                                    |                                              |
-     |                                           |------------------------------------------->|                                                    |                                              |
-     |                                           |                                            |                                                    |                                              |
-     |                                           |                                            | Download previous sources jar                      |                                              |
++---------+                                 +---------+                                  +---------+                                              +-----+                                    +---------+
+| Travis  |                                 | Gradle  |                                  | Shipkit |                                              | Git |                                    | Bintray |
++---------+                                 +---------+                                  +---------+                                              +-----+                                    +---------+
+     |                                           |                                            |                                                      |                                            |
+     | Run gradlew ciPerformRelease              |                                            |                                                      |                                            |
+     |------------------------------------------>|                                            |                                                      |                                            |
+     |                                           |                                            |                                                      |                                            |
+     |                                           | task identifyGitBranch                     |                                                      |                                            |
+     |                                           |------------------------------------------->|                                                      |                                            |
+     |                                           |                                            |                                                      |                                            |
+     |                                           |            Read env variable TRAVIS_BRANCH |                                                      |                                            |
+     |<---------------------------------------------------------------------------------------|                                                      |                                            |
+     |                                           |                                            |                                                      |                                            |
+     | Return current branch name                |                                            |                                                      |                                            |
+     |--------------------------------------------------------------------------------------->|                                                      |                                            |
+     |                                           |                                            |                                                      |                                            |
+     |                                           |                                            | read branch name (if TRAVIS_BRANCH doesn't exist)    |                                            |
+     |                                           |                                            |----------------------------------------------------->|                                            |
+     |                                           |                                            |                                                      |                                            |
+     |                                           |                                            |                                  current branch name |                                            |
+     |                                           |                                            |<-----------------------------------------------------|                                            |
+     |                                           |                                            |                                                      |                                            |
+     |                                           |                                            |                                                      |                                            |
+     |                                           |<-------------------------------------------|                                                      |                                            |
+     |                                           |                                            |                                                      |                                            |
+     |                                           | task downloadPreviousReleaseArtifacts      |                                                      |                                            |
+     |                                           |------------------------------------------->|                                                      |                                            |
+     |                                           |                                            |                                                      |                                            |
+     |                                           |                                            | Download previous sources jar                        |                                            |
      |                                           |                                            |-------------------------------------------------------------------------------------------------->|
-     |                                           |                                            |                                                    |  ------------------------------------------\ |
-     |                                           |                                            |                                                    |  | Gradle plugins will be published to     |-|
-     |                                           |                                            |                                                    |  | Gradle Plugin Portal instead of Bintray | |
-     |                                           |                                            |                                                    |  |-----------------------------------------| |
-     |                                           |                                            |                                                    |                          downloaded artifact |
+     |                                           |                                            |                                                      |------------------------------------------\ |
+     |                                           |                                            |                                                      || Gradle plugins will be published to     |-|
+     |                                           |                                            |                                                      || Gradle Plugin Portal instead of Bintray | |
+     |                                           |                                            |                                                      ||-----------------------------------------| |
+     |                                           |                                            |                                                      |                        downloaded artifact |
      |                                           |                                            |<--------------------------------------------------------------------------------------------------|
-     |                                           |                                            |                                                    |                                              |
-     |                                           |                                            |                                                    |                                              |
-     |                                           |<-------------------------------------------|                                                    |                                              |
-     |                                           |                                            |                                                    |                                              |
-     |                                           | task comparePublications                   |                                                    |                                              |
-     |                                           |------------------------------------------->|                                                    |                                              |
-     |                                           |                                            | ----------------------------------------------\    |                                              |
-     |                                           |                                            |-| - compare current dependencies with previous|    |                                              |
-     |                                           |                                            | | - compare current source jars with previous |    |                                              |
-     |                                           |                                            | | - store result into file                    |    |                                              |
-     |                                           |                                            | |---------------------------------------------|    |                                              |
-     |                                           |<-------------------------------------------|                                                    |                                              |
-     |                                           |                                            |                                                    |                                              |
-     |                                           | task releaseNeeded                         |                                                    |                                              |
-     |                                           |------------------------------------------->|                                                    |                                              |
-     |                                           |                                            |                                                    |                                              |
-     |                                           |                                            | Check if env variable SKIP_RELEASE exist           |                                              |
-     |                                           |                                            |-----------------------------------------           |                                              |
-     |                                           |                                            |                                        |           |                                              |
-     |                                           |                                            |<----------------------------------------           |                                              |
-     |                                           |                                            |                                                    |                                              |
-     |                                           |                                            | Check commit message                               |                                              |
-     |                                           |                                            |--------------------------------------------------->|                                              |
-     |                                           |                                            |                                                    | ----------------------------------------\    |
-     |                                           |                                            |                                                    |-| If PR merge commit message contains:  |    |
-     |                                           |                                            |                                                    | | - [ci skip-release] then skip release |    |
-     |                                           |                                            |                                                    | | - [ci skip-compare-publications] then |    |
-     |                                           |                                            |                                                    | | ignore comparison result              |    |
-     |                                           |                                            |<---------------------------------------------------| |---------------------------------------|    |
-     |                                           |                                            |                                                    |                                              |
-     |                                           |                Check if build Pull Request |                                                    |                                              |
-     |<---------------------------------------------------------------------------------------|                                                    |                                              |
-     | -------------------------------------\    |                                            |                                                    |                                              |
-     |-| Actually it checks if env          |    |                                            |                                                    |                                              |
-     | | variable TRAVIS_PULL_REQUEST exist |    |                                            |                                                    |                                              |
-     | |------------------------------------|    |                                            |                                                    |                                              |
-     |                                           |                                            |                                                    |                                              |
-     |--------------------------------------------------------------------------------------->|                                                    |                                              |
-     |                                           |                                            |                                                    |                                              |
-     |                                           |                                            | Check branch name                                  |                                              |
-     |                                           |                                            |--------------------------------------------------->|                                              |
-     |                                           |                                            |                                                    |                                              |
-     |                                           |                                            |                                        Branch name |                                              |
-     |                                           |                                            |<---------------------------------------------------|                                              |
-     |                                           |                                            | ------------------------------------------------\  |                                              |
-     |                                           |                                            |-| Check if branch name match releaseBranchRegex |  |                                              |
-     |                                           |                                            | | (default: "master|release/.+")                |  |                                              |
-     |                                           |                                            | -------------------------------------\----------|  |                                              |
-     |                                           |                                            |-| Check comparison results           |             |                                              |
-     |                                           |                                            | | (if [ci skip-compare-publications] |             |                                              |
-     |                                           |                                            | | doesn't exist)                     |             |                                              |
-     |                                           |              Info is release needed or not | |------------------------------------|             |                                              |
-     |                                           |<-------------------------------------------|                                                    |                                              |
-     |                                           |                                            |                                                    |                                              |
-
+     |                                           |                                            |                                                      |                                            |
+     |                                           |                                            |                                                      |                                            |
+     |                                           |<-------------------------------------------|                                                      |                                            |
+     |                                           |                                            |                                                      |                                            |
+     |                                           | task comparePublications                   |                                                      |                                            |
+     |                                           |------------------------------------------->|                                                      |                                            |
+     |                                           |                                            | ----------------------------------------------\      |                                            |
+     |                                           |                                            |-| - compare current dependencies with previous|      |                                            |
+     |                                           |                                            | | - compare current source jars with previous |      |                                            |
+     |                                           |                                            | | - store result into file                    |      |                                            |
+     |                                           |                        read TRAVIS_BRANCH  | |---------------------------------------------|      |                                            |
+     |<---------------------------------------------------------------------------------------|                                                      |                                            |
+     |                                           |                                            |                                                      |                                            |
+     | Return branch name                        |                                            |                                                      |                                            |
+     |--------------------------------------------------------------------------------------->|                                                      |                                            |
+     |                                           |                                            |                                                      |                                            |
+     |                                           |                                            |                                                      |                                            |
+     |                                           |<-------------------------------------------|                                                      |                                            |
+     |                                           |                                            |                                                      |                                            |
+     |                                           | task releaseNeeded                         |                                                      |                                            |
+     |                                           |------------------------------------------->|                                                      |                                            |
+     |                                           |                                            |                                                      |                                            |
+     |                                           |   Check if env variable SKIP_RELEASE exist |                                                      |                                            |
+     |<---------------------------------------------------------------------------------------|                                                      |                                            |
+     |                                           |                                            |                                                      |                                            |
+     | SKIP_RELEASE exist or not                 |                                            |                                                      |                                            |
+     |--------------------------------------------------------------------------------------->|                                                      |                                            |
+     |                                           |                                            |                                                      |                                            |
+     |                                           |    Read env variable TRAVIS_COMMIT_MESSAGE |                                                      |                                            |
+     |<---------------------------------------------------------------------------------------|                                                      |                                            |
+     |                                           |                                            |                                                      |                                            |
+     | Return commit message                     |                                            |                                                      |                                            |
+     |--------------------------------------------------------------------------------------->|                                                      |                                            |
+     |                                           |                                            | ----------------------------------------\            |                                            |
+     |                                           |                                            |-| If PR merge commit message contains:  |            |                                            |
+     |                                           |                                            | | - [ci skip-release] then skip release |            |                                            |
+     |                                           |                                            | | - [ci skip-compare-publications] then |            |                                            |
+     |                                           |                Check if build Pull Request | | ignore comparison result              |            |                                            |
+     |<---------------------------------------------------------------------------------------| |---------------------------------------|            |                                            |
+     | -------------------------------------\    |                                            |                                                      |                                            |
+     |-| Actually it checks if env          |    |                                            |                                                      |                                            |
+     | | variable TRAVIS_PULL_REQUEST exist |    |                                            |                                                      |                                            |
+     | |------------------------------------|    |                                            |                                                      |                                            |
+     |                                           |                                            |                                                      |                                            |
+     |--------------------------------------------------------------------------------------->|                                                      |                                            |
+     |                                           |                                            | ------------------------------------------------\    |                                            |
+     |                                           |                                            |-| Check if branch name match releaseBranchRegex |    |                                            |
+     |                                           |                                            | | (default: "master|release/.+")                |    |                                            |
+     |                                           |                                            | -------------------------------------\----------|    |                                            |
+     |                                           |                                            |-| Check comparison results           |               |                                            |
+     |                                           |                                            | | (if [ci skip-compare-publications] |               |                                            |
+     |                                           |                                            | | doesn't exist)                     |               |                                            |
+     |                                           |              Info is release needed or not | |------------------------------------|               |                                            |
+     |                                           |<-------------------------------------------|                                                      |                                            |
+     |                                           |                                            |                                                      |                                            |
+     
 ```
 
 
 #### ciReleasePrepare
 
-The following text image (created via https://textart.io/sequence[textart.io]) shows detailed sequence diagram.
+The following text image (created via [textart.io](https://textart.io/sequence)) shows detailed sequence diagram.
 Text used to create this diagram: https://gist.github.com/mstachniuk/94d4972c193b0bb5c6500066f15171ae
 
 ```
@@ -201,128 +208,218 @@ Text used to create this diagram: https://gist.github.com/mstachniuk/94d4972c193
 
 #### performRelease
 
-The following text image (created via https://textart.io/sequence[textart.io]) shows detailed sequence diagram.
+The following text image (created via [textart.io](https://textart.io/sequence)) shows detailed sequence diagram.
 Text used to create this diagram: https://gist.github.com/mstachniuk/41ca2bd6cf115b6d636f529aa507b0b3
 
 ```
-+---------+ +---------+                    +---------+                                           +-----+                                                        +---------+ +---------+
-| Travis  | | Gradle  |                    | Shipkit |                                           | Git |                                                        | Bintray | | GitHub  |
-+---------+ +---------+                    +---------+                                           +-----+                                                        +---------+ +---------+
-     |           |                              |                                                   |                                                                |           |
-     |           | task bumpVersionFile         |                                                   |                                                                |           |
-     |           |----------------------------->|                                                   |                                                                |           |
-     |           |                              | --------------------------------------\           |                                                                |           |
-     |           |                              |-| Update values in version.properties |           |                                                                |           |
-     |           |                              | |-------------------------------------|           |                                                                |           |
-     |           |                              |                                                   |                                                                |           |
-     |           |                              |                                                   |                                                                |           |
-     |           |<-----------------------------|                                                   |                                                                |           |
-     |           |                              |                                                   |                                                                |           |
-     |           | task identifyGitBranch       |                                                   |                                                                |           |
-     |           |----------------------------->|                                                   |                                                                |           |
-     |           |                              |                                                   |                                                                |           |
-     |           |                              | Read branch name                                  |                                                                |           |
-     |           |                              |-------------------------------------------------->|                                                                |           |
-     |           |                              |                                                   | -------------------------------------------\                   |           |
-     |           |                              |                                                   |-| It's needed in some next tasks           |                   |           |
-     |           |                              |                                                   | | Execute: git rev-parse --abbrev-ref HEAD |                   |           |
-     |           |                              |                                                   | |------------------------------------------|                   |           |
-     |           |                              |                                                   |                                                                |           |
-     |           |<---------------------------------------------------------------------------------|                                                                |           |
-     |           |                              |                                                   |                                                                |           |
-     |           | task fetchContributors       |                                                   |                                                                |           |
-     |           |----------------------------->|                                                   |                                                                |           |
-     |           |                              |                                                   |                                                                |           |
-     |           |                              | Fetching all GitHub contributors                  |                                                                |           |
-     |           |                              |------------------------------------------------------------------------------------------------------------------------------->|
-     |           |                              |                                                   |                                                                |           |
-     |           |                              |                                                   |                                                                |           |
-     |           |<--------------------------------------------------------------------------------------------------------------------------------------------------------------|
-     |           |                              |                                                   |                                                                |           |
-     |           | task fetchReleaseNotes       |                                                   |                                                                |           |
-     |           |----------------------------->|                                                   |                                                                |           |
-     |           |                              |                                                   |                                                                |           |
-     |           |                              | Fetch data about changes from the last release    |                                                                |           |
-     |           |                              |-------------------------------------------------->|                                                                |           |
-     |           |                              |                                                   | ------------------------------------------------------\        |           |
-     |           |                              |                                                   |-| Execute: git log --pretty=%ad --date=iso v0.0.1 -n 1|        |           |
-     |           |                              |                                                   | | git fetch origin +refs/tags/v0.0.1:refs/tags/v0.0.1 |        |           |
-     |           |                              |                                                   | | git log v0.0.1..HEAD                                |        |           |
-     |           |                              |                                                   | |-----------------------------------------------------|        |           |
-     |           |                              |<--------------------------------------------------|                                                                |           |
-     |           |                              |                                                   |                                                                |           |
-     |           |                              | Get information about GitHub issues               |                                                                |           |
-     |           |                              |------------------------------------------------------------------------------------------------------------------------------->|
-     |           |                              |                                                   |                                                                |           |
-     |           |                              |                                                   |                                                                |           |
-     |           |<--------------------------------------------------------------------------------------------------------------------------------------------------------------|
-     |           |                              |                                                   |                                                                |           |
-     |           | task updateReleaseNotes      |                                                   |                                                                |           |
-     |           |----------------------------->|                                                   |                                                                |           |
-     |           |                              | -------------------------\                        |                                                                |           |
-     |           |                              |-| Generate Release Notes |                        |                                                                |           |
-     |           |                              | |------------------------|                        |                                                                |           |
-     |           |                              |                                                   |                                                                |           |
-     |           |                              |                                                   |                                                                |           |
-     |           |<-----------------------------|                                                   |                                                                |           |
-     |           |                              |                                                   |                                                                |           |
-     |           | task gitCommit               |                                                   |                                                                |           |
-     |           |----------------------------->|                                                   |                                                                |           |
-     |           |                              |                                                   |                                                                |           |
-     |           |                              | Commit release notes and version.properties       |                                                                |           |
-     |           |                              |-------------------------------------------------->|                                                                |           |
-     |           |                              |                                                   |                                                                |           |
-     |           |                              |                                                   |                                                                |           |
-     |           |<---------------------------------------------------------------------------------|                                                                |           |
-     |           |                              |                                                   |                                                                |           |
-     |           | task gitTag                  |                                                   |                                                                |           |
-     |           |----------------------------->|                                                   |                                                                |           |
-     |           |                              |                                                   |                                                                |           |
-     |           |                              | Create tag                                        |                                                                |           |
-     |           |                              |-------------------------------------------------->|                                                                |           |
-     |           |                              |                                                   | ----------------------------------------------------------\    |           |
-     |           |                              |                                                   |-| Execute:                                                |    |           |
-     |           |                              |                                                   | | git tag -a v0.0.2 -m "Created new tag v0.0.2 [ci skip]" |    |           |
-     |           |                              |                                                   | | [ci skip] for not triggering infinite build loop on CI  |    |           |
-     |           |                              |                                                   | |---------------------------------------------------------|    |           |
-     |           |<---------------------------------------------------------------------------------|                                                                |           |
-     |           |                              |                                                   |                                                                |           |
-     |           | task gitPush                 |                                                   |                                                                |           |
-     |           |----------------------------->|                                                   |                                                                |           |
-     |           |                              |                                                   |                                                                |           |
-     |           |                              | Push commit and tag                               |                                                                |           |
-     |           |                              |-------------------------------------------------->|                                                                |           |
-     |           |                              |                                                   | ----------------------------------\                            |           |
-     |           |                              |                                                   |-| GitHub write token is used here |                            |           |
-     |           |                              |                                                   | |---------------------------------|                            |           |
-     |           |                              |                                                   |                                                                |           |
-     |           |                              |                                                   |                                                                |           |
-     |           |<---------------------------------------------------------------------------------|                                                                |           |
-     |           |                              |                                                   |                                                                |           |
-     |           | task performGitPush          |                                                   |                                                                |           |
-     |           |----------------------------->|                                                   |                                                                |           |
-     |           |                              | ----------------------------------\               |                                                                |           |
-     |           |                              |-| This task only aggregate tasks: |               |                                                                |           |
-     |           |                              | | - gitCommit                     |               |                                                                |           |
-     |           |                              | | - gitTag                        |               |                                                                |           |
-     |           |                              | | - gitPush                       |               |                                                                |           |
-     |           |<-----------------------------| |---------------------------------|               |                                                                |           |
-     |           |                              | -----------------------------------------------\  |                                                                |           |
-     |           |                              |-| Final check if property dryRun is set, e.g.: |  |                                                                |           |
-     |           |                              | | ./gradlew performRelease -PdryRun            |  |                                                                |           |
-     |           |                              | | It's useful for local testing                |  |                                                                |           |
-     |           | task bintrayUpload           | |----------------------------------------------|  |                                                                |           |
-     |           |----------------------------->|                                                   |                                                                |           |
-     |           |                              |                                                   |                                                                |           |
-     |           |                              | upload artifacts                                  |                                                                |           |
-     |           |                              |------------------------------------------------------------------------------------------------------------------->|           |
-     |           |                              |                                                   |                                                                |           |
-     |           |                              |                                                   |                  Release shipped! Thank you for using Shipkit! |           |
-     |           |<--------------------------------------------------------------------------------------------------------------------------------------------------|           |
-     |           |                              |                                                   |                                                                |           |
-     |      DONE |                              |                                                   |                                                                |           |
-     |<----------|                              |                                                   |                                                                |           |
-     |           |                              |                                                   |                                                                |           |
++---------+ +---------+                                                  +---------+                                                    +-----+                                                        +---------+ +---------+
+| Travis  | | Gradle  |                                                  | Shipkit |                                                    | Git |                                                        | Bintray | | GitHub  |
++---------+ +---------+                                                  +---------+                                                    +-----+                                                        +---------+ +---------+
+     |           |                                                            |                                                            |                                                                |           |
+     |           | task bumpVersionFile                                       |                                                            |                                                                |           |
+     |           |----------------------------------------------------------->|                                                            |                                                                |           |
+     |           |                                                            | --------------------------------------\                    |                                                                |           |
+     |           |                                                            |-| Update values in version.properties |                    |                                                                |           |
+     |           |                                                            | |-------------------------------------|                    |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |<-----------------------------------------------------------|                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           | task identifyGitBranch                                     |                                                            |                                                                |           |
+     |           |----------------------------------------------------------->|                                                            |                                                                |           |
+     |           |                                                            | --------------------------------------------------------\  |                                                                |           |
+     |           |                                                            |-| See above sequence for releaseNeeded for more details |  |                                                                |           |
+     |           |                                                            | |-------------------------------------------------------|  |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |<-----------------------------------------------------------|                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           | task fetchContributors                                     |                                                            |                                                                |           |
+     |           |----------------------------------------------------------->|                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |                                                            | Fetching all GitHub contributors                           |                                                                |           |
+     |           |                                                            |---------------------------------------------------------------------------------------------------------------------------------------->|
+     |           |                                                            |                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |<-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+     |           |                                                            |                                                            |                                                                |           |
+     |           | task fetchReleaseNotes                                     |                                                            |                                                                |           |
+     |           |----------------------------------------------------------->|                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |                                                            | Fetch data about changes from the last release             |                                                                |           |
+     |           |                                                            |----------------------------------------------------------->|                                                                |           |
+     |           |                                                            |                                                            | ------------------------------------------------------\        |           |
+     |           |                                                            |                                                            |-| Execute: git log --pretty=%ad --date=iso v0.0.1 -n 1|        |           |
+     |           |                                                            |                                                            | | git fetch origin +refs/tags/v0.0.1:refs/tags/v0.0.1 |        |           |
+     |           |                                                            |                                                            | | git log v0.0.1..HEAD                                |        |           |
+     |           |                                                            |                                                            | |-----------------------------------------------------|        |           |
+     |           |                                                            |<-----------------------------------------------------------|                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |                                                            | Get information about GitHub issues                        |                                                                |           |
+     |           |                                                            |---------------------------------------------------------------------------------------------------------------------------------------->|
+     |           |                                                            |                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |<-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+     |           |                                                            |                                                            |                                                                |           |
+     |           | task updateReleaseNotes                                    |                                                            |                                                                |           |
+     |           |----------------------------------------------------------->|                                                            |                                                                |           |
+     |           |                                                            | -------------------------\                                 |                                                                |           |
+     |           |                                                            |-| Generate Release Notes |                                 |                                                                |           |
+     |           |                                                            | |------------------------|                                 |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |<-----------------------------------------------------------|                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           | task gitCommit                                             |                                                            |                                                                |           |
+     |           |----------------------------------------------------------->|                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |                                                            | Commit release notes and version.properties                |                                                                |           |
+     |           |                                                            |----------------------------------------------------------->|                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |<------------------------------------------------------------------------------------------------------------------------|                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           | task gitTag                                                |                                                            |                                                                |           |
+     |           |----------------------------------------------------------->|                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |                                                            | Create tag                                                 |                                                                |           |
+     |           |                                                            |----------------------------------------------------------->|                                                                |           |
+     |           |                                                            |                                                            | ----------------------------------------------------------\    |           |
+     |           |                                                            |                                                            |-| Execute:                                                |    |           |
+     |           |                                                            |                                                            | | git tag -a v0.0.2 -m "Created new tag v0.0.2 [ci skip]" |    |           |
+     |           |                                                            |                                                            | | [ci skip] for not triggering infinite build loop on CI  |    |           |
+     |           |                                                            |                                                            | |---------------------------------------------------------|    |           |
+     |           |<------------------------------------------------------------------------------------------------------------------------|                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           | task gitPush                                               |                                                            |                                                                |           |
+     |           |----------------------------------------------------------->|                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |                                                            | Push commit and tag                                        |                                                                |           |
+     |           |                                                            |----------------------------------------------------------->|                                                                |           |
+     |           |                                                            |                                                            | ----------------------------------\                            |           |
+     |           |                                                            |                                                            |-| GitHub write token is used here |                            |           |
+     |           |                                                            |                                                            | |---------------------------------|                            |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |<------------------------------------------------------------------------------------------------------------------------|                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           | task performGitPush                                        |                                                            |                                                                |           |
+     |           |----------------------------------------------------------->|                                                            |                                                                |           |
+     |           |                                                            | ----------------------------------\                        |                                                                |           |
+     |           |                                                            |-| This task only aggregate tasks: |                        |                                                                |           |
+     |           |                                                            | | - gitCommit                     |                        |                                                                |           |
+     |           |                                                            | | - gitTag                        |                        |                                                                |           |
+     |           |                                                            | | - gitPush                       |                        |                                                                |           |
+     |           |<-----------------------------------------------------------| |---------------------------------|                        |                                                                |           |
+     |           | ------------------------------------------------------\    |                                                            |                                                                |           |
+     |           |-| Only if org.shipkit.javadoc plugin is applied BEGIN |    |                                                            |                                                                |           |
+     |           | |-----------------------------------------------------|    |                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           | task copyJavadocToStageVersionDir                          |                                                            |                                                                |           |
+     |           |----------------------------------------------------------->|                                                            |                                                                |           |
+     |           |                                                            | ----------------------------------------------\            |                                                                |           |
+     |           |                                                            |-| Copy unpacked Javadoc from JAR to stage dir |            |                                                                |           |
+     |           |                                                            | | for each subproject                         |            |                                                                |           |
+     |           |                                                            | |---------------------------------------------|            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |<-----------------------------------------------------------|                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           | task refreshVersionJavadoc                                 |                                                            |                                                                |           |
+     |           |----------------------------------------------------------->|                                                            |                                                                |           |
+     |           |                                                            | ---------------------------------------------------\       |                                                                |           |
+     |           |                                                            |-| Aggregate all copyJavadocToStageVersionDir tasks |       |                                                                |           |
+     |           |                                                            | |--------------------------------------------------|       |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |<-----------------------------------------------------------|                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           | task cloneJavadocRepo                                      |                                                            |                                                                |           |
+     |           |----------------------------------------------------------->|                                                            |                                                                |           |
+     |           |                                                            | -----------------------------------------\                 |                                                                |           |
+     |           |                                                            |-| Only if Javadoc stage dir is NOT empty |                 |                                                                |           |
+     |           |                                                            | | Clones to the repo dir                 |                 |                                                                |           |
+     |           |                                                            | |----------------------------------------|                 |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |<-----------------------------------------------------------|                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           | task checkoutJavadocRepoBranch                             |                                                            |                                                                |           |
+     |           |----------------------------------------------------------->|                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |<-----------------------------------------------------------|                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           | task copyJavadocToStageCurrentDir                          |                                                            |                                                                |           |
+     |           |----------------------------------------------------------->|                                                            |                                                                |           |
+     |           |                                                            | ----------------------\                                    |                                                                |           |
+     |           |                                                            |-| For each subproject |                                    |                                                                |           |
+     |           |                                                            | |---------------------|                                    |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |<-----------------------------------------------------------|                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           | task refreshCurrentJavadoc                                 |                                                            |                                                                |           |
+     |           |----------------------------------------------------------->|                                                            |                                                                |           |
+     |           |                                                            | ---------------------------------------------------\       |                                                                |           |
+     |           |                                                            |-| Aggregate all copyJavadocToStageCurrentDir tasks |       |                                                                |           |
+     |           |                                                            | |--------------------------------------------------|       |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |<-----------------------------------------------------------|                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           | task copyJavadocStageToRepoDir                             |                                                            |                                                                |           |
+     |           |----------------------------------------------------------->|                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |<-----------------------------------------------------------|                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           | task commitJavadoc                                         |                                                            |                                                                |           |
+     |           |----------------------------------------------------------->|                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |<-----------------------------------------------------------|                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           | task pushJavadoc                                           |                                                            |                                                                |           |
+     |           |----------------------------------------------------------->|                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |<-----------------------------------------------------------|                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           | task releaseJavadoc                                        |                                                            |                                                                |           |
+     |           |----------------------------------------------------------->|                                                            |                                                                |           |
+     |           |                                                            | ------------------------------------------------\          |                                                                |           |
+     |           |                                                            |-| Aggregate all tasks needed to release Javadoc |          |                                                                |           |
+     |           |                                                            | |-----------------------------------------------|          |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |<-----------------------------------------------------------|                                                            |                                                                |           |
+     |           | ----------------------------------------------------\      |                                                            |                                                                |           |
+     |           |-| Only if org.shipkit.javadoc plugin is applied END |      |                                                            |                                                                |           |
+     |           | |---------------------------------------------------|      |                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           | task updateReleaseNotesOnGitHub                            |                                                            |                                                                |           |
+     |           |----------------------------------------------------------->|                                                            |                                                                |           |
+     |           |                                                            | ----------------------------------------------------\      |                                                                |           |
+     |           |                                                            |-| Upload release notes to GitHub Releases Page      |      |                                                                |           |
+     |           |                                                            | | E.g.: https://github.com/mockito/shipkit/releases |      |                                                                |           |
+     |           |                                                            | |---------------------------------------------------|      |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |<-----------------------------------------------------------|                                                            |                                                                |           |
+     |           |                                                            | -----------------------------------------------\           |                                                                |           |
+     |           |                                                            |-| Final check if property dryRun is set, e.g.: |           |                                                                |           |
+     |           |                                                            | | ./gradlew performRelease -PdryRun            |           |                                                                |           |
+     |           |                                                            | | It's useful for local testing                |           |                                                                |           |
+     |           | task bintrayUpload                                         | |----------------------------------------------|           |                                                                |           |
+     |           |----------------------------------------------------------->|                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |                                                            | upload artifacts                                           |                                                                |           |
+     |           |                                                            |---------------------------------------------------------------------------------------------------------------------------->|           |
+     |           |                                                            |                                                            |                                                                |           |
+     |           |                                                            |                                                            |                  Release shipped! Thank you for using Shipkit! |           |
+     |           |<-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|           |
+     |           |                                                            |                                                            |                                                                |           |
+     |      DONE |                                                            |                                                            |                                                                |           |
+     |<----------|                                                            |                                                            |                                                                |           |
+     |           |                                                            |                                                            |                                                                |           |
 ```
 
 
