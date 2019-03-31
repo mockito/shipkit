@@ -3,6 +3,7 @@ apply plugin: 'idea'
 apply plugin: 'groovy'
 apply plugin: 'checkstyle'
 apply plugin: 'codenarc'
+apply plugin: 'jacoco'
 
 apply plugin: 'com.gradle.plugin-publish'
 
@@ -45,6 +46,10 @@ test {
                 "${result.failedTestCount} failed, " +
                 "${result.skippedTestCount} skipped)")
     }
+    jacoco {
+        destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
+        classDumpDir = file("$buildDir/jacoco/classpathdumps")
+    }
 }
 
 codenarc {
@@ -84,3 +89,17 @@ task fastInstall { Task t ->
     }
     t.doLast { println "  Shipkit $version installed to local maven repo" }
 }
+
+
+task codeCoverageReport(type:JacocoReport) {
+    executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+    sourceSets sourceSets.test
+
+    reports {
+        xml.enabled true
+        html.enabled false
+    }
+}
+
+codeCoverageReport.dependsOn test
+check.dependsOn codeCoverageReport
