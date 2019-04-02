@@ -90,6 +90,9 @@ task fastInstall { Task t ->
     t.doLast { println "  Shipkit $version installed to local maven repo" }
 }
 
+jacoco {
+    toolVersion = "0.8.3"
+}
 
 task codeCoverageReport(type:JacocoReport) {
     executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
