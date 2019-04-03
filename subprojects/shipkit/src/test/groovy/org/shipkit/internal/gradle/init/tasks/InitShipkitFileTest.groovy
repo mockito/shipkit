@@ -36,39 +36,41 @@ class InitShipkitFileTest extends Specification {
 //     https://github.com/mockito/shipkit/blob/master/docs/getting-started.md
 //
 shipkit {
-   //TODO is the repository correct?
-   gitHub.repository = "mockito/mockito"
+    //TODO is the repository correct?
+    gitHub.repository = "mockito/mockito"
 
-   //TODO generate and use your own read-only GitHub personal access token
-   gitHub.readOnlyAuthToken = "76826c9ec886612f504d12fd4268b16721c4f85d"
+    //TODO generate and use your own read-only GitHub personal access token
+    //More: https://github.com/mockito/shipkit/blob/master/docs/getting-started.md#production-configuration
+    gitHub.readOnlyAuthToken = "76826c9ec886612f504d12fd4268b16721c4f85d"
 
-   //TODO generate GitHub write token, and ensure your Travis CI has this env variable exported
-   gitHub.writeAuthToken = System.getenv("GH_WRITE_TOKEN")
+    //TODO generate GitHub write token, and ensure your Travis CI has this env variable exported
+    //More: https://github.com/mockito/shipkit/blob/master/docs/getting-started.md#write-token
+    gitHub.writeAuthToken = System.getenv("GH_WRITE_TOKEN")
 }
 
 allprojects {
-   plugins.withId("org.shipkit.bintray") {
+    plugins.withId("org.shipkit.bintray") {
 
-       //Bintray configuration is handled by JFrog Bintray Gradle Plugin
-       //For reference see the official documentation: https://github.com/bintray/gradle-bintray-plugin
-       bintray {
+        //Bintray configuration is handled by JFrog Bintray Gradle Plugin
+        //For reference see the official documentation: https://github.com/bintray/gradle-bintray-plugin
+        bintray {
 
-           //TODO sign up for free open source account with https://bintray.com, then look up your API key on your profile page in Bintray
-           key = '7ea297848ca948adb7d3ee92a83292112d7ae989'
-           //TODO don't check in the key, remove above line and use env variable exported on CI:
-           //key = System.getenv("BINTRAY_API_KEY")
+            //TODO sign up for free open source account with https://bintray.com, then look up your API key on your profile page in Bintray
+            key = '7ea297848ca948adb7d3ee92a83292112d7ae989'
+            //TODO don't check in the key, remove above line and use env variable exported on CI:
+            //key = System.getenv("BINTRAY_API_KEY")
 
-           pkg {
-               //TODO configure Bintray settings per your project (https://github.com/bintray/gradle-bintray-plugin)
-               repo = 'bootstrap'
-               user = 'shipkit-bootstrap-bot'
-               userOrg = 'shipkit-bootstrap'
-               name = 'maven'
-               licenses = ['MIT']
-               labels = ['continuous delivery', 'release automation', 'shipkit']
-           }
-       }
-   }
+            pkg {
+                //TODO configure Bintray settings per your project (https://github.com/bintray/gradle-bintray-plugin)
+                repo = 'bootstrap'
+                user = 'shipkit-bootstrap-bot'
+                userOrg = 'shipkit-bootstrap'
+                name = 'maven'
+                licenses = ['MIT']
+                labels = ['continuous delivery', 'release automation', 'shipkit']
+            }
+        }
+    }
 }
 """
     }
