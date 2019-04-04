@@ -39,7 +39,7 @@ public class ExecCommandFactory {
         return new Action<ExecResult>() {
             public void execute(ExecResult exec) {
                 if (exec.getExitValue() != 0) {
-                    LOG.info("External process returned exit code: {}. Stopping the execution of the task.");
+                    LOG.info("External process returned exit code: {}. Stopping the execution of the task.", exec.getExitValue());
                     //Cleanly stop executing the task, without making the task failed.
                     throw new StopExecutionException();
                 }
