@@ -5,10 +5,11 @@ import org.gradle.api.logging.Logging;
 import org.shipkit.internal.notes.util.IOUtil;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Optional;
 
 /**
@@ -56,10 +57,9 @@ public class GitHubApi {
         conn.setRequestProperty("Authorization", "token " + authToken);
 
         if (body.isPresent()) {
-            try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
-                wr.writeBytes(body.get());
-                wr.flush();
-            }
+            OutputStream os = conn.getOutputStream();
+            os.write(body.get().getBytes(Charset.forName("UTF-8")));
+            os.flush();
         }
 
         return call(method, conn);
@@ -78,3 +78,5 @@ public class GitHubApi {
         }
     }
 }
+//https://api.github.com/repos/mstachniuk/mockito/releases
+//https://api.github.com/repos/mstachniuk/mockito/releases
