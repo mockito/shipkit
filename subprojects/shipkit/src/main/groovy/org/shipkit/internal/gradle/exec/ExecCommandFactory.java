@@ -19,40 +19,28 @@ public class ExecCommandFactory {
     private final static Logger LOG = Logging.getLogger(ExecCommandFactory.class);
 
     public static Action<ExecSpec> ignoreResult() {
-        return new Action<ExecSpec>() {
-            public void execute(ExecSpec spec) {
-                spec.setIgnoreExitValue(true);
-            }
-        };
+        return spec -> spec.setIgnoreExitValue(true);
     }
 
     public static Action<ExecSpec> ignoreResult(final File workingDir) {
-        return new Action<ExecSpec>() {
-            public void execute(ExecSpec spec) {
-                spec.setIgnoreExitValue(true);
-                spec.setWorkingDir(workingDir);
-            }
+        return spec -> {
+            spec.setIgnoreExitValue(true);
+            spec.setWorkingDir(workingDir);
         };
     }
 
     public static Action<ExecResult> stopExecution() {
-        return new Action<ExecResult>() {
-            public void execute(ExecResult exec) {
-                if (exec.getExitValue() != 0) {
-                    LOG.info("External process returned exit code: {}. Stopping the execution of the task.", exec.getExitValue());
-                    //Cleanly stop executing the task, without making the task failed.
-                    throw new StopExecutionException();
-                }
+        return exec -> {
+            if (exec.getExitValue() != 0) {
+                LOG.info("External process returned exit code: {}. Stopping the execution of the task.", exec.getExitValue());
+                //Cleanly stop executing the task, without making the task failed.
+                throw new StopExecutionException();
             }
         };
     }
 
     private static Action<ExecResult> ensureSucceeded(final String prefix) {
-        return new Action<ExecResult>() {
-            public void execute(ExecResult result) {
-                ensureSucceeded(result, prefix);
-            }
-        };
+        return result -> ensureSucceeded(result, prefix);
     }
 
     static void ensureSucceeded(ExecResult result, String prefix) {
