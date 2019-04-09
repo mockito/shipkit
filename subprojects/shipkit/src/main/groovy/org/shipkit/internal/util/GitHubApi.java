@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 /**
@@ -57,9 +57,10 @@ public class GitHubApi {
         conn.setRequestProperty("Authorization", "token " + authToken);
 
         if (body.isPresent()) {
-            OutputStream os = conn.getOutputStream();
-            os.write(body.get().getBytes(Charset.forName("UTF-8")));
-            os.flush();
+            try (OutputStream os = conn.getOutputStream()) {
+                os.write(body.get().getBytes(StandardCharsets.UTF_8));
+                os.flush();
+            }
         }
 
         return call(method, conn);
@@ -78,5 +79,3 @@ public class GitHubApi {
         }
     }
 }
-//https://api.github.com/repos/mstachniuk/mockito/releases
-//https://api.github.com/repos/mstachniuk/mockito/releases
