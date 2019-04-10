@@ -5,10 +5,11 @@ import org.gradle.api.logging.Logging;
 import org.shipkit.internal.notes.util.IOUtil;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 /**
@@ -56,9 +57,9 @@ public class GitHubApi {
         conn.setRequestProperty("Authorization", "token " + authToken);
 
         if (body.isPresent()) {
-            try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
-                wr.writeBytes(body.get());
-                wr.flush();
+            try (OutputStream os = conn.getOutputStream()) {
+                os.write(body.get().getBytes(StandardCharsets.UTF_8));
+                os.flush();
             }
         }
 
