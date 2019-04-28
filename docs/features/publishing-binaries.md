@@ -41,7 +41,7 @@ All tasks:
 ```
 
 Normally, we don't run any of those tasks.
-Travis CI is configured to publish automatically but only [when the release is needed](docs/gradle-plugins/release-needed-plugin.md).
+Travis CI is configured to publish automatically but only [when the release is needed](/docs/gradle-plugins/release-needed-plugin.md).
 Here's an example [.travis.yml file](https://github.com/mockito/shipkit-example/blob/master/.travis.yml) from our example project.
 
 ```
