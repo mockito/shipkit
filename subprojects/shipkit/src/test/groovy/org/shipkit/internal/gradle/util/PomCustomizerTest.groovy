@@ -34,7 +34,7 @@ class PomCustomizerTest extends Specification {
         //wwilk will not be duplicated in developers/contributors
         conf.team.contributors = ["mstachniuk:Marcin Stachniuk", "wwilk:Wojtek Wilk"]
 
-        PomCustomizer.customizePom(node, conf, "foo", "Foo library", new DefaultProjectContributorsSet())
+        PomCustomizer.customizePom(node, conf, "foo", "Foo library", new DefaultProjectContributorsSet(), false)
 
         expect:
         printXml(node) == """<project>
@@ -97,7 +97,7 @@ class PomCustomizerTest extends Specification {
         contributorsSet.addContributor(new DefaultProjectContributor("Wojtek Wilk", "wwilk", "https://github.com/wwilk", 5))
         contributorsSet.addContributor(new DefaultProjectContributor("Marcin Stachniuk", "mstachniuk", "https://github.com/mstachniuk", 3))
 
-        PomCustomizer.customizePom(node, conf, "foo", "Foo library", contributorsSet)
+        PomCustomizer.customizePom(node, conf, "foo", "Foo library", contributorsSet, false)
 
         expect:
         printXml(node) == """<project>
@@ -156,12 +156,46 @@ class PomCustomizerTest extends Specification {
         conf.team.developers = []
         conf.team.contributors = []
 
-        PomCustomizer.customizePom(node, conf, "foo", "Foo library", new DefaultProjectContributorsSet())
+        PomCustomizer.customizePom(node, conf, "foo", "Foo library", new DefaultProjectContributorsSet(), false)
 
         expect:
         printXml(node) == """<project>
   <name>foo</name>
   <packaging>jar</packaging>
+  <url>https://github.com/repo</url>
+  <description>Foo library</description>
+  <licenses>
+    <license>
+      <name>The MIT License</name>
+      <url>https://github.com/repo/blob/master/LICENSE</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://github.com/repo.git</url>
+  </scm>
+  <issueManagement>
+    <url>https://github.com/repo/issues</url>
+    <system>GitHub issues</system>
+  </issueManagement>
+  <ciManagement>
+    <url>https://travis-ci.org/repo</url>
+    <system>TravisCI</system>
+  </ciManagement>
+</project>
+"""
+    }
+
+    def "AAR packaging in Android library"() {
+        conf.gitHub.repository = "repo"
+        node.appendNode("packaging", "aar")
+
+        PomCustomizer.customizePom(node, conf, "foo", "Foo library", new DefaultProjectContributorsSet(), true)
+
+        expect:
+        printXml(node) == """<project>
+  <packaging>aar</packaging>
+  <name>foo</name>
   <url>https://github.com/repo</url>
   <description>Foo library</description>
   <licenses>

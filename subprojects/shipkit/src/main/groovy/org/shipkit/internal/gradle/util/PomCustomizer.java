@@ -54,7 +54,8 @@ public class PomCustomizer {
                         "\n   - Contributors read from GitHub: "
                                 + StringUtil.join(contributorsFromGitHub.toConfigNotation(), ", "));
 
-                customizePom(xml.asNode(), conf, archivesBaseName, project.getDescription(), contributorsFromGitHub);
+                final boolean isAndroidLibrary = project.getPlugins().hasPlugin("com.android.library");
+                customizePom(xml.asNode(), conf, archivesBaseName, project.getDescription(), contributorsFromGitHub, isAndroidLibrary);
             }
         });
     }
@@ -64,10 +65,13 @@ public class PomCustomizer {
      */
     static void customizePom(Node root, ShipkitConfiguration conf,
                              String projectName, String projectDescription,
-                             ProjectContributorsSet contributorsFromGitHub) {
-        //Assumes project has java plugin applied. Pretty safe assumption
+                             ProjectContributorsSet contributorsFromGitHub,
+                             boolean isAndroidLibrary) {
         root.appendNode("name", projectName);
-        root.appendNode("packaging", "jar");
+        if (!isAndroidLibrary) {
+            //Android library publication uses aar packaging set by aar-publish-plugin
+            root.appendNode("packaging", "jar");
+        }
 
         String repoLink = conf.getGitHub().getUrl() + "/" + conf.getGitHub().getRepository();
         root.appendNode("url", repoLink);

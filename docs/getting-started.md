@@ -111,6 +111,34 @@ allprojects {
 To try out Shipkit you don’t need to change any Bintray configuration!
 Generated shipkit file is configured to publish to sandbox 'shipkit-bootstrap' Bintray organisation.
 
+### Android libraries
+
+Configuration specific to Android library projects (using `com.android.library` plugins):
+
+- apply `org.shipkit.android-publish` plugin to Gradle project you want to publish (usually it is not a root project)
+- set artifact ID using `android.artifactId` in `shipkit` block
+
+Example:
+
+"gradle/shipkit.gradle" file:
+
+```Gradle
+shipkit {
+    //other properties
+    
+    android.artifactId = 'shipkit-android'
+}
+```
+
+"shipkit-android/build.gradle" file:
+
+```Gradle
+apply plugin: 'org.shipkit.bintray'
+apply plugin: 'org.shipkit.android-publish'
+apply plugin: 'com.android.library'
+
+```
+
 ### Commit local changes
 
 Before testing the release, it's best to commit your local changes:

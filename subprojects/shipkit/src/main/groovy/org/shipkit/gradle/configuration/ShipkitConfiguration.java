@@ -9,6 +9,7 @@ import java.util.Map;
 
 import static java.util.Collections.singletonList;
 import static org.shipkit.internal.gradle.util.team.TeamParser.validateTeamMembers;
+import static org.shipkit.internal.util.ArgumentValidation.notNull;
 
 /**
  * Shipkit configuration.
@@ -29,6 +30,7 @@ public class ShipkitConfiguration {
     private final ReleaseNotes releaseNotes = new ReleaseNotes();
     private final Git git = new Git();
     private final Team team = new Team();
+    private final Android android = new Android();
 
     private String previousReleaseVersion;
     private boolean dryRun;
@@ -101,6 +103,10 @@ public class ShipkitConfiguration {
 
     public Team getTeam() {
         return team;
+    }
+
+    public Android getAndroid() {
+        return android;
     }
 
     /**
@@ -575,6 +581,27 @@ public class ShipkitConfiguration {
          */
         public void setIgnoredContributors(Collection<String> ignoredContributors) {
             store.put("team.ignoredContributors", ignoredContributors);
+        }
+    }
+
+    /**
+     * Android library configuration
+     */
+    public class Android {
+        /**
+         * Artifact id of published AAR
+         * For example: "shipkit"
+         */
+        public String getArtifactId() {
+            return store.getString("android.artifactId");
+        }
+
+        /**
+         * See {@link #getArtifactId()} ()}
+         */
+        public void setArtifactId(String artifactId) {
+            notNull(artifactId, "artifactId");
+            store.put("android.artifactId", artifactId);
         }
     }
 }

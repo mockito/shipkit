@@ -29,7 +29,7 @@ import org.shipkit.internal.gradle.util.StringUtil;
  * Other features:
  * <ul>
  *     <li>Configures Gradle's publications to publish java library</li>
- *     <li>Configures 'build' taks to depend on 'publishJavaLibraryToMavenLocal'
+ *     <li>Configures 'build' task to depend on 'publishJavaLibraryToMavenLocal'
  *          to flesh out publication issues during the build</li>
  *     <li>Configures 'snapshot' task to depend on 'publishJavaLibraryToMavenLocal'</li>
  * </ul>
