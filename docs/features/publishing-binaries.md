@@ -124,6 +124,9 @@ allprojects {
 }
 ```
 
+There is also a possibility to shipping artefacts unsing maven-publish plugin.
+For more details please read: [Publishing binaries using maven-publish plugin](/docs/features/publishing-binaries-using-maven-publish-plugin.md).
+
 Thank you for reading!
 Questions or feedback?
 Start discussion [by opening a ticket](https://github.com/mockito/shipkit/issues/new) in GitHub!
