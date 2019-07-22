@@ -10,6 +10,7 @@ import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.util.GradleVersion;
+import org.shipkit.gradle.configuration.AndroidLibraryPublishConfiguration;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.snapshot.LocalSnapshotPlugin;
@@ -37,11 +38,12 @@ import static org.shipkit.internal.gradle.java.JavaPublishPlugin.PUBLICATION_NAM
  *     <li>Configures 'snapshot' task to depend on 'publishJavaLibraryToMavenLocal'</li>
  * </ul>
  */
-public class AndroidPublishPlugin implements Plugin<Project> {
+public class AndroidLibraryPublishPlugin implements Plugin<Project> {
 
-    private final static Logger LOG = Logging.getLogger(AndroidPublishPlugin.class);
+    private final static Logger LOG = Logging.getLogger(AndroidLibraryPublishPlugin.class);
 
     public void apply(final Project project) {
+        final AndroidLibraryPublishConfiguration androidLibraryPublishConfiguration = project.getExtensions().create("androidPublish", AndroidLibraryPublishConfiguration.class);
         ensureGradleVersion();
 
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
@@ -59,7 +61,7 @@ public class AndroidPublishPlugin implements Plugin<Project> {
         project.getPlugins().withId("com.android.library", plugin -> {
             GradleDSLHelper.publications(project, publications -> {
                 MavenPublication p = publications.create(PUBLICATION_NAME, MavenPublication.class, publication -> {
-                    publication.setArtifactId(conf.getAndroid().getArtifactId());
+                    publication.setArtifactId(androidLibraryPublishConfiguration.getArtifactId());
                     publication.from(project.getComponents().getByName("android"));
                     PomCustomizer.customizePom(project, conf, publication);
                 });

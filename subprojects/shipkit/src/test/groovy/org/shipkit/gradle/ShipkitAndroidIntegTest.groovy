@@ -30,7 +30,6 @@ class ShipkitAndroidIntegTest extends GradleSpecification {
                 git.user = "shipkit"
                 git.email = "shipkit.org@gmail.com"
                 gitHub.repository = "repo"
-                android.artifactId = "shipkit-android"
             }
 
             allprojects {
@@ -63,11 +62,15 @@ class ShipkitAndroidIntegTest extends GradleSpecification {
         newFile('lib/build.gradle') << """
             apply plugin: 'org.shipkit.bintray'
             apply plugin: 'org.shipkit.android-publish'
+            androidPublish {
+                artifactId = 'shipkit-android'
+            }
+            
             apply plugin: 'com.android.library'
             android {
-                compileSdkVersion 28
+                compileSdkVersion 29
                 defaultConfig {
-                    minSdkVersion 28
+                    minSdkVersion 29
                 }
             }
         """
@@ -113,6 +116,7 @@ class ShipkitAndroidIntegTest extends GradleSpecification {
 :lib:transformClassesAndResourcesWithSyncLibJarsForRelease
 :lib:mergeReleaseJniLibFolders
 :lib:transformNativeLibsWithMergeJniLibsForRelease
+:lib:transformNativeLibsWithStripDebugSymbolForRelease
 :lib:transformNativeLibsWithSyncJniLibsForRelease
 :lib:bundleReleaseAar
 :lib:generatePomFileForJavaLibraryPublication
@@ -125,7 +129,7 @@ class ShipkitAndroidIntegTest extends GradleSpecification {
 :performRelease"""
 
         where:
-        gradleVersionToTest << ["5.3", "5.4.1"]
+        gradleVersionToTest << ["5.3", "5.4.1", "5.5.1"]
     }
 
     def "fails on unsupported Gradle version #gradleVersionToTest"() {
