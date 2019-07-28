@@ -41,9 +41,10 @@ import static org.shipkit.internal.gradle.java.JavaPublishPlugin.PUBLICATION_NAM
 public class AndroidLibraryPublishPlugin implements Plugin<Project> {
 
     private final static Logger LOG = Logging.getLogger(AndroidLibraryPublishPlugin.class);
+    private final static String ANDROID_PUBLISH_EXTENSION = "androidPublish";
 
     public void apply(final Project project) {
-        final AndroidLibraryPublishConfiguration androidLibraryPublishConfiguration = project.getExtensions().create("androidPublish", AndroidLibraryPublishConfiguration.class);
+        final AndroidLibraryPublishConfiguration androidLibraryPublishConfiguration = project.getExtensions().create(ANDROID_PUBLISH_EXTENSION, AndroidLibraryPublishConfiguration.class);
         ensureGradleVersion();
 
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
@@ -59,13 +60,20 @@ public class AndroidLibraryPublishPlugin implements Plugin<Project> {
         bintray.setPublications(PUBLICATION_NAME);
 
         project.getPlugins().withId("com.android.library", plugin -> {
-            GradleDSLHelper.publications(project, publications -> {
-                MavenPublication p = publications.create(PUBLICATION_NAME, MavenPublication.class, publication -> {
-                    publication.setArtifactId(androidLibraryPublishConfiguration.getArtifactId());
-                    publication.from(project.getComponents().getByName("android"));
-                    PomCustomizer.customizePom(project, conf, publication);
+            project.afterEvaluate(evaluatedProject -> {
+                final String artifactId = androidLibraryPublishConfiguration.getArtifactId();
+                if (artifactId == null) {
+                    throw new GradleException("Missing artifact id in " + ANDROID_PUBLISH_EXTENSION);
+                }
+
+                GradleDSLHelper.publications(project, publications -> {
+                    MavenPublication p = publications.create(PUBLICATION_NAME, MavenPublication.class, publication -> {
+                        publication.setArtifactId(artifactId);
+                        publication.from(project.getComponents().getByName("android"));
+                        PomCustomizer.customizePom(project, conf, publication);
+                    });
+                    LOG.info("{} - configured '{}' publication", project.getPath(), p.getArtifactId());
                 });
-                LOG.info("{} - configured '{}' publication", project.getPath(), p.getArtifactId());
             });
 
             //so that we flesh out problems with maven publication during the build process
