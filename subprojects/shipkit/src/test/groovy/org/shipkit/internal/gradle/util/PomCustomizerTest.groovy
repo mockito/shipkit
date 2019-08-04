@@ -186,6 +186,41 @@ class PomCustomizerTest extends Specification {
 """
     }
 
+    def "CI management from configuration"() {
+        conf.gitHub.repository = "repo"
+        conf.ciManagement.system = "Bitrise"
+        conf.ciManagement.url = "https://app.bitrise.io/app/slug"
+
+        PomCustomizer.customizePom(node, conf, "foo", "Foo library", new DefaultProjectContributorsSet())
+
+        expect:
+        printXml(node) == """<project>
+  <name>foo</name>
+  <packaging>jar</packaging>
+  <url>https://github.com/repo</url>
+  <description>Foo library</description>
+  <licenses>
+    <license>
+      <name>The MIT License</name>
+      <url>https://github.com/repo/blob/master/LICENSE</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://github.com/repo.git</url>
+  </scm>
+  <issueManagement>
+    <url>https://github.com/repo/issues</url>
+    <system>GitHub issues</system>
+  </issueManagement>
+  <ciManagement>
+    <url>https://app.bitrise.io/app/slug</url>
+    <system>Bitrise</system>
+  </ciManagement>
+</project>
+"""
+    }
+
     private static String printXml(Node node) {
         def sw = new StringWriter()
         def printer = new XmlNodePrinter(new PrintWriter(sw))
