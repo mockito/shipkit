@@ -27,4 +27,16 @@ class GitHubApiTest extends Specification {
         def ex = thrown(Exception)
         !ex.message.contains("accessToken")
     }
+
+    def "should not show accessToken in error message for patch request"() {
+        given:
+        def api = new GitHubApi("https://api.github.com", "accessToken")
+
+        when:
+        api.patch("/repos/shipkit-example/pulls", "{}")
+
+        then:
+        def ex = thrown(Exception)
+        !ex.message.contains("accessToken")
+    }
 }

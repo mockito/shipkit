@@ -35,9 +35,10 @@ public class ReleaseNotesFormatters {
      *                     Mappings also allow controlling priority in presenting improvements -
      *                     the formatter can use the order of label mappings. For example, 'noteworthy' labelled improvements on top.
      * @param vcsCommitsLinkTemplate template to generate link to vcs view of the commits.
-     *                      For example: https://github.com/mockito/mockito/compare/{0}...{1}".
+ *                      For example: https://github.com/mockito/mockito/compare/{0}...{1}".
      * @param publicationRepository where the binaries were published to, will be printed as-is in the release notes
      * @param contributors mapped by name, used to generate links to GitHub profiles
+     * @param badgeFormatter Formatter for the repository badge where artifact is published
      */
     public static MultiReleaseNotesFormatter detailedFormatter(String header,
                                                                String introductionText,
@@ -45,8 +46,9 @@ public class ReleaseNotesFormatters {
                                                                String vcsCommitsLinkTemplate,
                                                                String publicationRepository,
                                                                Map<String, Contributor> contributors,
-                                                               boolean emphasizeVersion) {
+                                                               boolean emphasizeVersion,
+                                                               BadgeFormatter badgeFormatter) {
         return new DetailedFormatter(header, introductionText, labelMapping, vcsCommitsLinkTemplate,
-                publicationRepository, contributors, emphasizeVersion);
+                publicationRepository, contributors, emphasizeVersion, badgeFormatter);
     }
 }

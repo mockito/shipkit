@@ -8,6 +8,7 @@ import org.shipkit.gradle.git.IdentifyGitBranchTask;
 import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
 import org.shipkit.internal.gradle.git.GitBranchPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
+import org.shipkit.internal.gradle.javadoc.JavadocPlugin;
 import org.shipkit.internal.gradle.notes.ReleaseNotesPlugin;
 import org.shipkit.internal.gradle.notes.tasks.UpdateReleaseNotes;
 import org.shipkit.internal.gradle.util.GradleWrapper;
@@ -21,6 +22,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static org.shipkit.internal.gradle.exec.ExecCommandFactory.execCommand;
 import static org.shipkit.internal.gradle.git.GitBranchPlugin.IDENTIFY_GIT_BRANCH;
+import static org.shipkit.internal.gradle.notes.ReleaseNotesPlugin.UPDATE_NOTES_ON_GITHUB_TASK;
 import static org.shipkit.internal.gradle.notes.ReleaseNotesPlugin.UPDATE_NOTES_TASK;
 import static org.shipkit.internal.gradle.release.ReleaseNeededPlugin.RELEASE_NEEDED;
 
@@ -52,9 +54,9 @@ import static org.shipkit.internal.gradle.release.ReleaseNeededPlugin.RELEASE_NE
 public class ReleasePlugin implements Plugin<Project> {
 
     public static final String PERFORM_RELEASE_TASK = "performRelease";
-    public static final String TEST_RELEASE_TASK = "testRelease";
+    private static final String TEST_RELEASE_TASK = "testRelease";
     public static final String CONTRIBUTOR_TEST_RELEASE_TASK = "contributorTestRelease";
-    public static final String RELEASE_CLEAN_UP_TASK = "releaseCleanUp";
+    private static final String RELEASE_CLEAN_UP_TASK = "releaseCleanUp";
     private ShipkitExecTask contributorTestRelease;
 
     @Override
@@ -68,7 +70,7 @@ public class ReleasePlugin implements Plugin<Project> {
             t.setDescription("Performs release. " +
                 "For testing, use: './gradlew testRelease'");
 
-            t.dependsOn(VersioningPlugin.BUMP_VERSION_FILE_TASK, UPDATE_NOTES_TASK);
+            t.dependsOn(VersioningPlugin.BUMP_VERSION_FILE_TASK, UPDATE_NOTES_TASK, UPDATE_NOTES_ON_GITHUB_TASK);
             t.dependsOn(GitPlugin.PERFORM_GIT_PUSH_TASK);
             t.dependsOn(IDENTIFY_GIT_BRANCH);
 
@@ -96,6 +98,7 @@ public class ReleasePlugin implements Plugin<Project> {
             //using finalizedBy so that all clean up tasks run, even if one of them fails
             t.finalizedBy(GitPlugin.PERFORM_GIT_COMMIT_CLEANUP_TASK);
             t.finalizedBy(GitPlugin.TAG_CLEANUP_TASK);
+            t.finalizedBy(ReleaseNotesPlugin.UPDATE_NOTES_ON_GITHUB_CLEANUP_TASK);
         });
 
         contributorTestRelease = TaskMaker.task(project, CONTRIBUTOR_TEST_RELEASE_TASK, ShipkitExecTask.class, t -> {
@@ -110,7 +113,9 @@ public class ReleasePlugin implements Plugin<Project> {
 
     private static ExecCommand contributorTestCommand(String... additionalArguments) {
         List<String> commandLine = new LinkedList<>(asList(
-            GradleWrapper.getWrapperCommand(), RELEASE_NEEDED, PERFORM_RELEASE_TASK, RELEASE_CLEAN_UP_TASK, "-PdryRun", "-x", GitPlugin.GIT_PUSH_TASK));
+            GradleWrapper.getWrapperCommand(), RELEASE_NEEDED, PERFORM_RELEASE_TASK, RELEASE_CLEAN_UP_TASK, "-PdryRun",
+            "-x", GitPlugin.GIT_PUSH_TASK, "-x", ReleaseNotesPlugin.UPDATE_NOTES_ON_GITHUB_TASK,
+            "-x", ReleaseNotesPlugin.UPDATE_NOTES_ON_GITHUB_CLEANUP_TASK, "-x", JavadocPlugin.PUSH_JAVADOC_TASK));
         commandLine.addAll(asList(additionalArguments));
         return execCommand("Performing release in dry run, with cleanup", commandLine);
     }

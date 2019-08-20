@@ -74,7 +74,8 @@ public class TestDownstreamTask extends DefaultTask {
         run.setCommand(asList(GradleWrapper.getWrapperCommand(),
                 "releaseNeeded", "performRelease",
                 "releaseCleanUp", "-PdryRun",
-                "-x", "gitPush", "-x", "bintrayUpload",
+                "-x", "gitPush", "-x", "bintrayUpload", "-x", "updateReleaseNotesOnGitHub",
+                "-x", "pushJavadoc",
                 "--include-build", getProject().getRootDir().getAbsolutePath(), "-s"));
 
         // Build log in separate file instead of including it in the console of the parent build

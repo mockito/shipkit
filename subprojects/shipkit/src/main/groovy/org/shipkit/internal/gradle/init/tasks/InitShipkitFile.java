@@ -51,38 +51,40 @@ public class InitShipkitFile {
             "//     https://github.com/mockito/shipkit/blob/master/docs/getting-started.md\n" +
             "//\n" +
             "shipkit {\n" +
-            "   //TODO is the repository correct?\n" +
-            "   gitHub.repository = \"@gitHub.repository@\"\n" +
+            "    //TODO is the repository correct?\n" +
+            "    gitHub.repository = \"@gitHub.repository@\"\n" +
             "\n" +
-            "   //TODO generate and use your own read-only GitHub personal access token\n" +
-            "   gitHub.readOnlyAuthToken = \"@gitHub.readOnlyAuthToken@\"\n" +
+            "    //TODO generate and use your own read-only GitHub personal access token\n" +
+            "    //More: https://github.com/mockito/shipkit/blob/master/docs/getting-started.md#production-configuration\n" +
+            "    gitHub.readOnlyAuthToken = \"@gitHub.readOnlyAuthToken@\"\n" +
             "\n" +
-            "   //TODO generate GitHub write token, and ensure your Travis CI has this env variable exported\n" +
-            "   gitHub.writeAuthToken = System.getenv(\"GH_WRITE_TOKEN\")\n" +
+            "    //TODO generate GitHub write token, and ensure your Travis CI has this env variable exported\n" +
+            "    //More: https://github.com/mockito/shipkit/blob/master/docs/getting-started.md#write-token\n" +
+            "    gitHub.writeAuthToken = System.getenv(\"GH_WRITE_TOKEN\")\n" +
             "}\n" +
             "\n" +
             "allprojects {\n" +
-            "   plugins.withId(\"org.shipkit.bintray\") {\n" +
+            "    plugins.withId(\"org.shipkit.bintray\") {\n" +
             "\n" +
-            "       //Bintray configuration is handled by JFrog Bintray Gradle Plugin\n" +
-            "       //For reference see the official documentation: https://github.com/bintray/gradle-bintray-plugin\n" +
-            "       bintray {\n" +
+            "        //Bintray configuration is handled by JFrog Bintray Gradle Plugin\n" +
+            "        //For reference see the official documentation: https://github.com/bintray/gradle-bintray-plugin\n" +
+            "        bintray {\n" +
             "\n" +
-            "           //TODO sign up for free open source account with https://bintray.com, then look up your API key on your profile page in Bintray\n" +
-            "           key = '@bintray.key@'\n" +
-            "           //TODO don't check in the key, remove above line and use env variable exported on CI:\n" +
-            "           //key = System.getenv(\"BINTRAY_API_KEY\")\n" +
+            "            //TODO sign up for free open source account with https://bintray.com, then look up your API key on your profile page in Bintray\n" +
+            "            key = '@bintray.key@'\n" +
+            "            //TODO don't check in the key, remove above line and use env variable exported on CI:\n" +
+            "            //key = System.getenv(\"BINTRAY_API_KEY\")\n" +
             "\n" +
-            "           pkg {\n" +
-            "               //TODO configure Bintray settings per your project (https://github.com/bintray/gradle-bintray-plugin)\n" +
-            "               repo = '@bintray.pkg.repo@'\n" +
-            "               user = '@bintray.pkg.user@'\n" +
-            "               userOrg = '@bintray.pkg.userOrg@'\n" +
-            "               name = '@bintray.pkg.name@'\n" +
-            "               licenses = @bintray.pkg.licenses@\n" +
-            "               labels = @bintray.pkg.labels@\n" +
-            "           }\n" +
-            "       }\n" +
-            "   }\n" +
+            "            pkg {\n" +
+            "                //TODO configure Bintray settings per your project (https://github.com/bintray/gradle-bintray-plugin)\n" +
+            "                repo = '@bintray.pkg.repo@'\n" +
+            "                user = '@bintray.pkg.user@'\n" +
+            "                userOrg = '@bintray.pkg.userOrg@'\n" +
+            "                name = '@bintray.pkg.name@'\n" +
+            "                licenses = @bintray.pkg.licenses@\n" +
+            "                labels = @bintray.pkg.labels@\n" +
+            "            }\n" +
+            "        }\n" +
+            "    }\n" +
             "}\n";
 }

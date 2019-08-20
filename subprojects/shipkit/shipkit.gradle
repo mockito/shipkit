@@ -3,13 +3,14 @@ apply plugin: 'idea'
 apply plugin: 'groovy'
 apply plugin: 'checkstyle'
 apply plugin: 'codenarc'
+apply plugin: 'jacoco'
 
 apply plugin: 'com.gradle.plugin-publish'
 
 apply from: "$rootDir/gradle/upgrade-downstream.gradle"
 
 checkstyle {
-    toolVersion = '8.12'
+    toolVersion = '8.23'
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
 }
 
@@ -24,13 +25,12 @@ dependencies {
     compile "com.gradle.publish:plugin-publish-plugin:0.9.10"
     compile 'com.googlecode.java-diff-utils:diffutils:1.3.0'
 
-    testCompile("org.spockframework:spock-core:1.2-groovy-2.4") {
+    testCompile("org.spockframework:spock-core:1.3-groovy-2.4") {
         exclude module: "groovy-all"
     }
     testCompile 'info.solidsoft.spock:spock-global-unroll:0.5.1'    //automatically unroll Spock tests (if appropriate)
-    testCompile "net.bytebuddy:byte-buddy:1.8.22"
-    testCompile "org.objenesis:objenesis:2.6"
-    testCompile "commons-lang:commons-lang:2.4"
+    testCompile "net.bytebuddy:byte-buddy:1.9.10"
+    testCompile "org.objenesis:objenesis:3.0.1"
     testCompile gradleTestKit()
 }
 
@@ -45,6 +45,10 @@ test {
                 "(${result.successfulTestCount} succeeded, " +
                 "${result.failedTestCount} failed, " +
                 "${result.skippedTestCount} skipped)")
+    }
+    jacoco {
+        destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
+        classDumpDir = file("$buildDir/jacoco/classpathdumps")
     }
 }
 
@@ -85,3 +89,22 @@ task fastInstall { Task t ->
     }
     t.doLast { println "  Shipkit $version installed to local maven repo" }
 }
+
+jacoco {
+    toolVersion = "0.8.4"
+}
+
+task codeCoverageReport(type:JacocoReport) {
+    executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+    sourceSets sourceSets.main
+
+    reports {
+        xml.enabled true
+        xml.destination file("${buildDir}/reports/jacoco/report.xml")
+        html.enabled false
+        csv.enabled false
+    }
+}
+
+codeCoverageReport.dependsOn test
+check.dependsOn codeCoverageReport

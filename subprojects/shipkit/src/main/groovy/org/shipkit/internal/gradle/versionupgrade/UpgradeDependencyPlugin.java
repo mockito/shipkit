@@ -137,7 +137,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
 
                 gitOriginPlugin.provideOriginRepo(task, new Action<String>() {
                     public void execute(String originRepo) {
-                        GitUrlInfo info = new GitUrlInfo(conf);
+                        GitUrlInfo info = new GitUrlInfo(conf, conf.getGitHub().getRepository());
                         task.setUrl(info.getGitUrl());
                         task.setSecretValue(info.getWriteToken());
                     }
@@ -230,7 +230,7 @@ public class UpgradeDependencyPlugin implements Plugin<Project> {
 
                 gitOriginPlugin.provideOriginRepo(task, new Action<String>() {
                     public void execute(String originRepo) {
-                        GitUrlInfo info = new GitUrlInfo(conf);
+                        GitUrlInfo info = new GitUrlInfo(conf, conf.getGitHub().getRepository());
                         task.setUrl(info.getGitUrl());
                         task.setSecretValue(info.getWriteToken());
                     }

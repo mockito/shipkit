@@ -5,7 +5,7 @@ language: java
 
 matrix:
   include:
-    - jdk: oraclejdk8
+    - jdk: openjdk8
       # Sanity regression tests with major supported Gradle versions
       env: SHIPKIT_REGRESSION_TESTS=quick
 
@@ -23,3 +23,6 @@ before_script:
 
 script:
   - ./gradlew build testDownstream -PcheckJava8Compatibility -s && ./gradlew ciPerformRelease -s
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

@@ -1,14 +1,16 @@
 package org.shipkit.internal.gradle.git.tasks;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.TaskAction;
 import org.shipkit.internal.exec.DefaultProcessRunner;
 import org.shipkit.internal.exec.ProcessRunner;
 import org.shipkit.internal.util.ExposedForTesting;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This task will checkout a certain revision.
@@ -19,6 +21,8 @@ public class GitCheckOutTask extends DefaultTask {
     private String rev;
     @Input
     private boolean newBranch;
+    @Input @Optional
+    private File directory;
 
     private ProcessRunner processRunner;
 
@@ -50,6 +54,20 @@ public class GitCheckOutTask extends DefaultTask {
         return newBranch;
     }
 
+    /**
+     * A directory where execute git command
+     */
+    public File getDirectory() {
+        return directory;
+    }
+
+    /**
+     * See {@link #getDirectory()}
+     */
+    public void setDirectory(File directory) {
+        this.directory = directory;
+    }
+
     @TaskAction
     public void checkOut() {
         getProcessRunner().run(getCommandLine());
@@ -68,7 +86,11 @@ public class GitCheckOutTask extends DefaultTask {
 
     private ProcessRunner getProcessRunner() {
         if (processRunner == null) {
-            return new DefaultProcessRunner(getProject().getProjectDir());
+            if (directory == null) {
+                return new DefaultProcessRunner(getProject().getProjectDir());
+            } else {
+                return new DefaultProcessRunner(directory);
+            }
         }
         return processRunner;
     }

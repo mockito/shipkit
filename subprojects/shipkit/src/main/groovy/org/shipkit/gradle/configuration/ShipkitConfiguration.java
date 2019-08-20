@@ -26,6 +26,7 @@ public class ShipkitConfiguration {
 
     private final ContinuousIntegrationManagement ciManagement = new ContinuousIntegrationManagement();
     private final GitHub gitHub = new GitHub();
+    private final Javadoc javadoc = new Javadoc();
     private final ReleaseNotes releaseNotes = new ReleaseNotes();
     private final Git git = new Git();
     private final Team team = new Team();
@@ -56,6 +57,7 @@ public class ShipkitConfiguration {
         releaseNotes.setFile("docs/release-notes.md");
         releaseNotes.setIgnoreCommitsContaining(singletonList("[ci skip]"));
         releaseNotes.setLabelMapping(Collections.<String, String>emptyMap());
+        releaseNotes.setPublicationPluginName("");
 
         team.setContributors(Collections.<String>emptyList());
         team.setDevelopers(Collections.<String>emptyList());
@@ -90,6 +92,10 @@ public class ShipkitConfiguration {
 
     public GitHub getGitHub() {
         return gitHub;
+    }
+
+    public Javadoc getJavadoc() {
+        return javadoc;
     }
 
     public ReleaseNotes getReleaseNotes() {
@@ -256,13 +262,106 @@ public class ShipkitConfiguration {
          */
         public String getWriteAuthToken() {
             return (String) store.getValue("gitHub.writeAuthToken", "GH_WRITE_TOKEN", "Please export 'GH_WRITE_TOKEN' variable first!\n" +
-                "It is highly recommended to keep write token secure and store env variable 'GH_WRITE_TOKEN' with your CI configuration." +
+                "It is highly recommended to keep write token secure and store env variable 'GH_WRITE_TOKEN' with your CI configuration. " +
                 "Alternatively, you can configure GitHub write auth token explicitly (don't check this in to Git!):\n" +
                 "  shipkit.gitHub.writeAuthToken = 'secret'");
         }
 
+        /**
+         * @see {@link #getWriteAuthToken()}
+         */
         public void setWriteAuthToken(String writeAuthToken) {
             store.put("gitHub.writeAuthToken", writeAuthToken);
+        }
+    }
+
+    public class Javadoc {
+        /**
+         * GitHub Javadoc repository name, for example: "mockito/shipkit-javadoc".
+         * The default value is repository with "-javadoc" suffix.
+         * <p>
+         * To enable shipping Javadoc you need to apply Javadoc plugin first:
+         * <pre>
+         * apply plugin: "org.shipkit.javadoc"
+         * </pre>
+         * @since 2.2.0
+         */
+        public String getRepository() {
+            return store.getString("javadoc.repository");
+        }
+
+        /**
+         * @see {@link #getRepository()}
+         * @since 2.2.0
+         */
+        public void setRepository(String javadocRepository) {
+            store.put("javadoc.repository", javadocRepository);
+        }
+
+        /**
+         * GitHub Javadoc repository branch name. The branch needs to exist.
+         * By default it's using the branch set as main in GitHub repo, usually master.
+         * <p>
+         * To enable shipping Javadoc you need to apply Javadoc plugin first:
+         * <pre>
+         * apply plugin: "org.shipkit.javadoc"
+         * </pre>
+         * @since 2.2.0
+         */
+        public String getRepositoryBranch() {
+            return store.getString("javadoc.repositoryBranch");
+        }
+
+        /**
+         * @see {@link #getRepositoryBranch()}
+         * @since 2.2.0
+         */
+        public void setRepositoryBranch(String javadocRepositoryBranch) {
+            store.put("javadoc.repositoryBranch", javadocRepositoryBranch);
+        }
+
+        /**
+         * GitHub Javadoc repository directory where put javadoc files. By default it's project root directory.
+         * <p>
+         * To enable shipping Javadoc you need to apply Javadoc plugin first:
+         * <pre>
+         * apply plugin: "org.shipkit.javadoc"
+         * </pre>
+         * @since 2.2.0
+         */
+        public String getRepositoryDirectory() {
+            return store.getString("javadoc.repositoryDirectory");
+        }
+
+        /**
+         * @see {@link #getRepositoryDirectory()}
+         * @since 2.2.0
+         */
+        public void setRepositoryDirectory(String javadocRepositoryDirectory) {
+            store.put("javadoc.repositoryDirectory", javadocRepositoryDirectory);
+        }
+
+        /**
+         * Commit message used to commit Javadocs. Default: "Update current and ${version} Javadocs. [ci skip]"
+         * You can override this message and ${version} will be replaced by currently build version.
+         * You don't need to specify "[ci skip]" in your message - it will be added automatically.
+         * <p>
+         * To enable shipping Javadoc you need to apply Javadoc plugin first:
+         * <pre>
+         * apply plugin: "org.shipkit.javadoc"
+         * </pre>
+         * @since 2.2.0
+         */
+        public String getCommitMessage() {
+            return store.getString("javadoc.commitMessage");
+        }
+
+        /**
+         * @see {@link #getCommitMessage()}
+         * @since 2.2.0
+         */
+        public void setCommitMessage(String commitMessage) {
+            store.put("javadoc.commitMessage", commitMessage);
         }
     }
 
@@ -340,6 +439,44 @@ public class ShipkitConfiguration {
          */
         public void setPublicationRepository(String publicationRepository) {
             store.put("releaseNotes.publicationRepository", publicationRepository);
+        }
+
+        /**
+         * Get the Publication Plugin Name
+         *
+         * @see @setPublicationPluginName(String)
+         * @since 2.0.32
+         * @deprecated since 2.1.6 because we no longer are using this one. It is scheduled to be removed in 3.0.0.
+         */
+        @Deprecated
+        public String getPublicationPluginName() {
+            return store.getString("releaseNotes.publicationPluginName");
+        }
+
+        /**
+         * Set the Publication Plugin Name published to Gradle Plugin Portal.
+         * This is currently used to configure repository Badge URL when generating release notes.
+         * E.g.
+         * <pre>
+         *     releaseNotes.publicationPluginName = "org.shipkit.java.gradle.plugin"
+         * </pre>
+         * and
+         * <pre>
+         *    releaseNotes.publicationRepository = "https://plugins.gradle.org/plugin/org.shipkit.java/"
+         * </pre>
+         * Will generate Gradle Badge:
+         * <pre>
+         *     https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/org/shipkit/java/org.shipkit.java.gradle.plugin/maven-metadata.xml.svg?colorB=007ec6&label=Gradle
+         * </pre>
+         * This will show nice badge with actual plugin version in Gradle Plugin Portal.
+         *
+         * @since 2.0.32
+         *
+         * @deprecated since 2.1.6 because we no longer are using this one. It is scheduled to be removed in 3.0.0.
+         */
+        @Deprecated
+        public void setPublicationPluginName(String publicationPluginName) {
+            store.put("releaseNotes.publicationPluginName", publicationPluginName);
         }
     }
 

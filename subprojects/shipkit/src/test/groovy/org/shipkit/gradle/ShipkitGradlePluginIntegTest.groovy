@@ -47,6 +47,7 @@ class ShipkitGradlePluginIntegTest extends GradleSpecification {
 :performGitPush
 :discoverPlugins
 :publishPlugins
+:updateReleaseNotesOnGitHub
 :performRelease"""
 
         where:

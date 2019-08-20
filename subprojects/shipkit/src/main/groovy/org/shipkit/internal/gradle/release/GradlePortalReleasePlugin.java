@@ -4,6 +4,7 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
+import org.shipkit.gradle.notes.UpdateReleaseNotesOnGitHubTask;
 import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.git.GitPlugin;
@@ -67,6 +68,9 @@ public class GradlePortalReleasePlugin implements Plugin<Project> {
 
             UpdateReleaseNotesTask updateNotes = (UpdateReleaseNotesTask) project.getTasks().getByName(ReleaseNotesPlugin.UPDATE_NOTES_TASK);
             updateNotes.setPublicationRepository(conf.getReleaseNotes().getPublicationRepository());
+
+            UpdateReleaseNotesOnGitHubTask updateNotesOnGitHub = (UpdateReleaseNotesOnGitHubTask) project.getTasks().getByName(ReleaseNotesPlugin.UPDATE_NOTES_ON_GITHUB_TASK);
+            updateNotesOnGitHub.setPublicationRepository(conf.getReleaseNotes().getPublicationRepository());
 
             //when contributors are testing, we need to avoid publish task because it requires secret keys
             releasePlugin.excludeFromContributorTest(GradlePortalPublishPlugin.PUBLISH_PLUGINS_TASK);

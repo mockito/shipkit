@@ -2,6 +2,7 @@ package org.shipkit.internal.gradle.notes.tasks;
 
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
+import org.shipkit.gradle.notes.AbstractReleaseNotesTask;
 import org.shipkit.gradle.notes.UpdateReleaseNotesTask;
 import org.shipkit.internal.gradle.util.FileUtil;
 import org.shipkit.internal.gradle.util.ReleaseNotesSerializer;
@@ -11,6 +12,7 @@ import org.shipkit.internal.notes.contributors.DefaultContributor;
 import org.shipkit.internal.notes.contributors.DefaultProjectContributorsSet;
 import org.shipkit.internal.notes.contributors.ProjectContributorsSerializer;
 import org.shipkit.internal.notes.contributors.ProjectContributorsSet;
+import org.shipkit.internal.notes.format.BadgeFormatter;
 import org.shipkit.internal.notes.format.ReleaseNotesFormatters;
 import org.shipkit.internal.notes.header.HeaderProvider;
 import org.shipkit.internal.notes.model.Contributor;
@@ -28,7 +30,7 @@ public class UpdateReleaseNotes {
 
     private static final Logger LOG = Logging.getLogger(UpdateReleaseNotesTask.class);
 
-    public void updateReleaseNotes(UpdateReleaseNotesTask task, HeaderProvider headerProvider) {
+    public void updateReleaseNotes(AbstractReleaseNotesTask task, HeaderProvider headerProvider) {
         String newContent = generateNewContent(task, headerProvider);
         updateReleaseNotes(task.isPreviewMode(), task.getReleaseNotesFile(), newContent);
     }
@@ -72,7 +74,7 @@ public class UpdateReleaseNotes {
         return contributorMap;
     }
 
-    public String generateNewContent(UpdateReleaseNotesTask task, HeaderProvider headerProvider) {
+    public String generateNewContent(AbstractReleaseNotesTask task, HeaderProvider headerProvider) {
         LOG.lifecycle("  Building new release notes based on {}", task.getReleaseNotesFile());
 
         String headerMessage = headerProvider.getHeader(task.getHeader());
@@ -91,14 +93,17 @@ public class UpdateReleaseNotes {
         }
 
         Map<String, Contributor> contributorsMap = contributorsMap(task.getContributors(), contributorsFromGitHub, task.getDevelopers(), task.getGitHubUrl());
+        BadgeFormatter badgeFormatter = new BadgeFormatter();
+        // TODO release notes contain link to new javadoc
         String notes = ReleaseNotesFormatters.detailedFormatter(headerMessage,
-            "", task.getGitHubLabelMapping(), vcsCommitTemplate, task.getPublicationRepository(), contributorsMap, task.isEmphasizeVersion())
+            "", task.getGitHubLabelMapping(), vcsCommitTemplate, task.getPublicationRepository(),
+            contributorsMap, task.isEmphasizeVersion(), badgeFormatter)
             .formatReleaseNotes(data);
 
         return notes + "\n\n";
     }
 
-    private String getVcsCommitTemplate(UpdateReleaseNotesTask task) {
+    private String getVcsCommitTemplate(AbstractReleaseNotesTask task) {
         if (task.getPreviousVersion() != null) {
             return task.getGitHubUrl() + "/" + task.getGitHubRepository() + "/compare/"
                 + task.getTagPrefix() + task.getPreviousVersion() + "..." + task.getTagPrefix() + task.getVersion();
@@ -107,7 +112,7 @@ public class UpdateReleaseNotes {
         }
     }
 
-    public String getReleaseNotesUrl(UpdateReleaseNotesTask task, String branch) {
+    public String getReleaseNotesUrl(AbstractReleaseNotesTask task, String branch) {
         return task.getGitHubUrl() + "/" + task.getGitHubRepository() + "/blob/" + branch + "/" + task.getProject().relativePath(task.getReleaseNotesFile()).replace('\\', '/');
     }
 }

@@ -47,7 +47,7 @@ apply plugin: "org.shipkit.java"
 
 If you don't work with traditional Gradle Java project apply:
 
-```
+```Gradle
 apply plugin: "org.shipkit.base"
 ```
 

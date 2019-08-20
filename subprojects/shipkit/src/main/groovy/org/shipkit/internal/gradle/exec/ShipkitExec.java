@@ -10,13 +10,20 @@ import org.shipkit.gradle.exec.ExecCommand;
 import org.shipkit.internal.exec.ExternalProcessStream;
 import org.shipkit.internal.gradle.util.StringUtil;
 
+import java.io.File;
 import java.util.Collection;
 
 public class ShipkitExec {
 
     private final static Logger LOG = Logging.getLogger(ShipkitExec.class);
 
-    public void execCommands(Collection<ExecCommand> execCommands, Project project) {
+    /**
+     * Execute commands and print execution summary.
+     * @param execCommands  Commands to execute
+     * @param project       Gradle Project instance
+     * @param workingDir    Working directory where command will be executed, it may be null
+     */
+    public void execCommands(Collection<ExecCommand> execCommands, Project project, File workingDir) {
         for (final ExecCommand execCommand : execCommands) {
             ExecResult result = project.exec(new Action<ExecSpec>() {
                 @Override
@@ -25,6 +32,9 @@ public class ShipkitExec {
                     spec.commandLine(execCommand.getCommandLine());
                     spec.setStandardOutput(new ExternalProcessStream(execCommand.getLoggingPrefix(), System.out));
                     spec.setErrorOutput(new ExternalProcessStream(execCommand.getLoggingPrefix(), System.err));
+                    if (workingDir != null) {
+                        spec.setWorkingDir(workingDir);
+                    }
 
                     execCommand.getSetupAction().execute(spec);
 
