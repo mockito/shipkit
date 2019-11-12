@@ -34,6 +34,9 @@ class PomCustomizerTest extends Specification {
         //wwilk will not be duplicated in developers/contributors
         conf.team.contributors = ["mstachniuk:Marcin Stachniuk", "wwilk:Wojtek Wilk"]
 
+        conf.licenseInfo.license = "The MIT License"
+        conf.licenseInfo.url = "https://github.com/repo/blob/master/LICENSE"
+
         PomCustomizer.customizePom(node, conf, "foo", "Foo library", new DefaultProjectContributorsSet())
 
         expect:
@@ -92,6 +95,10 @@ class PomCustomizerTest extends Specification {
         conf.gitHub.repository = "repo"
         conf.team.developers = ["mockitoguy:Szczepan Faber", "wwilk:Wojtek Wilk"]
         conf.team.contributors = []
+
+        conf.licenseInfo.license = "The MIT License"
+        conf.licenseInfo.url = "https://github.com/repo/blob/master/LICENSE"
+
         //wwilk will not be duplicated in developers/contributors
         def contributorsSet = new DefaultProjectContributorsSet()
         contributorsSet.addContributor(new DefaultProjectContributor("Wojtek Wilk", "wwilk", "https://github.com/wwilk", 5))
@@ -156,6 +163,9 @@ class PomCustomizerTest extends Specification {
         conf.team.developers = []
         conf.team.contributors = []
 
+        conf.licenseInfo.license = "The MIT License"
+        conf.licenseInfo.url = "https://github.com/repo/blob/master/LICENSE"
+
         PomCustomizer.customizePom(node, conf, "foo", "Foo library", new DefaultProjectContributorsSet())
 
         expect:
@@ -168,6 +178,44 @@ class PomCustomizerTest extends Specification {
     <license>
       <name>The MIT License</name>
       <url>https://github.com/repo/blob/master/LICENSE</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://github.com/repo.git</url>
+  </scm>
+  <issueManagement>
+    <url>https://github.com/repo/issues</url>
+    <system>GitHub issues</system>
+  </issueManagement>
+  <ciManagement>
+    <url>https://travis-ci.org/repo</url>
+    <system>TravisCI</system>
+  </ciManagement>
+</project>
+"""
+    }
+
+    def "use epl v2.0 license"() {
+        conf.gitHub.repository = "repo"
+        conf.team.developers = []
+        conf.team.contributors = []
+
+        conf.licenseInfo.license = "Eclipse Public License v2.0"
+        conf.licenseInfo.url = "http://www.eclipse.org/legal/epl-v20.html"
+
+        PomCustomizer.customizePom(node, conf, "foo", "Foo library", new DefaultProjectContributorsSet())
+
+        expect:
+        printXml(node) == """<project>
+  <name>foo</name>
+  <packaging>jar</packaging>
+  <url>https://github.com/repo</url>
+  <description>Foo library</description>
+  <licenses>
+    <license>
+      <name>Eclipse Public License v2.0</name>
+      <url>http://www.eclipse.org/legal/epl-v20.html</url>
       <distribution>repo</distribution>
     </license>
   </licenses>

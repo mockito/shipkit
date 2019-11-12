@@ -76,8 +76,8 @@ public class PomCustomizer {
         }
 
         Node license = root.appendNode("licenses").appendNode("license");
-        license.appendNode("name", "The MIT License");
-        license.appendNode("url", repoLink + "/blob/master/LICENSE");
+        license.appendNode("name", conf.getLicenseInfo().getLicense());
+        license.appendNode("url", conf.getLicenseInfo().getUrl());
         license.appendNode("distribution", "repo");
 
         root.appendNode("scm").appendNode("url", repoLink + ".git");

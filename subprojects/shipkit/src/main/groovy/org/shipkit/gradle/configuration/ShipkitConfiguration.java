@@ -27,6 +27,7 @@ public class ShipkitConfiguration {
     private final GitHub gitHub = new GitHub();
     private final Javadoc javadoc = new Javadoc();
     private final ReleaseNotes releaseNotes = new ReleaseNotes();
+    private final LicenseInfo licenseInfo = new LicenseInfo();
     private final Git git = new Git();
     private final Team team = new Team();
 
@@ -93,6 +94,10 @@ public class ShipkitConfiguration {
 
     public ReleaseNotes getReleaseNotes() {
         return releaseNotes;
+    }
+
+    public LicenseInfo getLicenseInfo() {
+        return licenseInfo;
     }
 
     public Git getGit() {
@@ -228,6 +233,24 @@ public class ShipkitConfiguration {
          */
         public void setWriteAuthToken(String writeAuthToken) {
             store.put("gitHub.writeAuthToken", writeAuthToken);
+        }
+    }
+
+    public class LicenseInfo {
+        public String getLicense() {
+            return store.getString("licenseInfo.license");
+        }
+
+        public void setLicense(String license) {
+            store.put("licenseInfo.license", license);
+        }
+
+        public String getUrl() {
+            return store.getString("licenseInfo.url");
+        }
+
+        public void setUrl(String url) {
+            store.put("licenseInfo.url", url);
         }
     }
 
