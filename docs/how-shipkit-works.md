@@ -25,6 +25,7 @@ How do we:
 - [generate release notes](/docs/features/automated-release-notes.md)
 - [publish binaries](/docs/features/publishing-binaries.md)
 - [avoid unnecessary releases](/docs/gradle-plugins/release-needed-plugin.md)
+- [support Android libraries](/docs/gradle-plugins/android-publish-plugin.md)
 - [shipping Javadoc](/docs/features/shipping-javadoc.md)
 - [automatically include contributors in pom.xml](/docs/features/celebrating-contributors.md)
 
@@ -40,8 +41,8 @@ script:
   - ./gradlew build -s && ./gradlew ciPerformRelease -s
 ```
 
-Those lines means the releasing process is two-stage. 
-First the `build` Gradle task is executed. 
+Those lines means the releasing process is two-stage.
+First the `build` Gradle task is executed.
 Shipkit doesn't change there a lot.
 More interesting is the second task: `ciPerformRelease`.
 This task depends on 3 another tasks: `releaseNeeded`, `ciReleasePrepare` and `performRelease`.
@@ -144,7 +145,7 @@ Text used to create this diagram: https://gist.github.com/mstachniuk/b7cfd3bef9f
      |                                           |              Info is release needed or not | |------------------------------------|               |                                            |
      |                                           |<-------------------------------------------|                                                      |                                            |
      |                                           |                                            |                                                      |                                            |
-     
+
 ```
 
 

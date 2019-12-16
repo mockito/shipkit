@@ -65,7 +65,7 @@ class ShipkitAndroidIntegTest extends GradleSpecification {
             androidPublish {
                 artifactId = 'shipkit-android'
             }
-            
+
             apply plugin: 'com.android.library'
             android {
                 compileSdkVersion 29
