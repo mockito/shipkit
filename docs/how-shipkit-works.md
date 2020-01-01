@@ -24,6 +24,7 @@ How do we:
 - [bump versions](/docs/features/version-bumps.md)
 - [generate release notes](/docs/features/automated-release-notes.md)
 - [publish binaries](/docs/features/publishing-binaries.md)
+- [publishing binaries using maven-publish plugin](/docs/features/publishing-binaries-using-maven-publish-plugin.md)
 - [avoid unnecessary releases](/docs/gradle-plugins/release-needed-plugin.md)
 - [support Android libraries](/docs/gradle-plugins/android-publish-plugin.md)
 - [shipping Javadoc](/docs/features/shipping-javadoc.md)

@@ -1,6 +1,10 @@
 # Shipkit
 
 [![Build Status](https://travis-ci.org/mockito/shipkit.svg?branch=master)](https://travis-ci.org/mockito/shipkit)
+[![Gradle Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/org/shipkit/shipkit/maven-metadata.xml.svg?label=Gradle%20Plugins)](https://plugins.gradle.org/plugin/org.shipkit.java)
+[![codecov](https://codecov.io/gh/mockito/shipkit/branch/master/graph/badge.svg)](https://codecov.io/gh/mockito/shipkit)
+[![MIT License](http://img.shields.io/badge/license-MIT-green.svg) ](https://github.com/mockito/shipkit/blob/master/LICENSE)
+[![latest release](https://img.shields.io/badge/release%20notes-2.x-yellow.svg)](https://github.com/mockito/shipkit/blob/master/docs/release-notes.md)
 
 ## Documentation
 

@@ -41,3 +41,7 @@ matrix:
 ```   
 
 Now only artifacts produced by JDK8 build will be published.
+
+### How to publish artefacts to the internal repository?
+
+Please read [Publishing binaries using maven-publish plugin](/docs/features/publishing-binaries-using-maven-publish-plugin.md).
