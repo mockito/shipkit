@@ -5,23 +5,24 @@ import testutil.GradleSpecification
 
 class ShipkitAndroidIntegTest extends GradleSpecification {
 
-    def "all tasks in dry run (gradle #gradleVersionToTest)"() {
-        /**
-         * TODO this test is just a starting point we will make it better and create more integration tests
-         * Stuff that we should do:
-         *  1. (Most important) Avoid writing too many integration tests. Most code should be covered by unit tests
-         *      (see testing pyramid)
-         *  2. Push out complexity to base class GradleSpecification
-         *      so that what remains in the test is the essential part of a tested feature
-         *  3. Add more specific assertions rather than just a list of tasks in dry run mode
-         *  4. Use sensible defaults so that we don't need to specify all configuration in the test
-         *  5. Move integration tests to a separate module
-         *  6. Dependencies are hardcoded between GradleSpecification and build.gradle of release-tools project
-         */
-        given:
-        gradleVersion = gradleVersionToTest
+    void setup() {
+        settingsFile << "include 'lib'"
+        newFile('lib/build.gradle') << """
+            apply plugin: 'org.shipkit.bintray'
+            apply plugin: 'org.shipkit.android-publish'
+            androidPublish {
+                artifactId = 'shipkit-android'
+            }
 
-        and:
+            apply plugin: 'com.android.library'
+            android {
+                compileSdkVersion 29
+                defaultConfig {
+                    minSdkVersion 29
+                }
+            }
+        """
+
         newFile("gradle/shipkit.gradle") << """
             shipkit {
                 gitHub.readOnlyAuthToken = "foo"
@@ -41,8 +42,6 @@ class ShipkitAndroidIntegTest extends GradleSpecification {
                 }
             }
         """
-        newFile("src/main/AndroidManifest.xml") << """<manifest package="org.shipkit.android"/>"""
-
         buildFile << """
             apply plugin: 'org.shipkit.java'
             buildscript {
@@ -51,26 +50,32 @@ class ShipkitAndroidIntegTest extends GradleSpecification {
                     jcenter()
                     gradlePluginPortal()
                 }
-                dependencies {
-                    classpath 'com.github.technoir42:aar-publish-plugin:1.0.2'
-                    classpath 'com.android.tools.build:gradle:3.4.1'
-                }
             }
         """
+        newFile("src/main/AndroidManifest.xml") << """<manifest package="org.shipkit.android"/>"""
+    }
 
-        settingsFile << "include 'lib'"
-        newFile('lib/build.gradle') << """
-            apply plugin: 'org.shipkit.bintray'
-            apply plugin: 'org.shipkit.android-publish'
-            androidPublish {
-                artifactId = 'shipkit-android'
-            }
+    def "all tasks in dry run (gradle #gradleVersionToTest) (AGP #agpVersionToTest)"() {
+        /**
+         * TODO this test is just a starting point we will make it better and create more integration tests
+         * Stuff that we should do:
+         *  1. (Most important) Avoid writing too many integration tests. Most code should be covered by unit tests
+         *      (see testing pyramid)
+         *  2. Push out complexity to base class GradleSpecification
+         *      so that what remains in the test is the essential part of a tested feature
+         *  3. Add more specific assertions rather than just a list of tasks in dry run mode
+         *  4. Use sensible defaults so that we don't need to specify all configuration in the test
+         *  5. Move integration tests to a separate module
+         *  6. Dependencies are hardcoded between GradleSpecification and build.gradle of release-tools project
+         */
+        given:
+        gradleVersion = gradleVersionToTest
 
-            apply plugin: 'com.android.library'
-            android {
-                compileSdkVersion 29
-                defaultConfig {
-                    minSdkVersion 29
+        and:
+        buildFile << """
+            buildscript {
+                dependencies {
+                    classpath 'com.android.tools.build:gradle:$agpVersionToTest'
                 }
             }
         """
@@ -78,7 +83,8 @@ class ShipkitAndroidIntegTest extends GradleSpecification {
         expect:
         BuildResult result = pass("performRelease", "-m", "-s")
         //git push and bintray upload tasks should run as late as possible
-        skippedTaskPathsGradleBugWorkaround(result.output).join("\n") == """:bumpVersionFile
+        def output = skippedTaskPathsGradleBugWorkaround(result.output).join("\n")
+        output.startsWith(""":bumpVersionFile
 :identifyGitBranch
 :fetchContributors
 :fetchReleaseNotes
@@ -88,64 +94,40 @@ class ShipkitAndroidIntegTest extends GradleSpecification {
 :gitPush
 :performGitPush
 :updateReleaseNotesOnGitHub
-:lib:preBuild
-:lib:preReleaseBuild
-:lib:compileReleaseAidl
-:lib:compileReleaseRenderscript
-:lib:checkReleaseManifest
-:lib:generateReleaseBuildConfig
-:lib:generateReleaseResValues
-:lib:generateReleaseResources
-:lib:packageReleaseResources
-:lib:processReleaseManifest
-:lib:generateReleaseRFile
-:lib:prepareLintJar
-:lib:generateReleaseSources
-:lib:javaPreCompileRelease
-:lib:compileReleaseJavaWithJavac
-:lib:extractReleaseAnnotations
-:lib:mergeReleaseConsumerProguardFiles
-:lib:mergeReleaseShaders
-:lib:compileReleaseShaders
-:lib:generateReleaseAssets
-:lib:packageReleaseAssets
-:lib:packageReleaseRenderscript
-:lib:prepareLintJarForPublish
-:lib:processReleaseJavaRes
-:lib:transformResourcesWithMergeJavaResForRelease
-:lib:transformClassesAndResourcesWithSyncLibJarsForRelease
-:lib:mergeReleaseJniLibFolders
-:lib:transformNativeLibsWithMergeJniLibsForRelease
-:lib:transformNativeLibsWithStripDebugSymbolForRelease
-:lib:transformNativeLibsWithSyncJniLibsForRelease
-:lib:bundleReleaseAar
-:lib:generatePomFileForJavaLibraryPublication
-:lib:javadocRelease
-:lib:packageReleaseJavadoc
-:lib:packageReleaseSources
-:lib:publishJavaLibraryPublicationToMavenLocal
-:lib:bintrayUpload
+:lib:preBuild""")
+
+        and:
+        output.endsWith(""":lib:bintrayUpload
 :bintrayPublish
-:performRelease"""
+:performRelease""")
 
         where:
-        gradleVersionToTest << ["5.3", "5.4.1", "5.5.1"]
+        gradleVersionToTest << ["5.6.4", "6.0.1"]
+        and:
+        agpVersionToTest << ["3.6.0-beta05", "3.6.0-rc01"]
     }
 
-    def "fails on unsupported Gradle version #gradleVersionToTest"() {
+    def "fails on unsupported dependency versions (gradle #gradleVersionToTest) (AGP #agpVersionToTest)"() {
         given:
         gradleVersion = gradleVersionToTest
 
-        settingsFile << "include 'lib'"
-        newFile('lib/build.gradle') << """
-            apply plugin: 'org.shipkit.android-publish'
+        and:
+        buildFile << """
+            buildscript {
+                dependencies {
+                    classpath 'com.android.tools.build:gradle:$agpVersionToTest'
+                }
+            }
         """
 
         expect:
         BuildResult result = fail("performRelease", "-m", "-s")
-        result.output.contains("Current Gradle version: " + gradleVersionToTest + " is less than minimum required: 5.3")
+        result.output.contains("'release' component not found in project. " +
+            "Make sure you are using Android Gradle Plugin 3.6.0-beta05 or newer.")
 
         where:
-        gradleVersionToTest << ["5.0", "4.10.3", "4.0.2"]
+        gradleVersionToTest << ["5.6.4", "6.0.1"]
+        and:
+        agpVersionToTest << ["3.4.0", "3.5.2"]
     }
 }

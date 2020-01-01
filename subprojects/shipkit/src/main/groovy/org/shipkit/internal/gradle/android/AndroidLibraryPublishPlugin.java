@@ -6,10 +6,10 @@ import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.component.SoftwareComponent;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.publish.maven.MavenPublication;
-import org.gradle.util.GradleVersion;
 import org.shipkit.gradle.configuration.AndroidLibraryPublishConfiguration;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
@@ -45,7 +45,6 @@ public class AndroidLibraryPublishPlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
         final AndroidLibraryPublishConfiguration androidLibraryPublishConfiguration = project.getExtensions().create(ANDROID_PUBLISH_EXTENSION, AndroidLibraryPublishConfiguration.class);
-        ensureGradleVersion();
 
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
@@ -53,7 +52,6 @@ public class AndroidLibraryPublishPlugin implements Plugin<Project> {
         Task snapshotTask = project.getTasks().getByName(LocalSnapshotPlugin.SNAPSHOT_TASK);
         snapshotTask.dependsOn(MAVEN_LOCAL_TASK);
 
-        project.getPlugins().apply("com.github.technoir42.aar-publish");
         project.getPlugins().apply("maven-publish");
 
         BintrayExtension bintray = project.getExtensions().getByType(BintrayExtension.class);
@@ -69,7 +67,12 @@ public class AndroidLibraryPublishPlugin implements Plugin<Project> {
                 GradleDSLHelper.publications(project, publications -> {
                     MavenPublication p = publications.create(PUBLICATION_NAME, MavenPublication.class, publication -> {
                         publication.setArtifactId(artifactId);
-                        publication.from(project.getComponents().getByName("android"));
+                        SoftwareComponent releaseComponent = project.getComponents().findByName("release");
+                        if (releaseComponent == null) {
+                            throw new GradleException("'release' component not found in project. " +
+                                "Make sure you are using Android Gradle Plugin 3.6.0-beta05 or newer.");
+                        }
+                        publication.from(releaseComponent);
                         PomCustomizer.customizePom(project, conf, publication);
                     });
                     LOG.info("{} - configured '{}' publication", project.getPath(), p.getArtifactId());
@@ -79,13 +82,5 @@ public class AndroidLibraryPublishPlugin implements Plugin<Project> {
             //so that we flesh out problems with maven publication during the build process
             project.getTasks().getByName("build").dependsOn(MAVEN_LOCAL_TASK);
         });
-    }
-
-    private static void ensureGradleVersion() {
-        final GradleVersion currentGradleVersion = GradleVersion.current();
-        final GradleVersion minimumGradleVersion = GradleVersion.version("5.3");
-        if (currentGradleVersion.compareTo(minimumGradleVersion) < 0) {
-            throw new GradleException("Current Gradle version: " + currentGradleVersion.getVersion() + " is less than minimum required: " + minimumGradleVersion.getVersion());
-        }
     }
 }
