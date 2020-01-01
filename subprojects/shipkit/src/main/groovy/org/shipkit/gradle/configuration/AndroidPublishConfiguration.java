@@ -1,8 +1,8 @@
 package org.shipkit.gradle.configuration;
 
-import static org.shipkit.internal.util.ArgumentValidation.notNull;
+import org.gradle.api.GradleException;
 
-public class AndroidLibraryPublishConfiguration {
+public class AndroidPublishConfiguration {
 
     private String artifactId;
 
@@ -11,6 +11,9 @@ public class AndroidLibraryPublishConfiguration {
      * For example: "shipkit-android"
      */
     public String getArtifactId() {
+        if (artifactId == null || artifactId.isEmpty()) {
+            throw new GradleException("Please configure artifact id");
+        }
         return artifactId;
     }
 
@@ -18,7 +21,6 @@ public class AndroidLibraryPublishConfiguration {
      * See {@link #getArtifactId()} ()}
      */
     public void setArtifactId(String artifactId) {
-        notNull(artifactId, "artifactId");
         this.artifactId = artifactId;
     }
 }

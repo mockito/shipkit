@@ -10,7 +10,7 @@ import org.gradle.api.component.SoftwareComponent;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.publish.maven.MavenPublication;
-import org.shipkit.gradle.configuration.AndroidLibraryPublishConfiguration;
+import org.shipkit.gradle.configuration.AndroidPublishConfiguration;
 import org.shipkit.gradle.configuration.ShipkitConfiguration;
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationPlugin;
 import org.shipkit.internal.gradle.snapshot.LocalSnapshotPlugin;
@@ -21,13 +21,12 @@ import static org.shipkit.internal.gradle.java.JavaPublishPlugin.MAVEN_LOCAL_TAS
 import static org.shipkit.internal.gradle.java.JavaPublishPlugin.PUBLICATION_NAME;
 
 /**
- * Publishing Android libraries using 'maven-publish' and 'com.github.technoir42.aar-publish' plugins.
+ * Publishing Android libraries using 'maven-publish' plugin.
  * Intended to be applied in individual Android library submodule.
  * Applies following plugins and tasks and configures them:
  *
  * <ul>
  *     <li>maven-publish</li>
- *     <li>com.github.technoir42.aar-publish</li>
  * </ul>
  *
  * Other features:
@@ -44,7 +43,7 @@ public class AndroidPublishPlugin implements Plugin<Project> {
     private final static String ANDROID_PUBLISH_EXTENSION = "androidPublish";
 
     public void apply(final Project project) {
-        final AndroidLibraryPublishConfiguration androidLibraryPublishConfiguration = project.getExtensions().create(ANDROID_PUBLISH_EXTENSION, AndroidLibraryPublishConfiguration.class);
+        final AndroidPublishConfiguration androidPublishConfiguration = project.getExtensions().create(ANDROID_PUBLISH_EXTENSION, AndroidPublishConfiguration.class);
 
         final ShipkitConfiguration conf = project.getPlugins().apply(ShipkitConfigurationPlugin.class).getConfiguration();
 
@@ -59,14 +58,11 @@ public class AndroidPublishPlugin implements Plugin<Project> {
 
         project.getPlugins().withId("com.android.library", plugin -> {
             project.afterEvaluate(evaluatedProject -> {
-                final String artifactId = androidLibraryPublishConfiguration.getArtifactId();
-                if (artifactId == null) {
-                    throw new GradleException("Missing artifact id in " + ANDROID_PUBLISH_EXTENSION);
-                }
 
                 GradleDSLHelper.publications(project, publications -> {
                     MavenPublication p = publications.create(PUBLICATION_NAME, MavenPublication.class, publication -> {
-                        publication.setArtifactId(artifactId);
+                        publication.setArtifactId(androidPublishConfiguration.getArtifactId());
+
                         SoftwareComponent releaseComponent = project.getComponents().findByName("release");
                         if (releaseComponent == null) {
                             throw new GradleException("'release' component not found in project. " +
