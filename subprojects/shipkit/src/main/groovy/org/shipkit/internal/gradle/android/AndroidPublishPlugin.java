@@ -38,9 +38,9 @@ import static org.shipkit.internal.gradle.java.JavaPublishPlugin.PUBLICATION_NAM
  *     <li>Configures 'snapshot' task to depend on 'publishJavaLibraryToMavenLocal'</li>
  * </ul>
  */
-public class AndroidLibraryPublishPlugin implements Plugin<Project> {
+public class AndroidPublishPlugin implements Plugin<Project> {
 
-    private final static Logger LOG = Logging.getLogger(AndroidLibraryPublishPlugin.class);
+    private final static Logger LOG = Logging.getLogger(AndroidPublishPlugin.class);
     private final static String ANDROID_PUBLISH_EXTENSION = "androidPublish";
 
     public void apply(final Project project) {
