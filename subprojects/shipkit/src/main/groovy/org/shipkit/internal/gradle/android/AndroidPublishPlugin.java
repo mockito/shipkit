@@ -17,6 +17,7 @@ import org.shipkit.internal.gradle.snapshot.LocalSnapshotPlugin;
 import org.shipkit.internal.gradle.util.GradleDSLHelper;
 import org.shipkit.internal.gradle.util.PomCustomizer;
 
+import static org.shipkit.internal.gradle.configuration.DeferredConfiguration.deferredConfiguration;
 import static org.shipkit.internal.gradle.java.JavaPublishPlugin.MAVEN_LOCAL_TASK;
 import static org.shipkit.internal.gradle.java.JavaPublishPlugin.PUBLICATION_NAME;
 
@@ -57,8 +58,7 @@ public class AndroidPublishPlugin implements Plugin<Project> {
         bintray.setPublications(PUBLICATION_NAME);
 
         project.getPlugins().withId("com.android.library", plugin -> {
-            project.afterEvaluate(evaluatedProject -> {
-
+            deferredConfiguration(project, () -> {
                 GradleDSLHelper.publications(project, publications -> {
                     MavenPublication p = publications.create(PUBLICATION_NAME, MavenPublication.class, publication -> {
                         publication.setArtifactId(androidPublishConfiguration.getArtifactId());
