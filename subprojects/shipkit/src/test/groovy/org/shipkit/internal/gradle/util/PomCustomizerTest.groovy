@@ -225,7 +225,7 @@ class PomCustomizerTest extends Specification {
         conf.ciManagement.system = "Bitrise"
         conf.ciManagement.url = "https://app.bitrise.io/app/slug"
 
-        PomCustomizer.customizePom(node, conf, "foo", "Foo library", new DefaultProjectContributorsSet())
+        PomCustomizer.customizePom(node, conf, "foo", "Foo library", new DefaultProjectContributorsSet(), false)
 
         expect:
         printXml(node) == """<project>
@@ -258,7 +258,7 @@ class PomCustomizerTest extends Specification {
     def "default CI management"() {
         conf.gitHub.repository = "repo"
 
-        PomCustomizer.customizePom(node, conf, "foo", "Foo library", new DefaultProjectContributorsSet())
+        PomCustomizer.customizePom(node, conf, "foo", "Foo library", new DefaultProjectContributorsSet(), false)
 
         expect:
         printXml(node) == """<project>
