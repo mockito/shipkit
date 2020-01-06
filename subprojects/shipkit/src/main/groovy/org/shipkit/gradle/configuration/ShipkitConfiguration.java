@@ -24,6 +24,7 @@ public class ShipkitConfiguration {
 
     private final ShipkitConfigurationStore store;
 
+    private final ContinuousIntegrationManagement ciManagement = new ContinuousIntegrationManagement();
     private final GitHub gitHub = new GitHub();
     private final Javadoc javadoc = new Javadoc();
     private final ReleaseNotes releaseNotes = new ReleaseNotes();
@@ -61,6 +62,8 @@ public class ShipkitConfiguration {
         team.setContributors(Collections.<String>emptyList());
         team.setDevelopers(Collections.<String>emptyList());
         team.setIgnoredContributors(Collections.<String>emptyList());
+
+        ciManagement.setSystem("TravisCI");
     }
 
     ShipkitConfiguration(ShipkitConfigurationStore store) {
@@ -81,6 +84,10 @@ public class ShipkitConfiguration {
      */
     public void setDryRun(boolean dryRun) {
         this.dryRun = dryRun;
+    }
+
+    public ContinuousIntegrationManagement getCiManagement() {
+        return ciManagement;
     }
 
     public GitHub getGitHub() {
@@ -129,6 +136,43 @@ public class ShipkitConfiguration {
      */
     public ShipkitConfiguration getLenient() {
         return new ShipkitConfiguration(store.getLenient());
+    }
+
+    public class ContinuousIntegrationManagement {
+
+        /**
+         * URL address of continuous integration build systems used by this project, for example: https://travis-ci.org/mockito/shipkit.
+         * Value is embedded in maven POM.
+         * If not specified defaults to "https://travis-ci.org/&lt;GitHub organization&gt;/&lt;repository name&gt;"
+         * See <a href="http://maven.apache.org/pom.html#Continuous_Integration_Management">POM documentation</a> for more details.
+         */
+        public String getUrl() {
+            return store.getString("ciManagement.url");
+        }
+
+        /**
+         * See {@link #getUrl()}
+         */
+        public void setUrl(String url) {
+            store.put("ciManagement.url", url);
+        }
+
+        /**
+         * Name of continuous integration build systems used by this project, for example: TravisCI.
+         * Value is embedded in maven POM.
+         * If not specified defaults to "TravisCI".
+         * See <a href="http://maven.apache.org/pom.html#Continuous_Integration_Management">POM documentation</a> for more details.
+         */
+        public String getSystem() {
+            return store.getString("ciManagement.system");
+        }
+
+        /**
+         * See {@link #getSystem()}
+         */
+        public void setSystem(String system) {
+            store.put("ciManagement.system", system);
+        }
     }
 
     public class GitHub {

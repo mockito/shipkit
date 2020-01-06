@@ -1,6 +1,5 @@
 package org.shipkit.internal.gradle.util;
 
-import groovy.util.Node;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.XmlProvider;
@@ -18,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
+import groovy.util.Node;
 
 import static org.shipkit.internal.gradle.util.BuildConventions.contributorsFile;
 import static org.shipkit.internal.gradle.util.team.TeamParser.parsePerson;
@@ -87,8 +88,12 @@ public class PomCustomizer {
         issues.appendNode("system", "GitHub issues");
 
         Node ci = root.appendNode("ciManagement");
-        ci.appendNode("url", "https://travis-ci.org/" + conf.getGitHub().getRepository());
-        ci.appendNode("system", "TravisCI");
+        String ciSystemUrl = conf.getLenient().getCiManagement().getUrl();
+        if (ciSystemUrl == null) {
+            ciSystemUrl = "https://travis-ci.org/" + conf.getGitHub().getRepository();
+        }
+        ci.appendNode("url", ciSystemUrl);
+        ci.appendNode("system", conf.getCiManagement().getSystem());
 
         if (!conf.getTeam().getDevelopers().isEmpty()) {
             Node developers = root.appendNode("developers");
