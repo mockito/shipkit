@@ -5,6 +5,7 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.shipkit.gradle.configuration.ShipkitConfiguration
 import org.shipkit.internal.notes.contributors.DefaultProjectContributor
 import org.shipkit.internal.notes.contributors.DefaultProjectContributorsSet
+import spock.lang.Issue
 import spock.lang.Specification
 
 class PomCustomizerTest extends Specification {
@@ -230,6 +231,41 @@ class PomCustomizerTest extends Specification {
         printXml(node) == """<project>
   <name>foo</name>
   <packaging>jar</packaging>
+  <url>https://github.com/repo</url>
+  <description>Foo library</description>
+  <licenses>
+    <license>
+      <name>The MIT License</name>
+      <url>https://github.com/repo/blob/master/LICENSE</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://github.com/repo.git</url>
+  </scm>
+  <issueManagement>
+    <url>https://github.com/repo/issues</url>
+    <system>GitHub issues</system>
+  </issueManagement>
+  <ciManagement>
+    <url>https://travis-ci.org/repo</url>
+    <system>TravisCI</system>
+  </ciManagement>
+</project>
+"""
+    }
+
+    @Issue("847")
+    def "preconfigured pom"() {
+        conf.gitHub.repository = "repo"
+        node.appendNode("packaging", "unbundled");
+
+        PomCustomizer.customizePom(node, conf, "foo", "Foo library", new DefaultProjectContributorsSet())
+
+        expect:
+        printXml(node) == """<project>
+  <packaging>unbundled</packaging>
+  <name>foo</name>
   <url>https://github.com/repo</url>
   <description>Foo library</description>
   <licenses>
