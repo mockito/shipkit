@@ -70,7 +70,7 @@ public class PomCustomizer {
                              boolean isAndroidLibrary) {
         root.appendNode("name", projectName);
         if (!isAndroidLibrary) {
-            //Android library publication uses aar packaging set by aar-publish-plugin
+            //Android library publication uses aar packaging
             root.appendNode("packaging", "jar");
         }
 
