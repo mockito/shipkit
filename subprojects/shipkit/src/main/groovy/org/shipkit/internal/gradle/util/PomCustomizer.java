@@ -1,5 +1,6 @@
 package org.shipkit.internal.gradle.util;
 
+import groovy.xml.QName;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.XmlProvider;
@@ -68,9 +69,12 @@ public class PomCustomizer {
                              String projectName, String projectDescription,
                              ProjectContributorsSet contributorsFromGitHub,
                              boolean isAndroidLibrary) {
+        //TODO: we need to conditionally append nodes because given node may already be on the root (issue 847)
+        //TODO: all root.appendNode() need to be conditional
         root.appendNode("name", projectName);
-        if (!isAndroidLibrary) {
-            //Android library publication uses aar packaging
+
+        //Android library publication uses aar packaging
+        if (!isAndroidLibrary && root.getAt(new QName("packaging")).isEmpty()) {
             root.appendNode("packaging", "jar");
         }
 
