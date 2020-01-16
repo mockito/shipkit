@@ -294,7 +294,7 @@ class PomCustomizerTest extends Specification {
         conf.gitHub.repository = "repo"
         node.appendNode("packaging", "unbundled");
 
-        PomCustomizer.customizePom(node, conf, "foo", "Foo library", new DefaultProjectContributorsSet())
+        PomCustomizer.customizePom(node, conf, "foo", "Foo library", new DefaultProjectContributorsSet(), false)
 
         expect:
         printXml(node) == """<project>
