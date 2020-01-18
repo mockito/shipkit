@@ -56,7 +56,8 @@ public class PomCustomizer {
                         "\n   - Contributors read from GitHub: "
                                 + StringUtil.join(contributorsFromGitHub.toConfigNotation(), ", "));
 
-                customizePom(xml.asNode(), conf, archivesBaseName, project.getDescription(), contributorsFromGitHub);
+                final boolean isAndroidLibrary = project.getPlugins().hasPlugin("com.android.library");
+                customizePom(xml.asNode(), conf, archivesBaseName, project.getDescription(), contributorsFromGitHub, isAndroidLibrary);
             }
         });
     }
@@ -66,12 +67,14 @@ public class PomCustomizer {
      */
     static void customizePom(Node root, ShipkitConfiguration conf,
                              String projectName, String projectDescription,
-                             ProjectContributorsSet contributorsFromGitHub) {
-        //Assumes project has java plugin applied. Pretty safe assumption
+                             ProjectContributorsSet contributorsFromGitHub,
+                             boolean isAndroidLibrary) {
         //TODO: we need to conditionally append nodes because given node may already be on the root (issue 847)
         //TODO: all root.appendNode() need to be conditional
         root.appendNode("name", projectName);
-        if (root.getAt(new QName("packaging")).isEmpty()) {
+
+        //Android library publication uses aar packaging
+        if (!isAndroidLibrary && root.getAt(new QName("packaging")).isEmpty()) {
             root.appendNode("packaging", "jar");
         }
 
