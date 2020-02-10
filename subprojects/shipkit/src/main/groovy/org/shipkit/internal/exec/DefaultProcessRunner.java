@@ -4,7 +4,6 @@ import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.shipkit.internal.notes.util.IOUtil;
-import org.shipkit.internal.notes.util.ReleaseNotesException;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -75,7 +74,7 @@ public class DefaultProcessRunner implements ProcessRunner {
 
             result = new ProcessResult(output, process);
         } catch (Exception e) {
-            throw new ReleaseNotesException("Problems executing command:\n  " + maskedCommandLine, e);
+            throw new RuntimeException("Problems executing command:\n  " + maskedCommandLine, e);
         }
         return result;
     }
