@@ -48,6 +48,7 @@ Using Shipkit? Submit a pull request and add your project to the list!
 - Powermock: https://github.com/powermock/powermock
 - Shipkit: https://github.com/mockito/shipkit
 - rx-tasks: https://github.com/ashdavies/rx-tasks/
+- terse-logback: https://github.com/tersesystems/terse-logback/
 - Shipkit example: https://github.com/mockito/shipkit-example
 
 ### Help us!
