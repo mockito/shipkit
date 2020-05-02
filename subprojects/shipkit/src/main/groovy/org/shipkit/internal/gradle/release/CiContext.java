@@ -18,7 +18,7 @@ public class CiContext {
      * Returns true if it's a build inside CI environment, false otherwise
      */
     public boolean isCiBuild() {
-        String ci = envVariables.getNonEmptyEnv("CI"); // CI env variable is set by Travis
+        String ci = envVariables.getNonEmptyEnv("CI"); // CI env variable is set by CI
         return "true".equals(ci);
     }
 }

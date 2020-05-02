@@ -22,7 +22,7 @@ import org.shipkit.internal.gradle.bintray.ShipkitBintrayPlugin;
 public class ShipkitBasePlugin implements Plugin<Project> {
 
     public void apply(final Project project) {
-        project.getPlugins().apply(TravisPlugin.class);
+        project.getPlugins().apply(CiPlugin.class);
         project.getPlugins().apply(BintrayReleasePlugin.class);
     }
 }
