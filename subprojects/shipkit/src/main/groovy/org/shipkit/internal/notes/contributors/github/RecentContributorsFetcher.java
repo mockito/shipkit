@@ -72,8 +72,8 @@ class RecentContributorsFetcher {
         private final GitHubListFetcher fetcher;
         private List<JsonObject> lastFetchedPage;
 
-        private GitHubCommits(String nextPageUrl) {
-            fetcher = new GitHubListFetcher(nextPageUrl);
+        private GitHubCommits(String nextPageUrl, String readOnlyAuthToken) {
+            fetcher = new GitHubListFetcher(nextPageUrl, readOnlyAuthToken);
         }
 
         boolean hasNextPage() {
@@ -108,11 +108,10 @@ class RecentContributorsFetcher {
             GitHubCommits build() {
                 // see API doc: https://developer.github.com/v3/repos/commits/#list-commits-on-a-repository
                 String nextPageUrl = apiUrl + "/repos/" + repository + "/commits"
-                        + "?access_token=" + readOnlyAuthToken
-                        + "&since=" + forGitHub(dateSince)
+                        + "?&since=" + forGitHub(dateSince)
                         + ((dateUntil != null) ? "&until=" + forGitHub(dateUntil) : "")
                         + "&page=1&per_page=100";
-                return new GitHubCommits(nextPageUrl);
+                return new GitHubCommits(nextPageUrl, readOnlyAuthToken);
             }
         }
     }

@@ -23,10 +23,12 @@ public class GitHubListFetcher {
     private static final Logger LOG = Logging.getLogger(GitHubListFetcher.class);
 
     private static final String RELATIVE_LINK_NOT_FOUND = "none";
+    private final String readOnlyAuthToken;
     private String nextPageUrl;
 
-    public GitHubListFetcher(String nextPageUrl) {
+    public GitHubListFetcher(String nextPageUrl, String readOnlyAuthToken) {
         this.nextPageUrl = nextPageUrl;
+        this.readOnlyAuthToken = readOnlyAuthToken;
     }
 
     public boolean hasNextPage() {
@@ -41,6 +43,7 @@ public class GitHubListFetcher {
         LOG.info("GitHub API querying page {}", queryParamValue(url, "page"));
         LOG.lifecycle("GET " + nextPageUrl);
         URLConnection urlConnection = url.openConnection();
+        urlConnection.setRequestProperty("Authorization", "token " + readOnlyAuthToken);
         LOG.info("Established connection to GitHub API");
 
         String resetInLocalTime = resetLimitInLocalTimeOrEmpty(urlConnection);

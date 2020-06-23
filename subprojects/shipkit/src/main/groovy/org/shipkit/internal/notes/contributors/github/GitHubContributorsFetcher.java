@@ -66,8 +66,8 @@ class GitHubContributorsFetcher {
             return new GitHubProjectContributorsBuilder(apiUrl, repository, readOnlyAuthToken);
         }
 
-        private GitHubProjectContributors(String nextPageUrl) {
-            fetcher = new GitHubListFetcher(nextPageUrl);
+        private GitHubProjectContributors(String nextPageUrl, String readOnlyAuthToken) {
+            fetcher = new GitHubListFetcher(nextPageUrl, readOnlyAuthToken);
         }
 
         public boolean hasNextPage() {
@@ -95,9 +95,8 @@ class GitHubContributorsFetcher {
         GitHubProjectContributors build() {
             // see API doc: https://developer.github.com/v3/repos/#list-contributors
             String nextPageUrl = apiUrl + "/repos/" + repository + "/contributors" +
-                    "?access_token=" + readOnlyAuthToken +
-                    "&per_page=100";
-            return new GitHubProjectContributors(nextPageUrl);
+                    "?&per_page=100";
+            return new GitHubProjectContributors(nextPageUrl, readOnlyAuthToken);
         }
     }
 }
