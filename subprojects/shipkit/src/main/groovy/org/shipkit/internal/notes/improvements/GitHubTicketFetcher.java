@@ -114,15 +114,16 @@ class GitHubTicketFetcher {
         private static class GitHubIssuesBuilder {
             private final String apiUrl;
             private final String repository;
+            private final String readOnlyAuthToken;
 
             private Map<String, String> parameters;
 
             GitHubIssuesBuilder(String apiUrl, String repository, String readOnlyAuthToken) {
                 this.apiUrl = apiUrl;
                 this.repository = repository;
+                this.readOnlyAuthToken = readOnlyAuthToken;
 
                 parameters = new HashMap<>();
-                parameters.put("access_token", readOnlyAuthToken);
             }
 
             GitHubIssuesBuilder state(String state) {
@@ -156,11 +157,9 @@ class GitHubTicketFetcher {
                         .append("/issues?page=1");
 
                 for (Map.Entry<String, String> parameter : parameters.entrySet()) {
-                    if (parameter.getKey().equals("access_token")) continue;
                     urlBuilder.append("&").append(parameter.getKey()).append("=").append(parameter.getValue());
                 }
 
-                String readOnlyAuthToken = parameters.get("access_token");
                 return new GitHubIssues(urlBuilder.toString(), readOnlyAuthToken);
             }
         }
