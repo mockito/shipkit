@@ -95,8 +95,8 @@ class GitHubTicketFetcher {
 
         private final GitHubListFetcher fetcher;
 
-        private GitHubIssues(String nextPageUrl) {
-            fetcher = new GitHubListFetcher(nextPageUrl);
+        private GitHubIssues(String nextPageUrl, String readOnlyAuthToken) {
+            fetcher = new GitHubListFetcher(nextPageUrl, readOnlyAuthToken);
         }
 
         boolean hasNextPage() {
@@ -114,15 +114,16 @@ class GitHubTicketFetcher {
         private static class GitHubIssuesBuilder {
             private final String apiUrl;
             private final String repository;
+            private final String readOnlyAuthToken;
 
             private Map<String, String> parameters;
 
             GitHubIssuesBuilder(String apiUrl, String repository, String readOnlyAuthToken) {
                 this.apiUrl = apiUrl;
                 this.repository = repository;
+                this.readOnlyAuthToken = readOnlyAuthToken;
 
                 parameters = new HashMap<>();
-                parameters.put("access_token", readOnlyAuthToken);
             }
 
             GitHubIssuesBuilder state(String state) {
@@ -159,7 +160,7 @@ class GitHubTicketFetcher {
                     urlBuilder.append("&").append(parameter.getKey()).append("=").append(parameter.getValue());
                 }
 
-                return new GitHubIssues(urlBuilder.toString());
+                return new GitHubIssues(urlBuilder.toString(), readOnlyAuthToken);
             }
         }
     }
