@@ -11,7 +11,7 @@ import org.shipkit.internal.gradle.util.TaskMaker;
  * This plugin validates that every plugin has a corresponding .properties file.
  *
  * <ul>
- *     <li>Adds 'validatePlugins' task of type {@link PluginValidatorTask}.
+ *     <li>Adds 'validatePluginsShipkit' task of type {@link PluginValidatorTask}.
  *          Validates that every plugin has a corresponding .properties file.
  *          New task is configured as dependency of 'check' task so that when you run 'check', the plugins are validated
  *          </li>
