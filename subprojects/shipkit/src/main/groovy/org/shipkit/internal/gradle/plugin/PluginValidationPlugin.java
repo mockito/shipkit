@@ -19,7 +19,7 @@ import org.shipkit.internal.gradle.util.TaskMaker;
  */
 public class PluginValidationPlugin implements Plugin<Project> {
 
-    static final String VALIDATE_PLUGINS = "validatePlugins";
+    static final String VALIDATE_PLUGINS = "validatePluginsSkipkit";
 
     @Override
     public void apply(final Project project) {
