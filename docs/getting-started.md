@@ -83,8 +83,8 @@ shipkit {
 ```
 
 Property **github.repository** is by default filled with your remote origin URL, while **github.readOnlyAuthToken** uses generic [shipkit-org](https://github.com/shipkit-org) account.
-It is sufficient to try out a release locally. 
-More info about how to generate GitHub's tokens is in [Production configuration](#production-configuration)  
+It is sufficient to try out a release locally.
+More info about how to generate GitHub's tokens is in [Production configuration](#production-configuration)
 
 ### Bintray configuration
 
@@ -109,7 +109,7 @@ allprojects {
 ```
 
 To try out Shipkit you don’t need to change any Bintray configuration!
-Generated shipkit file is configured to publish to sandbox 'shipkit-bootstrap' Bintray organisation.
+Generated shipkit file is configured to publish to sandbox [shipkit-bootstrap](https://bintray.com/shipkit-bootstrap/bootstrap/maven/) Bintray organisation.
 
 ### Commit local changes
 
@@ -206,10 +206,10 @@ script:
  - ./gradlew build -s && ./gradlew ciPerformRelease
 ```
 
-The "script" part of Travis CI setup consists of 2 operations separate with "&&". 
-This is the easiest way to configure releases in Travis. 
-The first operation is typically the "build" command, but you totally configure it. 
-Second operation uses "&&" so that it is only triggered if the build succeeds. 
+The "script" part of Travis CI setup consists of 2 operations separate with "&&".
+This is the easiest way to configure releases in Travis.
+The first operation is typically the "build" command, but you totally configure it.
+Second operation uses "&&" so that it is only triggered if the build succeeds.
 "ciPerformRelease" task is the core of Shipkit, it aggregates few other tasks:
 
 - **releaseNeeded** which checks if release should be made during this build.
