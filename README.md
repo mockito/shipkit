@@ -49,6 +49,7 @@ Using Shipkit? Submit a pull request and add your project to the list!
 - Shipkit: https://github.com/mockito/shipkit
 - rx-tasks: https://github.com/ashdavies/rx-tasks/
 - terse-logback: https://github.com/tersesystems/terse-logback/
+- MockitoPlus: https://github.com/mockitoplus/mockitoplus
 - Shipkit example: https://github.com/mockito/shipkit-example
 
 ### Help us!
