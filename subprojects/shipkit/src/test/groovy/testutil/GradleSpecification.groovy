@@ -132,7 +132,11 @@ abstract class GradleSpecification extends Specification implements GradleVersio
 
     protected List<String> skippedTaskPathsGradleBugWorkaround(String output) {
         //Due to https://github.com/gradle/gradle/issues/2732 no tasks are returned in dry-run mode. When fixed ".taskPaths(SKIPPED)" should be used directly
-        return output.readLines().findAll { it.endsWith(" SKIPPED") }.collect { it.substring(0, it.lastIndexOf(" ")) }
+        return output.readLines()
+            .findAll { it.endsWith(" SKIPPED") }
+            .findAll { !it.contains(":generatePom") }
+            .findAll { !it.contains(":generateMetadata") }
+            .collect { it.substring(0, it.lastIndexOf(" ")) }
     }
 
     private static String findClassesDir() {

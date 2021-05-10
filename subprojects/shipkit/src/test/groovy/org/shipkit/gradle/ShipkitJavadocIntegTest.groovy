@@ -49,7 +49,6 @@ class ShipkitJavadocIntegTest extends GradleSpecification {
 :updateReleaseNotes
 :gitCommit
 :gitTag
-:api:generatePomFileForJavaLibraryPublication
 :api:compileJava
 :api:processResources
 :api:classes
@@ -59,7 +58,6 @@ class ShipkitJavadocIntegTest extends GradleSpecification {
 :api:createDependencyInfoFile
 :api:sourcesJar
 :api:publishJavaLibraryPublicationToMavenLocal
-:impl:generatePomFileForJavaLibraryPublication
 :impl:compileJava
 :impl:processResources
 :impl:classes
@@ -137,7 +135,6 @@ class ShipkitJavadocIntegTest extends GradleSpecification {
 :updateReleaseNotes
 :gitCommit
 :gitTag
-:api:generatePomFileForJavaLibraryPublication
 :api:compileJava
 :api:processResources
 :api:classes
@@ -147,7 +144,6 @@ class ShipkitJavadocIntegTest extends GradleSpecification {
 :api:createDependencyInfoFile
 :api:sourcesJar
 :api:publishJavaLibraryPublicationToMavenLocal
-:impl:generatePomFileForJavaLibraryPublication
 :impl:compileJava
 :impl:processResources
 :impl:classes
