@@ -1,6 +1,7 @@
 package org.shipkit.gradle.configuration;
 
 import org.shipkit.internal.gradle.configuration.ShipkitConfigurationStore;
+import org.shipkit.internal.gradle.release.ci.TravisProvider;
 import org.shipkit.internal.util.EnvVariables;
 
 import java.util.Collection;
@@ -63,7 +64,7 @@ public class ShipkitConfiguration {
         team.setDevelopers(Collections.<String>emptyList());
         team.setIgnoredContributors(Collections.<String>emptyList());
 
-        ciManagement.setSystem("TravisCI");
+        ciManagement.setSystem(TravisProvider.NAME);
     }
 
     ShipkitConfiguration(ShipkitConfigurationStore store) {
