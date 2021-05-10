@@ -96,10 +96,10 @@ allprojects {
         bintray {
             key = '7ea297848ca948adb7d3ee92a83292112d7ae989'
             pkg {
-                repo = 'bootstrap'
+                repo = 'maven'
                 user = 'shipkit-bootstrap-bot'
                 userOrg = 'shipkit-bootstrap'
-                name = 'maven'
+                name = 'bootstrap'
                 licenses = ['MIT']
                 labels = ['continuous delivery', 'release automation', 'shipkit']
             }
